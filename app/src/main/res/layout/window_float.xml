@@ -35,7 +35,7 @@
                 android:layout_weight="3"
                 android:background="@color/white"
                 android:gravity="center|start"
-                android:text="@string/info_default" />
+                android:text="@string/app_name" />
 
                 <TextView
                     android:id="@+id/close_text"

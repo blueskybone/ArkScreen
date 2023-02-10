@@ -6,16 +6,19 @@
     <string name="open_recruitment">公开招募(施工中…)</string>
     <string name="open_recruitment_disc">点击标签筛选公招结果</string>
     <string name="ok">确定</string>
-    <string name="instruct_use">使用说明</string>
-    <string name="instruct_desc">这是一个基于标签图像识别的明日方舟公开招募计算器工具。\n\n
+    <string name="instruct_use">使用说明(必看)</string>
+    <string name="instruct_desc">
+       ### 此项目暂未配置服务器，无法自动更新，根据公招卡池更新规律，
+        2023年4月前后右该版本的本地数据库将过时。请及时关注项目动态。 \n\n
+        这是一个基于标签图像识别的明日方舟公开招募计算器工具。\n\n
 将工具图标加入通知栏快捷开关，即可在游戏内快速识别标签并查询结果。\n\n
 仅显示稀有度为`6★，5★，4★，1★`的词条组合和招募结果。\n\n
 ---
 \n
-### 使用步骤：\n\n
+### 使用方法：\n\n
 参看b站视频：\n\n
 1.开启悬浮窗权限。\n\n
-2.下拉通知栏控制中心，编辑快捷开关，找到“坏猫咪”图标添加到控制中心。\n\n
+2.下拉通知栏控制中心，编辑快捷开关，找到“ArkScreen”图标添加到控制中心。\n\n
 3.在游戏公招页面下拉通知栏，点击图标后提示授权录屏权限，授权后开始识别。\n\n
 录屏属于敏感权限，每次使用都需授权。\n\n
 ---
@@ -43,13 +46,13 @@
         开发者：[BlueSkyBone](https://github.com/blueskybone)\n\n
         ---\n\n
         数据来源 [prts.wiki](https://prts.wiki/w/)\n\n
+        图片资源属于鹰角网络\n\n
         ---\n\n
-        ### 特别鸣谢：\n\n
         感谢以下开源项目：\n\n
         [Markwon](https://github.com/noties/Markwon) \n\n
         [ScreenCapture](https://github.com/wossoneri/ScreenCapture) \n\n
         ---\n\n
-        ### 更新计划： \n\n
+        更新计划： \n\n
         如你所见这是个半成品，只把核心功能做完了orz\n\n
         后面可能没时间来完善它了，欢迎大佬们加入仓库共同开发。
     </string>

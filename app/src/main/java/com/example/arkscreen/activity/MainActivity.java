@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -79,6 +80,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         card_check_update.setOnClickListener(this);
         card_about.setOnClickListener(this);
         card_setting.setOnClickListener(this);
+
+        ImageView imageView = findViewById(R.id.imageView);
+        imageView.setImageDrawable(getDrawable(R.drawable.kalt_img_alpha_0));
+
+        imageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        imageView.setImageDrawable(getDrawable(R.drawable.kalt_img_alpha_1));
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        imageView.setImageDrawable(getDrawable(R.drawable.kalt_img_alpha_0));
+                        break;
+                }
+                return true;
+            }
+        });
+
     }
     private void createNotificationChannel() {
         CharSequence name = getString(R.string.channel_name);
