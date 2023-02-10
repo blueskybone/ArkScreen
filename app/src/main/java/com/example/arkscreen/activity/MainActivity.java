@@ -69,13 +69,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void setLayout(){
         initialProperTies(this);
         setContentView(R.layout.activity_main);
-        CardView card_op =findViewById(R.id.card_operator);
+       // CardView card_op =findViewById(R.id.card_operator);
         CardView card_instruct = findViewById(R.id.card_instruct);
         CardView card_check_update =findViewById(R.id.card_check_update);
         CardView card_about = findViewById(R.id.card_about);
         CardView card_setting = findViewById(R.id.card_setting);
 
-        card_op.setOnClickListener(this);
+       // card_op.setOnClickListener(this);
         card_instruct.setOnClickListener(this);
         card_check_update.setOnClickListener(this);
         card_about.setOnClickListener(this);
@@ -141,10 +141,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         int getId = v.getId();
-        if(getId == R.id.card_operator){
-            Toast.makeText(this,"施工中...",Toast.LENGTH_SHORT).show();
-        }
-        else if(getId == R.id.card_instruct){
+//        if(getId == R.id.card_operator){
+//            Toast.makeText(this,"施工中...",Toast.LENGTH_SHORT).show();
+//        }
+        if(getId == R.id.card_instruct){
             showDialog(this.getResources().getText(R.string.instruct_use),
                     this.getResources().getText(R.string.instruct_desc));
         }
