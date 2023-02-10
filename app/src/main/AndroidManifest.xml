@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.arkscreen">
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
+    <meta-data android:name="android.service.quicksettings.ACTIVE_TILE"
+        android:value="true" />
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher_kalt"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_kalt_round"
+        android:requestLegacyExternalStorage="true"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ArkScreen">
+        <activity
+            android:name=".activity.MainActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activity.SettingActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustNothing"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"/>
+        <activity android:name=".activity.NoDisplayActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustNothing"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
+        <service
+            android:name=".service.SCTileService"
+            android:icon="@drawable/ic_tile"
+            android:exported="true"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".service.ScreenshotService"
+            android:enabled="true"
+            android:foregroundServiceType="mediaProjection" />
+        <service
+            android:name=".service.ResultWindowService"
+            android:enabled="true"/>
+
+    </application>
+
+</manifest>

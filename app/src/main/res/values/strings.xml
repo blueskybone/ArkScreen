@@ -1,0 +1,69 @@
+<resources>
+    <string name="app_name">ArkScreen</string>
+    <string name="app_ver">version 1.0</string>
+    <string name="open_src">Open Source Licenses</string>
+    <string name="author">BlueSkyBone</string>
+    <string name="open_recruitment">公开招募(施工中…)</string>
+    <string name="open_recruitment_disc">点击标签筛选公招结果</string>
+    <string name="ok">确定</string>
+    <string name="instruct_use">使用说明</string>
+    <string name="instruct_desc">这是一个基于标签图像识别的明日方舟公开招募计算器工具。\n\n
+将工具图标加入通知栏快捷开关，即可在游戏内快速识别标签并查询结果。\n\n
+仅显示稀有度为`6★，5★，4★，1★`的词条组合和招募结果。\n\n
+---
+\n
+### 使用步骤：\n\n
+参看b站视频：\n\n
+1.开启悬浮窗权限。\n\n
+2.下拉通知栏控制中心，编辑快捷开关，找到“坏猫咪”图标添加到控制中心。\n\n
+3.在游戏公招页面下拉通知栏，点击图标后提示授权录屏权限，授权后开始识别。\n\n
+录屏属于敏感权限，每次使用都需授权。\n\n
+---
+\n
+### 错误排查：\n\n
+#### 1.识别错误：  \n
+请保持标签处于`未选中状态`时识别。\n\n
+保证游戏界面处于`全屏`。\n\n
+#### 2.识别结果有误：  \n
+方舟界面渲染了灰尘特效，有极小概率出现识别错误。重试即可。\n\n
+#### 3.查询结果错误：  \n
+请联系作者更新数据库。\n\n
+#### 排除以上：\n\n
+识别错误率较高，或有其他bug，请联系作者反馈嗷。\n</string>
+    <string name="check_update">检查更新(施工中…)</string>
+    <string name="float_window">悬浮窗</string>
+    <string name="setting_reset">恢复默认</string>
+    <string name="show_mode">列表显示模式</string>
+    <string name="defalut_mode">默认</string>
+    <string name="simple_mode">简洁</string>
+    <string name="theme_setting">主题</string>
+    <string name="check_update_disc">当前版本 v1.0</string>
+    <string name="about_title">关于</string>
+    <string name="about_content">开源仓库：[ArkScreen](https://github.com//blueskybone/ArkScreen)\n\n
+        开发者：[BlueSkyBone](https://github.com/blueskybone)\n\n
+        ---\n\n
+        数据来源 [prts.wiki](https://prts.wiki/w/)\n\n
+        ---\n\n
+        ### 特别鸣谢：\n\n
+        感谢以下开源项目：\n\n
+        [Markwon](https://github.com/noties/Markwon) \n\n
+        [ScreenCapture](https://github.com/wossoneri/ScreenCapture) \n\n
+        ---\n\n
+        ### 更新计划： \n\n
+        如你所见这是个半成品，只把核心功能做完了orz\n\n
+        后面可能没时间来完善它了，欢迎大佬们加入仓库共同开发。
+    </string>
+    <string name="get_wrong_tag_number">识别错误，请重试或参阅使用说明</string>
+    <string name="get_right_result">识别成功</string>
+    <string name="channel_name">ArkScreen</string>
+    <string name="channel_description">Screen Capturing…</string>
+    <string name="info_default">Initializing…</string>
+    <string name="tags_bar">--------------------------</string>
+    <string name="no_high_level">没有4星以上结果，博士请重新来过:)</string>
+    <string name="setting_title">设置</string>
+    <string name="button_close">关闭</string>
+    <string name="text_size_setting">字号大小</string>
+    <string name="width">宽度:</string>
+    <string name="height">高度:</string>
+    <string name="alpha">透明度(0.0~1.0):</string>
+    </resources>
