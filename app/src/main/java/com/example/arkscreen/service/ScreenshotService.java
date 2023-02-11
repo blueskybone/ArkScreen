@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.os.IBinder;
-import android.util.Log;
-
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -59,7 +57,7 @@ public class ScreenshotService extends Service {
         String textTitle = getString(R.string.channel_name);
         String textContent = getString(R.string.channel_description);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.notification_icon)
+                .setSmallIcon(R.drawable.ic_tile)
                 .setContentTitle(textTitle)
                 .setContentText(textContent)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -72,7 +70,6 @@ public class ScreenshotService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.e("TAG","ondestroy");
     stopForeground(true);
     super.onDestroy();
     }

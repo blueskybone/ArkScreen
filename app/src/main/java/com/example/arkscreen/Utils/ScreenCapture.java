@@ -4,6 +4,8 @@ package com.example.arkscreen.Utils;
 import static com.example.arkscreen.Utils.Utils.getAssetsCacheFile;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,8 +19,16 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.arkscreen.R;
+import com.example.arkscreen.activity.MainActivity;
+import com.example.arkscreen.activity.NoDisplayActivity;
+import com.example.arkscreen.activity.SettingActivity;
 import com.example.arkscreen.service.ResultWindowService;
 
 public class ScreenCapture {
@@ -30,7 +40,7 @@ public class ScreenCapture {
     private VirtualDisplay mVirtualDisplay;
     private Handler mHandler;
     private final Context mContext;
-    private String result_info;
+    private String result_info ="1,未获取到截图";
 
     static {
         System.loadLibrary("arkjni-lib");
@@ -55,11 +65,12 @@ public class ScreenCapture {
     @SuppressLint("WrongConstant")
     public ScreenCapture startProjection() {
         //TODO if get mediaprojection failed
-//        if (sMediaProjection != null) {
-//
-//        } else {
-//            Log.d("log_dir", "get mediaprojection failed");
-//        }
+        if (sMediaProjection != null) {
+
+        } else {
+            Toast.makeText(mContext,"get mediaprojection failed",Toast.LENGTH_SHORT).show();
+        }
+
         try {
             Thread.sleep(300);
             isScreenCaptureStarted = true;
@@ -99,9 +110,17 @@ public class ScreenCapture {
                             bitmap = ImageUtils.bitmap_2_target_bitmap(bitmap, mWidth, mHeight);
                             // magic number for adapt tag rect.
                             int num = mWidth / 640;
-                            result_info = getTagText(bitmap, dataPath, num);
+                            try{
+                                result_info = getTagText(bitmap, dataPath, num);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                                result_info = "2,识别发生问题";
+                            }
+                            // result_info = "1,未获取到截图";
                             stopProjection();
                             sMediaProjection.registerCallback(new MediaProjectionStopCallback(), mHandler);
+                        }else{
+                            result_info = "1,截图发生错误";
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -109,12 +128,13 @@ public class ScreenCapture {
                         if (null != bitmap) {
                             bitmap.recycle();
                         }
-                        Intent intent = new Intent(mContext, ResultWindowService.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra("result_data", result_info);
-                        mContext.startService(intent);
+
                     }
                 }
+                Intent intent = new Intent(mContext, ResultWindowService.class);
+                intent.setFlags(Service.START_FLAG_REDELIVERY);
+                intent.putExtra("result_data", result_info);
+                mContext.startService(intent);
             }
         }, mHandler);
         return this;
