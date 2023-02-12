@@ -33,7 +33,6 @@
         <activity android:name=".activity.NoDisplayActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustNothing"
-            android:excludeFromRecents="true"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
         <service

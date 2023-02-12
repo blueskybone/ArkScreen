@@ -154,10 +154,13 @@ public class ScreenshotService extends Service {
     }
 
     public void showFloatWindow() {
-        mHandler.post(() -> {
-            if(!isAdd){
-                windowManager.addView(touchLayout,params);
-                isAdd = true;
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if(!isAdd){
+                    windowManager.addView(touchLayout,params);
+                    isAdd = true;
+                }
             }
         });
     }
@@ -165,31 +168,30 @@ public class ScreenshotService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e("scservice","scservice");
         createNotificationChannel();
-//        mResultCode = intent.getIntExtra("code", -1);
-//        mResultData = intent.getParcelableExtra("data");
-//        mProjectionManager = (MediaProjectionManager)getSystemService(
-//                Context.MEDIA_PROJECTION_SERVICE);
-//        mMediaProjection = mProjectionManager.getMediaProjection(
-//                mResultCode, Objects.requireNonNull(mResultData));
-//        if(mMediaProjection!=null) {
-//            try {
-//                Thread.sleep(300);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//
-//            new ScreenCapture(this, mMediaProjection).startProjection();
-//            //showFloatWindow();
-//        }
-//        else {
-//            Toast.makeText(this,"error in Mediaprojection",Toast.LENGTH_SHORT).show();
-//        }
-       // stopFore();
+        mResultCode = intent.getIntExtra("code", -1);
+        mResultData = intent.getParcelableExtra("data");
+        mProjectionManager = (MediaProjectionManager)getSystemService(
+                Context.MEDIA_PROJECTION_SERVICE);
+        mMediaProjection = mProjectionManager.getMediaProjection(
+                mResultCode, Objects.requireNonNull(mResultData));
+        if(mMediaProjection!=null) {
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            new ScreenCapture(this, mMediaProjection).startProjection();
+            //showFloatWindow();
+        }
+        else {
+            Toast.makeText(this,"error in Mediaprojection",Toast.LENGTH_SHORT).show();
+        }
+        stopFore();
         //stopForeground(true);
         //return START_REDELIVER_INTENT;
         return super.onStartCommand(intent, flags, startId);
     }
-
 
     private void createNotificationChannel() {
         String textTitle = getString(R.string.channel_name);
@@ -207,12 +209,15 @@ public class ScreenshotService extends Service {
     }
 
     private void stopFore(){
-        mHandler.post(() -> {
-            try {
-                Thread.sleep(3000);
-               stopForeground(true);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(3000);
+                   stopForeground(true);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
