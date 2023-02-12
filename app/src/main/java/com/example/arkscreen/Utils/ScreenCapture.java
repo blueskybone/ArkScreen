@@ -18,6 +18,7 @@ import android.media.projection.MediaProjection;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +49,7 @@ public class ScreenCapture {
     public static native String getTagText(Bitmap bitmap, String dataPath, int num);
 
     public ScreenCapture(Context context, MediaProjection mediaProjection) {
+        Log.e("new sccaptrue","new sccaptrue");
         sMediaProjection = mediaProjection;
         mContext = context;
         isScreenCaptureStarted = false;
@@ -64,6 +66,7 @@ public class ScreenCapture {
 
     @SuppressLint("WrongConstant")
     public ScreenCapture startProjection() {
+        Log.e("new sccaptrue start","new sccaptrue start");
         //TODO if get mediaprojection failed
         if (sMediaProjection != null) {
 
@@ -122,19 +125,20 @@ public class ScreenCapture {
                         }else{
                             result_info = "1,截图发生错误";
                         }
+                        Intent intent = new Intent(mContext, ResultWindowService.class);
+                        intent.setFlags(Service.START_FLAG_REDELIVERY);
+                        intent.putExtra("result_data", result_info);
+                        mContext.startForegroundService(intent);
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
                         if (null != bitmap) {
                             bitmap.recycle();
                         }
-
                     }
+
                 }
-                Intent intent = new Intent(mContext, ResultWindowService.class);
-                intent.setFlags(Service.START_FLAG_REDELIVERY);
-                intent.putExtra("result_data", result_info);
-                mContext.startService(intent);
+
             }
         }, mHandler);
         return this;

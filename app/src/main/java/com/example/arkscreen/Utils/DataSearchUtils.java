@@ -29,7 +29,7 @@ public class DataSearchUtils {
         opeFinalListStar5.clear();
         opeFinalListStar4.clear();
         opeFinalListStar1.clear();
-
+        Log.e("tags",allTag.length+"");
         Arrays.sort(allTag, Collections.reverseOrder());
         List<List<String>> dataListAll = getAllCombination(allTag.length,range,allTag);;
         for(List<String> dataCom : dataListAll ){
@@ -146,7 +146,7 @@ public class DataSearchUtils {
 //        Log.e("opeFinalStar5",opeFinalListStar5.size()+"");
 //        Log.e("opeFinalStar1",opeFinalListStar1.size()+"");
 //        Log.e("opeFinalStar4",opeFinalListStar4.size()+"");
-//        Log.e("result_all",opeDataList.size()+ "");
+        Log.e("result_all",opeDataList.size()+ "");
         return opeDataList;
     }
 

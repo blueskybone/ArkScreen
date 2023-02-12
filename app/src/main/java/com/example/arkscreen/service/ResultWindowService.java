@@ -15,6 +15,7 @@ import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.NotificationCompat;
 
 import com.example.arkscreen.R;
 import com.example.arkscreen.Utils.ConfigUtils;
@@ -55,6 +57,8 @@ public class ResultWindowService extends Service {
     private OpeListAdapter opeListAdapter;
     private ExecutorService executorService;
     private List<OpeData> opeDataList = new ArrayList<>();
+    private String CHANNEL_ID = "CHANNEL_SERVICE";
+    private int notificationId = 102;
     private boolean isAdd = false;
     int statusBarHeight = -1;
 
@@ -64,8 +68,8 @@ public class ResultWindowService extends Service {
         if(isAdd){
             removeFloatWindow();
         }
-        opeDataList.clear();
         String result_data = intent.getStringExtra("result_data");
+        Log.e("result",result_data);
         String[] data=result_data.split(",");
 
         if(data.length == 1) {
@@ -77,8 +81,8 @@ public class ResultWindowService extends Service {
         else {
             printOpeList(this,data);
         }
-
-        return START_REDELIVER_INTENT;
+        return super.onStartCommand(intent ,flags, startId);
+       // return START_REDELIVER_INTENT;
     }
     @Override
     public void onCreate(){
@@ -129,6 +133,7 @@ public class ResultWindowService extends Service {
                 touchLayout.performClick();
                 windowManager.removeView(touchLayout);
                 isAdd = false;
+                //stopSelf();
             }
         });
 
@@ -171,6 +176,7 @@ public class ResultWindowService extends Service {
         if(isAdd) {
             windowManager.removeView(touchLayout);
         }
+        stopForeground(true);
         super.onDestroy();
     }
 
@@ -203,7 +209,6 @@ public class ResultWindowService extends Service {
             }
         });
     }
-
     private void setViewEmpty(Context context){
         mHandler.post(new Runnable() {
             @Override
@@ -218,6 +223,7 @@ public class ResultWindowService extends Service {
             }
         });
     }
+
 private void printScrErrInfo(Context context,String info){
     executorService.submit(new Runnable() {
         @Override
@@ -258,6 +264,7 @@ private void printScrErrInfo(Context context,String info){
             }
         });
     }
+
     private void setMarkDownText(Context context, String text){
         mHandler.post(new Runnable() {
             @Override
@@ -267,13 +274,13 @@ private void printScrErrInfo(Context context,String info){
             }
         });
     }
+
     private void printOpeList(Context context, String[] data){
         executorService.submit(new Runnable() {
             @Override
             public void run() {
                 String[] newData = tagsEnToCh(data,context);
                 String[] cutData = splitTag(newData);
-
 
                 StringBuilder tags = new StringBuilder();
                 for (String cutDatum : cutData) {
@@ -289,7 +296,6 @@ private void printScrErrInfo(Context context,String info){
                 if( 0 == opeDataList.size()){
                     noHighLevelResult.setText(context.getResources().getText(R.string.no_high_level));
                     lvOpeResult.setAdapter(null);
-
                 }
                 else {
                     SharedPreferences shared = ConfigUtils.getShared(context);
@@ -340,4 +346,5 @@ private void printScrErrInfo(Context context,String info){
     public IBinder onBind(Intent intent) {
         return null;
     }
-}
+
+    }

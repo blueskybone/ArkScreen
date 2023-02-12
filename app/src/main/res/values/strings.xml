@@ -50,6 +50,7 @@
         感谢以下开源项目：\n\n
         [Markwon](https://github.com/noties/Markwon) \n\n
         [ScreenCapture](https://github.com/wossoneri/ScreenCapture) \n\n
+        [ScreenshotTile](https://github.com/cvzi/ScreenshotTile)\n\n
         ---\n\n
         更新计划： \n\n
         如你所见这是个半成品，只把核心功能做完了orz\n\n
@@ -60,6 +61,7 @@
     <string name="get_right_result">识别成功</string>
     <string name="channel_name">ArkScreen</string>
     <string name="channel_description">Screen Capturing…</string>
+    <string name="channel_service">Get Screenshot</string>
     <string name="info_default">Initializing…</string>
     <string name="tags_bar">--------------------------</string>
     <string name="no_high_level">没有4星以上结果，博士请重新来过:)</string>

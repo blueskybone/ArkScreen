@@ -17,6 +17,7 @@ public class SCTileService extends android.service.quicksettings.TileService {
     @Override
     public void onStartListening() {
         Log.d("QS", "Start listening");
+
     }
     /**
      * Called when this tile moves out of the listening state.
@@ -37,6 +38,7 @@ public class SCTileService extends android.service.quicksettings.TileService {
     public void onClick() {
         super.onClick();
         // open a new activity to collapse panel
+        Log.e("onclick","onclick");
         Intent intent = new Intent(this, NoDisplayActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         this.startActivityAndCollapse(intent);
