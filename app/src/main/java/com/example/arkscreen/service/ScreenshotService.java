@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -145,11 +146,11 @@ public class ScreenshotService extends Service {
 //
 //        isAdd = false;
 //
-//        new Thread(() -> {
-//            Looper.prepare();
-//            mHandler = new Handler();
-//            Looper.loop();
-//        }).start();
+        new Thread(() -> {
+            Looper.prepare();
+            mHandler = new Handler();
+            Looper.loop();
+        }).start();
     }
 
     public void showFloatWindow() {
@@ -184,9 +185,10 @@ public class ScreenshotService extends Service {
             //showFloatWindow();
         }
         else {
-
+            Toast.makeText(this,"error in Mediaprojection",Toast.LENGTH_SHORT).show();
         }
-         stopFore();
+        stopFore();
+        //stopForeground(true);
         //return START_REDELIVER_INTENT;
         return super.onStartCommand(intent, flags, startId);
     }
@@ -219,6 +221,7 @@ public class ScreenshotService extends Service {
             }
         });
     }
+
     @Override
     public void onDestroy() {
     stopForeground(true);

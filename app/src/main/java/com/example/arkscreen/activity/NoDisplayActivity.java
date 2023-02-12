@@ -65,6 +65,7 @@ public class NoDisplayActivity extends Activity {
         if (RESULT_OK == resultCode && REQUEST_CODE == requestCode) {
             // API>29, media projection should run in a fore service
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                Log.e("try start service","no - scshotservice");
                 Intent service = new Intent(this, ScreenshotService.class);
                 service.putExtra("code", resultCode);
                 service.putExtra("data", data);
@@ -79,7 +80,7 @@ public class NoDisplayActivity extends Activity {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(300);
                     finish();
                 } catch (InterruptedException e) {
                     e.printStackTrace();

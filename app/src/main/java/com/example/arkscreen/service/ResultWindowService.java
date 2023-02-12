@@ -98,6 +98,7 @@ public class ResultWindowService extends Service {
     }
     @SuppressLint("ClickableViewAccessibility")
     private void createTouch(){
+        Log.e("create touch","create touchlayout");
         params = new WindowManager.LayoutParams();
         windowManager = (WindowManager) getApplication().getSystemService(Context.WINDOW_SERVICE);
         params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;

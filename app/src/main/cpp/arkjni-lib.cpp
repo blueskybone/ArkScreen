@@ -47,7 +47,7 @@ Java_com_example_arkscreen_Utils_ScreenCapture_getTagText(
     }
     jobjectArray array1;
     mBitmap8 bitmap;
-    AndroidBitmap_unlockPixels(env, jBitmap);
+    //AndroidBitmap_unlockPixels(env, jBitmap);
     AndroidBitmap2mBitmap(bitmap, sourceInfo, sourceData);
     mBitmap8 n_bitmap;
     bitmap.copyMakeBorderTo(n_bitmap, BORDER_TOP, BORDER_BOTTOM, BORDER_LEFT, BORDER_RIGHT, BG_COLOR);

@@ -71,6 +71,7 @@ public class ScreenCapture {
         if (sMediaProjection != null) {
 
         } else {
+            Log.e("new sccaptrue start","sMediaproject null");
             Toast.makeText(mContext,"get mediaprojection failed",Toast.LENGTH_SHORT).show();
         }
 
@@ -114,6 +115,7 @@ public class ScreenCapture {
                             // magic number for adapt tag rect.
                             int num = mWidth / 640;
                             try{
+                                Log.e("try get text","try get text");
                                 result_info = getTagText(bitmap, dataPath, num);
                             }catch (Exception e){
                                 e.printStackTrace();
@@ -123,7 +125,7 @@ public class ScreenCapture {
                             stopProjection();
                             sMediaProjection.registerCallback(new MediaProjectionStopCallback(), mHandler);
                         }else{
-                            result_info = "1,截图发生错误";
+                            result_info = "3,截图发生错误";
                         }
                         Intent intent = new Intent(mContext, ResultWindowService.class);
                         intent.setFlags(Service.START_FLAG_REDELIVERY);
