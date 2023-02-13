@@ -1,18 +1,7 @@
 package com.example.arkscreen.Utils;
 
 import android.content.Context;
-import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-
-import com.example.arkscreen.R;
 import com.example.arkscreen.database.Operator;
 
 import java.io.File;
@@ -70,48 +59,4 @@ public class Utils {
         }
         return text.toString();
     }
-
-//    public static View getFinalView(List<OpeData> opeData,Context context){
-//        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        ConstraintLayout layout = (ConstraintLayout) inflater.inflate(R.layout.list_reference,null);
-//       // View view = layout.findViewById(R.layout.list_reference);
-//        for(OpeData opeList: opeData){
-//            ConstraintLayout itemView = (ConstraintLayout) inflater.inflate(R.layout.list_each,null);
-//            LinearLayout listTags = itemView.findViewById(R.id.linear_tags);
-//            LinearLayout listOpe= itemView.findViewById(R.id.linear_ope);
-//            for(int i = 0;i<opeList.tags.size();i++){
-//                String tag = opeList.tags.get(i);
-//                TextView tagText = new TextView(context);
-//                tagText.setPadding(10,10,10,10);
-//                tagText.setBackgroundColor(ContextCompat.getColor(context,R.color.blue));
-//                tagText.setTextColor(ContextCompat.getColor(context,R.color.white));
-//                tagText.setText(tag);
-//                listTags.addView(tagText);
-//            }
-//
-//            for(int i = 0;i<opeList.operatorList.size();i++){
-//                Operator operator = opeList.operatorList.get(i);
-//                View opeView = inflater.inflate(R.layout.operator,null);
-//                TextView opeName = opeView.findViewById(R.id.text_operator_name);
-//                TextView opeClass = opeView.findViewById(R.id.text_operator_class);
-//                TextView opeStar = opeView.findViewById(R.id.text_operator_star);
-//                switch(operator.opeStar){
-//                    case "6":opeName.setTextColor(ContextCompat.getColor(context,R.color.star_6));break;
-//                    case "5":opeName.setTextColor(ContextCompat.getColor(context,R.color.star_5));break;
-//                    case "4":opeName.setTextColor(ContextCompat.getColor(context,R.color.star_4));break;
-//                    case "1":opeName.setTextColor(ContextCompat.getColor(context,R.color.star_1));break;
-//                }
-//                opeName.setText(operator.opeName);
-//                opeClass.setText(operator.opeClass);
-//                opeStar.setText(operator.opeStar+"★");
-//                opeView.getMeasuredWidth();
-//                listOpe.addView(opeView);
-//            }
-//            itemView.addView(listTags);
-//            itemView.addView(listOpe);
-//            layout.addView(itemView);
-//        }
-//        return layout;
-//    }
-
 }

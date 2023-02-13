@@ -10,27 +10,28 @@
 #include "utils.h"
 
 using namespace std;
-
-#ifndef _Included_com_example_arkscreen_Native_NativeManager
+#ifndef _Included_com_example_arkscreen_Utils_ScreenCapture
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 /*
- * Class:     com_example_arkscreen_Utils_ScreenCapture
- * Method:    getTagText
- * Signature: (Landroid/graphics/Bitmap;)[Ljava/lang/String;
- */
+* Class:     com_example_arkscreen_activity_NoDisplayActivity
+* Method:    getTagText
+* Signature: (Landroid/graphics/Bitmap;)[Ljava/lang/String;
+*/
 JNIEXPORT jstring JNICALL
-Java_com_example_arkscreen_Utils_ScreenCapture_getTagText(
-        JNIEnv *env, jclass clazz,
-        jobject jBitmap, jstring jDataPath, jint jNum) {
+Java_com_example_arkscreen_activity_NoDisplayActivity_getTagText(JNIEnv *env, jclass clazz,
+                                                                 jobject jBitmap, jstring jDataPath,
+                                                                 jint jNum) {
+
     int result;
     string bitmapReadErr;
     AndroidBitmapInfo sourceInfo;
     result = AndroidBitmap_getInfo(env, jBitmap , &sourceInfo);
     if (result < 0)
     {
-       bitmapReadErr = "get bitmap info failed.";
+        bitmapReadErr = "get bitmap info failed.";
         return env->NewStringUTF(bitmapReadErr.c_str());
     }
     if(sourceInfo.format != ANDROID_BITMAP_FORMAT_RGBA_8888)
@@ -100,9 +101,7 @@ Java_com_example_arkscreen_Utils_ScreenCapture_getTagText(
         (*env).ReleaseStringUTFChars(jDataPath,filePath);
         return env->NewStringUTF(result_str.c_str());
     }
+}
+}
+#endif
 
-}
-#ifdef __cplusplus
-}
-#endif
-#endif

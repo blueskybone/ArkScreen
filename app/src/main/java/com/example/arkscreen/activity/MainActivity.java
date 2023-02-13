@@ -1,11 +1,5 @@
 package com.example.arkscreen.activity;
 
-import static com.example.arkscreen.Utils.ConfigUtils.THEME_AMIYA;
-import static com.example.arkscreen.Utils.ConfigUtils.THEME_KALT;
-import static com.example.arkscreen.Utils.ConfigUtils.THEME_PTILO;
-import static com.example.arkscreen.Utils.ConfigUtils.THEME_ROSMO;
-import static com.example.arkscreen.Utils.ConfigUtils.THEME_SKADI;
-import static com.example.arkscreen.Utils.ConfigUtils.getShared;
 import static com.example.arkscreen.Utils.ConfigUtils.initialProperTies;
 
 import android.annotation.SuppressLint;
@@ -15,7 +9,6 @@ import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -23,9 +16,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onRestart();
         setLayout();
     }
+    @SuppressLint({"UseCompatLoadingForDrawables", "ClickableViewAccessibility"})
     private void setLayout(){
         initialProperTies(this);
         setContentView(R.layout.activity_main);
@@ -84,20 +76,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ImageView imageView = findViewById(R.id.imageView);
         imageView.setImageDrawable(getDrawable(R.drawable.kalt_img_alpha_0));
 
-        imageView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch(event.getAction()){
-                    case MotionEvent.ACTION_DOWN:
-                        imageView.setImageDrawable(getDrawable(R.drawable.kalt_img_alpha_1));
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        imageView.setImageDrawable(getDrawable(R.drawable.kalt_img_alpha_0));
-                        break;
-                }
-                return true;
+        imageView.setOnTouchListener((v, event) -> {
+            switch(event.getAction()){
+                case MotionEvent.ACTION_DOWN:
+                    imageView.setImageDrawable(getDrawable(R.drawable.kalt_img_alpha_1));
+                    break;
+                case MotionEvent.ACTION_UP:
+                    imageView.setImageDrawable(getDrawable(R.drawable.kalt_img_alpha_0));
+                    break;
             }
+            return true;
         });
+        imageView.performClick();
 
     }
     private void createNotificationChannel() {
@@ -132,9 +122,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         Markwon markwon = Markwon.create(this);
         markwon.setMarkdown(textView,content.toString());
-        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-            }
+        builder.setPositiveButton(R.string.ok, (dialog, id) -> {
         });
         builder.setTitle(title).setView(view).show();
     }
@@ -150,12 +138,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else if(getId == R.id.card_check_update){
             Toast.makeText(this,"施工中...",Toast.LENGTH_SHORT).show();
-           // showAbout();
         }
         else if(getId == R.id.card_setting){
-            startActivityForResult(new Intent(this, SettingActivity.class)
-                    ,OVERLAY_PERMISSION_REQUEST_CODE
-                    ,MainActivity.this.savedInstanceState);
+            startActivity(new Intent(this,SettingActivity.class));
         }
         else if(getId == R.id.card_about){
             showDialog(this.getResources().getText(R.string.about_title),

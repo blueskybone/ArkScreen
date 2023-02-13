@@ -11,7 +11,6 @@ import java.util.Set;
 
 import io.noties.markwon.Markwon;
 
-// 全局变量
 public class ConfigUtils {
 
     public final static int THEME_KALT = 1000;

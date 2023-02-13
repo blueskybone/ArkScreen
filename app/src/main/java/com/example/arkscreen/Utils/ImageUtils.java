@@ -2,8 +2,6 @@ package com.example.arkscreen.Utils;
 
 import android.graphics.Bitmap;
 import android.media.Image;
-import android.util.DisplayMetrics;
-import android.util.Log;
 
 import java.nio.ByteBuffer;
 

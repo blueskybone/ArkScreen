@@ -57,8 +57,6 @@ public class ResultWindowService extends Service {
     private OpeListAdapter opeListAdapter;
     private ExecutorService executorService;
     private List<OpeData> opeDataList = new ArrayList<>();
-    private String CHANNEL_ID = "CHANNEL_SERVICE";
-    private int notificationId = 102;
     private boolean isAdd = false;
     int statusBarHeight = -1;
 
@@ -128,14 +126,11 @@ public class ResultWindowService extends Service {
             statusBarHeight = getResources().getDimensionPixelSize(resourceId);
         }
 
-        button.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                touchLayout.performClick();
-                windowManager.removeView(touchLayout);
-                isAdd = false;
-                //stopSelf();
-            }
+        button.setOnClickListener(v -> {
+            touchLayout.performClick();
+            windowManager.removeView(touchLayout);
+            isAdd = false;
+            //stopSelf();
         });
 
         AtomicInteger LastX = new AtomicInteger();
@@ -182,12 +177,10 @@ public class ResultWindowService extends Service {
     }
 
     private void printErrInfo(Context context){
-        executorService.submit(new Runnable() {
-            @Override
-            public void run(){
+        executorService.submit(() -> {
 //                String[] dataTest = {"90_高级资深干员","08_治疗","50_狙击干员","17_削弱","07_生存"};
 //                opeDataList.addAll(getFinalList(dataTest,context));
-               // noHighLevelResult.setHeight(0);
+           // noHighLevelResult.setHeight(0);
 
 //                SharedPreferences shared = ConfigUtils.getShared(context);
 //                shared.getInt("showMode",ConfigUtils.SHOW_MODE_DEFAULT);
@@ -204,140 +197,115 @@ public class ResultWindowService extends Service {
 //                        break;
 //                    default:break;
 //                }
-                setViewEmpty(context);
-                setParamsConfig();
-                showFloatWindow();
-            }
+            setViewEmpty(context);
+            setParamsConfig();
+            showFloatWindow();
         });
     }
     private void setViewEmpty(Context context){
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                simpleText.setText("");
-                noHighLevelResult.setText("");
-                tagsResult.setText(context.getResources().getText(R.string.info_default));
-                captureResultInfo.setText(context.getResources().getText(R.string.get_wrong_tag_number));
-                opeDataList.clear();
-                opeListAdapter = null;
-                lvOpeResult.setAdapter(null);
-            }
+        mHandler.post(() -> {
+            simpleText.setText("");
+            noHighLevelResult.setText("");
+            tagsResult.setText(context.getResources().getText(R.string.info_default));
+            captureResultInfo.setText(context.getResources().getText(R.string.get_wrong_tag_number));
+            opeDataList.clear();
+            opeListAdapter = null;
+            lvOpeResult.setAdapter(null);
         });
     }
 
 private void printScrErrInfo(Context context,String info){
-    executorService.submit(new Runnable() {
-        @Override
-        public void run(){
-            opeDataList.clear();
-            opeListAdapter = null;
-            lvOpeResult.setAdapter(null);
+    executorService.submit(() -> {
+        opeDataList.clear();
+        opeListAdapter = null;
+        lvOpeResult.setAdapter(null);
 
-            initialTextErr(context, info);
+        initialTextErr(context, info);
 
-            setParamsConfig();
-            showFloatWindow();
-        }
+        setParamsConfig();
+        showFloatWindow();
     });
 
 }
 
     private void initialTextErr(Context context,String info){
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                captureResultInfo.setText(info);
-                tagsResult.setText(context.getResources().getText(R.string.info_default));
-                noHighLevelResult.setText("");
-                simpleText.setText("");
-            }
+        mHandler.post(() -> {
+            captureResultInfo.setText(info);
+            tagsResult.setText(context.getResources().getText(R.string.info_default));
+            noHighLevelResult.setText("");
+            simpleText.setText("");
         });
     }
 
     private void initialText(Context context,String tags){
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                captureResultInfo.setText(context.getResources().getText(R.string.get_right_result));
-                tagsResult.setText(tags.toString());
-                noHighLevelResult.setText("");
-                simpleText.setText("");
-            }
+        mHandler.post(() -> {
+            captureResultInfo.setText(context.getResources().getText(R.string.get_right_result));
+            tagsResult.setText(tags);
+            noHighLevelResult.setText("");
+            simpleText.setText("");
         });
     }
 
     private void setMarkDownText(Context context, String text){
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Markwon markwon = Markwon.create(context);
-                markwon.setMarkdown(simpleText,text);
-            }
+        mHandler.post(() -> {
+            Markwon markwon = Markwon.create(context);
+            markwon.setMarkdown(simpleText,text);
         });
     }
 
     private void printOpeList(Context context, String[] data){
-        executorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                String[] newData = tagsEnToCh(data,context);
-                String[] cutData = splitTag(newData);
+        executorService.submit(() -> {
+            String[] newData = tagsEnToCh(data,context);
+            String[] cutData = splitTag(newData);
 
-                StringBuilder tags = new StringBuilder();
-                for (String cutDatum : cutData) {
-                    tags.append(cutDatum).append(" ");
-                }
-                initialText(context, tags.toString());
-
-                opeDataList.clear();
-                opeDataList.addAll(getFinalList(newData,context));
-
-                opeListAdapter = null;
-
-                if( 0 == opeDataList.size()){
-                    noHighLevelResult.setText(context.getResources().getText(R.string.no_high_level));
-                    lvOpeResult.setAdapter(null);
-                }
-                else {
-                    SharedPreferences shared = ConfigUtils.getShared(context);
-                    int userMode = shared.getInt("showMode", SHOW_MODE_DEFAULT);
-                    switch (userMode){
-                        case SHOW_MODE_DEFAULT:
-                            opeListAdapter = new OpeListAdapter(context,opeDataList);
-                            break;
-                        case SHOW_MODE_SIMPLE:
-                            String text = Utils.getMarkDownText(opeDataList);
-                            setMarkDownText(context,text);
-                            break;
-                        default:break;
-                    }
-                }
-                lvOpeResult.setAdapter(opeListAdapter);
-                setParamsConfig();
-                showFloatWindow();
+            StringBuilder tags = new StringBuilder();
+            for (String cutDatum : cutData) {
+                tags.append(cutDatum).append(" ");
             }
+            initialText(context, tags.toString());
+
+            opeDataList.clear();
+            opeDataList.addAll(getFinalList(newData,context));
+
+            opeListAdapter = null;
+
+            if( 0 == opeDataList.size()){
+                noHighLevelResult.setText(context.getResources().getText(R.string.no_high_level));
+                lvOpeResult.setAdapter(null);
+            }
+            else {
+                SharedPreferences shared = ConfigUtils.getShared(context);
+                int userMode = shared.getInt("showMode", SHOW_MODE_DEFAULT);
+                switch (userMode){
+                    case SHOW_MODE_DEFAULT:
+                        opeListAdapter = new OpeListAdapter(context,opeDataList);
+                        break;
+                    case SHOW_MODE_SIMPLE:
+                        String text = Utils.getMarkDownText(opeDataList);
+                        setMarkDownText(context,text);
+                        break;
+                    default:break;
+                }
+            }
+            lvOpeResult.setAdapter(opeListAdapter);
+            setParamsConfig();
+            showFloatWindow();
         });
     }
 
     public void showFloatWindow() {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if(!isAdd){
-                    windowManager.addView(touchLayout,params);
-                    isAdd = true;
-                }
+        mHandler.post(() -> {
+            if(!isAdd){
+                windowManager.addView(touchLayout,params);
+                isAdd = true;
             }
         });
     }
     public void removeFloatWindow(){
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if(isAdd){
-                    windowManager.removeView(touchLayout);
-                    isAdd = false;
-                }
+        mHandler.post(() -> {
+            if(isAdd){
+                windowManager.removeView(touchLayout);
+                isAdd = false;
             }
         });
     }
