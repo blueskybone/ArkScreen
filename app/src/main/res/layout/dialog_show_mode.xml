@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="16dp">
+
+        <RadioGroup
+            android:id="@+id/radioGroup_showMode"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp">
+
+            <RadioButton
+                android:id="@+id/radio_float"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/radio_float" />
+
+            <RadioButton
+                android:id="@+id/radio_toast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/radio_toast" />
+
+            <RadioButton
+                android:id="@+id/radio_flex"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/radio_flex" />
+
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/checkBox1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="1" />
+
+            <CheckBox
+                android:id="@+id/checkBox2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="2" />
+
+            <CheckBox
+                android:id="@+id/checkBox3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="3" />
+
+            <CheckBox
+                android:id="@+id/checkBox4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="4" />
+
+            <CheckBox
+                android:id="@+id/checkBox5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="5" />
+
+            <CheckBox
+                android:clickable="false"
+                android:id="@+id/checkBox6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="6" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_flex_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/radio_flex_desc" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
