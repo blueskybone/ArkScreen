@@ -28,15 +28,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/**
+/*
  * TODO:类名改成NetWorkTask*/
 /**
  * 凭证过期：
  * 使用手机登录时会强制下线其他地方，但已经登录的token暂时不会过期
  * 登出请求会使token立刻过期
- * credit: 同一个token，在token下一次请求cred前，cred不会过期；反之如果token请求了新的cred，cred会立刻过期。
- * token与credit一一对应
- * 现阶段测试，疑似在使用旧token时会下线新的token。但今晚没出现这个情况，不知道什么意思。
  * */
 public class NetworkUtils {
     private static final String TAG = "NetworkUtils";

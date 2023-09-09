@@ -8,7 +8,6 @@ import static com.godot17.arksc.utils.NetworkUtils.logOutByToken;
 import static com.godot17.arksc.utils.PrefManager.getToken;
 import static com.godot17.arksc.utils.PrefManager.setToken;
 import static com.godot17.arksc.utils.PrefManager.setUserInfo;
-import static com.godot17.arksc.utils.Utils.mDeleteFile;
 import static com.godot17.arksc.utils.Utils.showToast;
 
 import android.app.Activity;
@@ -16,7 +15,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;

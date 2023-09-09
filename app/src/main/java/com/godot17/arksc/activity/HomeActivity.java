@@ -9,7 +9,6 @@ import static com.godot17.arksc.utils.Utils.showToast;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,7 +36,6 @@ import androidx.cardview.widget.CardView;
 import com.godot17.arksc.R;
 import com.godot17.arksc.service.DataQueryService;
 import com.godot17.arksc.service.FloatTileService;
-import com.godot17.arksc.utils.NetworkUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 

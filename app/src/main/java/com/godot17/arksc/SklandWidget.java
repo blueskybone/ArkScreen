@@ -27,7 +27,7 @@ import java.util.zip.GZIPInputStream;
  */
 public class SklandWidget extends AppWidgetProvider {
 
-    private static String TAG = "SklandWeight";
+    private static String TAG = "SklandWidget";
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {

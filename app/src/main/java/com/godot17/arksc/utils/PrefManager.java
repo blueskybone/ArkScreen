@@ -1,9 +1,7 @@
 package com.godot17.arksc.utils;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.view.View;
 
 public class PrefManager {
 

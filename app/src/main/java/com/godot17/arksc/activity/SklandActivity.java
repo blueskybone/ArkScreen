@@ -7,22 +7,19 @@ import static com.godot17.arksc.utils.NetworkUtils.getGameInfoStream;
 import static com.godot17.arksc.utils.NetworkUtils.getGrantCodeByToken;
 import static com.godot17.arksc.utils.NetworkUtils.getJsonContent;
 import static com.godot17.arksc.utils.PrefManager.getAutoSign;
-import static com.godot17.arksc.utils.PrefManager.getSignItem;
-import static com.godot17.arksc.utils.PrefManager.getSignTs;
 import static com.godot17.arksc.utils.PrefManager.getToken;
 import static com.godot17.arksc.utils.PrefManager.getUserInfo;
 import static com.godot17.arksc.utils.PrefManager.setSignItem;
-import static com.godot17.arksc.utils.PrefManager.setSignTs;
 import static com.godot17.arksc.utils.Utils.convertSec2DayHourMin;
 import static com.godot17.arksc.utils.Utils.showToast;
 
 import static java.lang.Math.max;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.ViewDebug;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.core.JsonFactory;
@@ -459,6 +456,7 @@ public class SklandActivity extends Activity {
 
     }
 
+    @SuppressLint("SetTextI18n")
     private void updateLayout() {
 
         //info
@@ -641,7 +639,7 @@ public class SklandActivity extends Activity {
     protected void onResume() {
         super.onResume();
         TextView textView = findViewById(R.id.text_userInfo);
-        textView.setText(getUserInfo(this) + " | 今日签到： " + getSignItem(this));
+        textView.setText(getUserInfo(this));
     }
 
     private int getWeightFromId(String id) {

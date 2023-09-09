@@ -7,10 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Binder;
 import android.os.IBinder;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import com.godot17.arksc.activity.HomeActivity;

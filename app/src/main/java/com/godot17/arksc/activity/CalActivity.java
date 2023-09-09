@@ -1,31 +1,18 @@
 package com.godot17.arksc.activity;
 
-import static com.godot17.arksc.utils.Utils.getMarkDownText;
 import static com.godot17.arksc.utils.Utils.getMarkDownTextOnAct;
 
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.godot17.arksc.R;
 import com.godot17.arksc.datautils.FinalOpeList;
 import com.godot17.arksc.service.DataQueryService;
-import com.godot17.arksc.service.FloatWindowService;
 
 import java.util.ArrayList;
 import java.util.List;
