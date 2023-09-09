@@ -60,7 +60,6 @@
     <string name="content_use">
         1.快捷公招：下拉通知栏，将图块添加到快速设置中使用 \n\n
         2.桌面组件：在设置中接入森空岛数据，可使用桌面组件监控理智。\n\n
-        [b站视频教程](https://bilibili.com/) \n\n
     </string>
     <string name="title_about">关于</string>
     <string name="title_update">检查更新</string>
@@ -87,7 +86,7 @@
     <string name="title_other">其他</string>
     <string name="info_other">
         交流群：924153470\n\n
-        b站空间：[Godot17](https://space.bilibili.com/13957147)\n\n
+        b站：[Godot17](https://space.bilibili.com/13957147)\n\n
         感谢使用，觉得好用请在github上点个star支持一下罢，十分感谢。\n\n
         后续更新会完善这个项目。目前就我一人，精力实在有限，欢迎加入项目一起开发。\n\n
     </string>
