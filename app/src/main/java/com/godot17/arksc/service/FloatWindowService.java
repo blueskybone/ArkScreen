@@ -99,12 +99,10 @@ public class FloatWindowService extends Service {
                 case MotionEvent.ACTION_MOVE:
                     if (mWidth > mHeight) {
                         params.x = (int) event.getRawX() - LastX.get() - statusBarHeight;
-                        //params.x = (mWidth - (int) event.getRawX()) - (v.getWidth() - LastX.get());
                         params.y = (int) event.getRawY() - LastY.get();
                         windowManager.updateViewLayout(touchLayout, params);
                     } else {
                         params.x = (int) event.getRawX() - LastX.get();
-                        //params.x = (mWidth - (int) event.getRawX()) - (v.getWidth() - LastX.get());
                         params.y = (int) event.getRawY() - statusBarHeight - LastY.get();
                         windowManager.updateViewLayout(touchLayout, params);
                     }
@@ -136,11 +134,6 @@ public class FloatWindowService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e(TAG, "onstartCommand");
-//        String tagsText = intent.getStringExtra("tagsText");
-//        String infoText = intent.getStringExtra("infoText");
-//        String listText = intent.getStringExtra("listText");
-
         new Thread(() -> {
             while (mHandler == null) {
                 try {
@@ -149,7 +142,7 @@ public class FloatWindowService extends Service {
                     e.printStackTrace();
                 }
             }
-            //openAndUpdateFloatWindow(tagsText, infoText, listText);
+
         }).start();
         return super.onStartCommand(intent, flags, startId);
     }

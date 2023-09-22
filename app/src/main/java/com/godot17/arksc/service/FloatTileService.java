@@ -1,9 +1,14 @@
 package com.godot17.arksc.service;
 
+import static com.godot17.arksc.utils.ScreenUtils.getRealHeight;
+
+import android.annotation.TargetApi;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 import android.service.quicksettings.Tile;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.godot17.arksc.App;
@@ -12,6 +17,8 @@ import com.godot17.arksc.activity.NoDisplayActivity;
 import com.godot17.arksc.activity.ScreenTaskActivity;
 import com.hjq.window.EasyWindow;
 import com.hjq.window.draggable.SpringDraggable;
+
+import java.util.List;
 
 public class FloatTileService extends android.service.quicksettings.TileService {
     private final String TAG = "FloatTileService";
@@ -46,11 +53,10 @@ public class FloatTileService extends android.service.quicksettings.TileService 
             noDisplayIntent.putExtra("START_MODE", "FLOAT_TILE");
             noDisplayIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             this.startActivityAndCollapse(noDisplayIntent);
-
-            //部分机型在application不在列表中时无法正常显示easyWindow，考虑写service替代
+            EasyWindow.cancelAll();
+            //int yOffset = getRealHeight(getApplication())/ 2;
             EasyWindow.with(getApplication())
                     .setContentView(R.layout.window_icon)
-                    .setYOffset(200)
                     .setDraggable(new SpringDraggable(SpringDraggable.ORIENTATION_HORIZONTAL))
                     .setOnClickListener(android.R.id.icon, (EasyWindow.OnClickListener<ImageView>) (window, view) -> startScreenTask()).show();
         } else {
@@ -59,8 +65,44 @@ public class FloatTileService extends android.service.quicksettings.TileService 
             EasyWindow.cancelAll();
             isRunning = false;
             recycleResource();
+            exitService();
+//            stopSelf();
+//            exitAPP();
             System.exit(0);
+            stopSelf();
         }
+    }
+
+    private void exitService() {
+        DataProcessService dataProcessService = DataProcessService.getInstance();
+        if(dataProcessService!=null){
+            dataProcessService.stopSelf();
+        }
+        DataQueryService dataQueryService = DataQueryService.getInstance();
+        if(dataQueryService!=null){
+            dataQueryService.stopSelf();
+        }
+        FloatWindowService floatWindowService = FloatWindowService.getInstance();
+        if(floatWindowService!=null){
+            floatWindowService.stopSelf();
+        }
+        NotificationService notificationService = NotificationService.getInstance();
+        if(notificationService!=null){
+            notificationService.stopSelf();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void exitAPP() {
+        ActivityManager activityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.AppTask> appTaskList = activityManager.getAppTasks();
+        for (ActivityManager.AppTask appTask : appTaskList) {
+            appTask.finishAndRemoveTask();
+        }
+//        App instance = App.getInstance();
+//        if (null != instance) {
+//            instance.
+//        }
     }
 
     private void recycleResource() {
@@ -75,6 +117,11 @@ public class FloatTileService extends android.service.quicksettings.TileService 
 
     @Override
     public void onStartListening() {
+        if(!isRunning){
+            Tile mTile = getQsTile();
+            mTile.setState(Tile.STATE_INACTIVE);
+            mTile.updateTile();
+        }
     }
     @Override
     public void onStopListening(){

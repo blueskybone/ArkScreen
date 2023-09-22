@@ -27,9 +27,9 @@
             android:name=".SklandWidget"
             android:exported="true" >
             <intent-filter>
+                <action android:name="MANUAL_UPDATE" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/skland_widget_info" />
@@ -54,7 +54,11 @@
             android:exported="true"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".activity.SklandLoginActivity"
+            android:name=".activity.SkLandLogin"
+            android:exported="true"
+            android:windowSoftInputMode="adjustNothing" />
+        <activity
+            android:name=".activity.LoginActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustNothing" />
         <activity

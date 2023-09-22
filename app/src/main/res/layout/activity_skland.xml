@@ -10,34 +10,13 @@
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|center"
-            android:layout_marginStart="20dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center"
-                android:layout_marginEnd="20dp"
-                android:clickable="true"
-                android:contentDescription="@string/title_skland"
-                android:src="@drawable/ic_angle_left" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:text="@string/title_skland"
-                android:textColor="?attr/colorOnPrimary"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_angle_left"
+            app:title="@string/title_skland"
+            app:titleTextAppearance="@style/ToolbarTitle" />
 
         <TextView
             android:id="@+id/text_userInfo"
@@ -70,7 +49,7 @@
                         <androidx.cardview.widget.CardView
                             style="@style/CardViewTheme"
                             android:layout_width="0dp"
-                            android:layout_height="100dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
                             app:cardElevation="0dp">
 
@@ -97,6 +76,7 @@
                                 android:id="@+id/imageView2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
                                 android:alpha="0.2"
                                 android:src="@drawable/item_ap" />
 
@@ -292,14 +272,25 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center|start"
                                 android:layout_marginStart="5dp"
-                                android:text="@string/labor"
+                                android:layout_marginTop="5dp"
+                                android:text="@string/clue"
                                 android:textColor="@color/grey_200"
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/text_labor_value"
+                                android:id="@+id/text_sharing_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginBottom="10dp"
+                                android:textColor="@color/grey_200"
+                                android:textStyle="bold" />
+
+
+                            <TextView
+                                android:id="@+id/text_clue"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center|end"
@@ -360,7 +351,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center|end"
                                 android:layout_marginEnd="10dp"
-                                android:textColor="@color/blue_500"/>
+                                android:textColor="@color/blue_500" />
                         </androidx.cardview.widget.CardView>
 
                     </TableRow>
@@ -419,6 +410,7 @@
                                 android:textColor="@color/red" />
                         </androidx.cardview.widget.CardView>
                     </TableRow>
+
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -435,12 +427,12 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center|start"
                                 android:layout_marginStart="5dp"
-                                android:text="@string/clue"
+                                android:text="@string/labor"
                                 android:textColor="@color/grey_200"
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/text_clue"
+                                android:id="@+id/text_labor_value"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center|end"
@@ -473,6 +465,7 @@
                                 android:textColor="@color/red" />
                         </androidx.cardview.widget.CardView>
                     </TableRow>
+
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -527,6 +520,7 @@
                                 android:textColor="@color/blue_500" />
                         </androidx.cardview.widget.CardView>
                     </TableRow>
+
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -578,7 +572,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center|end"
                                 android:layout_marginEnd="10dp"
-                                android:textColor="@color/ori"/>
+                                android:textColor="@color/ori" />
                         </androidx.cardview.widget.CardView>
                     </TableRow>
                 </TableLayout>

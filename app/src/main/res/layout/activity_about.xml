@@ -13,35 +13,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center"
-                android:layout_marginStart="20dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center"
-                    android:layout_marginEnd="20dp"
-                    android:clickable="true"
-                    android:contentDescription="@string/title_about"
-                    android:src="@drawable/ic_angle_left" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:text="@string/title_about"
-                    android:textColor="?attr/colorOnPrimary"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:navigationIcon="@drawable/ic_angle_left"
+                app:title="@string/title_about"
+                app:titleTextAppearance="@style/ToolbarTitle"/>
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="wrap_content"
@@ -107,24 +85,6 @@
                     android:textColor="?attr/colorOnPrimary"
                     android:textSize="15sp" />
 
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card_web"
-                style="@style/CardViewTheme"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:clickable="true">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center"
-                    android:layout_marginStart="32dp"
-                    android:gravity="center"
-                    android:text="@string/title_website"
-                    android:textColor="?attr/colorOnPrimary"
-                    android:textSize="15sp" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView

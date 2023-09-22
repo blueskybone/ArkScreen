@@ -73,6 +73,9 @@ public class CalActivity extends Activity implements View.OnClickListener {
         button_reset.setOnClickListener(this);
         button_reset.setEnabled(true);
         button_reset.setClickable(true);
+
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(v -> finish());
     }
 
     public void onClick(View v) {
@@ -148,7 +151,7 @@ public class CalActivity extends Activity implements View.OnClickListener {
         if(dataService == null){
             startService();
         }
-        //assert dataService != null;
+        assert dataService != null;
         FinalOpeList finalOpeList = dataService.getAllOpeList(this, tags);
         String opeListText = getMarkDownTextOnAct(finalOpeList.opeGroups);
         Markwon.create(this).setMarkdown(textView_cal, opeListText);

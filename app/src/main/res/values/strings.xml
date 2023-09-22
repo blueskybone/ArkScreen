@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">公招助手</string>
-    <string name="version">v 1.0</string>
+    <string name="version">v 1.1.0</string>
     <string name="no_permission_for_float_window">未获取悬浮窗权限</string>
     <string name="tile_float">悬浮球公招</string>
     <string name="tile_quick">快捷公招</string>
@@ -19,9 +19,13 @@
     <string name="title_option">识别结果展示</string>
     <string name="title_skland_setting">接入森空岛</string>
     <string name="title_skland_auto_sign">森空岛自动签到</string>
+    <string name="button_web_login">网页登录</string>
+    <string name="button_bind_role">绑定角色</string>
+    <string name="button_logout">登出</string>
     <string name="text_skland_auto_sign">桌面组件更新或查看实时数据时触发</string>
-    <string name="title_weight">桌面组件设置</string>
-    <string name="text_weight">显示内容 | 主题</string>
+    <string name="title_weight">桌面组件外观设置</string>
+    <string name="title_weight_update">桌面组件更新间隔</string>
+    <string name="text_weight">背景透明度</string>
     <string name="title_skland_login_content">
         1.访问[森空岛网页端](https://www.skland.com)，浏览器切换为 **电脑模式** ，登录森空岛账号。\n\n
         2.访问[api地址](https://web-api.skland.com/account/info/hg)，复制网页的 **全部** 内容。\n\n
@@ -34,28 +38,24 @@
     </string>
     <string name="title_link_setting">编辑外部链接</string>
     <string name="title_use">使用方法</string>
-    <string name="title_question">说明 | 常见问题</string>
-    <string name="content_question">
-        ### 公招快捷开关说明：\n\n
-        提供“悬浮球公招”和“快捷公招”开关。推荐使用悬浮球公招。\n\n
-         **悬浮球公招** ：首先唤醒一个全局悬浮球，点击悬浮球截图识别。\n\n
-         **快捷公招** ：点击后立即截图识别。需要保证应用不在后台。\n\n
-        但两种方法均有使用限制如下：\n\n
-        1.  **悬浮球** ：经测试部分机型在应用未在后台列表时，悬浮球唤醒后会立刻消失。\n\n
-        ```\n
-        解决方法：a.打开应用，唤醒悬浮球后再回到游戏使用。b.暂时用“快捷公招”代替。\n
-        ```\n
-        2.  **快捷公招** ：必须保证应用不在后台列表中，否则授权时会跳转应用，授权后会立刻截图，此时无法获取游戏内画面。\n\n
-        ### 常见问题：\n\n
-        1.  **Toast不弹出：** 识别结果展示推荐使用悬浮窗。应用外Toast不稳定，提供Toast模式是为了进一步简化操作和提取有效信息，适合少次使用的场景。\n\n
-        ---\n\n
-        ### 桌面组件说明：\n\n
-        目前仅支持监控理智，更新频率为半小时一次，可能有1~5理智左右误差。\n\n
-        ### 常见问题：\n\n
-        一直显示未登录：移除组件重新添加，更新状态。\n\n
-        ---\n\n
-        ### 外部链接功能：\n\n
-        施工中......\n\n
+    <string name="title_question">常见问题</string>
+    <string name="content_query">
+        ## 公招\n
+        **Q：两种快捷开关的区别** \n\n
+        A：推荐使用“悬浮球公招”。“快捷公招”仅作为部分机型无法唤出悬浮球时的替代。\n\n\n
+        **Q：悬浮球无法唤出** \n\n
+        A：打开应用，唤醒悬浮球后再回到游戏使用。\n\n\n
+        **Q：未获取有效信息，请参照使用说明** \n\n
+        A：请保证悬浮窗未遮挡公招标签。\n\n\n
+        **Q：识别结果错误率极高？** \n\n
+        A：部分机型黑暗模式会降低截图本身的亮度，会影响识别，关闭黑暗模式后重试。\n\n\n
+        ## 桌面组件\n
+        **Q：桌面组件理智不涨** \n\n
+        A：手动更新一下。\n\n\n
+        **Q：组件大小不合适** \n\n
+        A：设置中调整字体大小。\n
+        \n---\n
+        若有其他bug或问题欢迎反馈\n\n交流群：924153470\n\n\n\n.
     </string>
     <string name="content_use">
         1.快捷公招：下拉通知栏，将图块添加到快速设置中使用 \n\n
@@ -67,11 +67,15 @@
     <string name="title_open3rd">开源许可</string>
     <string name="open_licence_title">open source license</string>
     <string name="open_source_license">
-        * Markwon: [Apache](https://github.com/noties/Markwon/blob/master/LICENSE)\n\n
-        * EasyWindow: [Apache](https://github.com/getActivity/EasyWindow/blob/master/LICENSE)\n\n
+        Markwon: [Apache](https://github.com/noties/Markwon/blob/master/LICENSE)\n\n
+        EasyWindow: [Apache](https://github.com/getActivity/EasyWindow/blob/master/LICENSE)\n\n
         \n---\n
-        参考项目：\n\n
-        * [ScreenshotTile](https://github.com/cvzi/ScreenshotTile)
+        感谢以下开源项目：\n\n
+        [cvzi/ScreenshotTile](https://github.com/cvzi/ScreenshotTile)\n\n
+        [xxyz30/skyland-auto-sign](https://gitee.com/FancyCabbage/skyland-auto-sign)\n\n
+        [hguandl/SklandLogin](https://github.com/hguandl/SklandLogin)\n\n
+        \n---\n
+        项目地址：[blueskybone/ArkScreen](https://github.com/blueskybone/ArkScreen)
     </string>
     <string name="title_website">仓库地址</string>
     <string name="repositories">https://github.com/blueskybone/ArkScreen</string>
@@ -80,7 +84,7 @@
     <string name="radio_toast">Toast（不推荐）</string>
     <string name="radio_flex">自定义</string>
     <string name="radio_flex_desc">勾选的稀有度以悬浮窗展示,未勾选的以Toast展示</string>
-    <string name="appwidget_text">未登录</string>
+    <string name="appwidget_text">初始化</string>
     <string name="add_widget">Add widget</string>
     <string name="app_widget_description">This is an app widget description</string>
     <string name="title_other">其他</string>
@@ -88,7 +92,11 @@
         交流群：924153470\n\n
         b站：[Godot17](https://space.bilibili.com/13957147)\n\n
         感谢使用，觉得好用请在github上点个star支持一下罢，十分感谢。\n\n
-        后续更新会完善这个项目。目前就我一人，精力实在有限，欢迎加入项目一起开发。\n\n
+        或许会有后续更新。目前就我一人，精力实在有限，欢迎加入项目一起开发。\n\n
+    </string>
+    <string name="content_switch_role">
+        森空岛app内切换默认角色（个人->我的角色->添加绑定角色->选择默认角色）。\n\n
+        回到应用内，登出后重新登录。
     </string>
     <string name="ap">理智</string>
     <string name="recruit">公开招募</string>
@@ -110,5 +118,3 @@
     <string name="empty">空闲中</string>
     <string name="train_com">已完成专精</string>
 </resources>
-<!--更新计划：修改UI和布局；添加外部链接编辑功能；修改森空岛登录方式；增加桌面组件配置选项（更新频率，显示内容等）；公招计算加入本地截图识别；添加多账号管理。\n\n
--->

@@ -49,7 +49,7 @@ public class DataProcessService extends Service {
             dataQueryService = DataQueryService.getInstance();
         }
         if (dataQueryService == null) {
-            Toast.makeText(this, "can't startServiceDataQuery", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "can't startServiceDataQuery", Toast.LENGTH_SHORT).show();
         }
 
         String tagSort = intent.getStringExtra("TAG_SORT");

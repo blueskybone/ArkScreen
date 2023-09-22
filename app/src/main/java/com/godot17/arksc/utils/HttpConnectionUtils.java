@@ -6,6 +6,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,7 +15,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -21,11 +22,15 @@ import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
- * network的部分基本上想一出是一出地在写，整个工具类乱七八糟，以后再改。
  * 没用OKhttp，因为没啥复杂需求。想控制安装包尽量在10M内。
- * */
+ */
 public class HttpConnectionUtils {
     private final static String TAG = "HttpConnectionUtils";
+
+    public enum RequestMethod{
+        GET,
+        POST
+    }
 
     public static InputStream getResponse(URL url) {
         try {
@@ -50,19 +55,19 @@ public class HttpConnectionUtils {
         }
     }
 
-    public static InputStream getResponseStream(URL url, Map<String, String> header){
+    public static InputStream getResponseStream(URL url, Map<String, String> header) {
         try {
             Log.e(TAG, "connection");
             HttpsURLConnection httpsConn = (HttpsURLConnection) url.openConnection();
             httpsConn.setRequestMethod("GET");
-            httpsConn.setConnectTimeout(5000);
+            httpsConn.setConnectTimeout(10000);
             header.forEach(httpsConn::setRequestProperty);
             httpsConn.setDoOutput(false);
             httpsConn.setDoInput(true);
-            Log.e(TAG, "before connection");
             httpsConn.setInstanceFollowRedirects(true);
             httpsConn.connect();
             if (httpsConn.getResponseCode() == 200) {
+                //LEAK
                 //httpsConn.disconnect();
                 return httpsConn.getInputStream();
             } else {
@@ -76,7 +81,7 @@ public class HttpConnectionUtils {
     }
 
     public static String postResponse(URL url, String jsonInput, Map<String, String> header) {
-        StringBuilder result = new StringBuilder("");
+        StringBuilder result = new StringBuilder();
         try {
             Log.e(TAG, "connection");
             HttpsURLConnection httpsConn = (HttpsURLConnection) url.openConnection();
@@ -104,16 +109,16 @@ public class HttpConnectionUtils {
             } else if (respCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 httpsConn.disconnect();
                 return "UNAUTHORIZED";
-            } else if(respCode == HttpURLConnection.HTTP_FORBIDDEN){
+            } else if (respCode == HttpURLConnection.HTTP_FORBIDDEN) {
                 Log.e(TAG, "connection == 403");
-                InputStreamReader is = new InputStreamReader( httpsConn.getErrorStream());
+                InputStreamReader is = new InputStreamReader(httpsConn.getErrorStream());
                 BufferedReader buffer = new BufferedReader(is);
                 String inputLine;
                 while ((inputLine = buffer.readLine()) != null) {
                     result.append(inputLine);
                 }
                 is.close();
-            }else{
+            } else {
                 Log.e(TAG, httpsConn.getResponseCode() + "");
                 httpsConn.disconnect();
                 return null;
@@ -125,8 +130,89 @@ public class HttpConnectionUtils {
         return result.toString();
     }
 
+
+    public static String postResponseNew(URL url, String jsonInput, Map<String, String> header) {
+        StringBuilder result = new StringBuilder();
+        try {
+            Log.e(TAG, "connection");
+            HttpsURLConnection httpsConn = (HttpsURLConnection) url.openConnection();
+            httpsConn.setRequestMethod("POST");
+            httpsConn.setConnectTimeout(5000);
+            header.forEach(httpsConn::setRequestProperty);
+            httpsConn.setDoInput(true);
+            httpsConn.setDoOutput(true);
+
+            OutputStream os = httpsConn.getOutputStream();
+            byte[] input = jsonInput.getBytes(StandardCharsets.UTF_8);
+            os.write(input, 0, input.length);
+            os.flush();
+            os.close();
+
+            Log.e(TAG, "before connection");
+            int respCode = httpsConn.getResponseCode();
+            InputStreamReader is;
+            if (respCode == HttpURLConnection.HTTP_OK) {
+                is = new InputStreamReader(httpsConn.getInputStream());
+            } else {
+                is = new InputStreamReader(httpsConn.getErrorStream());
+            }
+            BufferedReader buffer = new BufferedReader(is);
+            String inputLine;
+            while ((inputLine = buffer.readLine()) != null) {
+                result.append(inputLine);
+            }
+            httpsConn.disconnect();
+            is.close();
+            return result.toString();
+        } catch (Exception e) {
+            Log.e(TAG, "error with", e);
+        }
+        return null;
+    }
+
+    public static String httpResponse(URL url, @Nullable String jsonInput, Map<String, String> header, RequestMethod method) {
+        StringBuilder result = new StringBuilder();
+        try {
+            HttpsURLConnection httpsConn = (HttpsURLConnection) url.openConnection();
+            httpsConn.setConnectTimeout(5000);
+            httpsConn.setRequestMethod(method.toString());
+            header.forEach(httpsConn::setRequestProperty);
+            httpsConn.setDoInput(true);
+            httpsConn.setDoOutput(false);
+            if(method==RequestMethod.POST){
+                httpsConn.setDoOutput(true);
+            }
+            if(jsonInput!=null){
+                OutputStream os = httpsConn.getOutputStream();
+                byte[] input = jsonInput.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
+                os.flush();
+                os.close();
+            }
+            httpsConn.connect();
+            int respCode = httpsConn.getResponseCode();
+            InputStreamReader is;
+            if (respCode == HttpURLConnection.HTTP_OK) {
+                is = new InputStreamReader(httpsConn.getInputStream());
+            } else {
+                is = new InputStreamReader(httpsConn.getErrorStream());
+            }
+            BufferedReader buffer = new BufferedReader(is);
+            String inputLine;
+            while ((inputLine = buffer.readLine()) != null) {
+                result.append(inputLine);
+            }
+            httpsConn.disconnect();
+            is.close();
+            return result.toString();
+        }catch (Exception e){
+            Log.e(TAG, "error with", e);
+        }
+        return null;
+    }
+
     public static String getResponse(URL url, Map<String, String> header) {
-        StringBuilder result = new StringBuilder("");
+        StringBuilder result = new StringBuilder();
         try {
             HttpsURLConnection httpsConn = (HttpsURLConnection) url.openConnection();
             httpsConn.setConnectTimeout(5000);
@@ -142,7 +228,7 @@ public class HttpConnectionUtils {
                 String inputLine;
                 while ((inputLine = buffer.readLine()) != null) {
                     result.append(inputLine);
-                    Log.e(TAG,inputLine);
+                    Log.e(TAG, inputLine);
                 }
                 is.close();
             } else if (respCode == HttpURLConnection.HTTP_UNAUTHORIZED) {

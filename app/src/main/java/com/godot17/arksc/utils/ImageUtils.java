@@ -31,7 +31,7 @@ public class ImageUtils {
      *
      * */
     public static Bitmap bitmap_2_target_bitmap(Bitmap srcBitmap, int width, int height) {
-        int x = 0, y = 0, tag_width = 0, tag_height = 0;
+        int x, y, tag_width, tag_height;
         if (width > 2 * height) {
             y = (int) (height / 2.06);
             tag_height = (int) (height / 5.143);

@@ -202,7 +202,7 @@ public class DataQueryService extends Service {
     }
 
     private static List<List<String>> getAllCombination(int size, int range, String[] data) {
-        List<List<String>> comListAll = new ArrayList<List<String>>();
+        List<List<String>> comListAll = new ArrayList<>();
         for (int i = range; i > 0; i--) {
             comListAll.addAll(getCombination(size, i, data));
         }
@@ -210,7 +210,7 @@ public class DataQueryService extends Service {
     }
 
     private static List<List<String>> getCombination(int size, int range, String[] data) {
-        List<List<String>> comList = new ArrayList<List<String>>();
+        List<List<String>> comList = new ArrayList<>();
         for (int Str = (1 << size) - 1; Str >= 0; Str--) {
             int cnt = 0;
             int[] array = new int[10];

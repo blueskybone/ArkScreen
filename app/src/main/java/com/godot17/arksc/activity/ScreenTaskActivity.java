@@ -91,6 +91,18 @@ public class ScreenTaskActivity extends Activity {
         //finish();
     }
 
+    @SuppressLint("WrongConstant")
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+//
+//
+//        if (imageReader == null)
+//            imageReader = ImageReader.newInstance(screenWidth, screenHeight,
+//                    PixelFormat.RGBA_8888, 2);
+//        surface = imageReader.getSurface();
+    }
+
     private void startUsedService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             this.startForegroundService(new Intent(this, NotificationService.class));
@@ -151,14 +163,15 @@ public class ScreenTaskActivity extends Activity {
 
     private void takeOneScreenshot(int delay) {
 
-        Log.e(TAG, "takeOneScreenshot: imageReader");
+        Log.e(TAG, "takeOneScreenshot");
+
         mHandler.postDelayed(() -> {
             try (Image image = imageReader.acquireLatestImage()) {
                 if (image != null) {
                     bitmap = ImageUtils.image_2_bitmap(image, Bitmap.Config.ARGB_8888);
                     bitmap = ImageUtils.bitmap_2_target_bitmap(bitmap, screenWidth, screenHeight);
                 } else {
-                    Toast.makeText(this, "未获取到截图", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "imageReader, null", Toast.LENGTH_SHORT).show();
                 }
             } catch (Exception e) {
                 Log.e(TAG, "takeOneScreenshot: imageReader" + e);
@@ -186,13 +199,6 @@ public class ScreenTaskActivity extends Activity {
                     this.startService(dataProcess);
                     break;
                 }
-//                case "ITEM": {
-//                    Intent dataProcess = new Intent(this, DataProcessService.class);
-//                    dataProcess.putExtra("TAG_SORT", "ITEM");
-//                    dataProcess.putExtra("TAG_TEXT", data[1]);
-//                    this.startService(dataProcess);
-//                    break;
-//                }
             }
             finish();
         }, delay);

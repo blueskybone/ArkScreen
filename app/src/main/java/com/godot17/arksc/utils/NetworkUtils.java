@@ -2,7 +2,10 @@ package com.godot17.arksc.utils;
 
 import static com.godot17.arksc.utils.HttpConnectionUtils.getResponse;
 import static com.godot17.arksc.utils.HttpConnectionUtils.getResponseStream;
+import static com.godot17.arksc.utils.HttpConnectionUtils.httpResponse;
 import static com.godot17.arksc.utils.HttpConnectionUtils.postResponse;
+import static com.godot17.arksc.utils.HttpConnectionUtils.postResponseNew;
+import static com.godot17.arksc.utils.HttpConnectionUtils.RequestMethod;
 import static com.godot17.arksc.utils.Utils.getAppVersionName;
 
 import android.app.AlertDialog;
@@ -28,13 +31,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/*
- * TODO:类名改成NetWorkTask*/
 /**
- * 凭证过期：
- * 使用手机登录时会强制下线其他地方，但已经登录的token暂时不会过期
- * 登出请求会使token立刻过期
- * */
+ * 写的什么玩意
+ */
+
 public class NetworkUtils {
     private static final String TAG = "NetworkUtils";
 
@@ -43,9 +43,9 @@ public class NetworkUtils {
     private final static String cred_code_url = "https://zonai.skland.com/api/v1/user/auth/generate_cred_by_code";
     private final static String game_info_url = "https://zonai.skland.com/api/v1/game/player/info";
     private final static String binding_url = "https://zonai.skland.com/api/v1/game/player/binding";
-    private final static String app_code = "4ca99fa6b56cc2ba";
     private final static String app_version_url = "https://gitee.com/blueskybone/ArkScreen/raw/master/version.info";
     private final static String logout_url = "https://as.hypergryph.com/user/info/v1/logout";
+    private final static String app_code = "4ca99fa6b56cc2ba";
 
     private static Map<String, String> header = new HashMap<String, String>() {{
         put("cred", "");
@@ -53,19 +53,28 @@ public class NetworkUtils {
         put("Accept-Encoding", "gzip");
         put("Connection", "close");
         put("Content-Type", "application/json");
+        put("vName", "1.0.1");
+        put("vCode", "100001014");
+        put("dId", "de9759a5afaa634f");
+        put("platform", "1");
+
     }};
     private static final Map<String, String> header_login = new HashMap<String, String>() {{
         put("User-Agent", "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0");
         put("Accept-Encoding", "gzip");
         put("Connection", "close");
         put("Content-Type", "application/json");
+        put("vName", "1.0.1");
+        put("vCode", "100001014");
+        put("dId", "de9759a5afaa634f");
+        put("platform", "1");
     }};
 
     public static String checkAppVersion(Context context) throws MalformedURLException {
         URL url = new URL(app_version_url);
         InputStream is = getResponse(url);
         if (is == null) {
-            return "解析错误.\n";
+            return "解析错误.";
         }
         String version = null;
         String link = null;
@@ -103,7 +112,7 @@ public class NetworkUtils {
             e.printStackTrace();
         }
         if (version == null || link == null || content == null) {
-            return "解析xml错误.\n\n";
+            return "解析xml错误.";
         }
         String oldVersion = getAppVersionName(context);
         if (oldVersion.compareTo(version) >= 0) {
@@ -112,7 +121,7 @@ public class NetworkUtils {
             //showDialog
             showAppUpdateDialog(context, link, content);
 
-            return "检测到应用新版本, [下载链接](" + link + ")\n\n";
+            return "检测到应用新版本, [下载链接](" + link + ")";
         }
     }
 
@@ -123,7 +132,7 @@ public class NetworkUtils {
                 .setPositiveButton(R.string.download, (dialog, which) -> {
                     Intent intent = new Intent();
                     intent.setAction("android.intent.action.VIEW");
-                    Uri content_url = Uri.parse(link);//此处填链接
+                    Uri content_url = Uri.parse(link);
                     intent.setData(content_url);
                     context.startActivity(intent);
                 });
@@ -133,9 +142,11 @@ public class NetworkUtils {
     public static boolean logOutByToken(String token) throws IOException {
         URL url = new URL(logout_url);
         String jsonInputString = "{\"token\":\"" + token + "\"}";
-        Log.e(TAG,jsonInputString);
+        Log.e(TAG, jsonInputString);
+
         String resp = postResponse(url, jsonInputString, header_login);
-        Log.e(TAG,resp);
+        Log.e(TAG, resp);
+
         return (Objects.equals(getJsonContent(resp, "msg"), "OK"));
     }
 
@@ -144,10 +155,19 @@ public class NetworkUtils {
         String jsonInputString = "{\"appCode\":\"" + app_code + "\", \"token\":\"" + token + "\", \"type\":0}";
         Log.e(TAG, jsonInputString);
         String resp = postResponse(url, jsonInputString, header_login);
+
         return getJsonContent(resp, "code");
     }
 
-    public static String getCredByGrant(String grantCode) throws MalformedURLException, JsonProcessingException {
+    public static String getGrantCodeByTokenNew(String token) throws IOException {
+        URL url = new URL(grant_code_url);
+        String jsonInputString = "{\"appCode\":\"" + app_code + "\", \"token\":\"" + token + "\", \"type\":0}";
+        //Log.e(TAG, jsonInputString);
+        RequestMethod method = RequestMethod.POST;
+        return httpResponse(url, jsonInputString, header_login, method);
+    }
+
+    public static String getCredByGrant(String grantCode) throws MalformedURLException {
         URL url = new URL(cred_code_url);
         String code = grantCode.replace("\"", "");
         String jsonInputString = "{\"code\":\"" + code + "\", \"kind\":1}";
@@ -156,32 +176,79 @@ public class NetworkUtils {
         return getJsonContent(resp, "cred");
     }
 
-    public static String getBindingInfoWith(String cred, String key) throws MalformedURLException {
+    public static String getCredByGrantNew(String grantCode) throws MalformedURLException {
+        URL url = new URL(cred_code_url);
+        String code = grantCode.replace("\"", "");
+        String jsonInputString = "{\"code\":\"" + code + "\", \"kind\":1}";
+        //Log.e(TAG, jsonInputString);
+        RequestMethod method = RequestMethod.POST;
+        return httpResponse(url, jsonInputString, header_login, method);
+    }
+
+    public static String getBindingJson(String cred) throws MalformedURLException {
+        URL url = new URL(binding_url);
+        header.replace("cred", cred.replace("\"", ""));
+        RequestMethod method = RequestMethod.GET;
+        return httpResponse(url, null, header, method);
+    }
+
+    public static String getBindingInfoWith(String cred, String key) throws MalformedURLException, JsonProcessingException {
         URL url = new URL(binding_url);
         header.replace("cred", cred.replace("\"", ""));
         String resp = getResponse(url, header);
+        String defaultUid = getJsonContent(resp, "defaultUid");
+        if (defaultUid == null) {
+            return null;
+        }
+        ObjectMapper om = new ObjectMapper();
+        JsonNode tree = om.readTree(resp);
+        JsonNode node = tree.at("/data/list");
+        JsonNode list = node.get(0).get("bindingList");
+        int index = 0;
+        if (!defaultUid.equals("")) {
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).get("uid").toString()
+                        .replace("\"", "")
+                        .equals(defaultUid)) {
+                    index = i;
+                    break;
+                }
+            }
+        }
+        JsonNode node1 = tree.at("/data/list").get(0).at("/bindingList").get(index);
         if (key.equals("userInfo")) {
-            String nickName = getJsonContent(resp, "nickName");
-            String channelName = getJsonContent(resp, "channelName");
-            if (nickName != null && channelName != null) {
-                return nickName.replace("\"", "")
-                        + " | "
-                        + channelName.replace("\"", "");
-            } else return null;
+            String nickName = node1.get("nickName").toString().replace("\"", "");
+            String channelName = node1.get("channelName").toString().replace("\"", "");
+            return nickName + " | " + channelName;
         } else {
-            return getJsonContent(resp, key);
+            String result = node1.get(key).toString().replace("\"", "");
+            Log.e(TAG, result);
+            return result;
         }
     }
 
-    public static InputStream getGameInfoStream( String cred, String uid) throws IOException {
+    public static InputStream getGameInfoStream(String cred, String uid) throws IOException {
         header.replace("cred", cred.replace("\"", ""));
         uid = uid.replace("\"", "");
         URL url = new URL(game_info_url + "?uid=" + uid);
         return getResponseStream(url, header);
     }
 
-    //need cred and uid and channelMasterId
-    public static String doAttendance(String cred,
+//    //need cred and uid and channelMasterId
+//    public static String doAttendance(String cred,
+//                                      String uid,
+//                                      String channelMasterId) throws MalformedURLException {
+//        URL url = new URL(sign_url);
+//        header.replace("cred", cred.replace("\"", ""));
+//        Log.e(TAG, cred);
+//        uid = uid.replace("\"", "");
+//        channelMasterId = channelMasterId.replace("\"", "");
+//        String jsonInputString = "{\"uid\":\"" + uid + "\", \"gameId\":\""
+//                + channelMasterId + "\"}";
+//        Log.e(TAG, jsonInputString);
+//        return postResponse(url, jsonInputString, header);
+//    }
+    public static String doAttendanceNew(String cred,
                                       String uid,
                                       String channelMasterId) throws MalformedURLException {
         URL url = new URL(sign_url);
@@ -206,7 +273,7 @@ public class NetworkUtils {
             ObjectMapper om = new ObjectMapper();
             JsonNode tree = om.readTree(jsonStr);
             List<JsonNode> keys = tree.findValues(key);
-            return keys.get(0).toString().replace("\"","");
+            return keys.get(0).toString().replace("\"", "");
         } catch (Exception e) {
             return null;
         }

@@ -11,34 +11,13 @@
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|center"
-            android:layout_marginStart="20dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center"
-                android:clickable="true"
-                android:layout_marginEnd="20dp"
-                android:contentDescription="@string/title_setting"
-                android:src="@drawable/ic_angle_left" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:text="@string/title_setting"
-                android:textColor="?attr/colorOnPrimary"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_angle_left"
+            app:title="@string/title_setting"
+            app:titleTextAppearance="@style/ToolbarTitle" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -57,33 +36,27 @@
                     android:layout_height="wrap_content"
                     android:clickable="true">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:layout_gravity="start|center"
                         android:layout_marginStart="32dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:text="@string/title_option"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/textView_option"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|center"
+                        android:layout_marginTop="15dp"
                         android:layout_marginEnd="32dp"
-                        android:layout_marginBottom="10dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="start|center"
-                            android:text="@string/title_option"
-                            android:textColor="?attr/colorOnPrimary"
-                            android:textSize="15sp" />
-
-                        <TextView
-                            android:id="@+id/textView_option"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="3dp"
-                            android:gravity="start|center"
-                            android:text="@string/text_default"
-                            android:textSize="13sp" />
-                    </LinearLayout>
+                        android:layout_marginBottom="15dp"
+                        android:text="@string/text_default"
+                        android:textSize="13sp" />
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
@@ -93,33 +66,27 @@
                     android:layout_height="wrap_content"
                     android:clickable="true">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:layout_gravity="start|center"
                         android:layout_marginStart="32dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:text="@string/title_skland_setting"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/textView_userInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|center"
+                        android:layout_marginTop="15dp"
                         android:layout_marginEnd="32dp"
-                        android:layout_marginBottom="10dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="start|center"
-                            android:text="@string/title_skland_setting"
-                            android:textColor="?attr/colorOnPrimary"
-                            android:textSize="15sp" />
-
-                        <TextView
-                            android:id="@+id/textView_userInfo"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="3dp"
-                            android:gravity="start|center"
-                            android:text="@string/text_default"
-                            android:textSize="13sp" />
-                    </LinearLayout>
+                        android:layout_marginBottom="15dp"
+                        android:text="@string/text_default"
+                        android:textSize="13sp" />
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
@@ -146,51 +113,63 @@
                             android:text="@string/title_skland_auto_sign"
                             android:textColor="?attr/colorOnPrimary"
                             android:textSize="15sp" />
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginTop="3dp"
-                            android:gravity="start|center"
                             android:text="@string/text_skland_auto_sign"
                             android:textSize="13sp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_widget"
+                    style="@style/CardViewTheme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|center"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:text="@string/title_weight"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:textSize="15sp" />
+                </androidx.cardview.widget.CardView>
 <!--                <androidx.cardview.widget.CardView-->
-<!--                    android:id="@+id/card_weight"-->
+<!--                    android:id="@+id/card_widget_update"-->
 <!--                    style="@style/CardViewTheme"-->
 <!--                    android:layout_width="match_parent"-->
 <!--                    android:layout_height="wrap_content"-->
 <!--                    android:clickable="true">-->
 
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="match_parent"-->
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
 <!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_gravity="center"-->
+<!--                        android:layout_gravity="start|center"-->
 <!--                        android:layout_marginStart="32dp"-->
-<!--                        android:layout_marginTop="10dp"-->
+<!--                        android:layout_marginTop="15dp"-->
+<!--                        android:layout_marginBottom="15dp"-->
+<!--                        android:text="@string/title_weight_update"-->
+<!--                        android:textColor="?attr/colorOnPrimary"-->
+<!--                        android:textSize="15sp" />-->
+<!--                    <TextView-->
+<!--                        android:id="@+id/textView_widget_update"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="end|center"-->
+<!--                        android:layout_marginTop="15dp"-->
 <!--                        android:layout_marginEnd="32dp"-->
-<!--                        android:layout_marginBottom="10dp"-->
-<!--                        android:orientation="vertical">-->
-
-<!--                        <TextView-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:gravity="start|center"-->
-<!--                            android:text="@string/title_weight"-->
-<!--                            android:textColor="?attr/colorOnPrimary"-->
-<!--                            android:textSize="15sp" />-->
-
-<!--                        <TextView-->
-<!--                            android:id="@+id/textView_weight"-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:layout_marginTop="3dp"-->
-<!--                            android:gravity="start|center"-->
-<!--                            android:text="@string/text_weight"-->
-<!--                            android:textSize="13sp" />-->
-<!--                    </LinearLayout>-->
+<!--                        android:layout_marginBottom="15dp"-->
+<!--                        android:text="@string/text_default"-->
+<!--                        android:textSize="13sp" />-->
 <!--                </androidx.cardview.widget.CardView>-->
+
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

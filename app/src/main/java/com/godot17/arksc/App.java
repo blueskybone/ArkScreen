@@ -17,11 +17,9 @@ public class App extends Application {
     public App() {
         setInstance(this);
     }
-
     public static App getInstance() {
         return instance;
     }
-
     private static void setInstance(App app) {
         instance = app;
     }

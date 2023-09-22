@@ -4,4 +4,4 @@
     android:layout_gravity="end|center_vertical"
     android:layout_width="60dp"
     android:layout_height="60dp"
-    android:src="@mipmap/ic_rosm_round" />
+    android:src="@drawable/ic_rosm_round" />

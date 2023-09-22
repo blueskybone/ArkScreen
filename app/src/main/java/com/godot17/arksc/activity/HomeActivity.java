@@ -1,18 +1,17 @@
 package com.godot17.arksc.activity;
 
 import static com.godot17.arksc.utils.HttpConnectionUtils.downloadToLocal;
+import static com.godot17.arksc.utils.HttpConnectionUtils.getResponse;
 import static com.godot17.arksc.utils.HttpConnectionUtils.isNetConnected;
+import static com.godot17.arksc.utils.PrefManager.getUserInfo;
 import static com.godot17.arksc.utils.Utils.getAppVersionName;
 import static com.godot17.arksc.utils.Utils.getAssets2CacheDir;
-import static com.godot17.arksc.utils.HttpConnectionUtils.getResponse;
-import static com.godot17.arksc.utils.Utils.showToast;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
@@ -21,12 +20,9 @@ import android.util.Log;
 import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
@@ -50,8 +46,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     private final int OVERLAY_PERMISSION_REQUEST_CODE = 200;
     private final String TAG = "HomeActivity";
-    StringBuilder stringBuilder = new StringBuilder("");
-    Handler mHandler;
+    private StringBuilder stringBuilder = new StringBuilder("");
+    private Handler mHandler;
+    //private TextView textViewDBUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,10 +70,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+
     private void setLayout() {
         setContentView(R.layout.activity_home);
-        TextView textView = findViewById(R.id.textview_link);
-        Markwon.create(this).setMarkdown(textView, textView.getText().toString());
 
         CardView card_cal = findViewById(R.id.card_cal);
         CardView card_skland = findViewById(R.id.card_skland);
@@ -84,7 +81,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         CardView card_question = findViewById(R.id.card_question);
         CardView card_setting = findViewById(R.id.card_setting);
         CardView card_about = findViewById(R.id.card_about);
-        ImageView image_menu = findViewById(R.id.menu_link);
+
+
 
         card_cal.setOnClickListener(this);
         card_skland.setOnClickListener(this);
@@ -92,7 +90,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         card_question.setOnClickListener(this);
         card_setting.setOnClickListener(this);
         card_about.setOnClickListener(this);
-        image_menu.setOnClickListener(this);
     }
 
     private void initialData() {
@@ -126,6 +123,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void checkDatabaseVersion() throws MalformedURLException {
+
+        TextView textViewDBUpdate = findViewById(R.id.text_cal_update);
         URL url = new URL("https://gitee.com/blueskybone/ArkScreen/raw/master/recruit_version.info");
         InputStream is = getResponse(url);
         if (is == null) {
@@ -172,6 +171,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             updateLog("解析数据库xml发生错误.\n\n");
             return;
         }
+        String finalUpdate = "最后更新：" + update;
+        textViewDBUpdate.post(()-> textViewDBUpdate.setText(finalUpdate));
         DataQueryService dataQueryService = DataQueryService.getInstance();
         if (dataQueryService == null) {
             updateLog("数据库初始化失败\n\n");
@@ -243,25 +244,21 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         String oldVersion = getAppVersionName(this);
         if (oldVersion.compareTo(version) < 0) {
             updateLog("检测到应用新版本, [下载链接](" + link + ")\n\n");
-            String finalContent = content;
-            String finalLink = link;
+//            String finalContent = content;
+//            String finalLink = link;
             //mHandler.post(() -> showUpdateDiaLog(finalContent, "检测到新版本", finalLink));
         }
     }
 
     private void requestFloatWinPermission(Context context) {
         if (Settings.canDrawOverlays(this)) return;
-        ActivityResultLauncher<Intent> intentActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-            @Override
-            public void onActivityResult(ActivityResult result) {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    if (!Settings.canDrawOverlays(context)) {
-                        Toast.makeText(context, R.string.no_permission_for_float_window, Toast.LENGTH_SHORT).show();
-                    }
-                } else {
+        ActivityResultLauncher<Intent> intentActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                if (!Settings.canDrawOverlays(context)) {
                     Toast.makeText(context, R.string.no_permission_for_float_window, Toast.LENGTH_SHORT).show();
                 }
-
+            } else {
+                Toast.makeText(context, R.string.no_permission_for_float_window, Toast.LENGTH_SHORT).show();
             }
         });
         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
@@ -278,6 +275,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+        TextView textViewUserInfo = findViewById(R.id.text_userInfo_home);
+        textViewUserInfo.setText(getUserInfo(this));
     }
 
     private void requestNotificationPermission() {
@@ -298,9 +297,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.card_use) {
             showDialog(getString(R.string.content_use), getString(R.string.title_use));
         } else if (id == R.id.card_question) {
-            showDialog(getString(R.string.content_question), getString(R.string.title_question));
-        } else if (id == R.id.menu_link) {
-            showToast(this, "施工中...");
+            showDialog(getString(R.string.content_query), getString(R.string.title_question));
         }
     }
 
@@ -309,7 +306,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         View view = LayoutInflater.from(this)
                 .inflate(R.layout.dialog_normal, null);
         TextView textView = view.findViewById(R.id.textView_dialog);
-
         Markwon.create(this).setMarkdown(textView, content);
         builder.setView(view)
                 .setTitle(title)

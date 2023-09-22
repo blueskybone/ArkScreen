@@ -123,6 +123,7 @@ public class GameInfo {
         public boolean isNull;
         public int value;
         public int maxValue = 7;
+        public String status;
     }
 
     public static class Manufactures {

@@ -37,13 +37,14 @@ public class AboutActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_about);
         CardView card_update = findViewById(R.id.card_update);
         CardView card_3rd = findViewById(R.id.card_3rd);
-        CardView card_web = findViewById(R.id.card_web);
         CardView card_other = findViewById(R.id.card_other);
 
         card_update.setOnClickListener(this);
         card_3rd.setOnClickListener(this);
-        card_web.setOnClickListener(this);
         card_other.setOnClickListener(this);
+
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(v -> finish());
     }
 
     @Override
@@ -72,12 +73,6 @@ public class AboutActivity extends Activity implements View.OnClickListener {
             showDialog(getString(R.string.open_licence_title),
                     getString(R.string.open_source_license));
 
-        } else if (id == R.id.card_web) {
-            Intent intent = new Intent();
-            intent.setAction("android.intent.action.VIEW");
-            Uri uri = Uri.parse(getString(R.string.repositories));
-            intent.setData(uri);
-            startActivity(intent);
         } else if (id == R.id.card_other) {
             showDialog(getString(R.string.title_other), getString(R.string.info_other));
         }
@@ -153,9 +148,7 @@ public class AboutActivity extends Activity implements View.OnClickListener {
         if (oldVersion.compareTo(version) < 0) {
             String finalContent = content;
             String finalLink = link;
-            mHandler.post(() -> {
-                showUpdateDiaLog(finalContent, "检测到新版本", finalLink);
-            });
+            mHandler.post(() -> showUpdateDiaLog(finalContent, "检测到新版本", finalLink));
             return;
         }
         showToast(this, "当前已是最新");

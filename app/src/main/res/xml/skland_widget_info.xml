@@ -4,10 +4,8 @@
     android:initialKeyguardLayout="@layout/skland_widget"
     android:initialLayout="@layout/skland_widget"
     android:previewImage="@drawable/ic_rosm"
-    android:minWidth="120dp"
-    android:minHeight="10dp"
+    android:minWidth="100dp"
+    android:minHeight="0dp"
     android:resizeMode="horizontal"
-
-
-    android:updatePeriodMillis="1800000"
+    android:updatePeriodMillis="720000"
     android:widgetCategory="home_screen" />

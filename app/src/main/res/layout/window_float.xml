@@ -34,14 +34,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
-            android:text="测试文本" />
+            android:textColor="?attr/colorOnPrimary" />
 
         <TextView
             android:id="@+id/textView_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
-            android:text="测试文本" />
+            android:textColor="?attr/colorOnPrimary" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -57,7 +57,7 @@
                     android:id="@+id/textView_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="测试文本" />
+                    android:textColor="?attr/colorOnPrimary" />
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
