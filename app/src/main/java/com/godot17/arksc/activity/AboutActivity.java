@@ -1,8 +1,6 @@
 package com.godot17.arksc.activity;
 
-import static com.godot17.arksc.utils.HttpConnectionUtils.getResponse;
 import static com.godot17.arksc.utils.NetWorkTask.getUpdateInfo;
-import static com.godot17.arksc.utils.Utils.getAppVersionName;
 import static com.godot17.arksc.utils.Utils.showToast;
 
 import android.app.Activity;
@@ -12,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -23,11 +20,7 @@ import androidx.cardview.widget.CardView;
 import com.godot17.arksc.R;
 import com.godot17.arksc.datautils.UpdateInfo;
 
-import org.xmlpull.v1.XmlPullParser;
-
-import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URL;
 
 import io.noties.markwon.Markwon;
 

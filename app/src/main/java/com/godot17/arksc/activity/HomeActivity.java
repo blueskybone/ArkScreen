@@ -5,7 +5,6 @@ import static com.godot17.arksc.utils.HttpConnectionUtils.getResponse;
 import static com.godot17.arksc.utils.HttpConnectionUtils.isNetConnected;
 import static com.godot17.arksc.utils.NetWorkTask.getUpdateInfo;
 import static com.godot17.arksc.utils.PrefManager.getUserInfo;
-import static com.godot17.arksc.utils.Utils.getAppVersionName;
 import static com.godot17.arksc.utils.Utils.getAssets2CacheDir;
 
 import android.app.Activity;
@@ -35,12 +34,10 @@ import com.godot17.arksc.datautils.UpdateInfo;
 import com.godot17.arksc.service.DataQueryService;
 import com.godot17.arksc.service.FloatTileService;
 
-import org.xml.sax.XMLReader;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -52,7 +49,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private final String TAG = "HomeActivity";
     private StringBuilder stringBuilder = new StringBuilder("");
     private Handler mHandler;
-    //private TextView textViewDBUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -205,7 +201,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         if(getUpdateInfo(this)){
             updateLog("检测到应用新版本, [下载链接](" + UpdateInfo.link + ")\n\n");
-            showUpdateDiaLog(UpdateInfo.content,"检测到新版本",UpdateInfo.link);
+            showUpdateDiaLog(UpdateInfo.content, UpdateInfo.link);
             //showDialog.
         }
     }
@@ -274,14 +270,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 .show();
     }
 
-    private void showUpdateDiaLog(String content, String title, String link) {
+    private void showUpdateDiaLog(String content, String link) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this)
                 .inflate(R.layout.dialog_normal, null);
         TextView textView = view.findViewById(R.id.textView_dialog);
         Markwon.create(this).setMarkdown(textView, content);
         builder.setView(view)
-                .setTitle(title)
+                .setTitle("检测到新版本")
                 .setPositiveButton(R.string.download, (dialog, which) -> {
                     Intent intent = new Intent();
                     intent.setAction("android.intent.action.VIEW");

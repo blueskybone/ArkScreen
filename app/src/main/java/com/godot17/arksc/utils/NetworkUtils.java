@@ -1,22 +1,15 @@
 package com.godot17.arksc.utils;
 
 import static com.godot17.arksc.utils.HttpConnectionUtils.RequestMethod;
-import static com.godot17.arksc.utils.HttpConnectionUtils.getResponse;
 import static com.godot17.arksc.utils.HttpConnectionUtils.httpResponse;
 import static com.godot17.arksc.utils.HttpConnectionUtils.httpResponseConnection;
-import static com.godot17.arksc.utils.Utils.getAppVersionName;
 
-import android.content.Context;
 import android.util.Log;
-import android.util.Xml;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.xmlpull.v1.XmlPullParser;
-
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -138,64 +131,4 @@ public class NetworkUtils {
             return null;
         }
     }
-
-
-
-
-    public static String checkAppVersion(Context context) throws MalformedURLException {
-        URL url = new URL(app_version_url);
-        InputStream is = getResponse(url);
-        if (is == null) {
-            return "解析错误.";
-        }
-        String version = null;
-        String link = null;
-        String content = null;
-        try {
-            XmlPullParser xmlPullParser = Xml.newPullParser();
-            xmlPullParser.setInput(is, "utf-8");
-            int eventType = xmlPullParser.getEventType();
-            while (eventType != XmlPullParser.END_DOCUMENT) {
-                if (eventType == XmlPullParser.START_TAG) {
-                    switch (xmlPullParser.getName()) {
-                        case "version":
-                            xmlPullParser.next();
-                            version = xmlPullParser.getText();
-                            Log.e(TAG, "version " + version);
-                            break;
-                        case "link":
-                            xmlPullParser.next();
-                            link = xmlPullParser.getText();
-                            Log.e(TAG, "link " + link);
-                            break;
-                        case "content":
-                            xmlPullParser.next();
-                            content = xmlPullParser.getText();
-                            Log.e(TAG, "content " + content);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                eventType = xmlPullParser.next();
-            }
-            is.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (version == null || link == null || content == null) {
-            return "解析xml错误.";
-        }
-        String oldVersion = getAppVersionName(context);
-        if (oldVersion.compareTo(version) >= 0) {
-            return "";
-        } else {
-            //showDialog
-            //showAppUpdateDialog(context, link, content);
-
-            return "检测到应用新版本, [下载链接](" + link + ")";
-        }
-    }
-
-
 }

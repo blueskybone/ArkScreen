@@ -1,38 +1,19 @@
 package com.godot17.arksc;
 
-import static android.util.TypedValue.COMPLEX_UNIT_SP;
-import static com.godot17.arksc.utils.NetWorkTask.OK;
-import static com.godot17.arksc.utils.NetWorkTask.getCredByToken;
-import static com.godot17.arksc.utils.PrefManager.getAutoSign;
-import static com.godot17.arksc.utils.PrefManager.getToken;
-import static com.godot17.arksc.utils.PrefManager.getWidgetBgAlpha;
-import static com.godot17.arksc.utils.PrefManager.getWidgetBgColor;
-import static com.godot17.arksc.utils.PrefManager.getWidgetTextColor;
-import static com.godot17.arksc.utils.PrefManager.getWidgetTextSize;
-
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import androidx.work.Constraints;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.godot17.arksc.datautils.GameInfo;
-import com.godot17.arksc.utils.NetWorkTask;
-
-import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
-import java.util.zip.GZIPInputStream;
 
 /**
  * Implementation of App Widget functionality.
@@ -177,12 +158,11 @@ public class SklandWidget extends AppWidgetProvider {
             Log.e(TAG, "receive");
             WorkManager.getInstance(context).enqueue(OneTimeWorkRequest.from(SklandWorker.class));
 
-////            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-////            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context.getPackageName(), SklandWidget.class.getName()));
-////            for (int appWidgetId : appWidgetIds) {
-////                //updateAppWidget(context, appWidgetManager, appWidgetId);
-////            }
-//        }
+//            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+//            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context.getPackageName(), SklandWidget.class.getName()));
+//            for (int appWidgetId : appWidgetIds) {
+//                //updateAppWidget(context, appWidgetManager, appWidgetId);
+//            }
         }
     }
 }
