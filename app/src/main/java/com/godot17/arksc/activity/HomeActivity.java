@@ -3,6 +3,7 @@ package com.godot17.arksc.activity;
 import static com.godot17.arksc.utils.HttpConnectionUtils.downloadToLocal;
 import static com.godot17.arksc.utils.HttpConnectionUtils.getResponse;
 import static com.godot17.arksc.utils.HttpConnectionUtils.isNetConnected;
+import static com.godot17.arksc.utils.NetWorkTask.getUpdateInfo;
 import static com.godot17.arksc.utils.PrefManager.getUserInfo;
 import static com.godot17.arksc.utils.Utils.getAppVersionName;
 import static com.godot17.arksc.utils.Utils.getAssets2CacheDir;
@@ -30,13 +31,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.godot17.arksc.R;
+import com.godot17.arksc.datautils.UpdateInfo;
 import com.godot17.arksc.service.DataQueryService;
 import com.godot17.arksc.service.FloatTileService;
 
+import org.xml.sax.XMLReader;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -103,14 +107,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             updateLog("无网络连接");
             return;
         }
-        new Thread(() -> {
+        mHandler.post(()->{
             try {
                 checkAppVersion();
                 checkDatabaseVersion();
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-        }).start();
+        });
+//        new Thread(() -> {
+//
+//        }).start();
     }
 
     private void updateLog(String info) {
@@ -195,58 +202,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void checkAppVersion() throws MalformedURLException {
-        URL url = new URL("https://gitee.com/blueskybone/ArkScreen/raw/master/version.info");
-        InputStream is = getResponse(url);
-        if (is == null) {
-            updateLog("解析更新地址错误.\n");
-            return;
-        }
-        String version = null;
-        String link = null;
-        String content = null;
-        try {
-            XmlPullParser xmlPullParser = Xml.newPullParser();
-            xmlPullParser.setInput(is, "utf-8");
-            int eventType = xmlPullParser.getEventType();
-            while (eventType != XmlPullParser.END_DOCUMENT) {
-                if (eventType == XmlPullParser.START_TAG) {
-                    switch (xmlPullParser.getName()) {
-                        case "version":
-                            xmlPullParser.next();
-                            version = xmlPullParser.getText();
-                            Log.e(TAG, "version " + version);
-                            break;
-                        case "link":
-                            xmlPullParser.next();
-                            link = xmlPullParser.getText();
-                            Log.e(TAG, "link " + link);
-                            break;
-                        case "content":
-                            xmlPullParser.next();
-                            content = xmlPullParser.getText();
-                            Log.e(TAG, "content " + content);
-                            break;
-                        default:
-                            Log.e(TAG, "GETNOTHING");
-                            break;
-                    }
-                }
-                eventType = xmlPullParser.next();
-            }
-            is.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (version == null || link == null || content == null) {
-            updateLog("解析xml错误.\n\n");
-            return;
-        }
-        String oldVersion = getAppVersionName(this);
-        if (oldVersion.compareTo(version) < 0) {
-            updateLog("检测到应用新版本, [下载链接](" + link + ")\n\n");
-//            String finalContent = content;
-//            String finalLink = link;
-            //mHandler.post(() -> showUpdateDiaLog(finalContent, "检测到新版本", finalLink));
+
+        if(getUpdateInfo(this)){
+            updateLog("检测到应用新版本, [下载链接](" + UpdateInfo.link + ")\n\n");
+            showUpdateDiaLog(UpdateInfo.content,"检测到新版本",UpdateInfo.link);
+            //showDialog.
         }
     }
 
@@ -331,9 +291,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 })
                 .create().
                 show();
-
     }
-
 
     @Override
     protected void onDestroy() {

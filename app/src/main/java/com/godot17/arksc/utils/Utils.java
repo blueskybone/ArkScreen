@@ -165,12 +165,9 @@ public class Utils {
         return str;
 
     }
-    public static int convertSec2Day(int Sec) {
+    public static int convertTs2Day(int Sec) {
         if (Sec < 0) return -1;
-        int min = Sec / 60;
-        int hour = min / 60;
-        return hour / 24;
-
+        return (Sec + 28800) / 86400;
     }
 
 }

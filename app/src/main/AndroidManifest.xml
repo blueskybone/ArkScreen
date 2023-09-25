@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.godot17.arksc" >
+    package="com.godot17.arksc">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -22,14 +22,27 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_rosm"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ArkSc" >
+        android:theme="@style/Theme.ArkSc">
+        <receiver
+            android:name=".SklandWidgetH"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="MANUAL_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/skland_widget_h_info" />
+        </receiver>
         <receiver
             android:name=".SklandWidget"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
-                <action android:name="MANUAL_UPDATE" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="MANUAL_UPDATE" />
             </intent-filter>
+
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/skland_widget_info" />
@@ -38,7 +51,7 @@
         <activity
             android:name=".activity.HomeActivity"
             android:exported="true"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -89,7 +102,7 @@
             android:icon="@drawable/ic_rosm_tile"
             android:label="@string/tile_quick"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
-            tools:targetApi="q" >
+            tools:targetApi="q">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
@@ -105,7 +118,7 @@
             android:icon="@drawable/ic_rosm_tile"
             android:label="@string/tile_float"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
-            tools:targetApi="q" >
+            tools:targetApi="q">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
