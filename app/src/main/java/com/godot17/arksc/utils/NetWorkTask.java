@@ -1,9 +1,10 @@
 package com.godot17.arksc.utils;
 
 import static com.godot17.arksc.utils.NetworkUtils.doAttendanceNew;
+import static com.godot17.arksc.utils.NetworkUtils.getAppVersion;
 import static com.godot17.arksc.utils.NetworkUtils.getBindingJson;
 import static com.godot17.arksc.utils.NetworkUtils.getCredByGrantNew;
-import static com.godot17.arksc.utils.NetworkUtils.getGameInfoStream;
+import static com.godot17.arksc.utils.NetworkUtils.getGameInfoConnection;
 import static com.godot17.arksc.utils.NetworkUtils.getGrantCodeByTokenNew;
 import static com.godot17.arksc.utils.NetworkUtils.logOutByToken;
 import static com.godot17.arksc.utils.PrefManager.getChannelMasterId;
@@ -17,19 +18,30 @@ import static com.godot17.arksc.utils.PrefManager.setSignTs;
 import static com.godot17.arksc.utils.PrefManager.setToken;
 import static com.godot17.arksc.utils.PrefManager.setUserId;
 import static com.godot17.arksc.utils.PrefManager.setUserInfo;
+import static com.godot17.arksc.utils.Utils.getAppVersionName;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.Xml;
+
+import androidx.work.ListenableWorker;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.godot17.arksc.R;
+import com.godot17.arksc.datautils.UpdateInfo;
+
+import org.xmlpull.v1.XmlPullParser;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 
+import javax.net.ssl.HttpsURLConnection;
+
 public class NetWorkTask {
+    private final static String TAG = "NetWorkTask";
 
     public final static String TOKEN_UK_STATUS = "TOKEN_UK_STATUS";
     public final static String BAD_NETWORK = "网络异常";
@@ -39,22 +51,23 @@ public class NetWorkTask {
     public final static String SERVER_WONDERING = "SERVER_WONDERING";
     public final static String REQUEST_ERROR = "请求异常";
     public final static String OK = "OK";
-    //访问权限请求： token -> grant -> cred
-    //中间请求： cred->binding Info
-    //业务请求：  getGameStream(cred, uid(from binding info))
-    //          doAttendance(cred, uid, channelId(from Binding info))
-    //访问凭证：token ->cred
 
-    // 对外接口： token ->cred
-    // cred-> loadStatusInfo (binding Info)
-    // cred -> gameInfo
-    // cred -> doAttendance
-
-
-    //应用场景：
-    //cred->do
-    //cred->unauthorized, token->cred->do
-    //token ->authorized -> expired
+    /*
+     * 访问权限请求： token -> grant -> cred
+     * 中间请求： cred->binding Info
+     * 业务请求：  getGameStream(cred, uid(from binding info))
+     *           doAttendance(cred, uid, channelId(from Binding info))
+     *
+     * 对外接口： token ->cred
+     *  cred-> loadStatusInfo (binding Info)
+     *  cred -> gameInfo
+     *  cred -> doAttendance
+     *
+     * 应用场景：
+     * cred->do
+     * cred->unauthorized, token->cred->do
+     * token ->unauthorized -> expired
+     * */
 
     public static String getCredByToken(Context context) throws IOException {
         String token = getToken(context);
@@ -168,20 +181,18 @@ public class NetWorkTask {
         setUserId(context, uid);
         setChannelMasterId(context, channelMasterId);
         setUserInfo(context, userInfo);
-        setSignTs(context,0);
+        setSignTs(context, 0);
         return OK;
     }
 
     public static String doAttendance(Context context) throws MalformedURLException, JsonProcessingException {
         int lastSignTs = getSignTs(context);
         int currentTs = (int) (System.currentTimeMillis() / 1000);
-        Log.e("NET", currentTs + "");
-        Log.e("NET", lastSignTs + "");
 
-        int lastDay = Utils.convertSec2Day(currentTs);
-        int currentDay = Utils.convertSec2Day(lastSignTs);
-        Log.e("NET", lastDay + "");
-        Log.e("NET", currentDay + "");
+        int currentDay = Utils.convertTs2Day(currentTs);
+        int lastDay = Utils.convertTs2Day(lastSignTs);
+        Log.e("lastDay NET", lastDay + "");
+        Log.e("currentDay NET", currentDay + "");
 
         if (currentDay == lastDay) {
             return "今日已签到";
@@ -195,13 +206,13 @@ public class NetWorkTask {
         } else {
             ObjectMapper om = new ObjectMapper();
             JsonNode tree = om.readTree(resp);
-            Log.e("net",resp);
+            Log.e("net", resp);
             if (tree.get("code") == null) {
                 return "签到失败";
             } else {
                 if (tree.get("code").toString().equals("0")) {
                     setSignTs(context, currentTs);
-                    return "签到成功" + tree.at("/data/awards").get(0).at("/resource/name").toString().replace("\"", "")
+                    return "签到成功：" + tree.at("/data/awards").get(0).at("/resource/name").toString().replace("\"", "")
                             + "×"
                             + tree.at("/data/awards").get(0).at("/count").asInt();
                 } else {
@@ -212,10 +223,10 @@ public class NetWorkTask {
         }
     }
 
-    public static InputStream getGameInfoInputStream(Context context) throws IOException {
+    public static HttpsURLConnection getGameInfoInputConnection(Context context) throws IOException {
         String cred = getCred(context);
         String uid = getUserId(context);
-        return getGameInfoStream(cred, uid);
+        return getGameInfoConnection(cred, uid);
     }
 
     public static String logOutMsg(Context context) throws IOException {
@@ -238,5 +249,58 @@ public class NetWorkTask {
         setSignTs(context, 0);
 
         return msg;
+    }
+
+    public static boolean getUpdateInfo(Context context) throws MalformedURLException {
+        HttpsURLConnection cn = getAppVersion();
+        try {
+            InputStream is = cn.getInputStream();
+            if (is == null) {
+                cn.disconnect();
+                Log.e(TAG, "get inputStream fails");
+                return false;
+            } else {
+                XmlPullParser xmlPullParser = Xml.newPullParser();
+                xmlPullParser.setInput(is, "utf-8");
+                int eventType = xmlPullParser.getEventType();
+                while (eventType != XmlPullParser.END_DOCUMENT) {
+                    if (eventType == XmlPullParser.START_TAG) {
+                        switch (xmlPullParser.getName()) {
+                            case "version":
+                                xmlPullParser.next();
+                                UpdateInfo.version = xmlPullParser.getText();
+                                Log.e(TAG, "version " + UpdateInfo.version);
+                                break;
+                            case "link":
+                                xmlPullParser.next();
+                                UpdateInfo.link = xmlPullParser.getText();
+                                Log.e(TAG, "link " + UpdateInfo.link);
+                                break;
+                            case "content":
+                                xmlPullParser.next();
+                                UpdateInfo.content = xmlPullParser.getText();
+                                Log.e(TAG, "content " + UpdateInfo.content);
+                                break;
+                            default:
+                                Log.e(TAG, "xml Err");
+                                return false;
+                            //break;
+                        }
+                    }
+                    eventType = xmlPullParser.next();
+                }
+                is.close();
+                cn.disconnect();
+
+                if (UpdateInfo.version == null || UpdateInfo.link == null || UpdateInfo.content == null) {
+                    return false;
+                }
+                String oldVersion = getAppVersionName(context);
+                return oldVersion.compareTo(UpdateInfo.version) < 0;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "" + e);
+            return false;
+        }
     }
 }

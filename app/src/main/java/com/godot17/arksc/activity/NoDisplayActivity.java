@@ -14,7 +14,7 @@ import com.godot17.arksc.App;
 import com.godot17.arksc.service.NotificationService;
 
 public class NoDisplayActivity extends Activity {
-    private static String TAG = "NoDisplayActivity";
+    private static final String TAG = "NoDisplayActivity";
     private static final int SCREENSHOT_REQUEST_CODE = 4552;
     private String START_MODE = "UNKNOWN";
     @Override

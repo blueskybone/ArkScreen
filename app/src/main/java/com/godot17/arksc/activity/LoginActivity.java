@@ -5,11 +5,9 @@ import static com.godot17.arksc.utils.PrefManager.setTokenChanged;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -20,7 +18,6 @@ import androidx.annotation.Nullable;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.godot17.arksc.utils.PrefManager;
 
 
 //重新考虑凭证存储的数据结构。
@@ -49,7 +46,7 @@ public class LoginActivity extends ComponentActivity {
         class JsObject{
             @JavascriptInterface
             public void submitSkToken(String cred, String usr_token) throws JsonProcessingException {
-                /**
+                /*
                  * onPageFinished() does not guarantee the load finish and can be called more than once.
                  * see: https://stackoverflow.com/questions/3149216/how-to-listen-for-a-webview-finishing-loading-a-url/5172952#5172952
                  * */

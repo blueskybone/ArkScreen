@@ -2,7 +2,7 @@ package com.godot17.arksc.activity;
 
 import static com.godot17.arksc.utils.NetWorkTask.OK;
 import static com.godot17.arksc.utils.NetWorkTask.getCredByToken;
-import static com.godot17.arksc.utils.NetWorkTask.getGameInfoInputStream;
+import static com.godot17.arksc.utils.NetWorkTask.getGameInfoInputConnection;
 import static com.godot17.arksc.utils.PrefManager.getAutoSign;
 import static com.godot17.arksc.utils.PrefManager.getToken;
 import static com.godot17.arksc.utils.PrefManager.getUserInfo;
@@ -29,6 +29,8 @@ import com.godot17.arksc.utils.NetWorkTask;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class SklandActivity extends Activity {
 
@@ -94,7 +96,9 @@ public class SklandActivity extends Activity {
                 return;
             }
             try {
-                InputStream is = getGameInfoInputStream(this);
+                HttpsURLConnection cn = getGameInfoInputConnection(this);
+                InputStream is = cn.getInputStream();
+
                 if (is == null) {
                     loadingDialog.dismiss();
                     showToast(this, "获取数据失败,请重试或重新登录");
@@ -108,11 +112,16 @@ public class SklandActivity extends Activity {
                 if (0 != dataNode.get("code").asInt()) {
                     gzip.close();
                     is.close();
+                    cn.disconnect();
+                    Log.e(TAG, "disconnect");
+
                     getGameInfoFromToken();
                 } else {
                     getGameInfo(dataNode);
                     gzip.close();
                     is.close();
+                    cn.disconnect();
+                    Log.e(TAG, "disconnect");
                 }
 
                 if (getAutoSign(this)) {
@@ -132,7 +141,9 @@ public class SklandActivity extends Activity {
             finish();
             return;
         }
-        InputStream is = getGameInfoInputStream(this);
+        HttpsURLConnection cn = getGameInfoInputConnection(this);
+        InputStream is = cn.getInputStream();
+
         if (is == null) {
             loadingDialog.dismiss();
             showToast(this, "获取数据失败,请重试或重新登录");
@@ -143,10 +154,14 @@ public class SklandActivity extends Activity {
         JsonNode dataNode = om.readTree(gzip);
         if (0 != dataNode.get("code").asInt()) {
             showToast(this, "登录过期");
+            gzip.close();
+            is.close();
+            cn.disconnect();
         } else {
             getGameInfo(dataNode);
             gzip.close();
             is.close();
+            cn.disconnect();
         }
 
         if (getAutoSign(this)) {

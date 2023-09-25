@@ -4,14 +4,9 @@ import static com.godot17.arksc.utils.NetWorkTask.OK;
 import static com.godot17.arksc.utils.NetWorkTask.getCredByToken;
 import static com.godot17.arksc.utils.NetWorkTask.loadStatusInfoByCred;
 import static com.godot17.arksc.utils.NetWorkTask.logOutMsg;
-import static com.godot17.arksc.utils.NetworkUtils.getBindingInfoWith;
-import static com.godot17.arksc.utils.NetworkUtils.getCredByGrant;
-import static com.godot17.arksc.utils.NetworkUtils.getGrantCodeByToken;
 import static com.godot17.arksc.utils.PrefManager.getTokenChanged;
 import static com.godot17.arksc.utils.PrefManager.getUserInfo;
-import static com.godot17.arksc.utils.PrefManager.setToken;
 import static com.godot17.arksc.utils.PrefManager.setTokenChanged;
-import static com.godot17.arksc.utils.PrefManager.setUserInfo;
 import static com.godot17.arksc.utils.Utils.showToast;
 
 import android.app.Activity;
@@ -42,7 +37,7 @@ public class SkLandLogin extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setLayout();
         mHandler = new Handler();
-        //loadingDialog = new LoadingDialog(this);
+        loadingDialog = new LoadingDialog(this);
     }
 
     private void setLayout() {
@@ -91,7 +86,7 @@ public class SkLandLogin extends Activity implements View.OnClickListener {
         textView.setText(getUserInfo(this));
         if (getTokenChanged(this)) {
             setTokenChanged(this, false);
-
+            loadingDialog.show();
             loginByTokenNew();
             //loginByToken(getToken(this));
         }
@@ -102,16 +97,19 @@ public class SkLandLogin extends Activity implements View.OnClickListener {
             try {
                 String resp = getCredByToken(this);
                 if (!resp.equals(OK)) {
+                    loadingDialog.dismiss();
                     showToast(this, resp);
                     finish();
                     return;
                 }
                 resp = loadStatusInfoByCred(this);
                 if (!resp.equals(OK)) {
+                    loadingDialog.dismiss();
                     showToast(this, resp);
                     finish();
                     return;
                 }
+                loadingDialog.dismiss();
                 String userInfo = getUserInfo(this);
                 textView.post(() -> textView.setText(userInfo));
                 showToast(this, "登录成功");

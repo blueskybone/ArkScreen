@@ -4,10 +4,11 @@
     android:initialKeyguardLayout="@layout/skland_widget"
     android:initialLayout="@layout/skland_widget"
     android:previewImage="@drawable/ic_rosm"
+    android:previewLayout="@layout/skland_widget"
     android:minWidth="100dp"
-    android:minHeight="0dp"
+    android:minHeight="40dp"
     android:resizeMode="horizontal"
     android:targetCellWidth="2"
     android:targetCellHeight="1"
-    android:updatePeriodMillis="720000"
+    android:updatePeriodMillis="0"
     android:widgetCategory="home_screen" />

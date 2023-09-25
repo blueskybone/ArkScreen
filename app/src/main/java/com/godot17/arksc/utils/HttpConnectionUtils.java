@@ -27,7 +27,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class HttpConnectionUtils {
     private final static String TAG = "HttpConnectionUtils";
 
-    public enum RequestMethod{
+    public enum RequestMethod {
         GET,
         POST
     }
@@ -55,23 +55,25 @@ public class HttpConnectionUtils {
         }
     }
 
-    public static InputStream getResponseStream(URL url, Map<String, String> header) {
+    public static HttpsURLConnection httpResponseConnection(URL url, @Nullable Map<String, String> header, RequestMethod method) {
         try {
             Log.e(TAG, "connection");
             HttpsURLConnection httpsConn = (HttpsURLConnection) url.openConnection();
-            httpsConn.setRequestMethod("GET");
+            httpsConn.setRequestMethod(method.toString());
             httpsConn.setConnectTimeout(10000);
-            header.forEach(httpsConn::setRequestProperty);
+            if (header != null) {
+                header.forEach(httpsConn::setRequestProperty);
+            }
             httpsConn.setDoOutput(false);
+            if (method == RequestMethod.POST) {
+                httpsConn.setDoOutput(true);
+            }
             httpsConn.setDoInput(true);
             httpsConn.setInstanceFollowRedirects(true);
             httpsConn.connect();
             if (httpsConn.getResponseCode() == 200) {
-                //LEAK
-                //httpsConn.disconnect();
-                return httpsConn.getInputStream();
+                return httpsConn;
             } else {
-                //httpsConn.disconnect();
                 return null;
             }
         } catch (Exception e) {
@@ -80,109 +82,71 @@ public class HttpConnectionUtils {
         }
     }
 
-    public static String postResponse(URL url, String jsonInput, Map<String, String> header) {
-        StringBuilder result = new StringBuilder();
-        try {
-            Log.e(TAG, "connection");
-            HttpsURLConnection httpsConn = (HttpsURLConnection) url.openConnection();
-            httpsConn.setRequestMethod("POST");
-            httpsConn.setConnectTimeout(5000);
-            header.forEach(httpsConn::setRequestProperty);
-            httpsConn.setDoOutput(true);
-            httpsConn.setDoInput(true);
-            OutputStream os = httpsConn.getOutputStream();
-            byte[] input = jsonInput.getBytes(StandardCharsets.UTF_8);
-            os.write(input, 0, input.length);
-            os.flush();
-            os.close();
-            Log.e(TAG, "before connection");
-            int respCode = httpsConn.getResponseCode();
-            if (respCode == HttpURLConnection.HTTP_OK) {
-                Log.e(TAG, "connection == 200");
-                InputStreamReader is = new InputStreamReader(httpsConn.getInputStream());
-                BufferedReader buffer = new BufferedReader(is);
-                String inputLine;
-                while ((inputLine = buffer.readLine()) != null) {
-                    result.append(inputLine);
-                }
-                is.close();
-            } else if (respCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                httpsConn.disconnect();
-                return "UNAUTHORIZED";
-            } else if (respCode == HttpURLConnection.HTTP_FORBIDDEN) {
-                Log.e(TAG, "connection == 403");
-                InputStreamReader is = new InputStreamReader(httpsConn.getErrorStream());
-                BufferedReader buffer = new BufferedReader(is);
-                String inputLine;
-                while ((inputLine = buffer.readLine()) != null) {
-                    result.append(inputLine);
-                }
-                is.close();
-            } else {
-                Log.e(TAG, httpsConn.getResponseCode() + "");
-                httpsConn.disconnect();
-                return null;
-            }
-            httpsConn.disconnect();
-        } catch (Exception e) {
-            Log.e(TAG, "error with", e);
-        }
-        return result.toString();
-    }
+//    public static String postResponse(URL url, String jsonInput, Map<String, String> header) {
+//        StringBuilder result = new StringBuilder();
+//        try {
+//            Log.e(TAG, "connection");
+//            HttpsURLConnection httpsConn = (HttpsURLConnection) url.openConnection();
+//            httpsConn.setRequestMethod("POST");
+//            httpsConn.setConnectTimeout(5000);
+//            header.forEach(httpsConn::setRequestProperty);
+//            httpsConn.setDoOutput(true);
+//            httpsConn.setDoInput(true);
+//            OutputStream os = httpsConn.getOutputStream();
+//            byte[] input = jsonInput.getBytes(StandardCharsets.UTF_8);
+//            os.write(input, 0, input.length);
+//            os.flush();
+//            os.close();
+//            Log.e(TAG, "before connection");
+//            int respCode = httpsConn.getResponseCode();
+//            if (respCode == HttpURLConnection.HTTP_OK) {
+//                Log.e(TAG, "connection == 200");
+//                InputStreamReader is = new InputStreamReader(httpsConn.getInputStream());
+//                BufferedReader buffer = new BufferedReader(is);
+//                String inputLine;
+//                while ((inputLine = buffer.readLine()) != null) {
+//                    result.append(inputLine);
+//                }
+//                is.close();
+//            } else if (respCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+//                httpsConn.disconnect();
+//                return "UNAUTHORIZED";
+//            } else if (respCode == HttpURLConnection.HTTP_FORBIDDEN) {
+//                Log.e(TAG, "connection == 403");
+//                InputStreamReader is = new InputStreamReader(httpsConn.getErrorStream());
+//                BufferedReader buffer = new BufferedReader(is);
+//                String inputLine;
+//                while ((inputLine = buffer.readLine()) != null) {
+//                    result.append(inputLine);
+//                }
+//                is.close();
+//            } else {
+//                Log.e(TAG, httpsConn.getResponseCode() + "");
+//                httpsConn.disconnect();
+//                return null;
+//            }
+//            httpsConn.disconnect();
+//        } catch (Exception e) {
+//            Log.e(TAG, "error with", e);
+//        }
+//        return result.toString();
+//    }
 
-
-    public static String postResponseNew(URL url, String jsonInput, Map<String, String> header) {
-        StringBuilder result = new StringBuilder();
-        try {
-            Log.e(TAG, "connection");
-            HttpsURLConnection httpsConn = (HttpsURLConnection) url.openConnection();
-            httpsConn.setRequestMethod("POST");
-            httpsConn.setConnectTimeout(5000);
-            header.forEach(httpsConn::setRequestProperty);
-            httpsConn.setDoInput(true);
-            httpsConn.setDoOutput(true);
-
-            OutputStream os = httpsConn.getOutputStream();
-            byte[] input = jsonInput.getBytes(StandardCharsets.UTF_8);
-            os.write(input, 0, input.length);
-            os.flush();
-            os.close();
-
-            Log.e(TAG, "before connection");
-            int respCode = httpsConn.getResponseCode();
-            InputStreamReader is;
-            if (respCode == HttpURLConnection.HTTP_OK) {
-                is = new InputStreamReader(httpsConn.getInputStream());
-            } else {
-                is = new InputStreamReader(httpsConn.getErrorStream());
-            }
-            BufferedReader buffer = new BufferedReader(is);
-            String inputLine;
-            while ((inputLine = buffer.readLine()) != null) {
-                result.append(inputLine);
-            }
-            httpsConn.disconnect();
-            is.close();
-            return result.toString();
-        } catch (Exception e) {
-            Log.e(TAG, "error with", e);
-        }
-        return null;
-    }
-
-    public static String httpResponse(URL url, @Nullable String jsonInput, Map<String, String> header, RequestMethod method) {
+    public static String httpResponse(URL url, @Nullable String jsonInput, @Nullable Map<String, String> header, RequestMethod method) {
         StringBuilder result = new StringBuilder();
         try {
             HttpsURLConnection httpsConn = (HttpsURLConnection) url.openConnection();
             httpsConn.setConnectTimeout(5000);
             httpsConn.setRequestMethod(method.toString());
-            header.forEach(httpsConn::setRequestProperty);
+            if (header != null) {
+                header.forEach(httpsConn::setRequestProperty);
+            }
             httpsConn.setDoInput(true);
             httpsConn.setDoOutput(false);
-            if(method==RequestMethod.POST){
+            if (method == RequestMethod.POST) {
                 httpsConn.setDoOutput(true);
             }
-            if(jsonInput!=null){
+            if (jsonInput != null) {
                 OutputStream os = httpsConn.getOutputStream();
                 byte[] input = jsonInput.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
@@ -205,7 +169,7 @@ public class HttpConnectionUtils {
             httpsConn.disconnect();
             is.close();
             return result.toString();
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "error with", e);
         }
         return null;
@@ -245,7 +209,6 @@ public class HttpConnectionUtils {
         return result.toString();
     }
 
-    /*TODO:添加对gzip流支持*/
     public static void writeToLocal(String destination, InputStream input)
             throws IOException {
         int index;

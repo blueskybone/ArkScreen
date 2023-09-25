@@ -1,7 +1,6 @@
 package com.godot17.arksc.activity;
 
-import static com.godot17.arksc.utils.HttpConnectionUtils.getResponse;
-import static com.godot17.arksc.utils.Utils.getAppVersionName;
+import static com.godot17.arksc.utils.NetWorkTask.getUpdateInfo;
 import static com.godot17.arksc.utils.Utils.showToast;
 
 import android.app.Activity;
@@ -11,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -20,12 +18,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 
 import com.godot17.arksc.R;
+import com.godot17.arksc.datautils.UpdateInfo;
 
-import org.xmlpull.v1.XmlPullParser;
-
-import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URL;
 
 import io.noties.markwon.Markwon;
 
@@ -98,61 +93,14 @@ public class AboutActivity extends Activity implements View.OnClickListener {
     }
 
     private void checkAppVersion() throws MalformedURLException {
-        URL url = new URL("https://gitee.com/blueskybone/ArkScreen/raw/master/version.info");
-        InputStream is = getResponse(url);
-        if (is == null) {
-            showToast(this, "解析更新地址错误.");
-            return;
+
+        if (getUpdateInfo(this)) {
+            mHandler.post(() -> showUpdateDiaLog(UpdateInfo.content, "检测到新版本", UpdateInfo.link));
+        } else {
+            showToast(this, "当前已是最新");
         }
-        String version = null;
-        String link = null;
-        String content = null;
-        try {
-            XmlPullParser xmlPullParser = Xml.newPullParser();
-            xmlPullParser.setInput(is, "utf-8");
-            int eventType = xmlPullParser.getEventType();
-            while (eventType != XmlPullParser.END_DOCUMENT) {
-                if (eventType == XmlPullParser.START_TAG) {
-                    switch (xmlPullParser.getName()) {
-                        case "version":
-                            xmlPullParser.next();
-                            version = xmlPullParser.getText();
-                            Log.e(TAG, "version " + version);
-                            break;
-                        case "link":
-                            xmlPullParser.next();
-                            link = xmlPullParser.getText();
-                            Log.e(TAG, "link " + link);
-                            break;
-                        case "content":
-                            xmlPullParser.next();
-                            content = xmlPullParser.getText();
-                            Log.e(TAG, "content " + content);
-                            break;
-                        default:
-                            Log.e(TAG, "GETNOTHING");
-                            break;
-                    }
-                }
-                eventType = xmlPullParser.next();
-            }
-            is.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (version == null || link == null || content == null) {
-            showToast(this, "解析xml错误.");
-            return;
-        }
-        String oldVersion = getAppVersionName(this);
-        if (oldVersion.compareTo(version) < 0) {
-            String finalContent = content;
-            String finalLink = link;
-            mHandler.post(() -> showUpdateDiaLog(finalContent, "检测到新版本", finalLink));
-            return;
-        }
-        showToast(this, "当前已是最新");
     }
+
     private void showUpdateDiaLog(String content, String title, String link) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this)

@@ -1,20 +1,18 @@
 package com.godot17.arksc.datautils;
 
-import com.godot17.arksc.R;
-
 /**
- * jackson 动态获取8 + 6 共14组数据。
- * 理智：AP: (currentTs - lastApAddTime) /60 * 6 + current / max , recover - currentTs/60/60
+ * jackson
+ * 理智：AP: (currentTs - lastApAddTime) /360 + current / max , recover - currentTs/60/60
  * 无人机：value/maxValue
- * 训练室：time
- * 公招：4/4, time
- * 公招刷新： 1/3 ，联络中， time
- * 剿灭：0/1800
- * 日常：reward[0]
+ * 训练室：
+ * 公招：
+ * 公招刷新：
+ * 剿灭：
+ * 日常：
  * 周常：
  * 保全：
  * ---
- * 订单：5/24
+ * 订单
  * 制造进度：
  * 休息进度：
  * 线索收集：
@@ -68,7 +66,6 @@ public class GameInfo {
     public static class Hire {
         public boolean isNull;
         public int value;
-        public int max = 3;
         public int time;             //s
     }
 
@@ -96,7 +93,6 @@ public class GameInfo {
         public int highTotal;
         public int lowCurrent;
         public int lowTotal;
-        public int updateTime;
     }
 
     //database
