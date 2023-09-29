@@ -86,7 +86,7 @@ public class SklandActivity extends Activity {
         Intent intent = new Intent("MANUAL_UPDATE");
         intent.setPackage(getPackageName());    //from Android 12 must setPackage
         sendBroadcast(intent);
-        Log.e(TAG,"broadcast");
+        Log.e(TAG, "broadcast");
         new Thread(() -> {
             String token = getToken(this);
             if (token.equals("")) {
@@ -136,11 +136,14 @@ public class SklandActivity extends Activity {
 
     private void getGameInfoFromToken() throws IOException {
         String resp = getCredByToken(this);
+        Log.e(TAG,resp);
         if (!resp.equals(OK)) {
+            loadingDialog.dismiss();
             showToast(this, resp);
             finish();
             return;
         }
+
         HttpsURLConnection cn = getGameInfoInputConnection(this);
         InputStream is = cn.getInputStream();
 
@@ -170,101 +173,6 @@ public class SklandActivity extends Activity {
         }
 
     }
-
-//    private void LoadingData() {
-//        loadingDialog.show();
-//        new Thread(() -> {
-//            String token = getToken(this);
-//            if (token.equals("")) {
-//                loadingDialog.dismiss();
-//                showToast(this, "未登录");
-//                finish();
-//                return;
-//            }
-//            try {
-//                //cred->do
-//                //cred->unauthorized, token->cred->do
-//                //token ->authorized -> expired
-//
-//                //getGameInfo(this);
-//
-//
-//                String code = getGrantCodeByToken(token);
-//                if (code == null) {
-//                    loadingDialog.dismiss();
-//                    showToast(this, "error with getGrantCode");
-//                    finish();
-//                    return;
-//                } else if (code.equals("UNAUTHORIZED")) {
-//                    loadingDialog.dismiss();
-//                    showToast(this, "Token已过期，请重新登录");
-//                    finish();
-//                    return;
-//                }
-//
-//                //get cred
-//                String cred = getCredByGrant(code);
-//                if (cred == null) {
-//                    loadingDialog.dismiss();
-//                    showToast(this, "error with getCred");
-//                    finish();
-//                    return;
-//                }
-//
-//                //get uid and gameId
-//                String uid = getBindingInfoWith(cred, "uid");
-//                String channelMasterId = getBindingInfoWith(cred, "channelMasterId");
-//                if (uid == null) {
-//                    loadingDialog.dismiss();
-//                    showToast(this, "error with getUid");
-//                    finish();
-//                    return;
-//                }
-//
-//                getGameInfo(cred, uid);
-//                if (getAutoSign(this)) {
-//                    if (channelMasterId == null) {
-//                        showToast(this, "error with getChannelMasterId");
-//                        finish();
-//                    }
-//                    doAutoSigh(cred, uid, channelMasterId);
-//                }
-//            } catch (Exception e) {
-//                Log.e(TAG, "error with", e);
-//            }
-//            //finish();
-//        }).start();
-//    }
-
-//    private void doAutoSigh(String cred, String uid, String channelId) throws MalformedURLException {
-//        String resp = doAttendance(cred, uid, channelId);
-//        if (resp == null) {
-//            loadingDialog.dismiss();
-//            showToast(this, "签到失败");
-//        } else {
-//            String code = getJsonContent(resp, "code");
-//            if (code == null) {
-//                loadingDialog.dismiss();
-//                showToast(this, "签到失败");
-//            } else {
-//                if (code.equals("10001")) {
-//                    loadingDialog.dismiss();
-//
-//                    showToast(this, "签到失败：" + getJsonContent(resp, "message"));
-//                } else if (code.equals("0")) {
-//                    loadingDialog.dismiss();
-//                    String item = getJsonContent(resp, "name")
-//                            + "×"
-//                            + getJsonContent(resp, "count");
-//                    //setSignItem(this, item);
-//                    showToast(this, "签到成功：" + item);
-//                } else {
-//                    loadingDialog.dismiss();
-//                    showToast(this, "签到失败：" + code);
-//                }
-//            }
-//        }
-//    }
 
     private void getGameInfo(JsonNode tree) {
         GameInfo.info.nickName = tree.at("/data/status/name").toString().replace("\"", "");
@@ -316,6 +224,12 @@ public class SklandActivity extends Activity {
             GameInfo.train.time = node_train.get("remainSecs").asInt();
         }
         //Recruit
+        //  {
+        //                "startTs": 1695888773,
+        //                "finishTs": 1695921173,
+        //                "state": 2
+        //            },
+        //TODO:判断state == 2 且 finishTs < currentTs
         GameInfo.recruit.isNull = tree.at("/data/recruit").isNull();
         if (!GameInfo.recruit.isNull) {
             int unable = 0;
@@ -332,7 +246,9 @@ public class SklandActivity extends Activity {
                         complete++;
                         break;
                     case 2:
-                        finishTs = max(node.get("finishTs").asInt(), finishTs);
+                        int finish = node.get("finishTs").asInt();
+                        if (finish < currentTs) complete++;
+                        finishTs = max(finish, finishTs);
                         break;
                 }
             }
@@ -424,7 +340,7 @@ public class SklandActivity extends Activity {
         /* Trading
          *  "stock": [
          *  "stockLimit": 10
-         * //算法：(current - lastupdate) / ((completeTime - lastTime) / (limit - stock)) + stock
+         * 算法：(current - lastupdate) / ((completeTime - lastTime) / (limit - stock)) + stock
          * */
         JsonNode node_trading = tree.at("/data/building/tradings");
         GameInfo.trading.isNull = node_trading.isNull();
@@ -436,19 +352,18 @@ public class SklandActivity extends Activity {
                 int node_com = node.get("completeWorkTime").asInt();
                 int node_max = node.get("stockLimit").asInt();
                 int node_stock = node.get("stock").size();
-                if (currentTs > node_com) {
+                if (currentTs > node_com && node_stock < node_max) {
                     node_stock += 1;
                 }
-
                 stock += node_stock;
                 stockLimit += node_max;
             }
             GameInfo.trading.value = stock;
             GameInfo.trading.maxValue = stockLimit;
         }
-        //man
-        /*//算法：
-        (current - lastupdate) / ((completeTime - lastTime) / ((capacity/weight for each) - complete)) + complete
+        //manufactures
+        /*算法：
+         *(current - lastupdate) / ((completeTime - lastTime) / ((capacity/weight for each) - complete)) + complete
          *
          * */
         JsonNode node_product = tree.at("/data/building/manufactures");
@@ -477,7 +392,7 @@ public class SklandActivity extends Activity {
             GameInfo.manufactures.maxValue = max;
         }
         //Labor
-        //(current - lastupdate) * (max - value) / secRemain + value, if > max =max
+        //(current - lastupdate) * (max - value) / secRemain + value, if > max = max
         //
         JsonNode node_labor = tree.at("/data/building/labor");
         int labor_update_value = node_labor.get("value").asInt();
@@ -495,6 +410,8 @@ public class SklandActivity extends Activity {
         GameInfo.labor.recoverTime = labor_remain;
         //Dormitories
         //没研究明白 似乎ap == 8640000的就是休息完成的(240hour)
+        //恢复效率：基础值level + 氛围值/2500。如满级宿舍＋5000氛围值 = 一小时恢复4点
+        //好麻烦，摆了。
         JsonNode node_dormitories = tree.at("/data/building/dormitories");
         GameInfo.dormitories.isNull = node_dormitories.isNull();
         if (!GameInfo.dormitories.isNull) {
@@ -518,301 +435,25 @@ public class SklandActivity extends Activity {
         if (!GameInfo.meeting.isNull) {
             boolean sharing = node_meeting.at("/clue/sharing").asBoolean();
             int shareCompleteTime = node_meeting.at("/clue/shareCompleteTime").asInt();
-            if(!sharing){
+            if (!sharing) {
                 GameInfo.meeting.status = "收集中";
-            }else{
-                if(shareCompleteTime > currentTs){
+            } else {
+                if (shareCompleteTime > currentTs) {
                     GameInfo.meeting.status = "交流中";
-                }else {
+                } else {
                     GameInfo.meeting.status = "交流完成";
                 }
             }
             GameInfo.meeting.value = node_meeting.at("/clue/board").size();
         }
-        //tired
+        // tired
+        // 正确的算法是遍历基建群，计算ap为0的干员。不想写先摆了。
         JsonNode node_tired = tree.at("/data/building/tiredChars");
         GameInfo.tired.value = node_tired.size();
         printGameInfo();
         loadingDialog.dismiss();
         mHandler.post(this::updateLayout);
     }
-
-    //deseperate
-//    private void getGameInfo(String cred, String uid) throws IOException {
-//        Log.e(TAG, "cred  " + cred);
-//        Log.e(TAG, "uid  " + uid);
-//        InputStream is = getGameInfoStream(cred, uid);
-//
-//        if (is == null) {
-//            loadingDialog.dismiss();
-//            showToast(this, "获取数据失败");
-//            return;
-//        }
-//        GZIPInputStream gzip = new GZIPInputStream(is);
-//        ObjectMapper om = new ObjectMapper();
-//        JsonNode tree = om.readTree(gzip);
-//
-//        //info
-//        GameInfo.info.nickName = tree.at("/data/status/name").toString().replace("\"", "");
-//        GameInfo.info.level = tree.at("/data/status/level").asInt();
-//        GameInfo.info.progress = tree.at("/data/status/mainStageProgress").toString().replace("\"", "");
-//        //Ap
-//        //分情况
-//        //如果currentAp本身大于max（一般来说recoverTime  == -1）,直接取current.
-//        //然后正常计算自然恢复理智
-//        //如果currentTS > recoverTs, 取max
-//        //如果currentTs < recoverTS, 取计算值。
-//        int currentTs = tree.at("/data/currentTs").asInt();
-//        int ap_current = tree.at("/data/status/ap/current").asInt();
-//        int ap_max = tree.at("/data/status/ap/max").asInt();
-//        int ap_lastApAddTime = tree.at("/data/status/ap/lastApAddTime").asInt();
-//        int ap_recover = tree.at("/data/status/ap/completeRecoveryTime").asInt();
-//        GameInfo.ap.max = ap_max;
-//        if (ap_recover == -1) {
-//            GameInfo.ap.current = ap_current;
-//            GameInfo.ap.recoverTime = -1;
-//        } else if (ap_recover < currentTs) {
-//            GameInfo.ap.current = ap_max;
-//            GameInfo.ap.recoverTime = -1;
-//        } else {
-//            GameInfo.ap.current = (currentTs - ap_lastApAddTime) / (60 * 6) + ap_current;
-//            GameInfo.ap.recoverTime = (ap_recover - currentTs);
-//        }
-//        //train
-//        //charInfoMap
-//        //专精完成 "remainSecs": 0,
-//        //无专精 remainSecs": -1,
-//        JsonNode node_train = tree.at("/data/building/training");
-//        JsonNode node_char = tree.at("/data/charInfoMap");
-//        GameInfo.train.isNull = node_train.isNull();
-//        if (!GameInfo.train.isNull) {
-//            JsonNode trainee = node_train.get("trainee");
-//            GameInfo.train.traineeIsNull = trainee.isNull();
-//            if (!GameInfo.train.traineeIsNull) {
-//                String traineeCode = node_train.get("trainee").get("charId")
-//                        .toString()
-//                        .replace("\"", "");
-//                Log.e(TAG, traineeCode);
-//                GameInfo.train.trainee = node_char.get(traineeCode).get("name")
-//                        .toString()
-//                        .replace("\"", "");
-//                Log.e(TAG, GameInfo.train.trainee);
-//                GameInfo.train.status = trainee.get("targetSkill").asInt();
-//            }
-//            GameInfo.train.time = node_train.get("remainSecs").asInt();
-//        }
-//        //Recruit
-//        GameInfo.recruit.isNull = tree.at("/data/recruit").isNull();
-//        if (!GameInfo.recruit.isNull) {
-//            int unable = 0;
-//            int complete = 0;
-//            int finishTs = -1;
-//            for (int i = 0; i < 4; i++) {
-//                JsonNode node = tree.at("/data/recruit").get(i);
-//                int state = node.get("state").asInt();
-//                switch (state) {
-//                    case 0:
-//                        unable++;
-//                        break;
-//                    case 3:
-//                        complete++;
-//                        break;
-//                    case 2:
-//                        finishTs = max(node.get("finishTs").asInt(), finishTs);
-//                        break;
-//                }
-//            }
-//            if (finishTs == -1 || finishTs < currentTs) {
-//                GameInfo.recruit.time = -1;
-//            } else {
-//                GameInfo.recruit.time = (finishTs - currentTs);
-//            }
-//            GameInfo.recruit.max = 4 - unable;
-//            GameInfo.recruit.value = complete;
-//        }
-//        /*      hire
-//         *                "state": 1,
-//         *                 "refreshCount": 1,
-//         *                 "completeWorkTime": 1693772441,
-//         *                 "slotState": 2
-//         * */
-//        JsonNode node_hire = tree.at("/data/building/hire");
-//        GameInfo.hire.isNull = node_hire.isNull();
-//        if (!GameInfo.hire.isNull) {
-//            GameInfo.hire.value = node_hire.get("refreshCount").asInt();
-//            GameInfo.hire.time = node_hire.get("completeWorkTime").asInt() - currentTs;
-//        }
-//
-//        /*     Campaign
-//         *             "reward": {
-//         *                 "current": 1020,
-//         *                 "total": 1200
-//         *             }
-//         * */
-//        JsonNode node_campaign = tree.at("/data/campaign/reward");
-//        GameInfo.campaign.isNull = node_campaign.isNull();
-//        if (!GameInfo.campaign.isNull) {
-//            GameInfo.campaign.current = node_campaign.get("current").asInt();
-//            GameInfo.campaign.total = node_campaign.get("total").asInt();
-//        }
-//
-//        /* RoutineDay and week
-//         * "routine": {
-//         *             "daily": {
-//         *                 "current": 10,
-//         *                 "total": 10
-//         *             },
-//         *             "weekly": {
-//         *                 "current": 13,
-//         *                 "total": 13
-//         *             }
-//         *         },
-//         * */
-//        GameInfo.routineDay.isNull = tree.at("/data/routine").isNull();
-//        GameInfo.routineWeek.isNull = tree.at("/data/routine").isNull();
-//        if (!GameInfo.routineWeek.isNull && !GameInfo.routineDay.isNull) {
-//            JsonNode node_day = tree.at("/data/routine/daily");
-//            JsonNode node_week = tree.at("/data/routine/weekly");
-//            GameInfo.routineDay.current = node_day.get("current").asInt();
-//            GameInfo.routineDay.total = node_day.get("total").asInt();
-//            GameInfo.routineWeek.current = node_week.get("current").asInt();
-//            GameInfo.routineWeek.total = node_week.get("total").asInt();
-//        }
-//
-//        /*      Tower
-//         * "tower": {
-//         *             "records": [],
-//         *             "reward": {
-//         *                 "higherItem": {
-//         *                     "current": 0,
-//         *                     "total": 24
-//         *                 },
-//         *                 "lowerItem": {
-//         *                     "current": 0,
-//         *                     "total": 60
-//         *                 },
-//         *                 "termTs": 1694807999
-//         *             }
-//         *         },
-//         */
-//        JsonNode node_tower = tree.at("/data/tower");
-//        GameInfo.tower.isNull = node_tower.isNull();
-//        if (!GameInfo.tower.isNull) {
-//            JsonNode node_high = node_tower.at("/reward/higherItem");
-//            GameInfo.tower.highCurrent = node_high.get("current").asInt();
-//            GameInfo.tower.highTotal = node_high.get("total").asInt();
-//            JsonNode node_low = node_tower.at("/reward/lowerItem");
-//            GameInfo.tower.lowCurrent = node_low.get("current").asInt();
-//            GameInfo.tower.lowTotal = node_low.get("total").asInt();
-//        }
-//        /*BASE*/
-//
-//        /* Trading
-//         *  "stock": [
-//         *  "stockLimit": 10
-//         * //算法：(current - lastupdate) / ((completeTime - lastTime) / (limit - stock)) + stock
-//         * */
-//        JsonNode node_trading = tree.at("/data/building/tradings");
-//        GameInfo.trading.isNull = node_trading.isNull();
-//        if (!GameInfo.trading.isNull) {
-//            int stock = 0;
-//            int stockLimit = 0;
-//            for (int i = 0; i < node_trading.size(); i++) {
-//                JsonNode node = node_trading.get(i);
-//                int node_com = node.get("completeWorkTime").asInt();
-//                int node_max = node.get("stockLimit").asInt();
-//                int node_stock = node.get("stock").size();
-//                if (currentTs > node_com) {
-//                    node_stock += 1;
-//                }
-//
-//                stock += node_stock;
-//                stockLimit += node_max;
-//            }
-//            GameInfo.trading.value = stock;
-//            GameInfo.trading.maxValue = stockLimit;
-//        }
-//        //man
-//        /*//算法：
-//        (current - lastupdate) / ((completeTime - lastTime) / ((capacity/weight for each) - complete)) + complete
-//         *
-//         * */
-//        JsonNode node_product = tree.at("/data/building/manufactures");
-//        GameInfo.manufactures.isNull = node_product.isNull();
-//        if (!GameInfo.manufactures.isNull) {
-//            int value = 0;
-//            int max = 0;
-//            for (int i = 0; i < node_product.size(); i++) {
-//                JsonNode node = node_product.get(i);
-//                String id = node.get("formulaId").toString().replace("\"", "");
-//                int weight = getWeightFromId(id);
-//                int node_max = node.get("capacity").asInt() / weight;
-//                int node_com = node.get("completeWorkTime").asInt();
-//                int node_last = node.get("lastUpdateTime").asInt();
-//                int node_value = node.get("complete").asInt();
-//                if (currentTs >= node_com) {
-//                    node_value = node_max;
-//                } else {
-//                    node_value += (currentTs - node_last) /
-//                            ((node_com - node_last) / (node_max - node_value));
-//                }
-//                max += node_max;
-//                value += node_value;
-//            }
-//            GameInfo.manufactures.value = value;
-//            GameInfo.manufactures.maxValue = max;
-//        }
-//        //Labor
-//        //(current - lastupdate) * (max - value) / secRemain + value, if > max =max
-//        //
-//        JsonNode node_labor = tree.at("/data/building/labor");
-//        int labor_update_value = node_labor.get("value").asInt();
-//        int labor_max = node_labor.get("maxValue").asInt();
-//        int labor_value = (currentTs - node_labor.get("lastUpdateTime").asInt()) * (labor_max - labor_update_value) / node_labor.get("remainSecs").asInt() + labor_update_value;
-//        int labor_remain = node_labor.get("remainSecs").asInt() - (currentTs - node_labor.get("lastUpdateTime").asInt());
-//        if (labor_value > labor_max) {
-//            labor_value = labor_max;
-//        }
-//        GameInfo.labor.value = labor_value;
-//        GameInfo.labor.maxValue = labor_max;
-//        if (labor_remain < 0) {
-//            labor_remain = 0;
-//        }
-//        GameInfo.labor.recoverTime = labor_remain;
-//        //Dormitories
-//        //没研究明白 似乎ap == 8640000的就是休息完成的(240hour)
-//        JsonNode node_dormitories = tree.at("/data/building/dormitories");
-//        GameInfo.dormitories.isNull = node_dormitories.isNull();
-//        if (!GameInfo.dormitories.isNull) {
-//            int max = 0;
-//            int value = 0;
-//            for (int i = 0; i < node_dormitories.size(); i++) {
-//                JsonNode node = node_dormitories.get(i).get("chars");
-//                max += node.size();
-//                for (int j = 0; j < node.size(); j++) {
-//                    if (node.get(j).get("ap").asInt() == 8640000) value++;
-//                }
-//            }
-//            GameInfo.dormitories.maxValue = max;
-//            GameInfo.dormitories.value = value;
-//        }
-//        //clue
-//        JsonNode node_meeting = tree.at("/data/building/meeting");
-//        GameInfo.meeting.isNull = node_meeting.isNull();
-//        if (!GameInfo.meeting.isNull) {
-//            GameInfo.meeting.value = node_meeting.get("clue").get("board").size();
-//        }
-//        //tired
-//        JsonNode node_tired = tree.at("/data/building/tiredChars");
-//        GameInfo.tired.value = node_tired.size();
-//        printGameInfo();
-//
-//        is.close();
-//        gzip.close();
-//        loadingDialog.dismiss();
-//        mHandler.post(this::updateLayout);
-//
-//    }
 
     @SuppressLint("SetTextI18n")
     private void updateLayout() {

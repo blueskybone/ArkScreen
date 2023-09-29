@@ -1,29 +1,40 @@
 package com.godot17.arksc.activity;
 
 import static com.godot17.arksc.utils.NetWorkTask.OK;
+import static com.godot17.arksc.utils.NetWorkTask.getBindingRoleInfo;
 import static com.godot17.arksc.utils.NetWorkTask.getCredByToken;
 import static com.godot17.arksc.utils.NetWorkTask.loadStatusInfoByCred;
 import static com.godot17.arksc.utils.NetWorkTask.logOutMsg;
 import static com.godot17.arksc.utils.PrefManager.getTokenChanged;
 import static com.godot17.arksc.utils.PrefManager.getUserInfo;
+import static com.godot17.arksc.utils.PrefManager.setChannelMasterId;
+import static com.godot17.arksc.utils.PrefManager.setSignTs;
 import static com.godot17.arksc.utils.PrefManager.setTokenChanged;
+import static com.godot17.arksc.utils.PrefManager.setUserId;
+import static com.godot17.arksc.utils.PrefManager.setUserInfo;
 import static com.godot17.arksc.utils.Utils.showToast;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.godot17.arksc.R;
+import com.godot17.arksc.datautils.RoleInfo;
 import com.godot17.arksc.utils.LoadingDialog;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.List;
 
 
 public class SkLandLogin extends Activity implements View.OnClickListener {
@@ -60,8 +71,12 @@ public class SkLandLogin extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.card_bind_role) {
-            //switchBindingRole();
-            showAlertDialog();
+            try {
+                switchBindingRole();
+            } catch (MalformedURLException | JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            //showAlertDialog();
         } else if (id == R.id.card_skland_login_web) {
             startActivity(new Intent(this, LoginActivity.class));
         } else if (id == R.id.card_skland_logout) {
@@ -69,15 +84,48 @@ public class SkLandLogin extends Activity implements View.OnClickListener {
         }
     }
 
-    private void showAlertDialog() {
-        String content = getString(R.string.content_switch_role);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(content)
-                .setTitle("切换绑定角色")
-                .setPositiveButton(R.string.identify, (dialog, which) -> {
-                })
-                .create()
-                .show();
+    private void switchBindingRole() throws MalformedURLException, JsonProcessingException {
+        //cred->bindinglist
+        new Thread(() -> {
+            List<RoleInfo> roleInfos = null;
+            try {
+                roleInfos = getBindingRoleInfo(this);
+            } catch (MalformedURLException | JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            if (roleInfos == null) {
+                mHandler.post(() -> {
+                    Toast.makeText(this, "获取角色列表失败", Toast.LENGTH_SHORT).show();
+                });
+                return;
+            }
+            String[] str = new String[roleInfos.size()];
+            int cnt = 0;
+            for (RoleInfo role : roleInfos) {
+                str[cnt++] = role.userInfo;
+            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            List<RoleInfo> finalRoleInfos = roleInfos;
+            builder.setTitle("选择绑定角色")
+                    .setItems(str, (dialog, which) -> {
+                        RoleInfo roleInfo = finalRoleInfos.get(which);
+                        setUserId(this, roleInfo.uid);
+                        setChannelMasterId(this, roleInfo.channelMasterId);
+                        setUserInfo(this, roleInfo.userInfo);
+                        setSignTs(this, 0);
+
+                        Intent intent = new Intent("MANUAL_UPDATE");
+                        intent.setPackage(getPackageName());    //from Android 12 must setPackage
+                        sendBroadcast(intent);
+                        mHandler.post(() -> {
+                            textView.setText(getUserInfo(this));
+                        });
+                    });
+            mHandler.post(() -> builder.create().show());
+
+        }).start();
+
+
     }
 
     @Override
@@ -87,12 +135,11 @@ public class SkLandLogin extends Activity implements View.OnClickListener {
         if (getTokenChanged(this)) {
             setTokenChanged(this, false);
             loadingDialog.show();
-            loginByTokenNew();
-            //loginByToken(getToken(this));
+            loginByToken();
         }
     }
 
-    private void loginByTokenNew() {
+    private void loginByToken() {
         new Thread(() -> {
             try {
                 String resp = getCredByToken(this);
@@ -118,47 +165,6 @@ public class SkLandLogin extends Activity implements View.OnClickListener {
             }
         }).start();
     }
-
-//    private void loginByToken(String token) {
-//        new Thread(() -> {
-//            //loadingDialog.show();
-//            try {
-//                String code = getGrantCodeByToken(token);
-//                if (code == null) {
-//                    //loadingDialog.dismiss();
-//                    showToast(this, "error with getGrantCode");
-//                    finish();
-//                    return;
-//                } else if (code.equals("UNAUTHORIZED")) {
-//                    // loadingDialog.dismiss();
-//                    showToast(this, "Token已过期，请重新登录");
-//                    finish();
-//                    return;
-//                }
-//                String cred = getCredByGrant(code);
-//                if (cred == null) {
-//                    //loadingDialog.dismiss();
-//                    showToast(this, "error with getCred");
-//                    finish();
-//                    return;
-//                }
-//                String userInfo = getBindingInfoWith(cred, "userInfo");
-//                if (userInfo == null) {
-//                    // loadingDialog.dismiss();
-//                    showToast(this, "error with get BindingList");
-//                    finish();
-//                    return;
-//                }
-//                textView.post(() -> textView.setText(userInfo));
-//                setUserInfo(this, userInfo);
-//                setToken(this, token);
-//                showToast(this, "token已保存");
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            finish();
-//        }).start();
-//    }
 
     private void logOut() {
         new Thread(() -> {

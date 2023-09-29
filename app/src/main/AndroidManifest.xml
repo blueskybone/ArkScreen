@@ -24,18 +24,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ArkSc">
         <receiver
-            android:name=".SklandWidgetH"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="MANUAL_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/skland_widget_h_info" />
-        </receiver>
-        <receiver
             android:name=".SklandWidget"
             android:exported="true">
             <intent-filter>

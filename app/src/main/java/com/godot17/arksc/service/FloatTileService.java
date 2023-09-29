@@ -1,7 +1,5 @@
 package com.godot17.arksc.service;
 
-import static com.godot17.arksc.utils.ScreenUtils.getRealHeight;
-
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -9,6 +7,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 import android.service.quicksettings.Tile;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.godot17.arksc.App;
@@ -23,7 +22,7 @@ import java.util.List;
 public class FloatTileService extends android.service.quicksettings.TileService {
     private final String TAG = "FloatTileService";
     private static FloatTileService instance;
-    private boolean isRunning = false;
+    private static boolean isRunning = false;
 
 
     @Override
@@ -34,10 +33,10 @@ public class FloatTileService extends android.service.quicksettings.TileService 
     @Override
     public void onCreate() {
         instance = this;
-        isRunning = false;
         super.onCreate();
     }
-    public static FloatTileService getInstance(){
+
+    public static FloatTileService getInstance() {
         return instance;
     }
 
@@ -45,7 +44,9 @@ public class FloatTileService extends android.service.quicksettings.TileService 
     public void onClick() {
         super.onClick();
         Tile mTile = getQsTile();
-        if (mTile.getState() == Tile.STATE_INACTIVE) {
+        Log.e(TAG, "tile.state on click:" + mTile.getState());
+        Log.e(TAG, "isRunning on click: " + isRunning);
+        if (mTile.getState() == Tile.STATE_INACTIVE && !isRunning) {
             mTile.setState(Tile.STATE_ACTIVE);
             mTile.updateTile();
             isRunning = true;
@@ -54,7 +55,6 @@ public class FloatTileService extends android.service.quicksettings.TileService 
             noDisplayIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             this.startActivityAndCollapse(noDisplayIntent);
             EasyWindow.cancelAll();
-            //int yOffset = getRealHeight(getApplication())/ 2;
             EasyWindow.with(getApplication())
                     .setContentView(R.layout.window_icon)
                     .setDraggable(new SpringDraggable(SpringDraggable.ORIENTATION_HORIZONTAL))
@@ -66,8 +66,6 @@ public class FloatTileService extends android.service.quicksettings.TileService 
             isRunning = false;
             recycleResource();
             exitService();
-//            stopSelf();
-//            exitAPP();
             System.exit(0);
             stopSelf();
         }
@@ -75,19 +73,19 @@ public class FloatTileService extends android.service.quicksettings.TileService 
 
     private void exitService() {
         DataProcessService dataProcessService = DataProcessService.getInstance();
-        if(dataProcessService!=null){
+        if (dataProcessService != null) {
             dataProcessService.stopSelf();
         }
         DataQueryService dataQueryService = DataQueryService.getInstance();
-        if(dataQueryService!=null){
+        if (dataQueryService != null) {
             dataQueryService.stopSelf();
         }
         FloatWindowService floatWindowService = FloatWindowService.getInstance();
-        if(floatWindowService!=null){
+        if (floatWindowService != null) {
             floatWindowService.stopSelf();
         }
         NotificationService notificationService = NotificationService.getInstance();
-        if(notificationService!=null){
+        if (notificationService != null) {
             notificationService.stopSelf();
         }
     }
@@ -117,14 +115,17 @@ public class FloatTileService extends android.service.quicksettings.TileService 
 
     @Override
     public void onStartListening() {
-        if(!isRunning){
-            Tile mTile = getQsTile();
+        Tile mTile = getQsTile();
+        Log.e("onstartListening", "isRunning " + isRunning);
+        Log.e("onstartListening", "mTile.getState" + mTile.getState());
+        if (!isRunning) {
             mTile.setState(Tile.STATE_INACTIVE);
             mTile.updateTile();
         }
     }
+
     @Override
-    public void onStopListening(){
+    public void onStopListening() {
 
     }
 

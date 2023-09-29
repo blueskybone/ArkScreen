@@ -71,7 +71,7 @@ public class HttpConnectionUtils {
             httpsConn.setDoInput(true);
             httpsConn.setInstanceFollowRedirects(true);
             httpsConn.connect();
-            if (httpsConn.getResponseCode() == 200) {
+            if (httpsConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 return httpsConn;
             } else {
                 return null;

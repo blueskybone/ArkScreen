@@ -60,8 +60,7 @@ public class NetworkUtils {
     }};
 
     public static HttpsURLConnection getAppVersion() throws MalformedURLException {
-        URL url = new URL(app_version_url_test);
-
+        URL url = new URL(app_version_url);
         return httpResponseConnection(url,null, RequestMethod.GET);
     }
 
@@ -74,14 +73,14 @@ public class NetworkUtils {
         return (Objects.equals(getJsonContent(resp, "msg"), "OK"));
     }
 
-    public static String getGrantCodeByTokenNew(String token) throws IOException {
+    public static String getGrantCodeByToken(String token) throws IOException {
         URL url = new URL(grant_code_url);
         String jsonInputString = "{\"appCode\":\"" + app_code + "\", \"token\":\"" + token + "\", \"type\":0}";
         //Log.e(TAG, jsonInputString);
         return httpResponse(url, jsonInputString, header_login, RequestMethod.POST);
     }
 
-    public static String getCredByGrantNew(String grantCode) throws MalformedURLException {
+    public static String getCredByGrant(String grantCode) throws MalformedURLException {
         URL url = new URL(cred_code_url);
         String code = grantCode.replace("\"", "");
         String jsonInputString = "{\"code\":\"" + code + "\", \"kind\":1}";
@@ -102,7 +101,6 @@ public class NetworkUtils {
         URL url = new URL(game_info_url + "?uid=" + uid);
         return httpResponseConnection(url, header, RequestMethod.GET);
     }
-
 
     public static String doAttendanceNew(String cred,
                                          String uid,

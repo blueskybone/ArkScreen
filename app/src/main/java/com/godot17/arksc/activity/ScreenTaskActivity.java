@@ -186,7 +186,7 @@ public class ScreenTaskActivity extends Activity {
             Log.e(TAG, Arrays.toString(data));
             switch (data[0]) {
                 case "NONE":
-                    Toast.makeText(this, "未获取有效信息,请参阅使用说明", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "未获取有效信息", Toast.LENGTH_SHORT).show();
                     break;
                 case "WRONG":
                     Toast.makeText(this, data[1], Toast.LENGTH_SHORT).show();
