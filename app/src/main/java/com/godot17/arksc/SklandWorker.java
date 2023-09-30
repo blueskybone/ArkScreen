@@ -63,30 +63,32 @@ public class SklandWorker extends Worker {
             return Result.failure();
         } else {
             try {
-                String resp = getCredByToken(context);
-                Log.e(TAG, resp);
-                if (!resp.equals(OK)) {
-                    views.setTextViewText(R.id.appwidget_text, resp);
-                    appWidgetManager.updateAppWidget(componentName, views);
-                    return Result.retry();
-                }
-
                 HttpsURLConnection cn = getGameInfoInputConnection(context);
+                if (cn == null) {
+                    Log.e(TAG, "cn == null");
+                    String resp = getCredByToken(context);
+                    if (!resp.equals(OK)) {
+                        views.setTextViewText(R.id.appwidget_text, resp);
+                        appWidgetManager.updateAppWidget(componentName, views);
+                        return Result.failure();
+                    }
+                    cn = getGameInfoInputConnection(context);
+                    if (cn == null) {
+                        Log.e(TAG, "cn == null");
+                        views.setTextViewText(R.id.appwidget_text, "连接失败");
+                        appWidgetManager.updateAppWidget(componentName, views);
+                        return Result.failure();
+                    }
+                }
                 InputStream is = cn.getInputStream();
                 if (is == null) {
-                    views.setTextViewText(R.id.appwidget_text, "getDataErr");
+                    views.setTextViewText(R.id.appwidget_text, "获取数据失败");
                     appWidgetManager.updateAppWidget(componentName, views);
-                    return Result.retry();
+                    return Result.failure();
                 }
-
-                /*如果只获取理智信息，只需要读到1210kb左右，断开连接。
-                 * 主要是看jsonNode的readTree的流读入,要整个数据读完才建树。
-                 * 读一次完整数据要250kb。真不知道yj怎么想的。
-                 * 更精确的方法是读到需要的信息为止，但挨个判断效率太低*/
                 GZIPInputStream gzip = new GZIPInputStream(is);
                 InputStreamReader inputStreamReader = new InputStreamReader(gzip);
                 char[] chars = new char[1536];
-
                 int s = inputStreamReader.read(chars);
                 String str = new String(chars);
                 getApInfo(str);

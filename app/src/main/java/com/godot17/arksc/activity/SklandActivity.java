@@ -7,6 +7,7 @@ import static com.godot17.arksc.utils.PrefManager.getAutoSign;
 import static com.godot17.arksc.utils.PrefManager.getToken;
 import static com.godot17.arksc.utils.PrefManager.getUserInfo;
 import static com.godot17.arksc.utils.Utils.convertSec2DayHourMin;
+import static com.godot17.arksc.utils.Utils.convertTs2Day;
 import static com.godot17.arksc.utils.Utils.showToast;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -82,11 +83,6 @@ public class SklandActivity extends Activity {
 
     private void LoadingGameData() throws IOException {
         loadingDialog.show();
-        //updateWidget
-        Intent intent = new Intent("MANUAL_UPDATE");
-        intent.setPackage(getPackageName());    //from Android 12 must setPackage
-        sendBroadcast(intent);
-        Log.e(TAG, "broadcast");
         new Thread(() -> {
             String token = getToken(this);
             if (token.equals("")) {
@@ -97,32 +93,37 @@ public class SklandActivity extends Activity {
             }
             try {
                 HttpsURLConnection cn = getGameInfoInputConnection(this);
+                if (cn == null) {
+                    Log.e(TAG, "cn == null");
+                    String resp = getCredByToken(this);
+                    if (!resp.equals(OK)) {
+                        loadingDialog.dismiss();
+                        showToast(this, resp);
+                        return;
+                    }
+                    cn = getGameInfoInputConnection(this);
+                    if (cn == null) {
+                        Log.e(TAG, "cn == null");
+                        loadingDialog.dismiss();
+                        showToast(this, "连接服务器失败");
+                        return;
+                    }
+                }
                 InputStream is = cn.getInputStream();
-
                 if (is == null) {
                     loadingDialog.dismiss();
                     showToast(this, "获取数据失败,请重试或重新登录");
                     return;
                 }
-
                 GZIPInputStream gzip = new GZIPInputStream(is);
                 ObjectMapper om = new ObjectMapper();
                 JsonNode dataNode = om.readTree(gzip);
+                getGameInfo(dataNode);
+                gzip.close();
+                is.close();
+                cn.disconnect();
 
-                if (0 != dataNode.get("code").asInt()) {
-                    gzip.close();
-                    is.close();
-                    cn.disconnect();
-                    Log.e(TAG, "disconnect");
-
-                    getGameInfoFromToken();
-                } else {
-                    getGameInfo(dataNode);
-                    gzip.close();
-                    is.close();
-                    cn.disconnect();
-                    Log.e(TAG, "disconnect");
-                }
+                Log.e(TAG, "disconnect");
 
                 if (getAutoSign(this)) {
                     String msg = NetWorkTask.doAttendance(this);
@@ -132,58 +133,23 @@ public class SklandActivity extends Activity {
                 e.printStackTrace();
             }
         }).start();
-    }
-
-    private void getGameInfoFromToken() throws IOException {
-        String resp = getCredByToken(this);
-        Log.e(TAG,resp);
-        if (!resp.equals(OK)) {
-            loadingDialog.dismiss();
-            showToast(this, resp);
-            finish();
-            return;
-        }
-
-        HttpsURLConnection cn = getGameInfoInputConnection(this);
-        InputStream is = cn.getInputStream();
-
-        if (is == null) {
-            loadingDialog.dismiss();
-            showToast(this, "获取数据失败,请重试或重新登录");
-            return;
-        }
-        GZIPInputStream gzip = new GZIPInputStream(is);
-        ObjectMapper om = new ObjectMapper();
-        JsonNode dataNode = om.readTree(gzip);
-        if (0 != dataNode.get("code").asInt()) {
-            showToast(this, "登录过期");
-            gzip.close();
-            is.close();
-            cn.disconnect();
-        } else {
-            getGameInfo(dataNode);
-            gzip.close();
-            is.close();
-            cn.disconnect();
-        }
-
-        if (getAutoSign(this)) {
-            String msg = NetWorkTask.doAttendance(this);
-            showToast(this, msg);
-        }
-
+        Intent intent = new Intent("MANUAL_UPDATE");
+        intent.setPackage(getPackageName());    //from Android 12 must setPackage
+        sendBroadcast(intent);
+        Log.e(TAG, "broadcast");
     }
 
     private void getGameInfo(JsonNode tree) {
         GameInfo.info.nickName = tree.at("/data/status/name").toString().replace("\"", "");
         GameInfo.info.level = tree.at("/data/status/level").asInt();
         GameInfo.info.progress = tree.at("/data/status/mainStageProgress").toString().replace("\"", "");
+        int lastOnLineTs = tree.at("/data/status/lastOnlineTs").asInt();
         //Ap
         //分情况
-        //如果currentAp本身大于max（一般来说recoverTime  == -1）,直接取current.
+        //如果currentAp > max（recoverTime  == -1）,直接取current.
         //然后正常计算自然恢复理智
-        //如果currentTS > recoverTs, 取max
-        //如果currentTs < recoverTS, 取计算值。
+        //currentTS >= recoverTs, 取max
+        //currentTs < recoverTS, 取计算值。
         int currentTs = tree.at("/data/currentTs").asInt();
         int ap_current = tree.at("/data/status/ap/current").asInt();
         int ap_max = tree.at("/data/status/ap/max").asInt();
@@ -214,7 +180,6 @@ public class SklandActivity extends Activity {
                 String traineeCode = node_train.get("trainee").get("charId")
                         .toString()
                         .replace("\"", "");
-                Log.e(TAG, traineeCode);
                 GameInfo.train.trainee = node_char.get(traineeCode).get("name")
                         .toString()
                         .replace("\"", "");
@@ -303,7 +268,12 @@ public class SklandActivity extends Activity {
         if (!GameInfo.routineWeek.isNull && !GameInfo.routineDay.isNull) {
             JsonNode node_day = tree.at("/data/routine/daily");
             JsonNode node_week = tree.at("/data/routine/weekly");
-            GameInfo.routineDay.current = node_day.get("current").asInt();
+
+            if (convertTs2Day(currentTs - 14400) > convertTs2Day(lastOnLineTs - 14400)) {
+                GameInfo.routineDay.current = 0;
+            } else {
+                GameInfo.routineDay.current = node_day.get("current").asInt();
+            }
             GameInfo.routineDay.total = node_day.get("total").asInt();
             GameInfo.routineWeek.current = node_week.get("current").asInt();
             GameInfo.routineWeek.total = node_week.get("total").asInt();
@@ -409,19 +379,34 @@ public class SklandActivity extends Activity {
         }
         GameInfo.labor.recoverTime = labor_remain;
         //Dormitories
-        //没研究明白 似乎ap == 8640000的就是休息完成的(240hour)
+        //没研究明白 似乎ap == 8640000的就是休息完成的(2400hour)
         //恢复效率：基础值level + 氛围值/2500。如满级宿舍＋5000氛围值 = 一小时恢复4点
-        //好麻烦，摆了。
+        //60 * 60 / 14,40000 (currentTs - lastUpdateTime) * 100 *speed + currentAp >=? 8640000
+        //level1: 1.6 level2:1.7 level3:1.8 level4:1.9 level5:2
         JsonNode node_dormitories = tree.at("/data/building/dormitories");
         GameInfo.dormitories.isNull = node_dormitories.isNull();
         if (!GameInfo.dormitories.isNull) {
             int max = 0;
             int value = 0;
             for (int i = 0; i < node_dormitories.size(); i++) {
-                JsonNode node = node_dormitories.get(i).get("chars");
-                max += node.size();
-                for (int j = 0; j < node.size(); j++) {
-                    if (node.get(j).get("ap").asInt() == 8640000) value++;
+
+                JsonNode node = node_dormitories.get(i);
+                JsonNode chars = node.get("chars");
+                double speed = node.get("level").asDouble() * 0.1 + 1.5 + node.get("comfort").asDouble() / 2500;
+                speed *= 100;
+                Log.e(TAG, "speed" + speed);
+                max += chars.size();
+                for (int j = 0; j < chars.size(); j++) {
+                    JsonNode chr = chars.get(j);
+                    int currentAp = chr.at("/ap").asInt();
+                    int lastApAddTime = chr.at("/lastApAddTime").asInt();
+                    if ((currentAp - lastApAddTime) > 86400) {
+                        value++;
+                    } else {
+                        int ap = (currentTs - lastApAddTime) * (int) speed + currentAp;
+                        Log.e(TAG, ap + "");
+                        if (ap >= 8640000) value++;
+                    }
                 }
             }
             GameInfo.dormitories.maxValue = max;
@@ -447,8 +432,12 @@ public class SklandActivity extends Activity {
             GameInfo.meeting.value = node_meeting.at("/clue/board").size();
         }
         // tired
-        // 正确的算法是遍历基建群，计算ap为0的干员。不想写先摆了。
-        JsonNode node_tired = tree.at("/data/building/tiredChars");
+        // 正确的算法是遍历基建群，计算ap为0的干员。太麻烦了先摆了。
+        JsonNode node_building = tree.at("/data/building");
+        JsonNode node_tired = node_building.at("/tiredChars");
+//        JsonNode node_manufactures = node_building.at("/manufactures");
+//        JsonNode node_tradings = node_building.at("/tradings");
+//        JsonNode node_meet = node_building.at("/meeting");
         GameInfo.tired.value = node_tired.size();
         printGameInfo();
         loadingDialog.dismiss();

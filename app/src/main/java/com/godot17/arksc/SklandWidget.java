@@ -46,7 +46,7 @@ public class SklandWidget extends AppWidgetProvider {
         appWidgetManager.updateAppWidget(appWidgetIds, remoteViews);
 
         Log.e(TAG, "OnUpdate");
-        WorkManager.getInstance(context).enqueue(OneTimeWorkRequest.from(SklandWorker.class));
+        //WorkManager.getInstance(context).enqueue(OneTimeWorkRequest.from(SklandWorker.class));
     }
 
     @Override
@@ -69,7 +69,7 @@ public class SklandWidget extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
         Log.e(TAG, "OnReceive");
-        if (intent.getAction().equals(MANUAL_UPDATE)) {
+        if (intent.getAction().equals(MANUAL_UPDATE)||intent.getAction().equals(APPWIDGET_UPDATE)) {
             Log.e(TAG, "receive");
             WorkManager.getInstance(context).enqueue(OneTimeWorkRequest.from(SklandWorker.class));
 
