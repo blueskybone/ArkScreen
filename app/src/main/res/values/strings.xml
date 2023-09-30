@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">公招助手</string>
-    <string name="version">v 1.1</string>
+    <string name="version">v 1.2</string>
     <string name="no_permission_for_float_window">未获取悬浮窗权限</string>
     <string name="tile_float">悬浮球公招</string>
     <string name="tile_quick">快捷公招</string>
@@ -31,21 +31,24 @@
     <string name="title_question">常见问题</string>
     <string name="content_query">
         ## 公招\n
-        **Q：两种快捷开关的区别** \n\n
-        A：推荐使用“悬浮球公招”。“快捷公招”仅作为少次使用或部分机型无法唤出悬浮球时的替代。\n\n\n
         **Q：悬浮球无法唤出** \n\n
-        A：打开应用，唤醒悬浮球后再回到游戏使用。\n\n\n
-        **Q：未获取有效信息，请参照使用说明** \n\n
-        A：请保证悬浮窗未遮挡公招标签。\n\n\n
-        **Q：识别结果错误率极高？** \n\n
-        A：部分机型黑暗模式会降低截图本身的亮度，会影响识别，关闭黑暗模式后重试。\n\n\n
+        A：部分机型需保持应用在后台。\n\n\n
+        **Q：截图时闪退或产生不正常输出** \n\n
+        A：设置中给应用添加通知权限；若问题仍未解决请联系作者反馈。\n\n
+        **Q：未获取有效信息** \n\n
+        A：保证公招标签处于未点击状态；保证悬浮窗未遮挡标签。\n\n\n
+        **Q：识别结果错误率极高** \n\n
+        A：部分机型黑暗模式会降低截图本身的亮度，影响识别。\n\n\n
         ## 桌面组件\n
         **Q：桌面组件理智不涨** \n\n
-        A：手动更新一下。\n\n\n
+        A：休眠状态下进程可能会被杀死。点击理智图标可手动更新。\n\n\n
+        **Q：桌面组件点击无效/点击后打开应用** \n\n
+        A：更新应用后请手动移除组件，重新添加。\n\n
         **Q：组件大小不合适** \n\n
-        A：设置中调整字体大小。\n
+        A：设置中可调整字体大小和透明度。\n
+
         \n---\n
-        若有其他bug或问题欢迎反馈\n\n交流群：924153470\n\n\n\n.
+        若发现bug想要反馈，或有任何想法或建议，或对项目感兴趣想要加入开发，欢迎进群交流。\n\n交流群：924153470\n\n\n\n.
     </string>
     <string name="content_use">
         1.快捷公招：下拉通知栏，将图块添加到快速设置中使用 \n\n

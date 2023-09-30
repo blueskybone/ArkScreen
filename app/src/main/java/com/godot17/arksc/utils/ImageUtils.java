@@ -28,7 +28,6 @@ public class ImageUtils {
     /*
      * Cut the screenshot to middle rect only contain 5 tags.
      * These magic numbers come from experimental results of arknights UI layout
-     *
      * */
     public static Bitmap bitmap_2_target_bitmap(Bitmap srcBitmap, int width, int height) {
         int x, y, tag_width, tag_height;

@@ -4,6 +4,8 @@ import static com.godot17.arksc.utils.HttpConnectionUtils.downloadToLocal;
 import static com.godot17.arksc.utils.HttpConnectionUtils.getResponse;
 import static com.godot17.arksc.utils.HttpConnectionUtils.isNetConnected;
 import static com.godot17.arksc.utils.NetWorkTask.getUpdateInfo;
+import static com.godot17.arksc.utils.PrefManager.getCred;
+import static com.godot17.arksc.utils.PrefManager.getToken;
 import static com.godot17.arksc.utils.PrefManager.getUserInfo;
 import static com.godot17.arksc.utils.Utils.getAssets2CacheDir;
 
@@ -71,7 +73,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
     private void setLayout() {
         setContentView(R.layout.activity_home);
 
@@ -81,7 +82,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         CardView card_question = findViewById(R.id.card_question);
         CardView card_setting = findViewById(R.id.card_setting);
         CardView card_about = findViewById(R.id.card_about);
-
 
 
         card_cal.setOnClickListener(this);
@@ -103,7 +103,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             updateLog("无网络连接");
             return;
         }
-        mHandler.post(()->{
+        mHandler.post(() -> {
             try {
                 checkAppVersion();
                 checkDatabaseVersion();
@@ -111,9 +111,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 e.printStackTrace();
             }
         });
-//        new Thread(() -> {
-//
-//        }).start();
     }
 
     private void updateLog(String info) {
@@ -175,7 +172,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
         String finalUpdate = "最后更新：" + update;
-        textViewDBUpdate.post(()-> textViewDBUpdate.setText(finalUpdate));
+        textViewDBUpdate.post(() -> textViewDBUpdate.setText(finalUpdate));
         DataQueryService dataQueryService = DataQueryService.getInstance();
         if (dataQueryService == null) {
             updateLog("数据库初始化失败\n\n");
@@ -199,13 +196,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     private void checkAppVersion() throws MalformedURLException {
 
-        if(getUpdateInfo(this)){
-            updateLog("检测到应用新版本, [下载链接](" + UpdateInfo.link + ")\n\n");
-            showUpdateDiaLog(UpdateInfo.content, UpdateInfo.link);
-            //showDialog.
+        if (getUpdateInfo(this)) {
+            updateLog("检测到应用新版本, [下载链接](" + UpdateInfo.link + ")\n\n" + UpdateInfo.content);
         }
     }
-
     private void requestFloatWinPermission(Context context) {
         if (Settings.canDrawOverlays(this)) return;
         ActivityResultLauncher<Intent> intentActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -265,7 +259,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         Markwon.create(this).setMarkdown(textView, content);
         builder.setView(view)
                 .setTitle(title)
-                .setPositiveButton(R.string.identify, (dialog, which) -> { })
+                .setPositiveButton(R.string.identify, (dialog, which) -> {
+                })
                 .create()
                 .show();
     }

@@ -3,9 +3,9 @@ package com.godot17.arksc.utils;
 import static com.godot17.arksc.utils.NetworkUtils.doAttendanceNew;
 import static com.godot17.arksc.utils.NetworkUtils.getAppVersion;
 import static com.godot17.arksc.utils.NetworkUtils.getBindingJson;
-import static com.godot17.arksc.utils.NetworkUtils.getCredByGrantNew;
+import static com.godot17.arksc.utils.NetworkUtils.getCredByGrant;
 import static com.godot17.arksc.utils.NetworkUtils.getGameInfoConnection;
-import static com.godot17.arksc.utils.NetworkUtils.getGrantCodeByTokenNew;
+import static com.godot17.arksc.utils.NetworkUtils.getGrantCodeByToken;
 import static com.godot17.arksc.utils.NetworkUtils.logOutByToken;
 import static com.godot17.arksc.utils.PrefManager.getChannelMasterId;
 import static com.godot17.arksc.utils.PrefManager.getCred;
@@ -24,12 +24,10 @@ import android.content.Context;
 import android.util.Log;
 import android.util.Xml;
 
-import androidx.work.ListenableWorker;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.godot17.arksc.R;
+import com.godot17.arksc.datautils.RoleInfo;
 import com.godot17.arksc.datautils.UpdateInfo;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -37,6 +35,8 @@ import org.xmlpull.v1.XmlPullParser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -64,14 +64,18 @@ public class NetWorkTask {
      *  cred -> doAttendance
      *
      * 应用场景：
-     * cred->do
-     * cred->unauthorized, token->cred->do
+     * cred->doWork
+     * cred->unauthorized, token->cred->doWork
      * token ->unauthorized -> expired
      * */
 
+    /*
+     *TODO:
+     * 其实还是从token开始请求的。但是不想写了。开摸
+     * */
     public static String getCredByToken(Context context) throws IOException {
         String token = getToken(context);
-        String respGrant = getGrantCodeByTokenNew(token);
+        String respGrant = getGrantCodeByToken(token);
         String grantCode;
         if (respGrant == null) {
             return BAD_NETWORK;
@@ -95,8 +99,8 @@ public class NetWorkTask {
                 return GRANT_UK_RESPONSE;
             }
         }
-        //getGrantCode
-        String respCred = getCredByGrantNew(grantCode);
+        //getCred
+        String respCred = getCredByGrant(grantCode);
         if (respCred == null) {
             return BAD_NETWORK;
         } else {
@@ -162,15 +166,22 @@ public class NetWorkTask {
         }
         //越界判断（？
         JsonNode arkList = list.get(idx);
-        String defaultUid = arkList.get("defaultUid").toString().replace("\"", "");
-        if (!defaultUid.equals("")) {
-            for (idx = 0; idx < list.size(); idx++) {
-                if (arkList.at("/bindingList").get(idx).get("uid").toString().replace("\"", "").equals(defaultUid)) {
-                    break;
+        JsonNode bindingList = arkList.at("/bindingList");
+        for (idx = 0; idx < bindingList.size(); idx++) {
+            if (bindingList.get(idx).get("isDefault").asBoolean()) break;
+        }
+        if (idx == bindingList.size()) {
+            String defaultUid = arkList.get("defaultUid").toString().replace("\"", "");
+            Log.e(TAG, defaultUid);
+            if (!defaultUid.equals("")) {
+                for (idx = 0; idx < list.size(); idx++) {
+                    if (arkList.at("/bindingList").get(idx).get("uid").toString().replace("\"", "").equals(defaultUid)) {
+                        break;
+                    }
                 }
+            } else {
+                idx = 0;
             }
-        } else {
-            idx = 0;
         }
         JsonNode info = arkList.at("/bindingList").get(idx);
         String uid = info.get("uid").toString().replace("\"", "");
@@ -303,4 +314,58 @@ public class NetWorkTask {
             return false;
         }
     }
+
+    public static List<RoleInfo> getBindingRoleInfo(Context context) throws MalformedURLException, JsonProcessingException {
+        String cred = getCred(context);
+        if (cred.equals("")) {
+            return null;
+        }
+        String jsonBinding = getBindingJson(cred);
+        JsonNode list;
+        if (jsonBinding == null) {
+            return null;
+        } else {
+            ObjectMapper om = new ObjectMapper();
+            JsonNode tree = om.readTree(jsonBinding);
+            if (tree.at("/code") != null) {
+                int code = tree.get("code").asInt();
+                switch (code) {
+                    case 0:
+                        list = tree.at("/data/list");
+                        break;
+                    case 10002:
+                    case 10001:
+                    case 10000:
+                    default:
+                        return null;
+                }
+            } else if (tree.at("/statusCode") != null) {
+                return null;
+            } else {
+                return null;
+            }
+        }
+        int size = list.size();
+        int idx;
+        for (idx = 0; idx < size; idx++) {
+            if (list.get(idx).get("appCode").toString().replace("\"", "").equals("arknights")) {
+                break;
+            }
+        }
+        JsonNode arkList = list.get(idx);
+        JsonNode bindingList = arkList.at("/bindingList");
+        List<RoleInfo> roleInfoList = new ArrayList<>();
+        for (idx = 0; idx < bindingList.size(); idx++) {
+            RoleInfo roleInfo = new RoleInfo();
+            JsonNode binding = bindingList.get(idx);
+            roleInfo.uid = binding.get("uid").toString().replace("\"", "");
+            roleInfo.nickName = binding.get("nickName").toString().replace("\"", "");
+            roleInfo.channelName = binding.get("channelName").toString().replace("\"", "");
+            roleInfo.channelMasterId = binding.get("channelMasterId").toString().replace("\"", "");
+            roleInfo.userInfo = roleInfo.nickName + " | " + roleInfo.channelName;
+            roleInfoList.add(roleInfo);
+        }
+        return roleInfoList;
+    }
+
 }
