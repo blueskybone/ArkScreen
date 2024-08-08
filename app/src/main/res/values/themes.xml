@@ -1,6 +1,6 @@
-<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.ArkSc" parent="Theme.AppCompat.Light">
+    <style name="Theme.Arkscreen" parent="Theme.AppCompat.Light">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/day_background</item>
@@ -10,11 +10,19 @@
         <item name="colorSecondaryVariant">@color/white</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">@color/white</item>
+        <item name="android:statusBarColor">@color/day_background</item>
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">@color/day_background</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="colorAccent">@color/blue_500</item>
+    </style>
+
+
+    <style name="CardViewTheme" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/transparent</item>
+        <item name="cardCornerRadius">0dp</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="cardElevation">0dp</item>
     </style>
 
     <style name="TranslucentTheme">
@@ -26,35 +34,29 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <style name="Button_cal">
+    <style name="Button_cal" parent="Widget.AppCompat.Button">
         <item name="android:textColor">?attr/colorSecondaryVariant</item>
         <item name="android:minWidth">0dp</item>
         <item name="android:minHeight">0dp</item>
         <item name="android:paddingTop">5dp</item>
         <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
     </style>
 
-    <style name="CardViewTheme" parent="Widget.MaterialComponents.CardView">
-        <item name="cardBackgroundColor">@color/transparent</item>
-        <item name="cardCornerRadius">0dp</item>
-        <item name="android:foreground">?android:attr/selectableItemBackground</item>
-        <item name="cardElevation">0dp</item>
+    <style name="Button_content_cp" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:textSize">13sp</item>
     </style>
 
-
-    <style name="Theme.ArkSc.AppWidgetContainerParent" parent="@android:style/Theme.DeviceDefault">
-        <!-- Radius of the outer bound of widgets to make the rounded corners -->
-        <item name="appWidgetRadius">16dp</item>
-        <!--
-        Radius of the inner view's bound of widgets to make the rounded corners.
-        It needs to be 8dp or less than the value of appWidgetRadius
-        -->
-        <item name="appWidgetInnerRadius">8dp</item>
-    </style>
-
-    <style name="Theme.ArkSc.AppWidgetContainer" parent="Theme.ArkSc.AppWidgetContainerParent">
-        <!-- Apply padding to avoid the content of the widget colliding with the rounded corners -->
-        <item name="appWidgetPadding">2dp</item>
+    <style name="SkillImage">
 
     </style>
+
 </resources>

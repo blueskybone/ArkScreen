@@ -1,0 +1,118 @@
+<resources>
+    <string name="app_name">公招助手</string>
+    <string name="version">v 2.0.0</string>
+    <string name="no_permission_for_float_window">未获取悬浮窗权限</string>
+    <string name="tile_float">悬浮球公招</string>
+    <string name="tile_quick">快捷公招</string>
+    <string name="close">关闭</string>
+    <string name="identify">确定</string>
+    <string name="paste">从剪贴板导入</string>
+    <string name="bar_tools">功能</string>
+    <string name="title_cal">公招计算</string>
+    <string name="title_skland">实时数据</string>
+    <string name="status_offline">未登录状态</string>
+    <string name="bar_other">其他</string>
+    <string name="title_setting">设置</string>
+    <string name="title_option">识别结果展示</string>
+    <string name="title_skland_setting">接入森空岛</string>
+    <string name="title_skland_auto_sign">森空岛自动签到</string>
+    <string name="button_web_login">网页登录</string>
+    <string name="button_bind_role">绑定角色</string>
+    <string name="button_login">登录</string>
+    <string name="button_logout">登出</string>
+    <string name="text_skland_auto_sign">桌面组件更新或查看实时数据时触发</string>
+    <string name="title_weight">桌面组件外观设置</string>
+    <string name="title_weight_update">桌面组件更新间隔</string>
+    <string name="text_weight">背景透明度</string>
+    <string name="title_link_setting">编辑外部链接</string>
+    <string name="title_use">使用方法</string>
+    <string name="title_question">常见问题</string>
+    <string name="content_use">
+        1.快捷公招：下拉通知栏，将图块添加到快速设置中使用 \n\n
+        2.桌面组件：在设置中接入森空岛账号，可使用桌面组件监控理智。理智默认更新频率为半小时。可以点击理智图标手动更新。\n\n
+    </string>
+    <string name="title_about">关于</string>
+    <string name="title_update">检查更新</string>
+    <string name="download">下载</string>
+    <string name="title_open3rd">开源许可</string>
+    <string name="open_licence_title">open source license</string>
+    <string name="open_source_license">
+        Markwon: [Apache](https://github.com/noties/Markwon/blob/master/LICENSE)\n\n
+        EasyWindow: [Apache](https://github.com/getActivity/EasyWindow/blob/master/LICENSE)\n\n
+        \n---\n
+        感谢以下开源项目：\n\n
+        [cvzi/ScreenshotTile](https://github.com/cvzi/ScreenshotTile)\n\n
+        [xxyz30/skyland-auto-sign](https://gitee.com/FancyCabbage/skyland-auto-sign)\n\n
+        [hguandl/SklandLogin](https://github.com/hguandl/SklandLogin)\n\n
+    </string>
+    <string name="title_website">仓库地址</string>
+    <string name="repositories">https://github.com/blueskybone/ArkScreen</string>
+    <string name="text_default">加载中…</string>
+    <string name="radio_float">悬浮窗</string>
+    <string name="radio_toast">Toast（不推荐）</string>
+    <string name="radio_flex">自定义</string>
+    <string name="radio_flex_desc">勾选的稀有度以悬浮窗展示,未勾选的以Toast展示</string>
+    <string name="appwidget_text">初始化</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
+    <string name="title_other">其他</string>
+    <string name="info_other">
+        交流群：924153470\n\n
+        欢迎反馈bug聊天吹水。\n\n
+        有意加入开发请私聊群主。\n\n
+    </string>
+    <string name="content_switch_role">
+        森空岛app内切换默认角色（个人->我的角色->添加绑定角色->选择默认角色）。\n\n
+        回到应用内，登出后重新登录。
+    </string>
+    <string name="login_content">
+        1.访问[明日方舟官网](https://ak.hypergryph.com/user/login)，登录。\n\n
+        2.访问[api网址](https://web-api.hypergryph.com/account/info/hg)，复制网页中**全部**内容。\n\n
+        3.粘贴到下方输入框中点击确定，或直接从剪贴板导入。\n\n
+    </string>
+    <!--实时数据面板-->
+    <string name="ap">理智</string>
+    <string name="recruit">公开招募</string>
+    <string name="hire">公招刷新</string>
+    <string name="labor">无人机</string>
+    <string name="clue">会客室</string>
+    <string name="train">训练室</string>
+    <string name="routine_day">日常</string>
+    <string name="routine_week">周常</string>
+    <string name="campaign">剿灭</string>
+    <string name="tower">保全派驻</string>
+    <string name="low_item">数据增补条</string>
+    <string name="high_item">数据增补仪</string>
+    <string name="manufactures">制造站</string>
+    <string name="trading">贸易站</string>
+    <string name="dormitories">休息进度</string>
+    <string name="tired">干员疲劳</string>
+    <string name="null_data">暂无数据</string>
+    <string name="empty">空闲中</string>
+    <string name="train_com">已完成专精</string>
+    <!--使用手册-->
+    <string name="content_query">
+        ## 公招\n
+        **Q：悬浮球无法唤出** \n\n
+        A：部分机型需保持应用在后台。\n\n\n
+        **Q：截图时闪退或产生不正常输出** \n\n
+        A：设置中给应用添加通知权限；若问题仍未解决请联系作者反馈。\n\n
+        **Q：未获取有效信息** \n\n
+        A：保证公招标签处于未点击状态；保证悬浮窗未遮挡标签。\n\n\n
+        **Q：识别结果错误率极高** \n\n
+        A：部分机型黑暗模式会降低截图本身的亮度，影响识别。\n\n\n
+        ## 桌面组件\n
+        **Q：网络异常** \n\n
+        A：手机息屏时后台网络请求会失败，可点击理智图标手动更新。\n\n\n
+        **Q：桌面组件理智不涨** \n\n
+        A：休眠状态桌面进程可能被杀死或阻塞，为唤醒进程，点进应用后直接退出即可。\n\n\n
+        **Q：组件大小不合适** \n\n
+        A：设置中可调整字体大小和透明度。\n
+        \n---\n
+        \n\n交流群：924153470\n\n\n\n.
+    </string>
+    <string name="use_book_title">使用手册</string>
+    <string name="use_book_permisssion">请在设置中允许后台高耗电</string>
+    <string name="use_book_content_1">公招</string>
+    <string name="use_book_content_2">桌面组件</string>
+</resources>

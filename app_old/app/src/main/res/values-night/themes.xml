@@ -1,0 +1,19 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.ArkSc" parent="Theme.AppCompat.DayNight">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/night_background</item>
+        <item name="colorPrimaryVariant">@color/night_background</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/cyan_500</item>
+        <item name="colorSecondaryVariant">@color/white</item>
+        <item name="colorOnSecondary">@color/night_background</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/night_background</item>
+        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/night_background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="colorAccent">@color/blue_500</item>
+    </style>
+</resources>

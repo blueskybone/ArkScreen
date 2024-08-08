@@ -1,0 +1,33 @@
+{
+	"en_cn_list":[
+		{"en": "top-ope", "cn": "高级资深干员"},
+		{"en": "sen-ope", "cn": "资深干员"},
+		{"en": "robot", "cn": "支援机械"},
+		{"en": "starter", "cn": "新手"},
+		{"en": "melee", "cn": "近战位"},
+		{"en": "ranged", "cn": "远程位"},
+		{"en": "sniper", "cn": "狙击干员"},
+		{"en": "guard", "cn": "近卫干员"},
+		{"en": "defender", "cn": "重装干员"},
+		{"en": "medic", "cn": "医疗干员"},
+		{"en": "supporter", "cn": "辅助干员"},
+		{"en": "caster", "cn": "术师干员"},
+		{"en": "vanguard", "cn": "先锋干员"},
+		{"en": "specialist", "cn": "特种干员"},
+		{"en": "crowed-control", "cn": "控场"},
+		{"en": "nuker", "cn": "爆发"},
+		{"en": "summon", "cn": "召唤"},
+		{"en": "fast-redeploy", "cn": "快速复活"},
+		{"en": "shift", "cn": "位移"},
+		{"en": "support", "cn": "支援"},
+		{"en": "debuff", "cn": "削弱"},
+		{"en": "dps", "cn": "输出"},
+		{"en": "dp-recovery", "cn": "费用回复"},
+		{"en": "healing", "cn": "治疗"},
+		{"en": "survival", "cn": "生存"},
+		{"en": "aoe", "cn": "群攻"},
+		{"en": "defense", "cn": "防护"},
+		{"en": "slow", "cn": "减速"},
+		{"en": "element", "cn": "元素"}
+	]
+}

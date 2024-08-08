@@ -1,0 +1,64 @@
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable-v21/app_widget_background.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable-v21/app_widget_inner_view_background.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable-v24/ic_rosm.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable/activity_bg.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable/button_normal.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable/button_reset.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable/button_select.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable/button_tag.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable/hands-holding-diamond_24.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable/ic_angle_left.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable/ic_book_bookmark.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable/ic_calculator.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable/ic_hands_holding_diamond.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable/ic_info.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable/ic_interrogation.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable/ic_menu_dots.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable/ic_rosm.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable/ic_settings.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable/item_ap_mini.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable/round_corner.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/drawable/widget_background.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout-v28/window_float.xml" value="0.2" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/activity_about.xml" value="0.3333333333333333" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/activity_cal.xml" value="0.4619124797406807" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/activity_calcu.xml" value="0.2" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/activity_home.xml" value="0.3333333333333333" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/activity_item.xml" value="0.22" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/activity_link_edit.xml" value="0.4466666666666667" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/activity_login.xml" value="0.3333333333333333" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/activity_rare.xml" value="0.2" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/activity_setting.xml" value="0.3333333333333333" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/activity_skland.xml" value="0.3333333333333333" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/activity_skland_login.xml" value="0.46111111111111114" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/activity_weight_setting.xml" value="0.2" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/dialog_edit.xml" value="0.4466666666666667" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/dialog_login.xml" value="0.22" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/dialog_normal.xml" value="0.2" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/dialog_show_mode.xml" value="0.3333333333333333" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/skland_weight.xml" value="0.3333333333333333" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/skland_widget.xml" value="0.4" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/skland_widget_h.xml" value="0.12291666666666666" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/web_view.xml" value="0.6" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/window_float.xml" value="0.5" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/layout/window_icon.xml" value="0.3333333333333333" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/mipmap-anydpi-v26/ic_rosm.xml" value="0.1" />
+        <entry key="..\:/Android_project/ArkSc/app/src/main/res/mipmap-anydpi-v26/ic_rosm_round.xml" value="0.1" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

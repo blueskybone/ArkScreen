@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/widget_attendance_desc"
+    android:initialKeyguardLayout="@layout/widget_attendance"
+    android:initialLayout="@layout/widget_attendance"
+    android:minWidth="0dp"
+    android:minHeight="0dp"
+    android:previewImage="@drawable/ic_rosm_trans"
+    android:targetCellWidth="1"
+    android:targetCellHeight="1"
+    android:updatePeriodMillis="0"
+    android:widgetCategory="home_screen" />

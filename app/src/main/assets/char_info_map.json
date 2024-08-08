@@ -1,0 +1,3308 @@
+  {
+    "update": {
+      "version": 3,
+      "date": "2024-5-31"
+    },
+    "charInfoMap": {
+      "char_002_amiya": {
+        "id": "char_002_amiya",
+        "name": "阿米娅",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R001",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "corecaster"
+      },
+      "char_003_kalts": {
+        "id": "char_003_kalts",
+        "name": "凯尔希",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "B003",
+        "rarity": 5,
+        "profession": "MEDIC",
+        "subProfessionId": "physician"
+      },
+      "char_009_12fce": {
+        "id": "char_009_12fce",
+        "name": "12F",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R303",
+        "rarity": 1,
+        "profession": "CASTER",
+        "subProfessionId": "splashcaster"
+      },
+      "char_010_chen": {
+        "id": "char_010_chen",
+        "name": "陈",
+        "nationId": "lungmen",
+        "groupId": "lgd",
+        "displayNumber": "LM04",
+        "rarity": 5,
+        "profession": "WARRIOR",
+        "subProfessionId": "sword"
+      },
+      "char_017_huang": {
+        "id": "char_017_huang",
+        "name": "煌",
+        "nationId": "rhodes",
+        "groupId": "elite",
+        "displayNumber": "RE41",
+        "rarity": 5,
+        "profession": "WARRIOR",
+        "subProfessionId": "centurion"
+      },
+      "char_1001_amiya2": {
+        "id": "char_1001_amiya2",
+        "name": "阿米娅",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R001",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "artsfghter"
+      },
+      "char_1011_lava2": {
+        "id": "char_1011_lava2",
+        "name": "炎狱炎熔",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "RF01",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "splashcaster"
+      },
+      "char_1012_skadi2": {
+        "id": "char_1012_skadi2",
+        "name": "浊心斯卡蒂",
+        "nationId": "egir",
+        "groupId": "",
+        "displayNumber": "CR01",
+        "rarity": 5,
+        "profession": "SUPPORT",
+        "subProfessionId": "bard"
+      },
+      "char_1013_chen2": {
+        "id": "char_1013_chen2",
+        "name": "假日威龙陈",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R112",
+        "rarity": 5,
+        "profession": "SNIPER",
+        "subProfessionId": "reaperrange"
+      },
+      "char_1014_nearl2": {
+        "id": "char_1014_nearl2",
+        "name": "耀骑士临光",
+        "nationId": "kazimierz",
+        "groupId": "",
+        "displayNumber": "KZ01",
+        "rarity": 5,
+        "profession": "WARRIOR",
+        "subProfessionId": "fearless"
+      },
+      "char_1016_agoat2": {
+        "id": "char_1016_agoat2",
+        "name": "纯烬艾雅法拉",
+        "nationId": "leithanien",
+        "groupId": "",
+        "displayNumber": "LN10",
+        "rarity": 6,
+        "profession": "MEDIC",
+        "subProfessionId": "wandermedic"
+      },
+      "char_101_sora": {
+        "id": "char_101_sora",
+        "name": "空",
+        "nationId": "lungmen",
+        "groupId": "penguin",
+        "displayNumber": "PL05",
+        "rarity": 4,
+        "profession": "SUPPORT",
+        "subProfessionId": "bard"
+      },
+      "char_1020_reed2": {
+        "id": "char_1020_reed2",
+        "name": "焰影苇草",
+        "nationId": "victoria",
+        "groupId": "dublinn",
+        "displayNumber": "DB02",
+        "rarity": 5,
+        "profession": "MEDIC",
+        "subProfessionId": "incantationmedic"
+      },
+      "char_1021_kroos2": {
+        "id": "char_1021_kroos2",
+        "name": "寒芒克洛丝",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "RF02",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "fastshot"
+      },
+      "char_1023_ghost2": {
+        "id": "char_1023_ghost2",
+        "name": "归溟幽灵鲨",
+        "nationId": "egir",
+        "groupId": "abyssal",
+        "displayNumber": "CR02",
+        "rarity": 5,
+        "profession": "SPECIAL",
+        "subProfessionId": "dollkeeper"
+      },
+      "char_1024_hbisc2": {
+        "id": "char_1024_hbisc2",
+        "name": "濯尘芙蓉",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "RF03",
+        "rarity": 4,
+        "profession": "MEDIC",
+        "subProfessionId": "incantationmedic"
+      },
+      "char_1026_gvial2": {
+        "id": "char_1026_gvial2",
+        "name": "百炼嘉维尔",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "RF22",
+        "rarity": "6",
+        "profession": "WARRIOR",
+        "subProfessionId": "centurion"
+      },
+      "char_1027_greyy2": {
+        "id": "char_1027_greyy2",
+        "name": "承曦格雷伊",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "RF23",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "bombarder"
+      },
+      "char_1028_texas2": {
+        "id": "char_1028_texas2",
+        "name": "缄默德克萨斯",
+        "nationId": "lungmen",
+        "groupId": "penguin",
+        "displayNumber": "PL07",
+        "rarity": 5,
+        "profession": "SPECIAL",
+        "subProfessionId": "executor"
+      },
+      "char_1029_yato2": {
+        "id": "char_1029_yato2",
+        "name": "麒麟R夜刀",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "MH02",
+        "rarity": 5,
+        "profession": "SPECIAL",
+        "subProfessionId": "executor"
+      },
+      "char_102_texas": {
+        "id": "char_102_texas",
+        "name": "德克萨斯",
+        "nationId": "lungmen",
+        "groupId": "penguin",
+        "displayNumber": "PL02",
+        "rarity": 4,
+        "profession": "PIONEER",
+        "subProfessionId": "pioneer"
+      },
+      "char_1030_noirc2": {
+        "id": "char_1030_noirc2",
+        "name": "火龙S黑角",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "MH03",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "musha"
+      },
+      "char_1031_slent2": {
+        "id": "char_1031_slent2",
+        "name": "淬羽赫默",
+        "nationId": "columbia",
+        "groupId": "rhine",
+        "displayNumber": "RL10",
+        "rarity": 5,
+        "profession": "SUPPORT",
+        "subProfessionId": "blessing"
+      },
+      "char_1032_excu2": {
+        "id": "char_1032_excu2",
+        "name": "圣约送葬人",
+        "nationId": "laterano",
+        "groupId": "",
+        "displayNumber": "LT40",
+        "rarity": 5,
+        "profession": "WARRIOR",
+        "subProfessionId": "reaper"
+      },
+      "char_1033_swire2": {
+        "id": "char_1033_swire2",
+        "name": "琳琅诗怀雅",
+        "nationId": "lungmen",
+        "groupId": "",
+        "displayNumber": "LM22",
+        "rarity": 5,
+        "profession": "SPECIAL",
+        "subProfessionId": "merchant"
+      },
+      "char_1034_jesca2": {
+        "id": "char_1034_jesca2",
+        "name": "涤火杰西卡",
+        "nationId": "columbia",
+        "groupId": "blacksteel",
+        "displayNumber": "BS30",
+        "rarity": 6,
+        "profession": "TANK",
+        "subProfessionId": "shotprotector"
+      },
+      "char_1035_wisdel": {
+        "id": "char_1035_wisdel",
+        "name": "维什戴尔",
+        "nationId": "",
+        "groupId": "babel",
+        "displayNumber": "B00W",
+        "rarity": 5,
+        "profession": "SNIPER",
+        "subProfessionId": "bombarder"
+      },
+      "char_1036_fang2": {
+        "id": "char_1036_fang2",
+        "name": "历阵锐枪芬",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "RF04",
+        "rarity": 4,
+        "profession": "PIONEER",
+        "subProfessionId": "charger"
+      },
+      "char_1037_amiya3": {
+        "id": "char_1037_amiya3",
+        "name": "阿米娅",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R001",
+        "rarity": 4,
+        "profession": "MEDIC",
+        "subProfessionId": "incantationmedic"
+      },
+      "char_103_angel": {
+        "id": "char_103_angel",
+        "name": "能天使",
+        "nationId": "lungmen",
+        "groupId": "penguin",
+        "displayNumber": "PL03",
+        "rarity": 5,
+        "profession": "SNIPER",
+        "subProfessionId": "fastshot"
+      },
+      "char_106_franka": {
+        "id": "char_106_franka",
+        "name": "芙兰卡",
+        "nationId": "columbia",
+        "groupId": "blacksteel",
+        "displayNumber": "BS01",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "fearless"
+      },
+      "char_107_liskam": {
+        "id": "char_107_liskam",
+        "name": "雷蛇",
+        "nationId": "columbia",
+        "groupId": "blacksteel",
+        "displayNumber": "BS02",
+        "rarity": 4,
+        "profession": "TANK",
+        "subProfessionId": "shotprotector"
+      },
+      "char_108_silent": {
+        "id": "char_108_silent",
+        "name": "赫默",
+        "nationId": "columbia",
+        "groupId": "rhine",
+        "displayNumber": "RL01",
+        "rarity": 4,
+        "profession": "MEDIC",
+        "subProfessionId": "physician"
+      },
+      "char_109_fmout": {
+        "id": "char_109_fmout",
+        "name": "远山",
+        "nationId": "sami",
+        "groupId": "",
+        "displayNumber": "SI01",
+        "rarity": 3,
+        "profession": "CASTER",
+        "subProfessionId": "splashcaster"
+      },
+      "char_110_deepcl": {
+        "id": "char_110_deepcl",
+        "name": "深海色",
+        "nationId": "egir",
+        "groupId": "",
+        "displayNumber": "AA04",
+        "rarity": 3,
+        "profession": "SUPPORT",
+        "subProfessionId": "summoner"
+      },
+      "char_112_siege": {
+        "id": "char_112_siege",
+        "name": "推进之王",
+        "nationId": "victoria",
+        "groupId": "glasgow",
+        "displayNumber": "GG01",
+        "rarity": 5,
+        "profession": "PIONEER",
+        "subProfessionId": "pioneer"
+      },
+      "char_113_cqbw": {
+        "id": "char_113_cqbw",
+        "name": "W",
+        "nationId": "",
+        "groupId": "babel",
+        "displayNumber": "B214",
+        "rarity": 5,
+        "profession": "SNIPER",
+        "subProfessionId": "aoesniper"
+      },
+      "char_115_headbr": {
+        "id": "char_115_headbr",
+        "name": "凛冬",
+        "nationId": "ursus",
+        "groupId": "",
+        "displayNumber": "USS1",
+        "rarity": 4,
+        "profession": "PIONEER",
+        "subProfessionId": "pioneer"
+      },
+      "char_117_myrrh": {
+        "id": "char_117_myrrh",
+        "name": "末药",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R104",
+        "rarity": 3,
+        "profession": "MEDIC",
+        "subProfessionId": "physician"
+      },
+      "char_118_yuki": {
+        "id": "char_118_yuki",
+        "name": "白雪",
+        "nationId": "higashi",
+        "groupId": "",
+        "displayNumber": "LM10",
+        "rarity": 3,
+        "profession": "SNIPER",
+        "subProfessionId": "aoesniper"
+      },
+      "char_120_hibisc": {
+        "id": "char_120_hibisc",
+        "name": "芙蓉",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "PA13",
+        "rarity": 2,
+        "profession": "MEDIC",
+        "subProfessionId": "physician"
+      },
+      "char_121_lava": {
+        "id": "char_121_lava",
+        "name": "炎熔",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "PA15",
+        "rarity": 2,
+        "profession": "CASTER",
+        "subProfessionId": "splashcaster"
+      },
+      "char_122_beagle": {
+        "id": "char_122_beagle",
+        "name": "米格鲁",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "PA14",
+        "rarity": 2,
+        "profession": "TANK",
+        "subProfessionId": "protector"
+      },
+      "char_123_fang": {
+        "id": "char_123_fang",
+        "name": "芬",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "PA11",
+        "rarity": 2,
+        "profession": "PIONEER",
+        "subProfessionId": "pioneer"
+      },
+      "char_124_kroos": {
+        "id": "char_124_kroos",
+        "name": "克洛丝",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "PA12",
+        "rarity": 2,
+        "profession": "SNIPER",
+        "subProfessionId": "fastshot"
+      },
+      "char_126_shotst": {
+        "id": "char_126_shotst",
+        "name": "流星",
+        "nationId": "kazimierz",
+        "groupId": "",
+        "displayNumber": "ST02",
+        "rarity": 3,
+        "profession": "SNIPER",
+        "subProfessionId": "fastshot"
+      },
+      "char_127_estell": {
+        "id": "char_127_estell",
+        "name": "艾丝黛尔",
+        "nationId": "sargon",
+        "groupId": "",
+        "displayNumber": "IU04",
+        "rarity": 3,
+        "profession": "WARRIOR",
+        "subProfessionId": "centurion"
+      },
+      "char_128_plosis": {
+        "id": "char_128_plosis",
+        "name": "白面鸮",
+        "nationId": "columbia",
+        "groupId": "rhine",
+        "displayNumber": "RL04",
+        "rarity": 4,
+        "profession": "MEDIC",
+        "subProfessionId": "ringhealer"
+      },
+      "char_129_bluep": {
+        "id": "char_129_bluep",
+        "name": "蓝毒",
+        "nationId": "iberia",
+        "groupId": "",
+        "displayNumber": "AA03",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "fastshot"
+      },
+      "char_130_doberm": {
+        "id": "char_130_doberm",
+        "name": "杜宾",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R100",
+        "rarity": 3,
+        "profession": "WARRIOR",
+        "subProfessionId": "instructor"
+      },
+      "char_131_flameb": {
+        "id": "char_131_flameb",
+        "name": "炎客",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R137",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "fearless"
+      },
+      "char_133_mm": {
+        "id": "char_133_mm",
+        "name": "梅",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC01",
+        "rarity": 3,
+        "profession": "SNIPER",
+        "subProfessionId": "fastshot"
+      },
+      "char_134_ifrit": {
+        "id": "char_134_ifrit",
+        "name": "伊芙利特",
+        "nationId": "columbia",
+        "groupId": "rhine",
+        "displayNumber": "RL03",
+        "rarity": 5,
+        "profession": "CASTER",
+        "subProfessionId": "blastcaster"
+      },
+      "char_135_halo": {
+        "id": "char_135_halo",
+        "name": "星源",
+        "nationId": "columbia",
+        "groupId": "rhine",
+        "displayNumber": "RL08",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "chain"
+      },
+      "char_136_hsguma": {
+        "id": "char_136_hsguma",
+        "name": "星熊",
+        "nationId": "lungmen",
+        "groupId": "lgd",
+        "displayNumber": "LM05",
+        "rarity": 5,
+        "profession": "TANK",
+        "subProfessionId": "protector"
+      },
+      "char_137_brownb": {
+        "id": "char_137_brownb",
+        "name": "猎蜂",
+        "nationId": "ursus",
+        "groupId": "",
+        "displayNumber": "US10",
+        "rarity": 3,
+        "profession": "WARRIOR",
+        "subProfessionId": "fighter"
+      },
+      "char_140_whitew": {
+        "id": "char_140_whitew",
+        "name": "拉普兰德",
+        "nationId": "siracusa",
+        "groupId": "",
+        "displayNumber": "SR01",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "lord"
+      },
+      "char_141_nights": {
+        "id": "char_141_nights",
+        "name": "夜烟",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC02",
+        "rarity": 3,
+        "profession": "CASTER",
+        "subProfessionId": "corecaster"
+      },
+      "char_143_ghost": {
+        "id": "char_143_ghost",
+        "name": "幽灵鲨",
+        "nationId": "egir",
+        "groupId": "abyssal",
+        "displayNumber": "AA02",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "centurion"
+      },
+      "char_144_red": {
+        "id": "char_144_red",
+        "name": "红",
+        "nationId": "rhodes",
+        "groupId": "sweep",
+        "displayNumber": "SW01",
+        "rarity": 4,
+        "profession": "SPECIAL",
+        "subProfessionId": "executor"
+      },
+      "char_145_prove": {
+        "id": "char_145_prove",
+        "name": "普罗旺斯",
+        "nationId": "siracusa",
+        "groupId": "",
+        "displayNumber": "SR03",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "closerange"
+      },
+      "char_147_shining": {
+        "id": "char_147_shining",
+        "name": "闪灵",
+        "nationId": "",
+        "groupId": "",
+        "displayNumber": "FO01",
+        "rarity": 5,
+        "profession": "MEDIC",
+        "subProfessionId": "physician"
+      },
+      "char_148_nearl": {
+        "id": "char_148_nearl",
+        "name": "临光",
+        "nationId": "",
+        "groupId": "",
+        "displayNumber": "FO02",
+        "rarity": 4,
+        "profession": "TANK",
+        "subProfessionId": "guardian"
+      },
+      "char_149_scave": {
+        "id": "char_149_scave",
+        "name": "清道夫",
+        "nationId": "rhodes",
+        "groupId": "sweep",
+        "displayNumber": "SW02",
+        "rarity": 3,
+        "profession": "PIONEER",
+        "subProfessionId": "pioneer"
+      },
+      "char_150_snakek": {
+        "id": "char_150_snakek",
+        "name": "蛇屠箱",
+        "nationId": "columbia",
+        "groupId": "",
+        "displayNumber": "IU05",
+        "rarity": 3,
+        "profession": "TANK",
+        "subProfessionId": "protector"
+      },
+      "char_151_myrtle": {
+        "id": "char_151_myrtle",
+        "name": "桃金娘",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R108",
+        "rarity": 3,
+        "profession": "PIONEER",
+        "subProfessionId": "bearer"
+      },
+      "char_154_morgan": {
+        "id": "char_154_morgan",
+        "name": "摩根",
+        "nationId": "victoria",
+        "groupId": "glasgow",
+        "displayNumber": "GG02",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "fearless"
+      },
+      "char_155_tiger": {
+        "id": "char_155_tiger",
+        "name": "因陀罗",
+        "nationId": "victoria",
+        "groupId": "glasgow",
+        "displayNumber": "GG03",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "fighter"
+      },
+      "char_157_dagda": {
+        "id": "char_157_dagda",
+        "name": "达格达",
+        "nationId": "victoria",
+        "groupId": "glasgow",
+        "displayNumber": "GG04",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "fighter"
+      },
+      "char_158_milu": {
+        "id": "char_158_milu",
+        "name": "守林人",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "ST01",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "longrange"
+      },
+      "char_159_peacok": {
+        "id": "char_159_peacok",
+        "name": "断罪者",
+        "nationId": "minos",
+        "groupId": "",
+        "displayNumber": "MN01",
+        "rarity": 3,
+        "profession": "WARRIOR",
+        "subProfessionId": "fearless"
+      },
+      "char_163_hpsts": {
+        "id": "char_163_hpsts",
+        "name": "火神",
+        "nationId": "minos",
+        "groupId": "",
+        "displayNumber": "MN02",
+        "rarity": 4,
+        "profession": "TANK",
+        "subProfessionId": "unyield"
+      },
+      "char_164_nightm": {
+        "id": "char_164_nightm",
+        "name": "夜魔",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC03",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "corecaster"
+      },
+      "char_166_skfire": {
+        "id": "char_166_skfire",
+        "name": "天火",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "SK01",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "splashcaster"
+      },
+      "char_171_bldsk": {
+        "id": "char_171_bldsk",
+        "name": "华法琳",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R106",
+        "rarity": 4,
+        "profession": "MEDIC",
+        "subProfessionId": "physician"
+      },
+      "char_172_svrash": {
+        "id": "char_172_svrash",
+        "name": "银灰",
+        "nationId": "kjerag",
+        "groupId": "karlan",
+        "displayNumber": "JC01",
+        "rarity": 5,
+        "profession": "WARRIOR",
+        "subProfessionId": "lord"
+      },
+      "char_173_slchan": {
+        "id": "char_173_slchan",
+        "name": "崖心",
+        "nationId": "kjerag",
+        "groupId": "karlan",
+        "displayNumber": "JC06",
+        "rarity": 4,
+        "profession": "SPECIAL",
+        "subProfessionId": "hookmaster"
+      },
+      "char_174_slbell": {
+        "id": "char_174_slbell",
+        "name": "初雪",
+        "nationId": "kjerag",
+        "groupId": "karlan",
+        "displayNumber": "JC05",
+        "rarity": 4,
+        "profession": "SUPPORT",
+        "subProfessionId": "underminer"
+      },
+      "char_179_cgbird": {
+        "id": "char_179_cgbird",
+        "name": "夜莺",
+        "nationId": "",
+        "groupId": "",
+        "displayNumber": "FO03",
+        "rarity": 5,
+        "profession": "MEDIC",
+        "subProfessionId": "ringhealer"
+      },
+      "char_180_amgoat": {
+        "id": "char_180_amgoat",
+        "name": "艾雅法拉",
+        "nationId": "leithanien",
+        "groupId": "",
+        "displayNumber": "LN02",
+        "rarity": 5,
+        "profession": "CASTER",
+        "subProfessionId": "corecaster"
+      },
+      "char_181_flower": {
+        "id": "char_181_flower",
+        "name": "调香师",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "MN03",
+        "rarity": 3,
+        "profession": "MEDIC",
+        "subProfessionId": "ringhealer"
+      },
+      "char_183_skgoat": {
+        "id": "char_183_skgoat",
+        "name": "地灵",
+        "nationId": "leithanien",
+        "groupId": "",
+        "displayNumber": "LN01",
+        "rarity": 3,
+        "profession": "SUPPORT",
+        "subProfessionId": "slower"
+      },
+      "char_185_frncat": {
+        "id": "char_185_frncat",
+        "name": "慕斯",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC04",
+        "rarity": 3,
+        "profession": "WARRIOR",
+        "subProfessionId": "artsfghter"
+      },
+      "char_187_ccheal": {
+        "id": "char_187_ccheal",
+        "name": "嘉维尔",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "IU07",
+        "rarity": 3,
+        "profession": "MEDIC",
+        "subProfessionId": "physician"
+      },
+      "char_188_helage": {
+        "id": "char_188_helage",
+        "name": "赫拉格",
+        "nationId": "ursus",
+        "groupId": "",
+        "displayNumber": "AZ01",
+        "rarity": 5,
+        "profession": "WARRIOR",
+        "subProfessionId": "musha"
+      },
+      "char_190_clour": {
+        "id": "char_190_clour",
+        "name": "红云",
+        "nationId": "siracusa",
+        "groupId": "",
+        "displayNumber": "R122",
+        "rarity": 3,
+        "profession": "SNIPER",
+        "subProfessionId": "fastshot"
+      },
+      "char_192_falco": {
+        "id": "char_192_falco",
+        "name": "翎羽",
+        "nationId": "laterano",
+        "groupId": "",
+        "displayNumber": "LT05",
+        "rarity": 2,
+        "profession": "PIONEER",
+        "subProfessionId": "charger"
+      },
+      "char_193_frostl": {
+        "id": "char_193_frostl",
+        "name": "霜叶",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R123",
+        "rarity": 3,
+        "profession": "WARRIOR",
+        "subProfessionId": "lord"
+      },
+      "char_194_leto": {
+        "id": "char_194_leto",
+        "name": "烈夏",
+        "nationId": "ursus",
+        "groupId": "",
+        "displayNumber": "USS5",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "lord"
+      },
+      "char_195_glassb": {
+        "id": "char_195_glassb",
+        "name": "真理",
+        "nationId": "ursus",
+        "groupId": "",
+        "displayNumber": "USS2",
+        "rarity": 4,
+        "profession": "SUPPORT",
+        "subProfessionId": "slower"
+      },
+      "char_196_sunbr": {
+        "id": "char_196_sunbr",
+        "name": "古米",
+        "nationId": "ursus",
+        "groupId": "",
+        "displayNumber": "USS3",
+        "rarity": 3,
+        "profession": "TANK",
+        "subProfessionId": "guardian"
+      },
+      "char_197_poca": {
+        "id": "char_197_poca",
+        "name": "早露",
+        "nationId": "ursus",
+        "groupId": "",
+        "displayNumber": "USS4",
+        "rarity": 5,
+        "profession": "SNIPER",
+        "subProfessionId": "siegesniper"
+      },
+      "char_198_blackd": {
+        "id": "char_198_blackd",
+        "name": "讯使",
+        "nationId": "kjerag",
+        "groupId": "karlan",
+        "displayNumber": "JC04",
+        "rarity": 3,
+        "profession": "PIONEER",
+        "subProfessionId": "pioneer"
+      },
+      "char_199_yak": {
+        "id": "char_199_yak",
+        "name": "角峰",
+        "nationId": "kjerag",
+        "groupId": "karlan",
+        "displayNumber": "JC03",
+        "rarity": 3,
+        "profession": "TANK",
+        "subProfessionId": "protector"
+      },
+      "char_2012_typhon": {
+        "id": "char_2012_typhon",
+        "name": "提丰",
+        "nationId": "sami",
+        "groupId": "",
+        "displayNumber": "SI07",
+        "rarity": 5,
+        "profession": "SNIPER",
+        "subProfessionId": "siegesniper"
+      },
+      "char_2013_cerber": {
+        "id": "char_2013_cerber",
+        "name": "刻俄柏",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R155",
+        "rarity": 5,
+        "profession": "CASTER",
+        "subProfessionId": "corecaster"
+      },
+      "char_2014_nian": {
+        "id": "char_2014_nian",
+        "name": "年",
+        "nationId": "yan",
+        "groupId": "sui",
+        "displayNumber": "NM01",
+        "rarity": 6,
+        "profession": "TANK",
+        "subProfessionId": "protector"
+      },
+      "char_2015_dusk": {
+        "id": "char_2013_cerber",
+        "name": "夕",
+        "nationId": "yan",
+        "groupId": "sui",
+        "displayNumber": "NM02",
+        "rarity": 6,
+        "profession": "CASTER",
+        "subProfessionId": "splashcaster"
+      },
+      "char_201_moeshd": {
+        "id": "char_201_moeshd",
+        "name": "可颂",
+        "nationId": "lungmen",
+        "groupId": "penguin",
+        "displayNumber": "PL04",
+        "rarity": 4,
+        "profession": "TANK",
+        "subProfessionId": "protector"
+      },
+      "char_2023_ling": {
+        "id": "char_2023_ling",
+        "name": "令",
+        "nationId": "yan",
+        "groupId": "sui",
+        "displayNumber": "NM03",
+        "rarity": 5,
+        "profession": "SUPPORT",
+        "subProfessionId": "summoner"
+      },
+      "char_2024_chyue": {
+        "id": "char_2024_chyue",
+        "name": "重岳",
+        "nationId": "yan",
+        "groupId": "sui",
+        "displayNumber": "NM04",
+        "rarity": 5,
+        "profession": "WARRIOR",
+        "subProfessionId": "fighter"
+      },
+      "char_2025_shu": {
+        "id": "char_2025_shu",
+        "name": "黍",
+        "nationId": "yan",
+        "groupId": "sui",
+        "displayNumber": "NM05",
+        "rarity": 5,
+        "profession": "TANK",
+        "subProfessionId": "guardian"
+      },
+      "char_202_demkni": {
+        "id": "char_202_demkni",
+        "name": "塞雷娅",
+        "nationId": "columbia",
+        "groupId": "rhine",
+        "displayNumber": "RL02",
+        "rarity": 5,
+        "profession": "TANK",
+        "subProfessionId": "guardian"
+      },
+      "char_204_platnm": {
+        "id": "char_204_platnm",
+        "name": "白金",
+        "nationId": "kazimierz",
+        "groupId": "",
+        "displayNumber": "KZ03",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "fastshot"
+      },
+      "char_206_gnosis": {
+        "id": "char_206_gnosis",
+        "name": "灵知",
+        "nationId": "kjerag",
+        "groupId": "karlan",
+        "displayNumber": "JC02",
+        "rarity": 6,
+        "profession": "SUPPORT",
+        "subProfessionId": "underminer"
+      },
+      "char_208_melan": {
+        "id": "char_208_melan",
+        "name": "玫兰莎",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "PA41",
+        "rarity": 2,
+        "profession": "WARRIOR",
+        "subProfessionId": "fearless"
+      },
+      "char_209_ardign": {
+        "id": "char_209_ardign",
+        "name": "卡缇",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "PA45",
+        "rarity": 2,
+        "profession": "TANK",
+        "subProfessionId": "protector"
+      },
+      "char_210_stward": {
+        "id": "char_210_stward",
+        "name": "史都华德",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "PA42",
+        "rarity": 2,
+        "profession": "CASTER",
+        "subProfessionId": "corecaster"
+      },
+      "char_211_adnach": {
+        "id": "char_211_adnach",
+        "name": "安德切尔",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "PA44",
+        "rarity": 2,
+        "profession": "SNIPER",
+        "subProfessionId": "fastshot"
+      },
+      "char_212_ansel": {
+        "id": "char_212_ansel",
+        "name": "安赛尔",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "PA43",
+        "rarity": 2,
+        "profession": "MEDIC",
+        "subProfessionId": "physician"
+      },
+      "char_213_mostma": {
+        "id": "char_213_mostma",
+        "name": "莫斯提马",
+        "nationId": "laterano",
+        "groupId": "",
+        "displayNumber": "LT77",
+        "rarity": 5,
+        "profession": "CASTER",
+        "subProfessionId": "splashcaster"
+      },
+      "char_214_kafka": {
+        "id": "char_214_kafka",
+        "name": "卡夫卡",
+        "nationId": "columbia",
+        "groupId": "",
+        "displayNumber": "CB06",
+        "rarity": 4,
+        "profession": "SPECIAL",
+        "subProfessionId": "executor"
+      },
+      "char_215_mantic": {
+        "id": "char_215_mantic",
+        "name": "狮蝎",
+        "nationId": "sargon",
+        "groupId": "",
+        "displayNumber": "SG01",
+        "rarity": 4,
+        "profession": "SPECIAL",
+        "subProfessionId": "stalker"
+      },
+      "char_218_cuttle": {
+        "id": "char_218_cuttle",
+        "name": "安哲拉",
+        "nationId": "egir",
+        "groupId": "abyssal",
+        "displayNumber": "II04",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "longrange"
+      },
+      "char_219_meteo": {
+        "id": "char_219_meteo",
+        "name": "陨星",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "ST03",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "aoesniper"
+      },
+      "char_220_grani": {
+        "id": "char_220_grani",
+        "name": "格拉尼",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC05",
+        "rarity": 4,
+        "profession": "PIONEER",
+        "subProfessionId": "charger"
+      },
+      "char_222_bpipe": {
+        "id": "char_222_bpipe",
+        "name": "风笛",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "RV02",
+        "rarity": 5,
+        "profession": "PIONEER",
+        "subProfessionId": "charger"
+      },
+      "char_225_haak": {
+        "id": "char_225_haak",
+        "name": "阿",
+        "nationId": "lungmen",
+        "groupId": "",
+        "displayNumber": "LM20",
+        "rarity": 5,
+        "profession": "SPECIAL",
+        "subProfessionId": "geek"
+      },
+      "char_226_hmau": {
+        "id": "char_226_hmau",
+        "name": "吽",
+        "nationId": "lungmen",
+        "groupId": "",
+        "displayNumber": "LM19",
+        "rarity": 4,
+        "profession": "TANK",
+        "subProfessionId": "guardian"
+      },
+      "char_230_savage": {
+        "id": "char_230_savage",
+        "name": "暴行",
+        "nationId": "rim",
+        "groupId": "",
+        "displayNumber": "RB01",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "centurion"
+      },
+      "char_235_jesica": {
+        "id": "char_235_jesica",
+        "name": "杰西卡",
+        "nationId": "columbia",
+        "groupId": "blacksteel",
+        "displayNumber": "BS03",
+        "rarity": 3,
+        "profession": "SNIPER",
+        "subProfessionId": "fastshot"
+      },
+      "char_236_rope": {
+        "id": "char_236_rope",
+        "name": "暗索",
+        "nationId": "lungmen",
+        "groupId": "",
+        "displayNumber": "RB02",
+        "rarity": 3,
+        "profession": "SPECIAL",
+        "subProfessionId": "hookmaster"
+      },
+      "char_237_gravel": {
+        "id": "char_237_gravel",
+        "name": "砾",
+        "nationId": "kazimierz",
+        "groupId": "",
+        "displayNumber": "KZ04",
+        "rarity": 3,
+        "profession": "SPECIAL",
+        "subProfessionId": "executor"
+      },
+      "char_240_wyvern": {
+        "id": "char_240_wyvern",
+        "name": "香草",
+        "nationId": "columbia",
+        "groupId": "blacksteel",
+        "displayNumber": "BS04",
+        "rarity": 2,
+        "profession": "PIONEER",
+        "subProfessionId": "pioneer"
+      },
+      "char_241_panda": {
+        "id": "char_241_panda",
+        "name": "食铁兽",
+        "nationId": "lungmen",
+        "groupId": "",
+        "displayNumber": "YD01",
+        "rarity": 4,
+        "profession": "SPECIAL",
+        "subProfessionId": "pusher"
+      },
+      "char_242_otter": {
+        "id": "char_242_otter",
+        "name": "梅尔",
+        "nationId": "columbia",
+        "groupId": "rhine",
+        "displayNumber": "RL05",
+        "rarity": 4,
+        "profession": "SUPPORT",
+        "subProfessionId": "summoner"
+      },
+      "char_243_waaifu": {
+        "id": "char_243_waaifu",
+        "name": "槐琥",
+        "nationId": "lungmen",
+        "groupId": "",
+        "displayNumber": "LM12",
+        "rarity": 4,
+        "profession": "SPECIAL",
+        "subProfessionId": "executor"
+      },
+      "char_245_cello": {
+        "id": "char_245_cello",
+        "name": "塑心",
+        "nationId": "laterano",
+        "groupId": "",
+        "displayNumber": "LT22",
+        "rarity": 6,
+        "profession": "SUPPORT",
+        "subProfessionId": "ritualist"
+      },
+      "char_248_mgllan": {
+        "id": "char_248_mgllan",
+        "name": "麦哲伦",
+        "nationId": "columbia",
+        "groupId": "rhine",
+        "displayNumber": "RL06",
+        "rarity": 5,
+        "profession": "SUPPORT",
+        "subProfessionId": "summoner"
+      },
+      "char_249_mlyss": {
+        "id": "char_249_mlyss",
+        "name": "缪尔赛思",
+        "nationId": "columbia",
+        "groupId": "rhine",
+        "displayNumber": "RL09",
+        "rarity": 5,
+        "profession": "PIONEER",
+        "subProfessionId": "tactician"
+      },
+      "char_250_phatom": {
+        "id": "char_250_phatom",
+        "name": "傀影",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "R109",
+        "rarity": 5,
+        "profession": "SPECIAL",
+        "subProfessionId": "executor"
+      },
+      "char_252_bibeak": {
+        "id": "char_252_bibeak",
+        "name": "柏喙",
+        "nationId": "sami",
+        "groupId": "",
+        "displayNumber": "R138",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "sword"
+      },
+      "char_253_greyy": {
+        "id": "char_253_greyy",
+        "name": "格雷伊",
+        "nationId": "bolivar",
+        "groupId": "",
+        "displayNumber": "R119",
+        "rarity": 3,
+        "profession": "CASTER",
+        "subProfessionId": "splashcaster"
+      },
+      "char_254_vodfox": {
+        "id": "char_254_vodfox",
+        "name": "巫恋",
+        "nationId": "siracusa",
+        "groupId": "",
+        "displayNumber": "R148",
+        "rarity": 4,
+        "profession": "SUPPORT",
+        "subProfessionId": "underminer"
+      },
+      "char_258_podego": {
+        "id": "char_258_podego",
+        "name": "波登可",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R157",
+        "rarity": 3,
+        "profession": "SUPPORT",
+        "subProfessionId": "slower"
+      },
+      "char_260_durnar": {
+        "id": "char_260_durnar",
+        "name": "坚雷",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R124",
+        "rarity": 3,
+        "profession": "TANK",
+        "subProfessionId": "artsprotector"
+      },
+      "char_261_sddrag": {
+        "id": "char_261_sddrag",
+        "name": "苇草",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "HT03",
+        "rarity": 4,
+        "profession": "PIONEER",
+        "subProfessionId": "charger"
+      },
+      "char_263_skadi": {
+        "id": "char_263_skadi",
+        "name": "斯卡蒂",
+        "nationId": "egir",
+        "groupId": "abyssal",
+        "displayNumber": "AA01",
+        "rarity": 5,
+        "profession": "WARRIOR",
+        "subProfessionId": "fearless"
+      },
+      "char_264_f12yin": {
+        "id": "char_264_f12yin",
+        "name": "山",
+        "nationId": "columbia",
+        "groupId": "",
+        "displayNumber": "CB05",
+        "rarity": 5,
+        "profession": "WARRIOR",
+        "subProfessionId": "fighter"
+      },
+      "char_265_sophia": {
+        "id": "char_265_sophia",
+        "name": "鞭刃",
+        "nationId": "kazimierz",
+        "groupId": "",
+        "displayNumber": "KZ07",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "instructor"
+      },
+      "char_271_spikes": {
+        "id": "char_271_spikes",
+        "name": "芳汀",
+        "nationId": "laterano",
+        "groupId": "",
+        "displayNumber": "LT06",
+        "rarity": 3,
+        "profession": "WARRIOR",
+        "subProfessionId": "lord"
+      },
+      "char_272_strong": {
+        "id": "char_272_strong",
+        "name": "孑",
+        "nationId": "lungmen",
+        "groupId": "",
+        "displayNumber": "LM14",
+        "rarity": 3,
+        "profession": "SPECIAL",
+        "subProfessionId": "merchant"
+      },
+      "char_274_astesi": {
+        "id": "char_274_astesi",
+        "name": "星极",
+        "nationId": "columbia",
+        "groupId": "",
+        "displayNumber": "RR01",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "artsfghter"
+      },
+      "char_275_breeze": {
+        "id": "char_275_breeze",
+        "name": "微风",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "R132",
+        "rarity": 4,
+        "profession": "MEDIC",
+        "subProfessionId": "ringhealer"
+      },
+      "char_277_sqrrel": {
+        "id": "char_277_sqrrel",
+        "name": "阿消",
+        "nationId": "lungmen",
+        "groupId": "",
+        "displayNumber": "LM11",
+        "rarity": 3,
+        "profession": "SPECIAL",
+        "subProfessionId": "pusher"
+      },
+      "char_278_orchid": {
+        "id": "char_278_orchid",
+        "name": "梓兰",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "PA61",
+        "rarity": 2,
+        "profession": "SUPPORT",
+        "subProfessionId": "slower"
+      },
+      "char_279_excu": {
+        "id": "char_279_excu",
+        "name": "送葬人",
+        "nationId": "laterano",
+        "groupId": "",
+        "displayNumber": "LT01",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "reaperrange"
+      },
+      "char_281_popka": {
+        "id": "char_281_popka",
+        "name": "泡普卡",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "PA65",
+        "rarity": 2,
+        "profession": "WARRIOR",
+        "subProfessionId": "centurion"
+      },
+      "char_282_catap": {
+        "id": "char_282_catap",
+        "name": "空爆",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "PA63",
+        "rarity": 2,
+        "profession": "SNIPER",
+        "subProfessionId": "aoesniper"
+      },
+      "char_283_midn": {
+        "id": "char_283_midn",
+        "name": "月见夜",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "PA62",
+        "rarity": 2,
+        "profession": "WARRIOR",
+        "subProfessionId": "lord"
+      },
+      "char_284_spot": {
+        "id": "char_284_spot",
+        "name": "斑点",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "PA64",
+        "rarity": 2,
+        "profession": "TANK",
+        "subProfessionId": "guardian"
+      },
+      "char_285_medic2": {
+        "id": "char_285_medic2",
+        "name": "Lancet-2",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "RCX2",
+        "rarity": 0,
+        "profession": "MEDIC",
+        "subProfessionId": "physician"
+      },
+      "char_286_cast3": {
+        "id": "char_286_cast3",
+        "name": "Castle-3",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "RCX3",
+        "rarity": 0,
+        "profession": "WARRIOR",
+        "subProfessionId": "fearless"
+      },
+      "char_289_gyuki": {
+        "id": "char_289_gyuki",
+        "name": "缠丸",
+        "nationId": "higashi",
+        "groupId": "",
+        "displayNumber": "HK01",
+        "rarity": 3,
+        "profession": "WARRIOR",
+        "subProfessionId": "fearless"
+      },
+      "char_290_vigna": {
+        "id": "char_290_vigna",
+        "name": "红豆",
+        "nationId": "columbia",
+        "groupId": "",
+        "displayNumber": "R105",
+        "rarity": 3,
+        "profession": "PIONEER",
+        "subProfessionId": "charger"
+      },
+      "char_291_aglina": {
+        "id": "char_291_aglina",
+        "name": "安洁莉娜",
+        "nationId": "siracusa",
+        "groupId": "",
+        "displayNumber": "SR02",
+        "rarity": 5,
+        "profession": "SUPPORT",
+        "subProfessionId": "slower"
+      },
+      "char_293_thorns": {
+        "id": "char_293_thorns",
+        "name": "棘刺",
+        "nationId": "iberia",
+        "groupId": "",
+        "displayNumber": "II01",
+        "rarity": 5,
+        "profession": "WARRIOR",
+        "subProfessionId": "lord"
+      },
+      "char_294_ayer": {
+        "id": "char_294_ayer",
+        "name": "断崖",
+        "nationId": "rim",
+        "groupId": "",
+        "displayNumber": "RB04",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "lord"
+      },
+      "char_297_hamoni": {
+        "id": "char_297_hamoni",
+        "name": "和弦",
+        "nationId": "victoria",
+        "groupId": "dublinn",
+        "displayNumber": "DB03",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "mystic"
+      },
+      "char_298_susuro": {
+        "id": "char_298_susuro",
+        "name": "苏苏洛",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R107",
+        "rarity": 3,
+        "profession": "MEDIC",
+        "subProfessionId": "physician"
+      },
+      "char_300_phenxi": {
+        "id": "char_300_phenxi",
+        "name": "菲亚梅塔",
+        "nationId": "laterano",
+        "groupId": "",
+        "displayNumber": "LT11",
+        "rarity": 5,
+        "profession": "SNIPER",
+        "subProfessionId": "aoesniper"
+      },
+      "char_301_cutter": {
+        "id": "char_301_cutter",
+        "name": "刻刀",
+        "nationId": "columbia",
+        "groupId": "",
+        "displayNumber": "R144",
+        "rarity": 3,
+        "profession": "WARRIOR",
+        "subProfessionId": "sword"
+      },
+      "char_302_glaze": {
+        "id": "char_302_glaze",
+        "name": "安比尔",
+        "nationId": "laterano",
+        "groupId": "",
+        "displayNumber": "LT02",
+        "rarity": 3,
+        "profession": "SNIPER",
+        "subProfessionId": "longrange"
+      },
+      "char_304_zebra": {
+        "id": "char_304_zebra",
+        "name": "暴雨",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R164",
+        "rarity": 4,
+        "profession": "TANK",
+        "subProfessionId": "protector"
+      },
+      "char_306_leizi": {
+        "id": "char_306_leizi",
+        "name": "惊蛰",
+        "nationId": "yan",
+        "groupId": "",
+        "displayNumber": "YD05",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "chain"
+      },
+      "char_308_swire": {
+        "id": "char_308_swire",
+        "name": "诗怀雅",
+        "nationId": "lungmen",
+        "groupId": "lgd",
+        "displayNumber": "LM08",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "instructor"
+      },
+      "char_311_mudrok": {
+        "id": "char_311_mudrok",
+        "name": "泥岩",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R159",
+        "rarity": 5,
+        "profession": "TANK",
+        "subProfessionId": "unyield"
+      },
+      "char_322_lmlee": {
+        "id": "char_322_lmlee",
+        "name": "老鲤",
+        "nationId": "lungmen",
+        "groupId": "",
+        "displayNumber": "LM18",
+        "rarity": 6,
+        "profession": "SPECIAL",
+        "subProfessionId": "merchant"
+      },
+      "char_325_bison": {
+        "id": "char_325_bison",
+        "name": "拜松",
+        "nationId": "lungmen",
+        "groupId": "",
+        "displayNumber": "LM15",
+        "rarity": 4,
+        "profession": "TANK",
+        "subProfessionId": "protector"
+      },
+      "char_326_glacus": {
+        "id": "char_326_glacus",
+        "name": "格劳克斯",
+        "nationId": "iberia",
+        "groupId": "",
+        "displayNumber": "R128",
+        "rarity": 4,
+        "profession": "SUPPORT",
+        "subProfessionId": "slower"
+      },
+      "char_328_cammou": {
+        "id": "char_328_cammou",
+        "name": "卡达",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R140",
+        "rarity": 3,
+        "profession": "CASTER",
+        "subProfessionId": "funnel"
+      },
+      "char_332_archet": {
+        "id": "char_332_archet",
+        "name": "空弦",
+        "nationId": "laterano",
+        "groupId": "",
+        "displayNumber": "LT08",
+        "rarity": 5,
+        "profession": "SNIPER",
+        "subProfessionId": "fastshot"
+      },
+      "char_333_sidero": {
+        "id": "char_333_sidero",
+        "name": "铸铁",
+        "nationId": "minos",
+        "groupId": "",
+        "displayNumber": "R126",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "artsfghter"
+      },
+      "char_336_folivo": {
+        "id": "char_336_folivo",
+        "name": "稀音",
+        "nationId": "sargon",
+        "groupId": "",
+        "displayNumber": "R162",
+        "rarity": 4,
+        "profession": "SUPPORT",
+        "subProfessionId": "summoner"
+      },
+      "char_337_utage": {
+        "id": "char_337_utage",
+        "name": "宴",
+        "nationId": "higashi",
+        "groupId": "",
+        "displayNumber": "HK03",
+        "rarity": 3,
+        "profession": "WARRIOR",
+        "subProfessionId": "musha"
+      },
+      "char_338_iris": {
+        "id": "char_338_iris",
+        "name": "爱丽丝",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC12",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "mystic"
+      },
+      "char_340_shwaz": {
+        "id": "char_340_shwaz",
+        "name": "黑",
+        "nationId": "columbia",
+        "groupId": "siesta",
+        "displayNumber": "SS02",
+        "rarity": 5,
+        "profession": "SNIPER",
+        "subProfessionId": "closerange"
+      },
+      "char_341_sntlla": {
+        "id": "char_341_sntlla",
+        "name": "寒檀",
+        "nationId": "sami",
+        "groupId": "",
+        "displayNumber": "SI02",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "splashcaster"
+      },
+      "char_343_tknogi": {
+        "id": "char_343_tknogi",
+        "name": "月禾",
+        "nationId": "higashi",
+        "groupId": "",
+        "displayNumber": "R129",
+        "rarity": 4,
+        "profession": "SUPPORT",
+        "subProfessionId": "blessing"
+      },
+      "char_344_beewax": {
+        "id": "char_344_beewax",
+        "name": "蜜蜡",
+        "nationId": "sargon",
+        "groupId": "",
+        "displayNumber": "R147",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "phalanx"
+      },
+      "char_345_folnic": {
+        "id": "char_345_folnic",
+        "name": "亚叶",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R133",
+        "rarity": 4,
+        "profession": "MEDIC",
+        "subProfessionId": "physician"
+      },
+      "char_346_aosta": {
+        "id": "char_346_aosta",
+        "name": "奥斯塔",
+        "nationId": "siracusa",
+        "groupId": "",
+        "displayNumber": "SR28",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "reaperrange"
+      },
+      "char_347_jaksel": {
+        "id": "char_347_jaksel",
+        "name": "杰克",
+        "nationId": "columbia",
+        "groupId": "",
+        "displayNumber": "R166",
+        "rarity": 3,
+        "profession": "WARRIOR",
+        "subProfessionId": "fighter"
+      },
+      "char_348_ceylon": {
+        "id": "char_348_ceylon",
+        "name": "锡兰",
+        "nationId": "columbia",
+        "groupId": "siesta",
+        "displayNumber": "SS01",
+        "rarity": 4,
+        "profession": "MEDIC",
+        "subProfessionId": "healer"
+      },
+      "char_349_chiave": {
+        "id": "char_349_chiave",
+        "name": "贾维",
+        "nationId": "siracusa",
+        "groupId": "",
+        "displayNumber": "SR26",
+        "rarity": 4,
+        "profession": "PIONEER",
+        "subProfessionId": "pioneer"
+      },
+      "char_350_surtr": {
+        "id": "char_350_surtr",
+        "name": "史尔特尔",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R111",
+        "rarity": 5,
+        "profession": "WARRIOR",
+        "subProfessionId": "artsfghter"
+      },
+      "char_355_ethan": {
+        "id": "char_355_ethan",
+        "name": "伊桑",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R130",
+        "rarity": 3,
+        "profession": "SPECIAL",
+        "subProfessionId": "stalker"
+      },
+      "char_356_broca": {
+        "id": "char_356_broca",
+        "name": "布洛卡",
+        "nationId": "siracusa",
+        "groupId": "",
+        "displayNumber": "SR27",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "centurion"
+      },
+      "char_358_lisa": {
+        "id": "char_358_lisa",
+        "name": "铃兰",
+        "nationId": "siracusa",
+        "groupId": "",
+        "displayNumber": "R172",
+        "rarity": 5,
+        "profession": "SUPPORT",
+        "subProfessionId": "slower"
+      },
+      "char_362_saga": {
+        "id": "char_362_saga",
+        "name": "嵯峨",
+        "nationId": "higashi",
+        "groupId": "",
+        "displayNumber": "HK13",
+        "rarity": 5,
+        "profession": "PIONEER",
+        "subProfessionId": "pioneer"
+      },
+      "char_363_toddi": {
+        "id": "char_363_toddi",
+        "name": "熔泉",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC11",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "siegesniper"
+      },
+      "char_365_aprl": {
+        "id": "char_365_aprl",
+        "name": "四月",
+        "nationId": "rim",
+        "groupId": "",
+        "displayNumber": "RB07",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "fastshot"
+      },
+      "char_366_acdrop": {
+        "id": "char_366_acdrop",
+        "name": "酸糖",
+        "nationId": "columbia",
+        "groupId": "",
+        "displayNumber": "R139",
+        "rarity": 3,
+        "profession": "SNIPER",
+        "subProfessionId": "closerange"
+      },
+      "char_367_swllow": {
+        "id": "char_367_swllow",
+        "name": "灰喉",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R110",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "fastshot"
+      },
+      "char_369_bena": {
+        "id": "char_369_bena",
+        "name": "贝娜",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC14",
+        "rarity": 4,
+        "profession": "SPECIAL",
+        "subProfessionId": "dollkeeper"
+      },
+      "char_373_lionhd": {
+        "id": "char_373_lionhd",
+        "name": "莱恩哈特",
+        "nationId": "rim",
+        "groupId": "",
+        "displayNumber": "RB03",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "splashcaster"
+      },
+      "char_376_therex": {
+        "id": "char_376_therex",
+        "name": "THRM-EX",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "RCX4",
+        "rarity": 0,
+        "profession": "SPECIAL",
+        "subProfessionId": "executor"
+      },
+      "char_377_gdglow": {
+        "id": "char_377_gdglow",
+        "name": "澄闪",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC09",
+        "rarity": 5,
+        "profession": "CASTER",
+        "subProfessionId": "funnel"
+      },
+      "char_378_asbest": {
+        "id": "char_378_asbest",
+        "name": "石棉",
+        "nationId": "rim",
+        "groupId": "",
+        "displayNumber": "RB05",
+        "rarity": 4,
+        "profession": "TANK",
+        "subProfessionId": "artsprotector"
+      },
+      "char_379_sesa": {
+        "id": "char_379_sesa",
+        "name": "慑砂",
+        "nationId": "sargon",
+        "groupId": "",
+        "displayNumber": "R158",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "aoesniper"
+      },
+      "char_381_bubble": {
+        "id": "char_381_bubble",
+        "name": "泡泡",
+        "nationId": "sargon",
+        "groupId": "",
+        "displayNumber": "R146",
+        "rarity": 3,
+        "profession": "TANK",
+        "subProfessionId": "protector"
+      },
+      "char_383_snsant": {
+        "id": "char_383_snsant",
+        "name": "雪雉",
+        "nationId": "lungmen",
+        "groupId": "",
+        "displayNumber": "LM16",
+        "rarity": 4,
+        "profession": "SPECIAL",
+        "subProfessionId": "hookmaster"
+      },
+      "char_385_finlpp": {
+        "id": "char_385_finlpp",
+        "name": "清流",
+        "nationId": "yan",
+        "groupId": "",
+        "displayNumber": "R160",
+        "rarity": 3,
+        "profession": "MEDIC",
+        "subProfessionId": "healer"
+      },
+      "char_388_mint": {
+        "id": "char_388_mint",
+        "name": "薄绿",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC08",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "phalanx"
+      },
+      "char_391_rosmon": {
+        "id": "char_391_rosmon",
+        "name": "迷迭香",
+        "nationId": "rhodes",
+        "groupId": "elite",
+        "displayNumber": "RE45",
+        "rarity": 5,
+        "profession": "SNIPER",
+        "subProfessionId": "bombarder"
+      },
+      "char_4000_jnight": {
+        "id": "char_4000_jnight",
+        "name": "正义骑士号",
+        "nationId": "kazimierz",
+        "groupId": "pinus",
+        "displayNumber": "KZ15",
+        "rarity": 0,
+        "profession": "SNIPER",
+        "subProfessionId": "fastshot"
+      },
+      "char_4004_pudd": {
+        "id": "char_4004_pudd",
+        "name": "布丁",
+        "nationId": "columbia",
+        "groupId": "",
+        "displayNumber": "CB03",
+        "rarity": 3,
+        "profession": "CASTER",
+        "subProfessionId": "chain"
+      },
+      "char_4006_melnte": {
+        "id": "char_4006_melnte",
+        "name": "玫拉",
+        "nationId": "columbia",
+        "groupId": "",
+        "displayNumber": "CB22",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "closerange"
+      },
+      "char_4009_irene": {
+        "id": "char_4009_irene",
+        "name": "艾丽妮",
+        "nationId": "iberia",
+        "groupId": "",
+        "displayNumber": "II07",
+        "rarity": 5,
+        "profession": "WARRIOR",
+        "subProfessionId": "sword"
+      },
+      "char_400_weedy": {
+        "id": "char_400_weedy",
+        "name": "温蒂",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R117",
+        "rarity": 5,
+        "profession": "SPECIAL",
+        "subProfessionId": "pusher"
+      },
+      "char_4011_lessng": {
+        "id": "char_4011_lessng",
+        "name": "止颂",
+        "nationId": "leithanien",
+        "groupId": "",
+        "displayNumber": "LN07",
+        "rarity": 5,
+        "profession": "WARRIOR",
+        "subProfessionId": "fearless"
+      },
+      "char_4013_kjera": {
+        "id": "char_4013_kjera",
+        "name": "耶拉",
+        "nationId": "kjerag",
+        "groupId": "karlan",
+        "displayNumber": "JC00",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "funnel"
+      },
+      "char_4014_lunacu": {
+        "id": "char_4014_lunacu",
+        "name": "子月",
+        "nationId": "siracusa",
+        "groupId": "",
+        "displayNumber": "SR37",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "longrange"
+      },
+      "char_4015_spuria": {
+        "id": "char_4015_spuria",
+        "name": "空构",
+        "nationId": "laterano",
+        "groupId": "",
+        "displayNumber": "LT12",
+        "rarity": 4,
+        "profession": "SPECIAL",
+        "subProfessionId": "geek"
+      },
+      "char_4016_kazema": {
+        "id": "char_4016_kazema",
+        "name": "风丸",
+        "nationId": "higashi",
+        "groupId": "",
+        "displayNumber": "HK09",
+        "rarity": 4,
+        "profession": "SPECIAL",
+        "subProfessionId": "dollkeeper"
+      },
+      "char_4017_puzzle": {
+        "id": "char_4017_puzzle",
+        "name": "谜图",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC21",
+        "rarity": 4,
+        "profession": "PIONEER",
+        "subProfessionId": "agent"
+      },
+      "char_4019_ncdeer": {
+        "id": "char_4019_ncdeer",
+        "name": "九色鹿",
+        "nationId": "yan",
+        "groupId": "",
+        "displayNumber": "YD09",
+        "rarity": 4,
+        "profession": "SUPPORT",
+        "subProfessionId": "blessing"
+      },
+      "char_401_elysm": {
+        "id": "char_401_elysm",
+        "name": "极境",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R131",
+        "rarity": 4,
+        "profession": "PIONEER",
+        "subProfessionId": "bearer"
+      },
+      "char_4023_rfalcn": {
+        "id": "char_4023_rfalcn",
+        "name": "红隼",
+        "nationId": "sargon",
+        "groupId": "",
+        "displayNumber": "SG12",
+        "rarity": 4,
+        "profession": "PIONEER",
+        "subProfessionId": "pioneer"
+      },
+      "char_4025_aprot2": {
+        "id": "char_4025_aprot2",
+        "name": "暮落",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC07",
+        "rarity": 4,
+        "profession": "TANK",
+        "subProfessionId": "artsprotector"
+      },
+      "char_4027_heyak": {
+        "id": "char_4027_heyak",
+        "name": "霍尔海雅",
+        "nationId": "columbia",
+        "groupId": "",
+        "displayNumber": "CB88",
+        "rarity": 5,
+        "profession": "CASTER",
+        "subProfessionId": "corecaster"
+      },
+      "char_402_tuye": {
+        "id": "char_402_tuye",
+        "name": "图耶",
+        "nationId": "sargon",
+        "groupId": "",
+        "displayNumber": "SG08",
+        "rarity": 4,
+        "profession": "MEDIC",
+        "subProfessionId": "physician"
+      },
+      "char_4032_provs": {
+        "id": "char_4032_provs",
+        "name": "但书",
+        "nationId": "kazimierz",
+        "groupId": "",
+        "displayNumber": "KZ10",
+        "rarity": 4,
+        "profession": "SUPPORT",
+        "subProfessionId": "slower"
+      },
+      "char_4036_forcer": {
+        "id": "char_4036_forcer",
+        "name": "见行者",
+        "nationId": "laterano",
+        "groupId": "",
+        "displayNumber": "LT10",
+        "rarity": 4,
+        "profession": "SPECIAL",
+        "subProfessionId": "pusher"
+      },
+      "char_4039_horn": {
+        "id": "char_4039_horn",
+        "name": "号角",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC16",
+        "rarity": 5,
+        "profession": "TANK",
+        "subProfessionId": "fortress"
+      },
+      "char_4040_rockr": {
+        "id": "char_4040_rockr",
+        "name": "洛洛",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC18",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "funnel"
+      },
+      "char_4041_chnut": {
+        "id": "char_4041_chnut",
+        "name": "褐果",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R134",
+        "rarity": 3,
+        "profession": "MEDIC",
+        "subProfessionId": "wandermedic"
+      },
+      "char_4042_lumen": {
+        "id": "char_4042_lumen",
+        "name": "流明",
+        "nationId": "iberia",
+        "groupId": "",
+        "displayNumber": "II09",
+        "rarity": 5,
+        "profession": "MEDIC",
+        "subProfessionId": "healer"
+      },
+      "char_4043_erato": {
+        "id": "char_4043_erato",
+        "name": "埃拉托",
+        "nationId": "minos",
+        "groupId": "",
+        "displayNumber": "MN07",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "siegesniper"
+      },
+      "char_4045_heidi": {
+        "id": "char_4045_heidi",
+        "name": "海蒂",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC19",
+        "rarity": 4,
+        "profession": "SUPPORT",
+        "subProfessionId": "bard"
+      },
+      "char_4046_ebnhlz": {
+        "id": "char_4046_ebnhlz",
+        "name": "黑键",
+        "nationId": "leithanien",
+        "groupId": "",
+        "displayNumber": "LN05",
+        "rarity": 6,
+        "profession": "CASTER",
+        "subProfessionId": "mystic"
+      },
+      "char_4047_pianst": {
+        "id": "char_4047_pianst",
+        "name": "车尔尼",
+        "nationId": "leithanien",
+        "groupId": "",
+        "displayNumber": "LN06",
+        "rarity": 4,
+        "profession": "TANK",
+        "subProfessionId": "artsprotector"
+      },
+      "char_4048_doroth": {
+        "id": "char_4048_doroth",
+        "name": "多萝西",
+        "nationId": "columbia",
+        "groupId": "rhine",
+        "displayNumber": "RL07",
+        "rarity": 6,
+        "profession": "SPECIAL",
+        "subProfessionId": "traper"
+      },
+      "char_4054_malist": {
+        "id": "char_4054_malist",
+        "name": "至简",
+        "nationId": "sargon",
+        "groupId": "",
+        "displayNumber": "SG09",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "funnel"
+      },
+      "char_4055_bgsnow": {
+        "id": "char_4055_bgsnow",
+        "name": "鸿雪",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R145",
+        "rarity": 6,
+        "profession": "SNIPER",
+        "subProfessionId": "closerange"
+      },
+      "char_405_absin": {
+        "id": "char_405_absin",
+        "name": "苦艾",
+        "nationId": "ursus",
+        "groupId": "",
+        "displayNumber": "US11",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "corecaster"
+      },
+      "char_4062_totter": {
+        "id": "char_4062_totter",
+        "name": "铅踝",
+        "nationId": "sargon",
+        "groupId": "",
+        "displayNumber": "SG11",
+        "rarity": 3,
+        "profession": "SNIPER",
+        "subProfessionId": "siegesniper"
+      },
+      "char_4063_quartz": {
+        "id": "char_4063_quartz",
+        "name": "石英",
+        "nationId": "columbia",
+        "groupId": "",
+        "displayNumber": "CB18",
+        "rarity": 3,
+        "profession": "WARRIOR",
+        "subProfessionId": "crusher"
+      },
+      "char_4064_mlynar": {
+        "id": "char_4064_mlynar",
+        "name": "玛恩纳",
+        "nationId": "kazimierz",
+        "groupId": "",
+        "displayNumber": "KZ08",
+        "rarity": 5,
+        "profession": "WARRIOR",
+        "subProfessionId": "librator"
+      },
+      "char_4065_judge": {
+        "id": "char_4065_judge",
+        "name": "斥罪",
+        "nationId": "siracusa",
+        "groupId": "",
+        "displayNumber": "SR35",
+        "rarity": 5,
+        "profession": "TANK",
+        "subProfessionId": "unyield"
+      },
+      "char_4066_highmo": {
+        "id": "char_4066_highmo",
+        "name": "海沫",
+        "nationId": "iberia",
+        "groupId": "",
+        "displayNumber": "II10",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "reaper"
+      },
+      "char_4067_lolxh": {
+        "id": "char_4067_lolxh",
+        "name": "罗小黑",
+        "nationId": "yan",
+        "groupId": "",
+        "displayNumber": "R161",
+        "rarity": 3,
+        "profession": "WARRIOR",
+        "subProfessionId": "lord"
+      },
+      "char_4071_peper": {
+        "id": "char_4071_peper",
+        "name": "明椒",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R175",
+        "rarity": 4,
+        "profession": "MEDIC",
+        "subProfessionId": "chainhealer"
+      },
+      "char_4072_ironmn": {
+        "id": "char_4072_ironmn",
+        "name": "白铁",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC17",
+        "rarity": 6,
+        "profession": "SUPPORT",
+        "subProfessionId": "craftsman"
+      },
+      "char_4077_palico": {
+        "id": "char_4077_palico",
+        "name": "泰拉大陆调查团",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "MH01",
+        "rarity": 0,
+        "profession": "SNIPER",
+        "subProfessionId": "bombarder"
+      },
+      "char_4078_bdhkgt": {
+        "id": "char_4078_bdhkgt",
+        "name": "截云",
+        "nationId": "yan",
+        "groupId": "",
+        "displayNumber": "YD15",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "aoesniper"
+      },
+      "char_4080_lin": {
+        "id": "char_4080_lin",
+        "name": "林",
+        "nationId": "lungmen",
+        "groupId": "",
+        "displayNumber": "LM21",
+        "rarity": 5,
+        "profession": "CASTER",
+        "subProfessionId": "phalanx"
+      },
+      "char_4081_warmy": {
+        "id": "char_4081_warmy",
+        "name": "温米",
+        "nationId": "rim",
+        "groupId": "",
+        "displayNumber": "RB14",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "primcaster"
+      },
+      "char_4082_qiubai": {
+        "id": "char_4082_qiubai",
+        "name": "仇白",
+        "nationId": "yan",
+        "groupId": "",
+        "displayNumber": "YD20",
+        "rarity": 6,
+        "profession": "WARRIOR",
+        "subProfessionId": "lord"
+      },
+      "char_4083_chimes": {
+        "id": "char_4083_chimes",
+        "name": "铎铃",
+        "nationId": "yan",
+        "groupId": "",
+        "displayNumber": "YD17",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "crusher"
+      },
+      "char_4087_ines": {
+        "id": "char_4087_ines",
+        "name": "伊内丝",
+        "nationId": "",
+        "groupId": "babel",
+        "displayNumber": "B215",
+        "rarity": 5,
+        "profession": "PIONEER",
+        "subProfessionId": "agent"
+      },
+      "char_4088_hodrer": {
+        "id": "char_4088_hodrer",
+        "name": "赫德雷",
+        "nationId": "",
+        "groupId": "babel",
+        "displayNumber": "B216",
+        "rarity": 6,
+        "profession": "WARRIOR",
+        "subProfessionId": "crusher"
+      },
+      "char_4091_ulika": {
+        "id": "char_4091_ulika",
+        "name": "U-Official",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "U007",
+        "rarity": 0,
+        "profession": "SUPPORT",
+        "subProfessionId": "bard"
+      },
+      "char_4093_frston": {
+        "id": "char_4093_frston",
+        "name": "Friston-3",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "RCX5",
+        "rarity": 0,
+        "profession": "TANK",
+        "subProfessionId": "protector"
+      },
+      "char_4098_vvana": {
+        "id": "char_4098_vvana",
+        "name": "薇薇安娜",
+        "nationId": "leithanien",
+        "groupId": "",
+        "displayNumber": "LN11",
+        "rarity": 6,
+        "profession": "WARRIOR",
+        "subProfessionId": "artsfghter"
+      },
+      "char_4100_caper": {
+        "id": "char_4100_caper",
+        "name": "跃跃",
+        "nationId": "bolivar",
+        "groupId": "",
+        "displayNumber": "BV32",
+        "rarity": 3,
+        "profession": "SNIPER",
+        "subProfessionId": "loopshooter"
+      },
+      "char_4102_threye": {
+        "id": "char_4102_threye",
+        "name": "凛视",
+        "nationId": "sami",
+        "groupId": "",
+        "displayNumber": "SI06",
+        "rarity": 4,
+        "profession": "SUPPORT",
+        "subProfessionId": "ritualist"
+      },
+      "char_4104_coldst": {
+        "id": "char_4104_coldst",
+        "name": "冰酿",
+        "nationId": "columbia",
+        "groupId": "",
+        "displayNumber": "CB28",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "hunter"
+      },
+      "char_4105_almond": {
+        "id": "char_4105_almond",
+        "name": "杏仁",
+        "nationId": "columbia",
+        "groupId": "blacksteel",
+        "displayNumber": "BS05",
+        "rarity": 4,
+        "profession": "SPECIAL",
+        "subProfessionId": "hookmaster"
+      },
+      "char_4106_bryota": {
+        "id": "char_4106_bryota",
+        "name": "苍苔",
+        "nationId": "columbia",
+        "groupId": "siesta",
+        "displayNumber": "SS03",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "instructor"
+      },
+      "char_4107_vrdant": {
+        "id": "char_4107_vrdant",
+        "name": "维荻",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC25",
+        "rarity": 3,
+        "profession": "SPECIAL",
+        "subProfessionId": "dollkeeper"
+      },
+      "char_4109_baslin": {
+        "id": "char_4109_baslin",
+        "name": "深律",
+        "nationId": "leithanien",
+        "groupId": "",
+        "displayNumber": "LN13",
+        "rarity": 4,
+        "profession": "TANK",
+        "subProfessionId": "guardian"
+      },
+      "char_4110_delphn": {
+        "id": "char_4110_delphn",
+        "name": "戴菲恩",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC23",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "mystic"
+      },
+      "char_4114_harold": {
+        "id": "char_4114_harold",
+        "name": "哈洛德",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC27",
+        "rarity": 4,
+        "profession": "MEDIC",
+        "subProfessionId": "wandermedic"
+      },
+      "char_4116_blkkgt": {
+        "id": "char_4116_blkkgt",
+        "name": "锏",
+        "nationId": "kjerag",
+        "groupId": "karlan",
+        "displayNumber": "JC07",
+        "rarity": 6,
+        "profession": "WARRIOR",
+        "subProfessionId": "sword"
+      },
+      "char_4117_ray": {
+        "id": "char_4114_harold",
+        "name": "莱伊",
+        "nationId": "rim",
+        "groupId": "",
+        "displayNumber": "RB15",
+        "rarity": 6,
+        "profession": "SNIPER",
+        "subProfessionId": "hunter"
+      },
+      "char_4119_wanqin": {
+        "id": "char_4119_wanqin",
+        "name": "万顷",
+        "nationId": "yan",
+        "groupId": "",
+        "displayNumber": "YD13",
+        "rarity": 4,
+        "profession": "PIONEER",
+        "subProfessionId": "bearer"
+      },
+      "char_411_tomimi": {
+        "id": "char_411_tomimi",
+        "name": "特米米",
+        "nationId": "sargon",
+        "groupId": "",
+        "displayNumber": "SG05",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "corecaster"
+      },
+      "char_4121_zuole": {
+        "id": "char_4121_zuole",
+        "name": "左乐",
+        "nationId": "yan",
+        "groupId": "",
+        "displayNumber": "YD06",
+        "rarity": 6,
+        "profession": "WARRIOR",
+        "subProfessionId": "musha"
+      },
+      "char_4122_grabds": {
+        "id": "char_4122_grabds",
+        "name": "小满",
+        "nationId": "yan",
+        "groupId": "",
+        "displayNumber": "YD14",
+        "rarity": 4,
+        "profession": "SUPPORT",
+        "subProfessionId": "slower"
+      },
+      "char_4123_ela": {
+        "id": "char_4123_ela",
+        "name": "艾拉",
+        "nationId": "",
+        "groupId": "",
+        "displayNumber": "RS05",
+        "rarity": 5,
+        "profession": "SPECIAL",
+        "subProfessionId": "traper"
+      },
+      "char_4124_iana": {
+        "id": "char_4124_iana",
+        "name": "双月",
+        "nationId": "",
+        "groupId": "",
+        "displayNumber": "RS07",
+        "rarity": 4,
+        "profession": "SPECIAL",
+        "subProfessionId": "dollkeeper"
+      },
+      "char_4125_rdoc": {
+        "id": "char_4125_rdoc",
+        "name": "医生",
+        "nationId": "",
+        "groupId": "",
+        "displayNumber": "RS06",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "instructor"
+      },
+      "char_4126_fuze": {
+        "id": "char_4126_fuze",
+        "name": "导火索",
+        "nationId": "",
+        "groupId": "",
+        "displayNumber": "RS08",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "centurion"
+      },
+      "char_4130_luton": {
+        "id": "char_4130_luton",
+        "name": "露托",
+        "nationId": "bolivar",
+        "groupId": "",
+        "displayNumber": "BV33",
+        "rarity": 3,
+        "profession": "TANK",
+        "subProfessionId": "unyield"
+      },
+      "char_4131_odda": {
+        "id": "char_4131_odda",
+        "name": "奥达",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R167",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "hammer"
+      },
+      "char_4132_ascln": {
+        "id": "char_4132_ascln",
+        "name": "阿斯卡纶",
+        "nationId": "rhodes",
+        "groupId": "sweep",
+        "displayNumber": "SW00",
+        "rarity": 5,
+        "profession": "SPECIAL",
+        "subProfessionId": "stalker"
+      },
+      "char_4133_logos": {
+        "id": "char_4133_logos",
+        "name": "逻各斯",
+        "nationId": "rhodes",
+        "groupId": "elite",
+        "displayNumber": "RE03",
+        "rarity": 5,
+        "profession": "CASTER",
+        "subProfessionId": "corecaster"
+      },
+      "char_4134_cetsyr": {
+        "id": "char_4134_cetsyr",
+        "name": "魔王",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "DWDB",
+        "rarity": 5,
+        "profession": "SUPPORT",
+        "subProfessionId": "bard"
+      },
+      "char_4136_phonor": {
+        "id": "char_4136_phonor",
+        "name": "PhonoR-0",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "RCX6",
+        "rarity": 0,
+        "profession": "SUPPORT",
+        "subProfessionId": "ritualist"
+      },
+      "char_415_flint": {
+        "id": "char_415_flint",
+        "name": "燧石",
+        "nationId": "sargon",
+        "groupId": "",
+        "displayNumber": "SG06",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "fighter"
+      },
+      "char_416_zumama": {
+        "id": "char_416_zumama",
+        "name": "森蚺",
+        "nationId": "sargon",
+        "groupId": "",
+        "displayNumber": "SG03",
+        "rarity": 5,
+        "profession": "TANK",
+        "subProfessionId": "duelist"
+      },
+      "char_420_flamtl": {
+        "id": "char_420_flamtl",
+        "name": "焰尾",
+        "nationId": "kazimierz",
+        "groupId": "pinus",
+        "displayNumber": "KZ11",
+        "rarity": 6,
+        "profession": "PIONEER",
+        "subProfessionId": "pioneer"
+      },
+      "char_421_crow": {
+        "id": "char_421_crow",
+        "name": "羽毛笔",
+        "nationId": "bolivar",
+        "groupId": "",
+        "displayNumber": "BV13",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "reaper"
+      },
+      "char_422_aurora": {
+        "id": "char_422_aurora",
+        "name": "极光",
+        "nationId": "kjerag",
+        "groupId": "karlan",
+        "displayNumber": "JC09",
+        "rarity": 4,
+        "profession": "TANK",
+        "subProfessionId": "duelist"
+      },
+      "char_423_blemsh": {
+        "id": "char_423_blemsh",
+        "name": "瑕光",
+        "nationId": "kazimierz",
+        "groupId": "",
+        "displayNumber": "KZ09",
+        "rarity": 6,
+        "profession": "TANK",
+        "subProfessionId": "guardian"
+      },
+      "char_426_billro": {
+        "id": "char_426_billro",
+        "name": "卡涅利安",
+        "nationId": "leithanien",
+        "groupId": "",
+        "displayNumber": "LN04",
+        "rarity": 6,
+        "profession": "CASTER",
+        "subProfessionId": "phalanx"
+      },
+      "char_427_vigil": {
+        "id": "char_427_vigil",
+        "name": "伺夜",
+        "nationId": "siracusa",
+        "groupId": "",
+        "displayNumber": "SR36",
+        "rarity": 5,
+        "profession": "PIONEER",
+        "subProfessionId": "tactician"
+      },
+      "char_430_fartth": {
+        "id": "char_430_fartth",
+        "name": "远牙",
+        "nationId": "kazimierz",
+        "groupId": "pinus",
+        "displayNumber": "KZ13",
+        "rarity": 5,
+        "profession": "SNIPER",
+        "subProfessionId": "longrange"
+      },
+      "char_431_ashlok": {
+        "id": "char_431_ashlok",
+        "name": "灰毫",
+        "nationId": "kazimierz",
+        "groupId": "pinus",
+        "displayNumber": "KZ12",
+        "rarity": 4,
+        "profession": "TANK",
+        "subProfessionId": "fortress"
+      },
+      "char_433_windft": {
+        "id": "char_433_windft",
+        "name": "掠风",
+        "nationId": "columbia",
+        "groupId": "",
+        "displayNumber": "CB19",
+        "rarity": 4,
+        "profession": "SUPPORT",
+        "subProfessionId": "craftsman"
+      },
+      "char_436_whispr": {
+        "id": "char_436_whispr",
+        "name": "絮雨",
+        "nationId": "iberia",
+        "groupId": "",
+        "displayNumber": "R163",
+        "rarity": 4,
+        "profession": "MEDIC",
+        "subProfessionId": "healer"
+      },
+      "char_437_mizuki": {
+        "id": "char_437_mizuki",
+        "name": "水月",
+        "nationId": "higashi",
+        "groupId": "",
+        "displayNumber": "HK07",
+        "rarity": 6,
+        "profession": "SPECIAL",
+        "subProfessionId": "stalker"
+      },
+      "char_440_pinecn": {
+        "id": "char_440_pinecn",
+        "name": "松果",
+        "nationId": "columbia",
+        "groupId": "",
+        "displayNumber": "CB09",
+        "rarity": 3,
+        "profession": "SNIPER",
+        "subProfessionId": "reaperrange"
+      },
+      "char_446_aroma": {
+        "id": "char_446_aroma",
+        "name": "阿罗玛",
+        "nationId": "siracusa",
+        "groupId": "",
+        "displayNumber": "SR39",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "blastcaster"
+      },
+      "char_449_glider": {
+        "id": "char_449_glider",
+        "name": "蜜莓",
+        "nationId": "rim",
+        "groupId": "",
+        "displayNumber": "RB06",
+        "rarity": 4,
+        "profession": "MEDIC",
+        "subProfessionId": "wandermedic"
+      },
+      "char_451_robin": {
+        "id": "char_451_robin",
+        "name": "罗宾",
+        "nationId": "columbia",
+        "groupId": "",
+        "displayNumber": "CB08",
+        "rarity": 4,
+        "profession": "SPECIAL",
+        "subProfessionId": "traper"
+      },
+      "char_452_bstalk": {
+        "id": "char_452_bstalk",
+        "name": "豆苗",
+        "nationId": "columbia",
+        "groupId": "",
+        "displayNumber": "CB16",
+        "rarity": 3,
+        "profession": "PIONEER",
+        "subProfessionId": "tactician"
+      },
+      "char_455_nothin": {
+        "id": "char_455_nothin",
+        "name": "乌有",
+        "nationId": "yan",
+        "groupId": "",
+        "displayNumber": "YD11",
+        "rarity": 4,
+        "profession": "SPECIAL",
+        "subProfessionId": "merchant"
+      },
+      "char_456_ash": {
+        "id": "char_456_ash",
+        "name": "灰烬",
+        "nationId": "",
+        "groupId": "",
+        "displayNumber": "RS01",
+        "rarity": 5,
+        "profession": "SNIPER",
+        "subProfessionId": "fastshot"
+      },
+      "char_457_blitz": {
+        "id": "char_457_blitz",
+        "name": "闪击",
+        "nationId": "",
+        "groupId": "",
+        "displayNumber": "RS02",
+        "rarity": 4,
+        "profession": "TANK",
+        "subProfessionId": "shotprotector"
+      },
+      "char_458_rfrost": {
+        "id": "char_458_rfrost",
+        "name": "霜华",
+        "nationId": "",
+        "groupId": "",
+        "displayNumber": "RS03",
+        "rarity": 4,
+        "profession": "SPECIAL",
+        "subProfessionId": "traper"
+      },
+      "char_459_tachak": {
+        "id": "char_459_tachak",
+        "name": "战车",
+        "nationId": "",
+        "groupId": "",
+        "displayNumber": "RS04",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "sword"
+      },
+      "char_464_cement": {
+        "id": "char_464_cement",
+        "name": "洋灰",
+        "nationId": "rim",
+        "groupId": "",
+        "displayNumber": "RB11",
+        "rarity": 4,
+        "profession": "TANK",
+        "subProfessionId": "duelist"
+      },
+      "char_466_qanik": {
+        "id": "char_466_qanik",
+        "name": "雪绒",
+        "nationId": "sami",
+        "groupId": "",
+        "displayNumber": "SI03",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "corecaster"
+      },
+      "char_469_indigo": {
+        "id": "char_469_indigo",
+        "name": "深靛",
+        "nationId": "iberia",
+        "groupId": "",
+        "displayNumber": "II05",
+        "rarity": 3,
+        "profession": "CASTER",
+        "subProfessionId": "mystic"
+      },
+      "char_472_pasngr": {
+        "id": "char_472_pasngr",
+        "name": "异客",
+        "nationId": "sargon",
+        "groupId": "",
+        "displayNumber": "SG07",
+        "rarity": 6,
+        "profession": "CASTER",
+        "subProfessionId": "chain"
+      },
+      "char_473_mberry": {
+        "id": "char_473_mberry",
+        "name": "桑葚",
+        "nationId": "yan",
+        "groupId": "",
+        "displayNumber": "YD03",
+        "rarity": 4,
+        "profession": "MEDIC",
+        "subProfessionId": "wandermedic"
+      },
+      "char_474_glady": {
+        "id": "char_474_glady",
+        "name": "歌蕾蒂娅",
+        "nationId": "egir",
+        "groupId": "abyssal",
+        "displayNumber": "AA05",
+        "rarity": 5,
+        "profession": "SPECIAL",
+        "subProfessionId": "hookmaster"
+      },
+      "char_475_akafyu": {
+        "id": "char_475_akafyu",
+        "name": "赤冬",
+        "nationId": "higashi",
+        "groupId": "",
+        "displayNumber": "HK04",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "musha"
+      },
+      "char_476_blkngt": {
+        "id": "char_476_blkngt",
+        "name": "夜半",
+        "nationId": "rim",
+        "groupId": "",
+        "displayNumber": "RB12",
+        "rarity": 4,
+        "profession": "PIONEER",
+        "subProfessionId": "tactician"
+      },
+      "char_478_kirara": {
+        "id": "char_478_kirara",
+        "name": "绮良",
+        "nationId": "higashi",
+        "groupId": "",
+        "displayNumber": "HK05",
+        "rarity": 4,
+        "profession": "SPECIAL",
+        "subProfessionId": "stalker"
+      },
+      "char_479_sleach": {
+        "id": "char_479_sleach",
+        "name": "琴柳",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC10",
+        "rarity": 5,
+        "profession": "PIONEER",
+        "subProfessionId": "bearer"
+      },
+      "char_484_robrta": {
+        "id": "char_484_robrta",
+        "name": "罗比菈塔",
+        "nationId": "columbia",
+        "groupId": "",
+        "displayNumber": "CB11",
+        "rarity": 3,
+        "profession": "SUPPORT",
+        "subProfessionId": "craftsman"
+      },
+      "char_485_pallas": {
+        "id": "char_485_pallas",
+        "name": "帕拉斯",
+        "nationId": "minos",
+        "groupId": "",
+        "displayNumber": "MN04",
+        "rarity": 5,
+        "profession": "WARRIOR",
+        "subProfessionId": "instructor"
+      },
+      "char_486_takila": {
+        "id": "char_486_takila",
+        "name": "龙舌兰",
+        "nationId": "bolivar",
+        "groupId": "",
+        "displayNumber": "BV12",
+        "rarity": 4,
+        "profession": "WARRIOR",
+        "subProfessionId": "librator"
+      },
+      "char_488_buildr": {
+        "id": "char_488_buildr",
+        "name": "青枳",
+        "nationId": "columbia",
+        "groupId": "siesta",
+        "displayNumber": "SS04",
+        "rarity": 4,
+        "profession": "PIONEER",
+        "subProfessionId": "pioneer"
+      },
+      "char_489_serum": {
+        "id": "char_489_serum",
+        "name": "蚀清",
+        "nationId": "columbia",
+        "groupId": "",
+        "displayNumber": "CB12",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "blastcaster"
+      },
+      "char_491_humus": {
+        "id": "char_491_humus",
+        "name": "休谟斯",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R171",
+        "rarity": 3,
+        "profession": "WARRIOR",
+        "subProfessionId": "reaper"
+      },
+      "char_492_quercu": {
+        "id": "char_492_quercu",
+        "name": "夏栎",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R121",
+        "rarity": 4,
+        "profession": "SUPPORT",
+        "subProfessionId": "blessing"
+      },
+      "char_493_firwhl": {
+        "id": "char_493_firwhl",
+        "name": "火哨",
+        "nationId": "rim",
+        "groupId": "",
+        "displayNumber": "RB09",
+        "rarity": 4,
+        "profession": "TANK",
+        "subProfessionId": "fortress"
+      },
+      "char_494_vendla": {
+        "id": "char_494_vendla",
+        "name": "刺玫",
+        "nationId": "victoria",
+        "groupId": "",
+        "displayNumber": "VC24",
+        "rarity": 4,
+        "profession": "MEDIC",
+        "subProfessionId": "incantationmedic"
+      },
+      "char_496_wildmn": {
+        "id": "char_496_wildmn",
+        "name": "野鬃",
+        "nationId": "kazimierz",
+        "groupId": "pinus",
+        "displayNumber": "KZ14",
+        "rarity": 4,
+        "profession": "PIONEER",
+        "subProfessionId": "charger"
+      },
+      "char_497_ctable": {
+        "id": "char_497_ctable",
+        "name": "晓歌",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "R143",
+        "rarity": 4,
+        "profession": "PIONEER",
+        "subProfessionId": "agent"
+      },
+      "char_498_inside": {
+        "id": "char_498_inside",
+        "name": "隐现",
+        "nationId": "laterano",
+        "groupId": "",
+        "displayNumber": "LT13",
+        "rarity": 4,
+        "profession": "SNIPER",
+        "subProfessionId": "fastshot"
+      },
+      "char_499_kaitou": {
+        "id": "char_499_kaitou",
+        "name": "折光",
+        "nationId": "leithanien",
+        "groupId": "",
+        "displayNumber": "LN21",
+        "rarity": 4,
+        "profession": "CASTER",
+        "subProfessionId": "primcaster"
+      },
+      "char_500_noirc": {
+        "id": "char_500_noirc",
+        "name": "黑角",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "A43",
+        "rarity": 1,
+        "profession": "TANK",
+        "subProfessionId": "protector"
+      },
+      "char_501_durin": {
+        "id": "char_501_durin",
+        "name": "杜林",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "A44",
+        "rarity": 1,
+        "profession": "CASTER",
+        "subProfessionId": "corecaster"
+      },
+      "char_502_nblade": {
+        "id": "char_502_nblade",
+        "name": "夜刀",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "A41",
+        "rarity": 1,
+        "profession": "PIONEER",
+        "subProfessionId": "pioneer"
+      },
+      "char_503_rang": {
+        "id": "char_503_rang",
+        "name": "巡林者",
+        "nationId": "rhodes",
+        "groupId": "",
+        "displayNumber": "A42",
+        "rarity": 1,
+        "profession": "SNIPER",
+        "subProfessionId": "fastshot"
+      }
+    }
+  }
