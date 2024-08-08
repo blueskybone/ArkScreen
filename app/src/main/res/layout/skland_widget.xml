@@ -1,18 +1,11 @@
-<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    style="@style/Widget.ArkSc.AppWidget.Container"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:theme="@style/Theme.ArkSc.AppWidgetContainer">-->
-
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="8dp">
 
     <ImageView
-        android:id="@+id/widget_bg"
+        android:id="@+id/widget_skland_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@null"
@@ -22,18 +15,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="center">
+        android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/appwidget_text"
+            android:id="@+id/widget_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="35dp"
             android:layout_gravity="center"
             android:clickable="true"
-            android:contentDescription="@string/appwidget_text"
-            android:text="@string/appwidget_text"
-            android:textColor="@color/white"
+            android:contentDescription="@string/text_default"
+            android:text="@string/text_init"
             android:textSize="25sp"
+            android:textColor="@color/white"
             android:textStyle="bold" />
 
         <ImageView
@@ -41,10 +34,9 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_gravity="center"
-            android:contentDescription="@string/appwidget_text"
+            android:contentDescription="@string/text_default"
             android:src="@drawable/item_ap" />
     </LinearLayout>
 
 
-</FrameLayout>
-<!--</RelativeLayout>-->
+</FrameLayout><!--</RelativeLayout>-->

@@ -4,15 +4,15 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.godot17.arksc",
+  "applicationId": "com.blueskybone.arkscreen",
   "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 3,
-      "versionName": "1.2",
+      "versionCode": 1,
+      "versionName": "1.4",
       "outputFile": "app-release.apk"
     }
   ],

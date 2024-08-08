@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_angle_left"
+            app:title="@string/title_cal"
+            app:titleTextAppearance="@style/ToolbarTitle" />
+
+        <com.nex3z.flowlayout.FlowLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flChildSpacingForLastRow="align"
+            app:flRowSpacing="2.5dp"
+            tools:ignore="MissingConstraints">
+
+            <Button
+                android:id="@+id/button_1"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="高级资深干员"
+                android:text="高级资深干员" />
+
+            <Button
+                android:id="@+id/button_2"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="资深干员"
+                android:text="资深干员" />
+
+            <Button
+                android:id="@+id/button_3"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="新手"
+                android:text="新手" />
+
+        </com.nex3z.flowlayout.FlowLayout>
+
+        <com.nex3z.flowlayout.FlowLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flRowSpacing="2.5dp"
+            app:flChildSpacingForLastRow="align"
+            tools:ignore="MissingConstraints">
+
+            <Button
+                android:id="@+id/button_4"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="近卫干员"
+                android:text="近卫干员" />
+
+            <Button
+                android:id="@+id/button_5"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="狙击干员"
+                android:text="狙击干员" />
+
+            <Button
+                android:id="@+id/button_6"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="重装干员"
+                android:text="重装干员" />
+
+            <Button
+                android:id="@+id/button_7"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="医疗干员"
+                android:text="医疗干员" />
+
+            <Button
+                android:id="@+id/button_8"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="辅助干员"
+                android:text="辅助干员" />
+
+            <Button
+                android:id="@+id/button_9"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="术师干员"
+                android:text="术师干员" />
+
+            <Button
+                android:id="@+id/button_10"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="特种干员"
+                android:text="特种干员" />
+
+            <Button
+                android:id="@+id/button_11"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="先锋干员"
+                android:text="先锋干员" />
+
+        </com.nex3z.flowlayout.FlowLayout>
+
+        <com.nex3z.flowlayout.FlowLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flRowSpacing="2.5dp"
+            app:flChildSpacingForLastRow="align"
+            tools:ignore="MissingConstraints">
+
+            <Button
+                android:id="@+id/button_12"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="近战位"
+                android:text="近战位" />
+
+            <Button
+                android:id="@+id/button_13"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="远程位"
+                android:text="远程位" />
+
+
+        </com.nex3z.flowlayout.FlowLayout>
+
+
+        <com.nex3z.flowlayout.FlowLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:flRowSpacing="2.5dp"
+            app:flChildSpacingForLastRow="align">
+
+            <Button
+                android:id="@+id/button_26"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="支援机械"
+                android:text="支援机械" />
+
+            <Button
+                android:id="@+id/button_14"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="控场"
+                android:text="控场" />
+
+            <Button
+                android:id="@+id/button_15"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="爆发"
+                android:text="爆发" />
+
+
+            <Button
+                android:id="@+id/button_25"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="治疗"
+                android:text="治疗" />
+
+
+            <Button
+                android:id="@+id/button_18"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="支援"
+                android:text="支援" />
+
+            <Button
+                android:id="@+id/button_27"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="费用回复"
+                android:text="费用回复" />
+
+            <Button
+                android:id="@+id/button_21"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="输出"
+                android:text="输出" />
+
+            <Button
+                android:id="@+id/button_24"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="生存"
+                android:text="生存" />
+
+
+            <Button
+                android:id="@+id/button_20"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="群攻"
+                android:text="群攻" />
+
+            <Button
+                android:id="@+id/button_23"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="防护"
+                android:text="防护" />
+
+            <Button
+                android:id="@+id/button_22"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="减速"
+                android:text="减速" />
+
+            <Button
+                android:id="@+id/button_17"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="削弱"
+                android:text="削弱" />
+
+
+            <Button
+                android:id="@+id/button_28"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="快速复活"
+                android:text="快速复活" />
+
+            <Button
+                android:id="@+id/button_19"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="位移"
+                android:text="位移" />
+
+
+            <Button
+                android:id="@+id/button_16"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="召唤"
+                android:text="召唤" />
+
+            <Button
+                android:id="@+id/button_29"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_tag"
+                android:contentDescription="元素"
+                android:text="元素" />
+
+
+            <Button
+                android:id="@+id/button_reset"
+                style="@style/Button_cal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="2.5dp"
+                android:background="@drawable/button_reset"
+                android:text="重置" />
+        </com.nex3z.flowlayout.FlowLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView_cal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:textColor="?attr/colorOnPrimary" />
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

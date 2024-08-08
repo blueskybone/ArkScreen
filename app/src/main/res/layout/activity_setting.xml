@@ -4,173 +4,153 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="@drawable/ic_angle_left"
-            app:title="@string/title_setting"
-            app:titleTextAppearance="@style/ToolbarTitle" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <LinearLayout
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_recruit_mode"
+                style="@style/CardViewTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:clickable="true">
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/card_option"
-                    style="@style/CardViewTheme"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_margin="15dp"
+                    android:text="@string/recruit_show_mode"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/text_recruit_option"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center"
+                    android:layout_margin="15dp"
+                    android:text="@string/text_default"
+                    android:textSize="13sp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_widget_theme"
+                style="@style/CardViewTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_margin="15dp"
+                    android:text="@string/widget_theme"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:textSize="15sp" />
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.cardview.widget.CardView
+                style="@style/CardViewTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clickable="true">
+                    android:layout_gravity="center"
+                    android:layout_margin="15dp"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|center"
-                        android:layout_marginStart="32dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:text="@string/title_option"
+                        android:text="@string/skland_auto_attendance"
                         android:textColor="?attr/colorOnPrimary"
                         android:textSize="15sp" />
 
                     <TextView
-                        android:id="@+id/textView_option"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end|center"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginEnd="32dp"
-                        android:layout_marginBottom="15dp"
-                        android:text="@string/text_default"
-                        android:textSize="13sp" />
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/card_skland_login"
-                    style="@style/CardViewTheme"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start|center"
-                        android:layout_marginStart="32dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:text="@string/title_skland_setting"
-                        android:textColor="?attr/colorOnPrimary"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:id="@+id/textView_userInfo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end|center"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginEnd="32dp"
-                        android:layout_marginBottom="15dp"
-                        android:text="@string/text_default"
-                        android:textSize="13sp" />
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/card_link_setting"
-                    style="@style/CardViewTheme"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true">
-
-                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="32dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginEnd="32dp"
-                        android:layout_marginBottom="10dp"
-                        android:orientation="vertical">
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="3dp"
+                        android:text="@string/skland_auto_attendance_detail"
+                        android:textSize="13sp" />
+                </LinearLayout>
 
-                        <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/switch_auto_sign"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/title_skland_auto_sign"
-                            android:textColor="?attr/colorOnPrimary"
-                            android:textSize="15sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="3dp"
-                            android:text="@string/text_skland_auto_sign"
-                            android:textSize="13sp" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/card_widget"
-                    style="@style/CardViewTheme"
-                    android:layout_width="match_parent"
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch_skland_auto_attendance"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:clickable="true">
+                    android:layout_gravity="end|center"
+                    android:layout_marginEnd="15dp" />
+            </androidx.cardview.widget.CardView>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start|center"
-                        android:layout_marginStart="32dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:text="@string/title_weight"
-                        android:textColor="?attr/colorOnPrimary"
-                        android:textSize="15sp" />
-                </androidx.cardview.widget.CardView>
-<!--                <androidx.cardview.widget.CardView-->
-<!--                    android:id="@+id/card_widget_update"-->
-<!--                    style="@style/CardViewTheme"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:clickable="true">-->
+            <androidx.cardview.widget.CardView
+                style="@style/CardViewTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-<!--                    <TextView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_gravity="start|center"-->
-<!--                        android:layout_marginStart="32dp"-->
-<!--                        android:layout_marginTop="15dp"-->
-<!--                        android:layout_marginBottom="15dp"-->
-<!--                        android:text="@string/title_weight_update"-->
-<!--                        android:textColor="?attr/colorOnPrimary"-->
-<!--                        android:textSize="15sp" />-->
-<!--                    <TextView-->
-<!--                        android:id="@+id/textView_widget_update"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_gravity="end|center"-->
-<!--                        android:layout_marginTop="15dp"-->
-<!--                        android:layout_marginEnd="32dp"-->
-<!--                        android:layout_marginBottom="15dp"-->
-<!--                        android:text="@string/text_default"-->
-<!--                        android:textSize="13sp" />-->
-<!--                </androidx.cardview.widget.CardView>-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_margin="15dp"
+                    android:text="@string/auto_check_update"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:textSize="15sp" />
 
-            </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch_auto_check_update"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center"
+                    android:layout_marginEnd="15dp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                style="@style/CardViewTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/image_correct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_margin="15dp"
+                    android:drawablePadding="10dp"
+                    android:text="@string/time_correction"
+                    android:textColor="?attr/colorOnPrimary"
+                    android:textSize="15sp"
+                    app:drawableRightCompat="@drawable/ic_interrogation" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch_time_correction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center"
+                    android:layout_marginEnd="15dp" />
+            </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/button_click_correction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/click_correction"
+                android:visibility="invisible" />
+
+        </LinearLayout>
+    </ScrollView>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

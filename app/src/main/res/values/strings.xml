@@ -1,113 +1,115 @@
 <resources>
+<!--    <string name="app_name">Arkscreen</string>-->
     <string name="app_name">公招助手</string>
-    <string name="version">v 1.2</string>
-    <string name="no_permission_for_float_window">未获取悬浮窗权限</string>
-    <string name="tile_float">悬浮球公招</string>
-    <string name="tile_quick">快捷公招</string>
-    <string name="close">关闭</string>
-    <string name="identify">确定</string>
-    <string name="bar_tools">功能</string>
-    <string name="title_cal">公招计算</string>
-    <string name="title_skland">实时数据</string>
-    <string name="status_offline">未登录状态</string>
-    <string name="bar_link">外部链接</string>
-    <string name="text_link">
-        [PRTS.wiki](https://prts.wiki/w/首页) \n\n
+    <string name="version">1.4</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
+    <string name="paste">从剪贴板导入</string>
+    <string name="function">功能</string>
+    <string name="recruit">公开招募</string>
+    <string name="hire_refresh">公招刷新</string>
+    <string name="add">添加</string>
+    <string name="add_account">添加账号</string>
+    <string name="delete">删除</string>
+    <string name="float_win">悬浮窗</string>
+    <string name="toast">Toast</string>
+    <string name="auto">自动</string>
+    <string name="quick_recruit">快速公招</string>
+    <string name="float_recruit">悬浮球公招</string>
+    <string name="recruit_cal">公招计算</string>
+    <string name="real_time_data">实时数据</string>
+    <string name="operator_assets">干员资产</string>
+    <string name="material_rate">素材掉率</string>
+    <string name="others">其他</string>
+    <string name="recruit_show_mode">识别结果展示</string>
+    <string name="widget_theme">桌面组件外观</string>
+    <string name="black_on_white">黑底白字</string>
+    <string name="white_on_black">白底黑字</string>
+    <string name="alpha">透明度</string>
+    <string name="download">下载</string>
+    <string name="time_correction">时间校准</string>
+    <string name="auto_check_update">自动检查更新</string>
+    <string name="click_correction">点击校准</string>
+    <string name="time_correction_detail">选项仅适用于时间差稳定的情况，例如修改过本地时间的root设备。网络延迟造成服务器判断“请勿修改设备时间”的情况，可能无法进行准确校正。</string>
+    <string name="click_to_correct">点击校准</string>
+    <string name="manual">使用手册</string>
+    <string name="question">常见问题</string>
+    <string name="skland">森空岛</string>
+    <string name="about">关于</string>
+    <string name="train">训练室</string>
+    <string name="meeting">会客室</string>
+    <string name="dormitories">休息进度</string>
+    <string name="tired">干员疲劳</string>
+    <string name="trading">贸易站</string>
+    <string name="manufactures">制造站</string>
+    <string name="labor">无人机</string>
+    <string name="campaign">剿灭</string>
+    <string name="routine_day">日常</string>
+    <string name="routine_week">周常</string>
+    <string name="low_item">数据增补条</string>
+    <string name="high_item">数据增补仪</string>
+    <string name="check_update">检查更新</string>
+    <string name="announcement">公告</string>
+    <string name="last_update">最后更新</string>
+    <string name="account_manage">账号管理</string>
+    <string name="setting">设置</string>
+    <string name="skland_auto_attendance">森空岛自动签到</string>
+    <string name="skland_auto_attendance_detail">桌面组件更新时触发</string>
+    <string name="text_default">initialing…</string>
+    <string name="widget_attendance_desc">仅签到</string>
+    <string name="text_init">初始化</string>
+    <string name="account_manage_description">点击即设置为默认账号。账号上限暂时设置为5个。自动签到默认给所有账号签到。\n注意：在网页端退出登录会导致此处登录状态失效。若要添加多个账号，在浏览器设置中清除cookie后，重新登录网页。</string>
+    <string name="login_content">
+        b服用户注意：注册森空岛账号后在“我的角色”中绑定b服账号，然后在官网使用【森空岛手机号】从【官服渠道】登录，后续操作同官服。**不要跳转到b服登录**。\n\n
+        1.访问[明日方舟官网](https://ak.hypergryph.com/user/login)，登录。\n\n
+        2.访问[api网址](https://web-api.hypergryph.com/account/info/hg)，复制网页中**全部**内容。\n\n
+        3.粘贴到下方输入框中点击确定，或直接从剪贴板导入。\n\n
     </string>
-    <string name="bar_other">其他</string>
-    <string name="title_setting">设置</string>
-    <string name="title_option">识别结果展示</string>
-    <string name="title_skland_setting">接入森空岛</string>
-    <string name="title_skland_auto_sign">森空岛自动签到</string>
-    <string name="button_web_login">网页登录</string>
-    <string name="button_bind_role">绑定角色</string>
-    <string name="button_logout">登出</string>
-    <string name="text_skland_auto_sign">桌面组件更新或查看实时数据时触发</string>
-    <string name="title_weight">桌面组件外观设置</string>
-    <string name="title_weight_update">桌面组件更新间隔</string>
-    <string name="text_weight">背景透明度</string>
-    <string name="title_link_setting">编辑外部链接</string>
-    <string name="title_use">使用方法</string>
-    <string name="title_question">常见问题</string>
+
+    <string name="content_use">
+        快捷公招需要打开通知权限和悬浮窗权限，桌面组件需要在设置中开启允许高耗电或后台无限制。\n\n
+        1.快捷公招：通知栏编辑快捷功能，将快速公招或悬浮球添加到面板中，打开游戏内公招界面点击，即可快速识别标签并计算结果。 \n\n
+        2.桌面组件：设置中添加账号可获取游戏实时数据。提供两种组件，只有图标的组件为仅签到组件，理智监控组件同时包括自动签到。放置一个即可。\n\n
+    </string>
     <string name="content_query">
         ## 公招\n
-        **Q：悬浮球无法唤出** \n\n
-        A：部分机型需保持应用在后台。\n\n\n
-        **Q：截图时闪退或产生不正常输出** \n\n
-        A：设置中给应用添加通知权限；若问题仍未解决请联系作者反馈。\n\n
+        **Q：没有反应** \n\n
+        A：添加通知权限和悬浮窗权限。\n\n
         **Q：未获取有效信息** \n\n
-        A：保证公招标签处于未点击状态；保证悬浮窗未遮挡标签。\n\n\n
+        A：保证游戏是正常的全屏画面。\n\n\n
         **Q：识别结果错误率极高** \n\n
-        A：部分机型黑暗模式会降低截图本身的亮度，影响识别。\n\n\n
+        A：部分机型黑暗模式会降低截图本身的亮度，可能影响识别。\n\n\n
         ## 桌面组件\n
+        **Q：网络异常** \n\n
+        A：手机熄屏状态有时后台网络请求会失败，点击理智图标手动更新。\n\n\n
         **Q：桌面组件理智不涨** \n\n
-        A：休眠状态下进程可能会被杀死。点击理智图标可手动更新。\n\n\n
-        **Q：桌面组件点击无效/点击后打开应用** \n\n
-        A：更新应用后请手动移除组件，重新添加。\n\n
-        **Q：组件大小不合适** \n\n
-        A：设置中可调整字体大小和透明度。\n
-
-        \n---\n
-        若发现bug想要反馈，或有任何想法或建议，或对项目感兴趣想要加入开发，欢迎进群交流。\n\n交流群：924153470\n\n\n\n.
+        A：设置中开启允许后台高耗电或后台无限制。\n\n\n
+        仍有其他问题请向作者反馈。
     </string>
-    <string name="content_use">
-        1.快捷公招：下拉通知栏，将图块添加到快速设置中使用 \n\n
-        2.桌面组件：在设置中接入森空岛数据，可使用桌面组件监控理智。\n\n
-    </string>
-    <string name="title_about">关于</string>
-    <string name="title_update">检查更新</string>
-    <string name="download">下载</string>
-    <string name="title_open3rd">开源许可</string>
-    <string name="open_licence_title">open source license</string>
+    <string name="open_license">开源许可</string>
     <string name="open_source_license">
         Markwon: [Apache](https://github.com/noties/Markwon/blob/master/LICENSE)\n\n
         EasyWindow: [Apache](https://github.com/getActivity/EasyWindow/blob/master/LICENSE)\n\n
+        Toaster: [Apache](https://github.com/getActivity/Toaster/blob/master/LICENSE)\n\n
+        Jackson: [Apache](https://github.com/FasterXML/jackson-core/blob/2.18/LICENSE)\n\n
+        FlowLayout: [Apache](https://github.com/nex3z/FlowLayout/blob/master/LICENSE.txt)\n\n
+
         \n---\n
         感谢以下开源项目：\n\n
-        [cvzi/ScreenshotTile](https://github.com/cvzi/ScreenshotTile)\n\n
         [xxyz30/skyland-auto-sign](https://gitee.com/FancyCabbage/skyland-auto-sign)\n\n
         [hguandl/SklandLogin](https://github.com/hguandl/SklandLogin)\n\n
+        [easybangumiorg/EasyBangumi](https://github.com/easybangumiorg/EasyBangumi)\n\n
+
         \n---\n
-        项目地址：[blueskybone/ArkScreen](https://github.com/blueskybone/ArkScreen)
+        项目地址：[ArkScreen](https://github.com/blueskybone/ArkScreen)\n\n
+
     </string>
-    <string name="title_website">仓库地址</string>
-    <string name="repositories">https://github.com/blueskybone/ArkScreen</string>
-    <string name="text_default">Initializing…</string>
-    <string name="radio_float">悬浮窗</string>
-    <string name="radio_toast">Toast（不推荐）</string>
-    <string name="radio_flex">自定义</string>
-    <string name="radio_flex_desc">勾选的稀有度以悬浮窗展示,未勾选的以Toast展示</string>
-    <string name="appwidget_text">初始化</string>
-    <string name="add_widget">Add widget</string>
-    <string name="app_widget_description">This is an app widget description</string>
-    <string name="title_other">其他</string>
-    <string name="info_other">
-        交流群：924153470\n\n
-        b站：[Godot17](https://space.bilibili.com/13957147)\n\n
-        感谢使用，觉得好用请在github上点个star支持一下罢，十分感谢。\n\n
-        或许会有后续更新。目前就我一人，精力实在有限，欢迎加入项目一起开发。\n\n
-    </string>
-    <string name="content_switch_role">
-        森空岛app内切换默认角色（个人->我的角色->添加绑定角色->选择默认角色）。\n\n
-        回到应用内，登出后重新登录。
-    </string>
-    <string name="ap">理智</string>
-    <string name="recruit">公开招募</string>
-    <string name="hire">公招刷新</string>
-    <string name="labor">无人机</string>
-    <string name="clue">线索收集</string>
-    <string name="train">训练室</string>
-    <string name="routine_day">日常</string>
-    <string name="routine_week">周常</string>
-    <string name="campaign">剿灭</string>
-    <string name="tower">保全派驻</string>
-    <string name="low_item">数据增补条</string>
-    <string name="high_item">数据增补仪</string>
-    <string name="manufactures">制造站</string>
-    <string name="trading">贸易站</string>
-    <string name="dormitories">休息进度</string>
-    <string name="tired">干员疲劳</string>
-    <string name="null_data">暂无数据</string>
-    <string name="empty">空闲中</string>
-    <string name="train_com">已完成专精</string>
+    <string name="auto_detail">自动：可锁5★,6★时启动悬浮窗，否则弹出Toast</string>
+    <string name="data_details">数据说明</string>
+    <string name="real_time_data_details">森空岛api返回数据目前无法获取准确的贸易站、干员疲劳数据。计算时以贸易站效率190%、干员满心情开始工作为假设前提。可能与实际数据存在一定误差。</string>
+    <string name="overlay_permission">悬浮窗权限</string>
+    <string name="qq_group">QQ群聊</string>
+    <string name="qq_group_content">意见反馈，聊天吹水</string>
+    <string name="qq_group_num">924153470</string>
+    <string name="acquire_overlay_permission_content">未授予悬浮窗权限，可能导致部分功能异常。</string>
 </resources>
