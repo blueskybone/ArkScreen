@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="profession">
+        <item>ALL</item>
+        <item>先锋</item>
+        <item>近卫</item>
+        <item>重装</item>
+        <item>狙击</item>
+        <item>术师</item>
+        <item>医疗</item>
+        <item>辅助</item>
+        <item>特种</item>
+    </string-array>
+
+    <string-array name="rarity">
+        <item>ALL</item>
+        <item>1–3★</item>
+        <item>4★</item>
+        <item>5★</item>
+        <item>6★</item>
+    </string-array>
+
+    <string-array name="level">
+        <item>ALL</item>
+        <item>精英零</item>
+        <item>精英一</item>
+        <item>精英二</item>
+    </string-array>
+
+    <string-array name="profession_value">
+        <item>PIONEER</item>
+        <item>WARRIOR</item>
+        <item>TANK</item>
+        <item>SNIPER</item>
+        <item>CASTER</item>
+        <item>MEDIC</item>
+        <item>SUPPORT</item>
+        <item>SPECIAL</item>
+    </string-array>
+
+    <array name="profession_draw">
+        <item>@drawable/icon_pioneer</item>
+        <item>@drawable/icon_warrior</item>
+        <item>@drawable/icon_tank</item>
+        <item>@drawable/icon_sniper</item>
+        <item>@drawable/icon_caster</item>
+        <item>@drawable/icon_medic</item>
+        <item>@drawable/icon_support</item>
+        <item>@drawable/icon_special</item>
+    </array>
+
+    <string-array name="potential_value">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <array name="potential_draw">
+        <item>@drawable/potential_rank_0</item>
+        <item>@drawable/potential_rank_1</item>
+        <item>@drawable/potential_rank_2</item>
+        <item>@drawable/potential_rank_3</item>
+        <item>@drawable/potential_rank_4</item>
+        <item>@drawable/potential_rank_5</item>
+    </array>
+
+    <string-array name="evolve_value">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <array name="evolve_draw">
+        <item>@drawable/evolve_phase_0</item>
+        <item>@drawable/evolve_phase_1</item>
+        <item>@drawable/evolve_phase_2</item>
+    </array>
+
+    <string-array name="rarity_value">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+
+    <array name="rarity_draw">
+        <item>@color/rare_1</item>
+        <item>@color/rare_2</item>
+        <item>@color/rare_3</item>
+        <item>@color/rare_4</item>
+        <item>@color/rare_5</item>
+        <item>@color/rare_6</item>
+    </array>
+
+    <string-array name="special_value">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <array name="special_draw">
+        <item>@drawable/special_1</item>
+        <item>@drawable/special_2</item>
+        <item>@drawable/special_3</item>
+    </array>
+
+</resources>

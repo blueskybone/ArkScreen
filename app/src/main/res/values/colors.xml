@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="cyan_50">#C8FFF4</color>
+    <color name="cyan_200">#91DCD3</color>
+    <color name="cyan_500">#1FD5E6</color>
+    <color name="cyan_700">#0E9EA3</color>
+    <color name="cyan_bg">#151919</color>
+    <color name="blue_200">#D2EBF6</color>
+    <color name="blue_400">#3B538E</color>
+    <color name="blue_500">#2196F3</color>
+    <color name="blue_600">#2879BA</color>
+    <color name="trans_blue">#3C80B0E3</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="grey">#555555</color>
+    <color name="grey_200">#F3F3F3</color>
+    <color name="grey_300">#E6E6E6</color>
+    <color name="grey_500">#BFBFBF</color>
+    <color name="grey_600">#787878</color>
+    <color name="grey_700">#424242</color>
+    <color name="grey_900">#202020</color>
+    <color name="red">#FF0000</color>
+    <color name="yellow">#D6BF29</color>
+    <color name="purple">#8959C8</color>
+
+    <color name="purple_50">#E9EDF7</color>
+    <color name="purple_bg">#F5F7FD</color>
+
+    <color name="LightBlue500">#79B8EA</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="chip_background">#7592B5D1</color>
+    <color name="day_background">#FFFFFF</color>
+    <color name="night_background">#15191A</color>
+
+    <color name="rare_6">#FF2600</color>
+    <color name="rare_5">#FF9800</color>
+    <color name="rare_4">#8959C8</color>
+    <color name="rare_3">#2196F3</color>
+    <color name="rare_2">#4CAF50</color>
+    <color name="rare_1">#595959</color>
+
+    <color name="trans_green">#ADADCFB7</color>
+    <color name="trans_yellow">#A4D3CBA5</color>
+    <color name="trans_red">#A4DD7979</color>
+
+    <color name="theme_yellow">#F8DE05</color>
+</resources>

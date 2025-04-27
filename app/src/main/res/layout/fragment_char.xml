@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="?attr/actionBarSize">
+
+    <LinearLayout
+        android:id="@+id/FilterBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:baselineAligned="false">
+
+        <include
+            android:id="@+id/Profession"
+            layout="@layout/chip_card"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1" />
+
+        <include
+            android:id="@+id/Rarity"
+            layout="@layout/chip_card"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1" />
+
+        <include
+            android:id="@+id/Level"
+            layout="@layout/chip_card"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1" />
+        <!--        <include-->
+        <!--            android:id="@+id/Profession"-->
+        <!--            layout="@layout/preference_chip"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_margin="4dp"-->
+        <!--            android:layout_weight="1" />-->
+
+        <!--        <include-->
+        <!--            android:id="@+id/Rarity"-->
+        <!--            layout="@layout/preference_chip"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_margin="4dp"-->
+        <!--            android:layout_weight="1" />-->
+
+        <!--        <include-->
+        <!--            android:id="@+id/Level"-->
+        <!--            layout="@layout/preference_chip"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_margin="4dp"-->
+        <!--            android:layout_weight="1" />-->
+
+    </LinearLayout>
+
+    <!--    <androidx.core.widget.NestedScrollView-->
+    <!--        android:id="@+id/NestedScrollView"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:layout_below="@id/FilterBar">-->
+
+    <!--        <LinearLayout-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:orientation="vertical">-->
+
+    <!--            <com.google.android.material.card.MaterialCardView-->
+    <!--                android:id="@+id/CardView"-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_margin="10dp"-->
+    <!--                app:cardCornerRadius="10dp"-->
+    <!--                app:cardElevation="0dp">-->
+
+    <!--            </com.google.android.material.card.MaterialCardView>-->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/RecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/FilterBar"
+        android:scrollbarSize="5dp"
+        android:scrollbarThumbVertical="@color/grey_500"
+        android:scrollbars="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+    <!--        </LinearLayout>-->
+
+    <!--    </androidx.core.widget.NestedScrollView>-->
+</RelativeLayout>

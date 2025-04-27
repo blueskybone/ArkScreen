@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/SkillLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp"
+    android:background="?attr/colorSurface">
+
+    <ImageView
+        android:id="@+id/Icon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:background="@color/grey_700"
+        android:src="@drawable/skill_icon_default" />
+
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/Special"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:background="@color/grey_900" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/MainRank"
+        android:layout_width="10dp"
+        android:layout_height="match_parent"
+        android:background="@color/grey_700"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="11sp" />
+
+</FrameLayout>

@@ -1,0 +1,230 @@
+<resources>
+    <!-- App Info -->
+    <string name="app_name">公招助手</string>
+    <string name="version">2.0.1</string>
+    <string name="text_default">default text</string>
+
+    <!-- Dialogs Action-->
+    <string name="cancel">取消</string>
+    <string name="jump_to">跳转</string>
+    <string name="no_more_warn">不再提示</string>
+    <string name="confirm">确定</string>
+    <string name="save">保存</string>
+    <string name="save_code">保存二维码</string>
+    <string name="donated">我已捐赠</string>
+    <string name="close">关闭</string>
+    <string name="clear">清空</string>
+    <string name="copy">复制</string>
+    <string name="download">下载</string>
+
+    <!-- Dialogs Message-->
+    <string name="confirm_delete">确定删除吗</string>
+    <string name="confirm_clear_data">将清除当前账号的本地寻访记录</string>
+    <string name="thank_for_donate">感谢支持！</string>
+
+    <!-- Fragment Title -->
+    <string name="home">首页</string>
+    <string name="function">功能</string>
+    <string name="setting">设置</string>
+
+    <!-- SubTitle -->
+    <string name="tools">工具</string>
+
+    <!-- Action Info -->
+    <string name="no_login">未登录</string>
+    <string name="no_network">无网络</string>
+    <string name="checking_update">检查更新中…</string>
+    <string name="checking_update_failed">检查更新失败</string>
+    <string name="loading">加载中</string>
+
+    <!-- Action -->
+    <string name="add">添加</string>
+    <string name="delete">删除</string>
+    <string name="edit">编辑</string>
+    <string name="reset">重置</string>
+
+    <!-- Home Page -->
+    <string name="announcement">公告</string>
+    <string name="last_update">最后更新：%1$s</string>
+    <string name="last_sync_time">上次同步：%1$s</string>
+    <string name="tools_3rd">外部工具</string>
+    <string name="no_account_warn">请先在 功能-游戏账号管理 添加账号</string>
+
+    <!-- Settings Page -->
+    <string name="recruit_show_mode">公招识别结果展示</string>
+    <string name="float_win">悬浮窗</string>
+    <string name="toast">Toast</string>
+    <string name="auto">自动</string>
+
+    <string name="float_window_appearance">识别结果外观</string>
+    <string name="colorful">彩色</string>
+    <string name="simple">简洁</string>
+
+    <string name="screenshot_delay">截图延迟秒数</string>
+    <string name="screenshot_delay_detail">部分情况出现“未获取有效信息”可能是截图前摇过短截取了错误画面引起的</string>
+
+    <string name="jump_to_overlay_permission">获取悬浮窗权限</string>
+    <string name="jump_to_overlay_permission_detail">快速公招显示结果需要悬浮窗权限</string>
+
+    <string name="widget">桌面组件</string>
+    <string name="widget_appearance">桌面组件外观</string>
+    <string name="black_on_white">黑底白字</string>
+    <string name="white_on_black">白底黑字</string>
+    <string name="widget_size">桌面组件大小</string>
+    <string name="small">小</string>
+    <string name="medium">中</string>
+    <string name="large">大</string>
+    <string name="widget_alpha">桌面组件不透明度</string>
+    <string name="widget_refresh">刷新桌面组件</string>
+    <string name="widget_refresh_detail">组件外观将在下次刷新时改变，可点击此处立即刷新</string>
+
+    <string name="app_theme">主题</string>
+    <string name="theme_light">浅色</string>
+    <string name="theme_dark">深色</string>
+    <string name="theme_system">跟随系统</string>
+
+    <string name="auto_attendance">自动签到</string>
+    <string name="back_auto_attendance">后台自动签到</string>
+    <string name="back_auto_attendance_detail">提示：此方法签到可能不稳定</string>
+    <string name="open_auto_start_settings">允许应用自启动</string>
+    <string name="open_auto_start_settings_detail">后台签到需要自启动权限</string>
+    <string name="set_auto_attendance_time">自动签到时间</string>
+    <string name="auto_attendance_time">当前设置为%1$s</string>
+
+    <string name="skland_auto_attendance">森空岛自动签到</string>
+    <string name="skland_auto_attendance_detail">桌面组件更新时触发，具体规则见使用手册</string>
+
+    <string name="turn_off_battery_optimization">关闭电池优化</string>
+    <string name="turn_off_battery_optimization_detail">桌面组件自动刷新需在系统设置关闭电池优化</string>
+    <string name="power_saving_mode">省流模式</string>
+    <string name="power_saving_mode_detail">使用缓存推算当前数据，通过实时数据页手动同步远端</string>
+
+    <string name="mess_option">杂项</string>
+    <string name="advanced">高级</string>
+    <string name="show_home_announce">显示首页公告</string>
+    <string name="use_inner_web">使用内置浏览器</string>
+    <string name="use_inner_web_detail">所有链接页面使用内置浏览器打开</string>
+    <string name="auto_check_update">自动检查应用更新</string>
+    <string name="manual">使用手册</string>
+    <string name="about">关于</string>
+
+    <string name="time_correction">时间校准</string>
+    <!--    <string name="debug_log">调试信息</string>-->
+    <!--    <string name="debug_mode">调试模式</string>-->
+    <!--    <string name="debug_mode_detail">可能拖慢性能</string>-->
+    <string name="click_correction">点击校准</string>
+    <string name="time_correction_detail">适用于修改过本地时间的root设备</string>
+    <!--    <string name="click_to_correct">点击校准</string>-->
+    <!--    <string name="real_time_attendance">实时数据页触发签到</string>-->
+    <!--    <string name="real_time_attendance_detail">打开实时数据详情页同时触发签到</string>-->
+    <string name="others">其他</string>
+
+    <!-- Function Page -->
+    <string name="quick_recruit">快速公招</string>
+    <string name="float_recruit">悬浮球公招</string>
+    <string name="account_manage">账号管理</string>
+    <string name="skland_account_manage">游戏账号管理</string>
+    <string name="gacha_account_manage">卡池账号管理</string>
+    <string name="home_3rd_link_manage">首页链接管理</string>
+    <string name="recruit_cal">公招计算器</string>
+    <string name="real_time_data">实时数据</string>
+    <string name="operator_assets">干员资产</string>
+    <string name="attendance_click">一键签到</string>
+    <string name="gacha_statistics">寻访统计</string>
+
+    <!-- Account Page-->
+    <string name="text_web_skland">划到最右端点击“发图文”，登录后点击此处</string>
+    <string name="text_web_ark">登录后点击此处</string>
+    <string name="getting_info">获取信息中</string>
+    <string name="list_content_sk">提示：登录后需要点击账号以设置默认账号。\n游戏账号用于查询游戏数据、森空岛签到。\n可能会导致森空岛app登录状态失效。\n可长按操作。</string>
+    <string name="list_content_gc">提示：登录后需要点击账号以设置默认账号。\n卡池账号仅用于寻访统计。\n可长按操作。</string>
+    <string name="add_account">添加账号</string>
+    <string name="add_site">添加网址</string>
+    <string name="edit_site">编辑网址</string>
+    <string name="prefix">https://</string>
+    <string name="web_login">网页登入</string>
+    <string name="web_login_official">官服登入</string>
+    <string name="web_login_bili">B服登入</string>
+    <string name="uid_info">uid:%1$s</string>
+
+    <!-- Real Time Info Page -->
+    <string name="recruit">公开招募</string>
+    <string name="recruit_refresh">公招刷新</string>
+    <string name="train">训练室</string>
+    <string name="meeting">会客室</string>
+    <string name="dormitories">休息进度</string>
+    <string name="tired">干员疲劳</string>
+    <string name="trading">贸易站</string>
+    <string name="manufactures">制造站</string>
+    <string name="labor">无人机</string>
+    <string name="campaign">剿灭</string>
+    <string name="routine_day">日常</string>
+    <string name="routine_week">周常</string>
+    <string name="low_item">数据增补条</string>
+    <string name="high_item">数据增补仪</string>
+    <string name="recovered">已恢复</string>
+
+    <!-- About Page -->
+    <string name="check_update">检查更新</string>
+    <string name="send_feedback">发送反馈</string>
+    <string name="open_license">开源许可</string>
+    <string name="open_license_content">[Markwon](https://github.com/noties/Markwon)\n\n
+[AndroidX](https://github.com/androidx/androidx)\n\n
+[Material Components for Android](https://github.com/material-components/material-components-android)\n\n
+[Koin](https://github.com/InsertKoinIO/koin)\n\n
+[Coil](https://github.com/coil-kt/coil)\n\n
+[Jackson](https://github.com/FasterXML/jackson)\n\n
+[Flow Layout](https://github.com/nex3z/FlowLayout)\n\n
+[EasyWindow](https://github.com/getActivity/EasyWindow)\n\n
+[Toaster](https://github.com/getActivity/Toaster)\n\n
+[WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)\n</string>
+    <string name="update_log">更新日志</string>
+    <string name="qq_group">QQ群聊</string>
+    <string name="qq_group_content">意见反馈，聊天吹水</string>
+    <string name="qq_group_num">924153470</string>
+    <string name="donate">赞助开发者</string>
+    <string name="donate_detail">感谢每一位博士的支持</string>
+    <string name="donate_msg">如果软件有帮助到你的话，请开发者喝杯冰阔落吧:D</string>
+
+    <string name="text_init">初始化</string>
+    <!--    <string name="permission_detail">权限说明</string>-->
+    <!--    <string name="auto_detail">自动：可锁5★,6★时启动悬浮窗，否则弹出Toast</string>-->
+    <!--    <string name="data_details">数据说明</string>-->
+    <!--    <string name="real_time_data_details">森空岛api返回数据目前无法获取准确的贸易站、干员疲劳数据。计算时以贸易站效率190%、干员满心情开始工作为假设前提。可能与实际数据存在一定误差。</string>-->
+    <!--    <string name="overlay_permission">悬浮窗权限</string>-->
+    <!--    <string name="real_time_page">实时数据页</string>-->
+    <!--    <string name="auto_update">自动更新</string>-->
+
+    <string name="acquire_overlay_permission_content">未授予悬浮窗权限，截屏公招功能可能无法正常使用。</string>
+
+
+    <string name="wrong_format">错误的格式</string>
+    <string name="copied">已复制到剪贴板</string>
+    <string name="copied_qq_num">已复制群号</string>
+
+    <string name="export">导出</string>
+    <string name="export_cookie">导出Cookie（包含登录凭证，请勿告知他人）</string>
+    <string name="import_cookie">导入Cookie</string>
+    <string name="input_cookie">输入Cookie</string>
+
+    <string name="import_data">导入数据</string>
+    <string name="import_data_detail">支持主流的.txt,.json格式的寻访记录文件，详细见使用手册。\n导入前请确认将要导入的记录和当前账号一致。</string>
+    <string name="export_data">导出数据</string>
+    <string name="update_data">更新数据</string>
+    <string name="clear_data">清除数据</string>
+
+    <string name="file_txt">.txt文件</string>
+    <string name="file_json">.json文件</string>
+
+    <string name="goto_PRTS">前往PRTS</string>
+    <string name="title">标题</string>
+    <string name="site_url">网址</string>
+    <string name="illegal_url">url解析错误</string>
+
+    <string name="set_default_account">默认账号设置为%1$s</string>
+    <string name="gacha_count">%1$d抽</string>
+    <string name="date_range">数据统计自 %1$s</string>
+    <string name="statistic">统计信息</string>
+
+    <string name="announcement_content">\n庐山烟雨浙江潮，未至千般恨不消。\n到得还来别无事，庐山烟雨浙江潮。</string>
+</resources>

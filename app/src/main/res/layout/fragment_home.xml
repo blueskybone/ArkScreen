@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/HomeScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="?attr/actionBarSize">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/TextView.Headline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name" />
+
+            <TextView
+                android:id="@+id/CurrentAccount"
+                style="@style/TextView.Headline3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center"
+                android:clickable="true"
+                android:drawablePadding="10dp"
+                android:maxWidth="200dp"
+                android:padding="20dp"
+                android:textColor="?attr/colorPrimary"
+                app:drawableRightCompat="@drawable/ic_exchange"
+                app:drawableTint="?attr/colorOnBackground" />
+        </FrameLayout>
+
+        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+
+            <ImageView
+                android:id="@+id/TitleImage"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <TextView
+            style="@style/PreferenceHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:text="@string/real_time_data" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/RealTimeData"
+            style="@style/CardViewContent"
+            android:layout_marginTop="0dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
+
+            <include
+                android:id="@+id/ApCacheCard"
+                layout="@layout/card_ap_cache" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/CardViewContent"
+            android:clickable="false"
+            android:focusable="false"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/AboutText"
+                style="@style/Preference"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center"
+                android:foreground="?attr/selectableItemBackground"
+                android:padding="16dp"
+                android:text="@string/about"
+                app:drawableRightCompat="@drawable/ic_right_arrow" />
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <TextView
+            android:id="@+id/LinkPreference"
+            style="@style/PreferenceHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tools_3rd" />
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/CardViewContent"
+            android:layout_marginTop="0dp"
+            android:clickable="false"
+            android:focusable="false">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/ExLinks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <TextView
+            android:id="@+id/AnnounceTitle"
+            style="@style/PreferenceHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/announcement" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/AnnounceCard"
+            style="@style/CardViewContent"
+            android:layout_marginTop="0dp">
+
+            <TextView
+                android:id="@+id/Announce"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
+
