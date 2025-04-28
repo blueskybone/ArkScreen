@@ -144,6 +144,24 @@ namespace arkscreen {
         }
 
         void copyRectTo(Bitmap8 &bitmap_rect, Rect rect) {
+//            if (!isValid() || !dest.isValid()) {
+//                LOGE("Invalid source or destination bitmap");
+//                return;
+//            }
+//
+
+            // 3. 检查矩形是否在源位图范围内
+            if (rect.x < 0 || rect.y < 0 ||
+                rect.x + rect.width > cols ||
+                rect.y + rect.height > rows) {
+//                LOGE("Rect out of bounds: (%d,%d %dx%d) vs bitmap (%dx%d)",
+//                     rect.x, rect.y, rect.width, rect.height, cols, rows);
+                return;
+            }
+
+
+
+
             bitmap_rect.release();
             bitmap_rect.create(rect.width, rect.height);
             //int i = 0, j = 0;

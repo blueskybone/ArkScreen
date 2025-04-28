@@ -31,6 +31,9 @@ class AtdAlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         println("AtdAlarmReceiver onReceive")
+        if (intent.action != "android.intent.action.BOOT_COMPLETED") {
+            return
+        }
         CoroutineScope(Dispatchers.IO).launch {
             attendance()
         }
@@ -43,6 +46,7 @@ class AtdAlarmReceiver : BroadcastReceiver() {
         val accountSkDao = database.getAccountSkDao()
         val accountList = accountSkDao.getAll()
         for (account in accountList) {
+            print(account.nickName + " - attendance")
             NetWorkTask.sklandAttendance(account)
         }
         prefManager.lastAttendanceTs.set(getCurrentTs())

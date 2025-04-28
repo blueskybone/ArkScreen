@@ -133,8 +133,9 @@ class Home : Fragment(), ItemListener {
     private fun CardApCacheBinding.bind(value: ApCache) {
         val maxText = "/" + value.max.toString()
         this.Max.text = maxText
-        val passTime = getCurrentTs() - value.lastUpdateTs
-        val passSyncTime = getCurrentTs() - value.lastSyncTs
+        val currentTs = getCurrentTs()
+        val passTime = currentTs - value.lastUpdateTs
+        val passSyncTime = currentTs - value.lastSyncTs
         val lastSyncStr = getLastUpdateStr(passSyncTime)
         this.LastSync.text = getString(R.string.last_sync_time, lastSyncStr)
         if (value.current >= value.max) {
@@ -144,7 +145,8 @@ class Home : Fragment(), ItemListener {
             this.Current.text = value.max.toString()
             this.RestTime.text = getString(R.string.recovered)
         } else {
-            val currentStr = (passTime.toInt() / (60 * 6) + value.current).toString()
+            val currentStr = (value.max - ((value.recoverTime - currentTs).toInt() / (60 * 6) + 1)).toString()
+//            val currentStr = (passTime.toInt() / (60 * 6) + value.current).toString()
             this.Current.text = currentStr
             this.RestTime.text = getRemainTimeStr(value.remainSec - passTime)
         }

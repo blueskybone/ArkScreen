@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.network
 
+
 import com.blueskybone.arkscreen.network.HttpConnectionUtils.Companion.httpResponse
 import com.blueskybone.arkscreen.network.HttpConnectionUtils.Companion.httpResponseConnection
 import com.blueskybone.arkscreen.room.AccountGc
@@ -304,6 +305,7 @@ class NetWorkUtils {
             val resp = httpResponse(url, jsonInputString, headerSign, RequestMethod.POST)
             return if (resp.responseCode == HttpURLConnection.HTTP_OK) {
                 try {
+                    println(resp.responseContent)
                     val list = ObjectMapper().readTree(resp.responseContent).at("/data/awards")
                     val awards = StringBuilder()
                     for (item in list) {
@@ -312,7 +314,7 @@ class NetWorkUtils {
                     awards.toString()
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    throw Exception("json formats wrong in logAttendance()")
+                    throw Exception(e.message)
                 }
             } else {
                 getJsonContent(resp.responseContent, "message") ?: "message null"

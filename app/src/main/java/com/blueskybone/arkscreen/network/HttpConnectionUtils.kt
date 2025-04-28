@@ -2,11 +2,15 @@ package com.blueskybone.arkscreen.network
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.DataOutputStream
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.concurrent.TimeUnit
 import javax.net.ssl.HttpsURLConnection
 
 /**
@@ -18,58 +22,106 @@ class HttpConnectionUtils {
     companion object {
         private const val CONNECT_TIMEOUT = 5000 // 连接超时时间
         private const val READ_TIMEOUT = 5000 // 读取超时时间
+
+        private val okHttpClient = OkHttpClient.Builder()
+            .connectTimeout(15, TimeUnit.SECONDS) // 替换你的 CONNECT_TIMEOUT
+            .readTimeout(15, TimeUnit.SECONDS)
+            .build()
+
         suspend fun httpResponse(
             url: URL,
             jsonInput: String?,
             header: Map<String, String>,
             method: RequestMethod
         ): Response {
-            var httpsConn: HttpsURLConnection? = null
             return try {
-                httpsConn = withContext(Dispatchers.IO) {
-                    url.openConnection() as HttpsURLConnection
-                }
-                httpsConn.connectTimeout = CONNECT_TIMEOUT
-                httpsConn.requestMethod = method.toString()
-
-                header.forEach { (key, value) ->
-                    httpsConn.setRequestProperty(key, value)
-                }
-                httpsConn.doInput = true
-                httpsConn.doOutput = method == RequestMethod.POST
-
-                jsonInput?.let {
-                    DataOutputStream(httpsConn.outputStream).use { dataOs ->
-                        withContext(Dispatchers.IO) {
-                            dataOs.writeBytes(it)
-                            dataOs.flush()
+                // 1. 构建 OkHttp 请求
+                val request = Request.Builder()
+                    .url(url)
+                    .apply {
+                        // 设置请求方法
+                        when (method) {
+                            RequestMethod.GET -> get()
+                            RequestMethod.POST -> {
+                                val body = jsonInput?.toRequestBody("application/json".toMediaType())
+                                post(body ?: "".toRequestBody(null))
+                            }
+                        }
+                        // 添加请求头
+                        header.forEach { (key, value) ->
+                            addHeader(key, value)
                         }
                     }
+                    .build()
+
+                // 2. 执行请求 (协程 IO 调度器)
+                val okHttpResponse = withContext(Dispatchers.IO) {
+                    okHttpClient.newCall(request).execute()
                 }
 
-                withContext(Dispatchers.IO) {
-                    httpsConn.connect()
-                }
-
-                val respCode = httpsConn.responseCode
-                val response = if (respCode == HttpURLConnection.HTTP_OK) {
-                    val inputStream = httpsConn.inputStream
-                    readStream(inputStream)
-                } else {
-                    val errorStream = httpsConn.errorStream
-                    readStream(errorStream)
-                }
-                Response(respCode, response)
+                // 3. 转换为原接口的 Response 类型
+                Response(
+                    responseCode = okHttpResponse.code,
+                    responseContent = okHttpResponse.body?.string() ?: ""
+                )
             } catch (e: Exception) {
                 e.printStackTrace()
-                val respCode = httpsConn?.responseCode ?: -1
-                val errorStream = httpsConn?.errorStream
-                val errorResponse = readStream(errorStream)
-                Response(respCode, errorResponse)
-            } finally {
-                httpsConn?.disconnect()
+                Response(responseCode = -1, responseContent = e.message ?: "请求失败")
             }
         }
+
+//        suspend fun httpResponse(
+//            url: URL,
+//            jsonInput: String?,
+//            header: Map<String, String>,
+//            method: RequestMethod
+//        ): Response {
+//            var httpsConn: HttpsURLConnection? = null
+//            return try {
+//                httpsConn = withContext(Dispatchers.IO) {
+//                    url.openConnection() as HttpsURLConnection
+//                }
+//                httpsConn.connectTimeout = CONNECT_TIMEOUT
+//                httpsConn.requestMethod = method.toString()
+//
+//                header.forEach { (key, value) ->
+//                    httpsConn.setRequestProperty(key, value)
+//                }
+//                httpsConn.doInput = true
+//                httpsConn.doOutput = method == RequestMethod.POST
+//
+//                jsonInput?.let {
+//                    DataOutputStream(httpsConn.outputStream).use { dataOs ->
+//                        withContext(Dispatchers.IO) {
+//                            dataOs.writeBytes(it)
+//                            dataOs.flush()
+//                        }
+//                    }
+//                }
+//
+//                withContext(Dispatchers.IO) {
+//                    httpsConn.connect()
+//                }
+//
+//                val respCode = httpsConn.responseCode
+//                val response = if (respCode == HttpURLConnection.HTTP_OK) {
+//                    val inputStream = httpsConn.inputStream
+//                    readStream(inputStream)
+//                } else {
+//                    val errorStream = httpsConn.errorStream
+//                    readStream(errorStream)
+//                }
+//                Response(respCode, response)
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//                val respCode = httpsConn?.responseCode ?: -1
+//                val errorStream = httpsConn?.errorStream
+//                val errorResponse = readStream(errorStream)
+//                Response(respCode, errorResponse)
+//            } finally {
+//                httpsConn?.disconnect()
+//            }
+//        }
 
         private fun readStream(inputStream: InputStream?): String {
             return inputStream?.bufferedReader()?.use { it.readText() } ?: "No Response"

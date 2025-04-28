@@ -101,20 +101,20 @@ class RecruitService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        println("测试6")
+        println("测试6 onStartCommand")
         if (mutex) {
             return START_NOT_STICKY
         }
         mutex = true
         resetInactivityTimer()
         if (CapturePermission.intent == null) {
-            println("测试6.1")
+            println("测试6.1 CapturePermission.intent == null")
             val acquireIntent = Intent(this, AcquireCapturePermission::class.java)
             acquireIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(acquireIntent)
             return super.onStartCommand(intent, flags, startId)
         }
-        println("测试7")
+        println("测试7 CapturePermission get")
         intent.apply {
             val result = intent?.extras?.getBoolean("setPermission")
             if (result == true) {
@@ -131,26 +131,26 @@ class RecruitService : Service() {
                 createVirtualDisplay()
             }
         }
-        println("测试2")
-        val emptyIntent = Intent(this, TransActivity::class.java)
-        emptyIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(emptyIntent)
+//        val emptyIntent = Intent(this, TransActivity::class.java)
+//        emptyIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//        startActivity(emptyIntent)
         try {
-            println("测试3")
+            println("测试3 try screenshot")
             Thread.sleep(prefManager.screenShotDelay.get() * 1000L)
             imageReader!!.acquireLatestImage().use { image ->
-                println("测试4")
-                TransActivity.finishActivity()
-                println("测试5")
+                println("测试4 image get")
+                // TransActivity.finishActivity()
                 if (image != null) {
-                    println("测试6")
+                    println("测试5 image != null")
                     val bitmap = convertImageToBitmap(image, Bitmap.Config.ARGB_8888)
                     val tags = imageProcessor!!.getRecruitTags(bitmap, screenWidth, screenHeight)
                     bitmap.recycle()
                     if (tags.status != ImageProcessor.OK) {
+                        println("测试5.1 result status: " + tags.status)
                         Toaster.show(tags.msg)
                         return@use
                     } else {
+                        println("测试5.2 ImageProcessor.OK ")
                         val tagList = getEleCombination(tags.tags)
                         val recruitResultList = mutableListOf<RecruitManager.RecruitResult>()
                         for (tagsCom in tagList) {
@@ -167,7 +167,7 @@ class RecruitService : Service() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            TransActivity.finishActivity()
+            //TransActivity.finishActivity()
             mutex = false
         }
         mutex = false
@@ -256,8 +256,9 @@ class RecruitService : Service() {
             screenWidth,
             screenHeight,
             screenDensityDpi,
-            DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY
-                    or DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC,
+            DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
+            //            DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY
+//                    or DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC,
             surface,
             null,
             null

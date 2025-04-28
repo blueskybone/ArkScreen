@@ -99,6 +99,7 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
                     playerData.currentTs,
                     playerData.currentTs,
                     playerData.apInfo.remainSecs,
+                    playerData.apInfo.recoverTime,
                     playerData.apInfo.max,
                     playerData.apInfo.current,
                     false
@@ -107,6 +108,7 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
                     playerData.currentTs,
                     playerData.currentTs,
                     playerData.labor.remainSecs,
+                    playerData.labor.recoverTime,
                     playerData.labor.max,
                     playerData.labor.current,
                     false

@@ -24,13 +24,18 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.R
+import com.blueskybone.arkscreen.common.BottomDialog
 import com.blueskybone.arkscreen.common.line
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.task.recruit.RecruitManager
+import com.blueskybone.arkscreen.util.copyToClipboard
 import com.blueskybone.arkscreen.util.dpToPx
 import com.blueskybone.arkscreen.viewmodel.RecruitModel
+import com.hjq.toast.Toaster
 import com.nex3z.flowlayout.FlowLayout
 import org.koin.android.ext.android.getKoin
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.net.URLEncoder
 
 /**
@@ -40,7 +45,6 @@ import java.net.URLEncoder
 class RecruitActivity : AppCompatActivity() {
     private val model: RecruitModel by viewModels()
     private val prefManager: PrefManager by getKoin().inject()
-
 
     companion object {
         private val buttonList1 = listOf("高级资深干员", "资深干员", "新手")
@@ -84,14 +88,28 @@ class RecruitActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initialize()
-        setContentView(R.layout.activity_recruit)
-        val toolBar = findViewById<Toolbar>(R.id.Toolbar)
-        setSupportActionBar(toolBar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        setButtonLayout()
-        setObserver()
+        try {
+            initialize()
+            setContentView(R.layout.activity_recruit)
+            val toolBar = findViewById<Toolbar>(R.id.Toolbar)
+            setSupportActionBar(toolBar)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            setButtonLayout()
+            setObserver()
+        } catch (e: Exception) {
+            val stringWriter = StringWriter()
+            e.printStackTrace(PrintWriter(stringWriter))
+            val errorMsg = stringWriter.toString()
+            Toaster.show("初始化失败")
+            BottomDialog(this)
+                .setButtonText("复制错误信息")
+                .setText(errorMsg)
+                .setButtonOnclick {
+                    copyToClipboard(this, errorMsg)
+                    Toaster.show("已复制到剪贴板")
+                }
+                .show()
+        }
     }
 
     private lateinit var rarityValValues: List<String>
@@ -103,7 +121,7 @@ class RecruitActivity : AppCompatActivity() {
 
         rarityValValues = rarityValues.toList()
         val list = ArrayList<Int>()
-        for (idx in 0..rarityValValues.size) {
+        for (idx in rarityValValues.indices) {
             list.add(rarityDrawable.getResourceId(idx, 1))
         }
         rarityColorIds = list
