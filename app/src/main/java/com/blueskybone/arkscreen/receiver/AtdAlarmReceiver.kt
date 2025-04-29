@@ -30,7 +30,6 @@ import java.util.concurrent.TimeUnit
 class AtdAlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        println("AtdAlarmReceiver onReceive")
         if (intent.action != "android.intent.action.BOOT_COMPLETED") {
             return
         }
@@ -46,7 +45,6 @@ class AtdAlarmReceiver : BroadcastReceiver() {
         val accountSkDao = database.getAccountSkDao()
         val accountList = accountSkDao.getAll()
         for (account in accountList) {
-            print(account.nickName + " - attendance")
             NetWorkTask.sklandAttendance(account)
         }
         prefManager.lastAttendanceTs.set(getCurrentTs())
@@ -66,7 +64,7 @@ class AtdAlarmReceiver : BroadcastReceiver() {
         val notificationBuilder = NotificationCompat.Builder(context, channelId)
             .setContentTitle(title)
             .setContentText(message)
-            .setSmallIcon(R.drawable.ic_notification) // 替换为您的图标资源
+            .setSmallIcon(R.drawable.ic_notification)
             .setAutoCancel(true)
 
         notificationManager.notify(notificationId, notificationBuilder.build())

@@ -303,9 +303,9 @@ class NetWorkUtils {
             headerSign["sign"] = sign
             headerSign["timestamp"] = timeStamp
             val resp = httpResponse(url, jsonInputString, headerSign, RequestMethod.POST)
+            println(resp.responseContent)
             return if (resp.responseCode == HttpURLConnection.HTTP_OK) {
                 try {
-                    println(resp.responseContent)
                     val list = ObjectMapper().readTree(resp.responseContent).at("/data/awards")
                     val awards = StringBuilder()
                     for (item in list) {
@@ -314,6 +314,7 @@ class NetWorkUtils {
                     awards.toString()
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    println(resp.responseContent)
 //                    throw Exception(e.message)
                     throw Exception("read json failed.")
                 }

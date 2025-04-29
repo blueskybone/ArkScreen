@@ -35,8 +35,6 @@ import org.koin.java.KoinJavaComponent
  *   Date: 2025/1/7
  */
 class AboutActivity : AppCompatActivity() {
-
-    private val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
     private var _binding: ActivityAboutBinding? = null
     private val binding get() = _binding!!
 
@@ -49,7 +47,6 @@ class AboutActivity : AppCompatActivity() {
 
     private fun setUpBinding() {
         binding.CheckUpdate.setUp(CheckUpdate)
-//        binding.Donate.setUp(DonateList)
         binding.GroupChat.setUp(GroupChat)
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -78,7 +75,7 @@ class AboutActivity : AppCompatActivity() {
                                     }
                                 }.show()
                         }
-                    else Toaster.show("当前是最新版本")
+                    else Toaster.show(getString(R.string.newest_update))
                 }
             }
         }
@@ -92,12 +89,9 @@ class AboutActivity : AppCompatActivity() {
                 .setView(textView)
                 .show()
         }
-//        binding.UpdateLog.setOnClickListener {
-//
-//        }
 
         binding.GroupChat.Layout.setOnClickListener {
-            val groupId = getString(R.string.qq_group_num)
+            val groupId = "924153470"
             try{
                 val url = "mqqapi://card/show_pslcard?src_type=internal&card_type=group&uin=$groupId"
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
@@ -105,7 +99,7 @@ class AboutActivity : AppCompatActivity() {
                 startActivity(intent)
             }catch (e:Exception){
                 copyToClipboard(this, groupId)
-                Toaster.show(getString(R.string.copied_qq_num))
+                Toaster.show(getString(R.string.copied_qq_group_num))
             }
         }
         binding.FeedBack.setOnClickListener {
@@ -131,7 +125,7 @@ class AboutActivity : AppCompatActivity() {
                     intent.setPackage("com.tencent.mobileqq")
                     startActivity(intent)
                 } catch (e: java.lang.Exception) {
-                    Toaster.show("未安装QQ")
+                    Toaster.show(getString(R.string.qq_not_install))
                 }
             }.show()
         }

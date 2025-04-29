@@ -69,7 +69,6 @@ class NetWorkTask {
             return NetWorkUtils.getCredByGrant(grant, dId)
         }
 
-
         suspend fun getNewRecords(
             token: String,
             channelMasterId: Int,

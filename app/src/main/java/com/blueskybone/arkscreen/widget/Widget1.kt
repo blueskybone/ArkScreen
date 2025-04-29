@@ -21,6 +21,9 @@ import com.blueskybone.arkscreen.bindinginfo.WidgetAppearance
 import com.blueskybone.arkscreen.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.receiver.WidgetReceiver.Companion.WORKER_NAME
+import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
+import com.blueskybone.arkscreen.util.TimeUtils.getLastUpdateStr
+import com.blueskybone.arkscreen.util.TimeUtils.getRemainTimeStr
 import com.hjq.toast.Toaster
 import org.koin.java.KoinJavaComponent
 import java.util.concurrent.TimeUnit
@@ -85,8 +88,17 @@ class Widget1 : AppWidgetProvider() {
             TypedValue.COMPLEX_UNIT_SP,
             WidgetSize.getTextSize(size)
         )
+        val now = getCurrentTs()
         val apCache = prefManager.apCache.get()
-        views.setTextViewText(R.id.widget_text, "${apCache.current} / ${apCache.max}")
+        val apMax = apCache.max
+        val current = if (apCache.current >= apMax ) {
+            apCache.current
+        } else if(now > apCache.recoverTime) {
+            apMax
+        }else{
+            apMax - (apCache.recoverTime - now).toInt() / (60 * 6) + 1
+        }
+        views.setTextViewText(R.id.widget_text, "$current / $apMax")
         appWidgetManager.updateAppWidget(appWidgetIds, views)
     }
 
@@ -104,21 +116,6 @@ class Widget1 : AppWidgetProvider() {
                 workRequest
             )
     }
-
-//    override fun onAppWidgetOptionsChanged(
-//        context: Context,
-//        appWidgetManager: AppWidgetManager,
-//        appWidgetId: Int,
-//        newOptions: Bundle
-//    ){
-//        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
-//        // 获取小部件的最小宽度和高度
-//        val minWidth = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
-//        val minHeight = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
-//
-//        // 根据大小调整布局
-//        //updateWidgetLayout(context, appWidgetManager, appWidgetId, minWidth, minHeight)
-//    }
 
     private fun areAllWidgetsEmpty(
         context: Context,
@@ -142,22 +139,4 @@ class Widget1 : AppWidgetProvider() {
         }
     }
 
-//    override fun onReceive(context: Context?, intent: Intent) {
-//        super.onReceive(context, intent)
-//        if (intent.action == MANUAL_UPDATE) {
-//            Toaster.show("小部件刷新中...")
-//            WorkManager.getInstance(context!!)
-//                .enqueue(OneTimeWorkRequest.from(SklandWorker::class.java))
-//        }
-//    }
-
-//    private fun getWidgetSize(minWidth: Int, minHeight: Int): Pair<Int, Int> {
-//        val cellWidth = 70 // 每个网格单元的宽度（dp）
-//        val cellHeight = 70 // 每个网格单元的高度（dp）
-//
-//        val widthCells = (minWidth + cellWidth - 1) / cellWidth
-//        val heightCells = (minHeight + cellHeight - 1) / cellHeight
-//
-//        return Pair(widthCells, heightCells)
-//    }
 }

@@ -6,11 +6,14 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.ByteArrayInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
+import java.util.zip.GZIPInputStream
 import javax.net.ssl.HttpsURLConnection
 
 /**
@@ -35,38 +38,87 @@ class HttpConnectionUtils {
             method: RequestMethod
         ): Response {
             return try {
-                // 1. 构建 OkHttp 请求
+                // 1. 打印请求基本信息
+                println("=== HTTP 请求信息 ===")
+                println("URL: $url")
+                println("Method: $method")
+                println("Headers: $header")
+                println("Request Body: $jsonInput")
+
+                // 2. 构建 OkHttp 请求
                 val request = Request.Builder()
                     .url(url)
                     .apply {
-                        // 设置请求方法
                         when (method) {
                             RequestMethod.GET -> get()
                             RequestMethod.POST -> {
-                                val body = jsonInput?.toRequestBody("application/json".toMediaType())
+                                val body =
+                                    jsonInput?.toRequestBody("application/json".toMediaType())
                                 post(body ?: "".toRequestBody(null))
                             }
                         }
-                        // 添加请求头
                         header.forEach { (key, value) ->
                             addHeader(key, value)
                         }
                     }
                     .build()
 
-                // 2. 执行请求 (协程 IO 调度器)
+                // 3. 执行请求并获取响应
                 val okHttpResponse = withContext(Dispatchers.IO) {
                     okHttpClient.newCall(request).execute()
                 }
 
-                // 3. 转换为原接口的 Response 类型
+                // 4. 打印响应基本信息
+                println("\n=== HTTP 响应信息 ===")
+                println("Response Code: ${okHttpResponse.code}")
+                println("Response Message: ${okHttpResponse.message}")
+                println("Response Headers:")
+                okHttpResponse.headers.forEach { (name, value) ->
+                    println("  $name: $value")
+                }
+
+                // 5. 获取原始字节流并打印
+                val responseBytes = okHttpResponse.body?.bytes() ?: byteArrayOf()
+                println(
+                    "\nResponse Raw Bytes (Hex): ${
+                        responseBytes.joinToString(" ") {
+                            "%02x".format(
+                                it
+                            )
+                        }
+                    }"
+                )
+                println("Response Raw Bytes (Length): ${responseBytes.size} bytes")
+
+                // 6. 尝试以字符串形式读取响应体
+                val responseBodyString = try {
+                    String(responseBytes, Charset.forName("UTF-8"))
+                } catch (e: Exception) {
+                    "无法将响应体解码为UTF-8字符串: ${e.message}"
+                }
+                println("\nResponse Body (as String): $responseBodyString")
+
+                // 7. 检查是否是GZIP压缩响应
+                if (okHttpResponse.header("Content-Encoding") == "gzip") {
+                    val unzipped =
+                        withContext(Dispatchers.IO) {
+                            GZIPInputStream(ByteArrayInputStream(responseBytes)).bufferedReader()
+                        }.readText()
+                    Response(
+                        responseCode = okHttpResponse.code,
+                        responseContent = unzipped
+                    )
+                }
                 Response(
                     responseCode = okHttpResponse.code,
-                    responseContent = okHttpResponse.body?.string() ?: ""
+                    responseContent = responseBodyString
                 )
             } catch (e: Exception) {
+                println("\n=== 请求发生异常 ===")
+                println("异常类型: ${e.javaClass.name}")
+                println("异常信息: ${e.message}")
                 e.printStackTrace()
-                Response(responseCode = -1, responseContent = e.message ?: "请求失败")
+                Response(responseCode = -1, responseContent = "请求失败: ${e.message}")
             }
         }
 

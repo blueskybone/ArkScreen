@@ -46,7 +46,7 @@ class Function : Fragment() {
         binding.GachaStatistics.Title.text = getString(R.string.gacha_statistics)
         binding.Link3rdManage.Title.text = getString(R.string.home_3rd_link_manage)
         binding.AttendanceClick.Title.text = getString(R.string.attendance_click)
-        binding.RecruitCalculator.Title.text = getString(R.string.recruit_cal)
+//        binding.RecruitCalculator.Title.text = getString(R.string.recruit_cal)
         binding.TimeCorrectButton.Title.text = getString(R.string.time_correction)
 //        binding.DebugLog.Title.text = getString(R.string.debug_log)
 
@@ -59,9 +59,9 @@ class Function : Fragment() {
         binding.OperatorAssets.Card.setOnClickListener {
             startActivity(Intent(requireContext(), CharAssets::class.java))
         }
-        binding.RecruitCalculator.Card.setOnClickListener {
-            startActivity(Intent(requireContext(), RecruitActivity::class.java))
-        }
+//        binding.RecruitCalculator.Card.setOnClickListener {
+//            startActivity(Intent(requireContext(), RecruitActivity::class.java))
+//        }
         binding.Link3rdManage.Card.setOnClickListener {
             startActivity(Intent(requireContext(), LinkMng::class.java))
         }

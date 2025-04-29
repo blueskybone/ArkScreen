@@ -21,6 +21,7 @@
 #-renamesourcefileattribute SourceFile
 
 -keep class com.blueskybone.arkscreen.task.screenshot.** { *; }
+
 -keep class android.hardware.display.** { *; }
 -keep class android.media.projection.** { *; }
 -keep class com.blueskybone.arkscreen.common.** { *; }

@@ -66,15 +66,15 @@ object TimeUtils {
     }
 
     fun getRemainTimeStr(sec: Long): String {
-        return getWDHMSToStr(getMinusWDHMS(sec))
+        return getWDHMSToStr(getMinusWDHMS(sec.coerceAtLeast(0)))
     }
 
     fun getLastUpdateStr(sec: Long): String {
-        return getWDHMSToStr2(getMinusWDHMS(sec))
+        return getWDHMSToStr2(getMinusWDHMS(sec.coerceAtLeast(0)))
     }
 
-    fun getRemainTimeMinStr(sec:Long):String{
-        return getWDHMSToStr3(getMinusWDHMS(sec))
+    fun getRemainTimeMinStr(sec: Long): String {
+        return getWDHMSToStr3(getMinusWDHMS(sec.coerceAtLeast(0)))
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -126,7 +126,6 @@ object TimeUtils {
     fun getDayNum(ts: Long): Long {
         return (ts + 28800) / 86400
     }
-
 
 
     fun getTimeStrYMD(ts: Long): String {

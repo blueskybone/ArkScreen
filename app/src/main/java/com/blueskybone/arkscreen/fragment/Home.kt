@@ -14,6 +14,7 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.activity.AboutActivity
 import com.blueskybone.arkscreen.activity.AccountSk
 import com.blueskybone.arkscreen.activity.RealTimeActivity
+import com.blueskybone.arkscreen.activity.RecruitActivity
 import com.blueskybone.arkscreen.activity.WebViewActivity
 import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.databinding.CardApCacheBinding
@@ -61,10 +62,6 @@ class Home : Fragment(), ItemListener {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
 
     private fun setupObserver() {
         model.currentAccount.observe(viewLifecycleOwner) { value ->
@@ -99,6 +96,10 @@ class Home : Fragment(), ItemListener {
                     menuDialog.show()
                 }
             }
+        }
+
+        binding.Recruit.setOnClickListener{
+            startActivity(Intent(requireContext(), RecruitActivity::class.java))
         }
 
         binding.Donate.setOnClickListener {
@@ -138,7 +139,10 @@ class Home : Fragment(), ItemListener {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val path = NetWorkUtils.getSpaceTitleImageUrl()
-                binding.TitleImage.load(path)
+                binding.TitleImage.load(path){
+                    crossfade(true)
+                    crossfade(300)
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -157,25 +161,23 @@ class Home : Fragment(), ItemListener {
     }
 
     private fun CardApCacheBinding.bind(value: ApCache) {
-        val maxText = "/" + value.max.toString()
-        this.Max.text = maxText
-        val currentTs = getCurrentTs()
-        val passTime = currentTs - value.lastUpdateTs
-        val passSyncTime = currentTs - value.lastSyncTs
-        val lastSyncStr = getLastUpdateStr(passSyncTime)
+        val now = getCurrentTs()
+        val lastSyncStr = getLastUpdateStr(now - value.lastSyncTs)
         this.LastSync.text = getString(R.string.last_sync_time, lastSyncStr)
         if (value.current >= value.max) {
             this.Current.text = value.current.toString()
             this.RestTime.text = getString(R.string.recovered)
-        } else if (value.remainSec < passTime) {
+        } else if (now > value.recoverTime) {
             this.Current.text = value.max.toString()
             this.RestTime.text = getString(R.string.recovered)
         } else {
-            val currentStr = (value.max - ((value.recoverTime - currentTs).toInt() / (60 * 6) + 1)).toString()
-//            val currentStr = (passTime.toInt() / (60 * 6) + value.current).toString()
+            val currentStr =
+                (value.max - ((value.recoverTime - now).toInt() / (60 * 6) + 1)).toString()
             this.Current.text = currentStr
-            this.RestTime.text = getRemainTimeStr(value.remainSec - passTime)
+            this.RestTime.text = getRemainTimeStr(value.recoverTime - now)
         }
+        val maxText = "/" + value.max.toString()
+        this.Max.text = maxText
     }
 
     override fun onDestroy() {
