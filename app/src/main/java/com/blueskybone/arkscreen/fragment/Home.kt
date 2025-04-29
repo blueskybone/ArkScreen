@@ -26,7 +26,9 @@ import com.blueskybone.arkscreen.room.ApCache
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
 import com.blueskybone.arkscreen.util.TimeUtils.getLastUpdateStr
 import com.blueskybone.arkscreen.util.TimeUtils.getRemainTimeStr
+import com.blueskybone.arkscreen.util.saveDrawableToGallery
 import com.blueskybone.arkscreen.viewmodel.BaseModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -96,6 +98,30 @@ class Home : Fragment(), ItemListener {
                     }
                     menuDialog.show()
                 }
+            }
+        }
+
+        binding.Donate.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.donate)
+                .setMessage(R.string.donate_msg)
+                .setNegativeButton(R.string.cancel, null)
+                .setNeutralButton(R.string.donated) { _, _ -> Toaster.show(getString(R.string.thank_for_donate)) }
+                .setPositiveButton(R.string.save_code) { _, _ ->
+                    saveDrawableToGallery(requireContext(), R.drawable.wechat)
+                    saveDrawableToGallery(requireContext(), R.drawable.zfb)
+                    Toaster.show("已保存到本地")
+                }.show()
+        }
+
+        binding.Manual.setOnClickListener {
+            val cvId = "40623349"
+            try {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("bilibili://article/$cvId"))
+                startActivity(intent)
+            } catch (e: Exception) {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.bilibili.com/read/cv$cvId"))
+                startActivity(intent)
             }
         }
 

@@ -111,6 +111,42 @@
 
 
         <TextView
+            style="@style/PreferenceHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/mess_option" />
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/CardViewContent"
+            android:layout_marginTop="0dp"
+            android:clickable="false"
+            android:focusable="false">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/Manual"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="@string/manual"
+                    android:textAppearance="?attr/textAppearanceBody2" />
+
+                <TextView
+                    android:id="@+id/Donate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="@string/donate"
+                    android:textAppearance="?attr/textAppearanceBody2" />
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
             android:id="@+id/AnnounceTitle"
             style="@style/PreferenceHeader"
             android:layout_width="match_parent"

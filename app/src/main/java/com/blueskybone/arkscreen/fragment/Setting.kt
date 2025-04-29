@@ -129,30 +129,7 @@ class Setting : Fragment() {
             startActivity(Intent(requireContext(), AboutActivity::class.java))
         }
 
-        binding.Manual.setOnClickListener {
-//            val url = "https://www.bilibili.com/opus/1031126823526727688"
-//            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
 
-            val cvId = "40623349"
-            try {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("bilibili://article/$cvId"))
-                startActivity(intent)
-            } catch (e: Exception) {
-                // 如果 Bilibili 未安装，则用浏览器打开
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.bilibili.com/read/cv$cvId"))
-                startActivity(intent)
-            }
-//            val opusId = "1031126823526727688" // 替换为目标专栏 ID
-//            try {
-//                // 尝试用 Bilibili App 打开
-//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("bilibili://dynamic/$opusId"))
-//                startActivity(intent)
-//            } catch (e: Exception) {
-//                // 如果 Bilibili 未安装，则用浏览器打开
-//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.bilibili.com/opus/$opusId"))
-//                startActivity(intent)
-//            }
-        }
         timePickerBinding()
     }
 

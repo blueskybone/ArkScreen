@@ -228,14 +228,18 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <ImageView
-                android:id="@+id/Starter"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="24dp"
-                android:contentDescription="@string/text_default"
-                android:src="@drawable/ic_starter" />
+            <com.google.android.material.card.MaterialCardView
+                style="@style/CardViewContent">
+                <ImageView
+                    android:id="@+id/Starter"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="24dp"
+                    android:contentDescription="@string/text_default"
+                    android:src="@drawable/ic_starter" />
+            </com.google.android.material.card.MaterialCardView>
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

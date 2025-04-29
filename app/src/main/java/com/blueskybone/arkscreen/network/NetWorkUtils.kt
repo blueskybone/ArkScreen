@@ -314,7 +314,8 @@ class NetWorkUtils {
                     awards.toString()
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    throw Exception(e.message)
+//                    throw Exception(e.message)
+                    throw Exception("read json failed.")
                 }
             } else {
                 getJsonContent(resp.responseContent, "message") ?: "message null"

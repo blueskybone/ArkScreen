@@ -1,10 +1,12 @@
 package com.blueskybone.arkscreen.task.screenshot
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.PixelFormat
 import android.graphics.drawable.GradientDrawable
+import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -12,6 +14,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.LinearLayout
 import android.widget.Space
 import android.widget.TextView
@@ -83,6 +86,8 @@ class FloatWindow(private val context: Context) {
         }
         val lastX = AtomicInteger()
         val lastY = AtomicInteger()
+
+        //拖动监听
         touchLayout.setOnTouchListener { _, event ->
             val action = event.action
             val mWidth: Int = getRealScreenSize(context).x
@@ -161,6 +166,7 @@ class FloatWindow(private val context: Context) {
             windowManager.addView(floatingView, params)
             isAdd = !isAdd
         }
+        playFloatUpAnimation()
     }
 
     fun close() {
@@ -189,6 +195,25 @@ class FloatWindow(private val context: Context) {
         return space
     }
 
+    private fun playFloatUpAnimation() {
+        val startY = params.y  + dpToPx(10) // Start from below screen
+        val endY = params.y // Float up 150dp
+
+        ValueAnimator.ofInt(startY, endY).apply {
+            duration = 200 // Animation duration 300ms
+            interpolator = AccelerateDecelerateInterpolator() // Smooth easing
+            addUpdateListener { animation ->
+                params.y = animation.animatedValue as Int
+                windowManager.updateViewLayout(floatingView, params)
+            }
+            start()
+        }
+    }
+
+    private fun dpToPx(dp: Int): Int {
+        val density = context.resources.displayMetrics.density
+        return (dp * density).toInt()
+    }
 
     private fun onCloseButtonClick() {
         close()
