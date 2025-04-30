@@ -96,7 +96,7 @@ class Widget1 : AppWidgetProvider() {
         } else if(now > apCache.recoverTime) {
             apMax
         }else{
-            apMax - (apCache.recoverTime - now).toInt() / (60 * 6) + 1
+            apMax - (apCache.recoverTime - now).toInt() / (60 * 6) - 1
         }
         views.setTextViewText(R.id.widget_text, "$current / $apMax")
         appWidgetManager.updateAppWidget(appWidgetIds, views)

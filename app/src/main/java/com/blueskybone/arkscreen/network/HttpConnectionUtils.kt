@@ -90,14 +90,6 @@ class HttpConnectionUtils {
                 )
                 println("Response Raw Bytes (Length): ${responseBytes.size} bytes")
 
-                // 6. 尝试以字符串形式读取响应体
-                val responseBodyString = try {
-                    String(responseBytes, Charset.forName("UTF-8"))
-                } catch (e: Exception) {
-                    "无法将响应体解码为UTF-8字符串: ${e.message}"
-                }
-                println("\nResponse Body (as String): $responseBodyString")
-
                 // 7. 检查是否是GZIP压缩响应
                 if (okHttpResponse.header("Content-Encoding") == "gzip") {
                     val unzipped =
@@ -108,11 +100,19 @@ class HttpConnectionUtils {
                         responseCode = okHttpResponse.code,
                         responseContent = unzipped
                     )
+                }else{
+                    val responseBodyString = try {
+                        String(responseBytes, Charset.forName("UTF-8"))
+                    } catch (e: Exception) {
+                        "无法将响应体解码为UTF-8字符串: ${e.message}"
+                    }
+                    Response(
+                        responseCode = okHttpResponse.code,
+                        responseContent = responseBodyString
+                    )
                 }
-                Response(
-                    responseCode = okHttpResponse.code,
-                    responseContent = responseBodyString
-                )
+                // 6. 尝试以字符串形式读取响应体
+
             } catch (e: Exception) {
                 println("\n=== 请求发生异常 ===")
                 println("异常类型: ${e.javaClass.name}")
@@ -121,59 +121,6 @@ class HttpConnectionUtils {
                 Response(responseCode = -1, responseContent = "请求失败: ${e.message}")
             }
         }
-
-//        suspend fun httpResponse(
-//            url: URL,
-//            jsonInput: String?,
-//            header: Map<String, String>,
-//            method: RequestMethod
-//        ): Response {
-//            var httpsConn: HttpsURLConnection? = null
-//            return try {
-//                httpsConn = withContext(Dispatchers.IO) {
-//                    url.openConnection() as HttpsURLConnection
-//                }
-//                httpsConn.connectTimeout = CONNECT_TIMEOUT
-//                httpsConn.requestMethod = method.toString()
-//
-//                header.forEach { (key, value) ->
-//                    httpsConn.setRequestProperty(key, value)
-//                }
-//                httpsConn.doInput = true
-//                httpsConn.doOutput = method == RequestMethod.POST
-//
-//                jsonInput?.let {
-//                    DataOutputStream(httpsConn.outputStream).use { dataOs ->
-//                        withContext(Dispatchers.IO) {
-//                            dataOs.writeBytes(it)
-//                            dataOs.flush()
-//                        }
-//                    }
-//                }
-//
-//                withContext(Dispatchers.IO) {
-//                    httpsConn.connect()
-//                }
-//
-//                val respCode = httpsConn.responseCode
-//                val response = if (respCode == HttpURLConnection.HTTP_OK) {
-//                    val inputStream = httpsConn.inputStream
-//                    readStream(inputStream)
-//                } else {
-//                    val errorStream = httpsConn.errorStream
-//                    readStream(errorStream)
-//                }
-//                Response(respCode, response)
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//                val respCode = httpsConn?.responseCode ?: -1
-//                val errorStream = httpsConn?.errorStream
-//                val errorResponse = readStream(errorStream)
-//                Response(respCode, errorResponse)
-//            } finally {
-//                httpsConn?.disconnect()
-//            }
-//        }
 
         private fun readStream(inputStream: InputStream?): String {
             return inputStream?.bufferedReader()?.use { it.readText() } ?: "No Response"
