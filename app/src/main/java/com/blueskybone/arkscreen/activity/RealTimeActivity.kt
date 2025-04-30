@@ -25,6 +25,7 @@ import com.blueskybone.arkscreen.databinding.InfoCardBinding
 import com.blueskybone.arkscreen.receiver.WidgetReceiver
 import com.blueskybone.arkscreen.room.RealTimeUi
 import com.blueskybone.arkscreen.viewmodel.RealTimeModel
+import com.hjq.toast.Toaster
 
 /**
  *   Created by blueskybone
@@ -59,10 +60,6 @@ class RealTimeActivity : AppCompatActivity() {
         binding.Campaign.setUp(Campaign)
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-//        if (!prefManager.realTimePageShowStarter.get()) {
-//            binding.Starter.visibility = View.GONE
-//        }
     }
 
     private fun InfoCardBinding.setUp(dataInfo: DataInfo) {
@@ -133,14 +130,12 @@ class RealTimeActivity : AppCompatActivity() {
             binding.Irene.Layout.visibility = View.VISIBLE
             binding.Irene.Text.text = data.ireneChange.text
         }
-//        if (prefManager.realTimePageShowStarter.get()) {
-            binding.Starter.setOnClickListener {
-                if (data.official)
-                    openAnotherApp("com.hypergryph.arknights")
-                else
-                    openAnotherApp("com.hypergryph.arknights.bilibili")
-            }
-//        }
+        binding.Starter.setOnClickListener {
+            if (data.official)
+                openAnotherApp("com.hypergryph.arknights")
+            else
+                openAnotherApp("com.hypergryph.arknights.bilibili")
+        }
         binding.Page.visibility = View.GONE
         binding.ScrollView.visibility = View.VISIBLE
 
@@ -156,7 +151,7 @@ class RealTimeActivity : AppCompatActivity() {
         if (launchIntent != null) {
             startActivity(launchIntent)
         } else {
-            Toast.makeText(this, "应用未安装", Toast.LENGTH_SHORT).show()
+            Toaster.show("未检测到游戏安装")
         }
     }
 }

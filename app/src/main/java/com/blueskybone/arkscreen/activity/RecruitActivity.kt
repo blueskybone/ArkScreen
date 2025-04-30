@@ -11,10 +11,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import android.widget.Space
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -24,13 +26,19 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.R
+import com.blueskybone.arkscreen.common.BottomDialog
 import com.blueskybone.arkscreen.common.line
+import com.blueskybone.arkscreen.common.space
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.task.recruit.RecruitManager
+import com.blueskybone.arkscreen.util.copyToClipboard
 import com.blueskybone.arkscreen.util.dpToPx
 import com.blueskybone.arkscreen.viewmodel.RecruitModel
+import com.hjq.toast.Toaster
 import com.nex3z.flowlayout.FlowLayout
 import org.koin.android.ext.android.getKoin
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.net.URLEncoder
 
 /**
@@ -40,7 +48,6 @@ import java.net.URLEncoder
 class RecruitActivity : AppCompatActivity() {
     private val model: RecruitModel by viewModels()
     private val prefManager: PrefManager by getKoin().inject()
-
 
     companion object {
         private val buttonList1 = listOf("高级资深干员", "资深干员", "新手")
@@ -84,14 +91,28 @@ class RecruitActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initialize()
-        setContentView(R.layout.activity_recruit)
-        val toolBar = findViewById<Toolbar>(R.id.Toolbar)
-        setSupportActionBar(toolBar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        setButtonLayout()
-        setObserver()
+        try {
+            initialize()
+            setContentView(R.layout.activity_recruit)
+            val toolBar = findViewById<Toolbar>(R.id.Toolbar)
+            setSupportActionBar(toolBar)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            setButtonLayout()
+            setObserver()
+        } catch (e: Exception) {
+            val stringWriter = StringWriter()
+            e.printStackTrace(PrintWriter(stringWriter))
+            val errorMsg = stringWriter.toString()
+            Toaster.show("初始化失败")
+            BottomDialog(this)
+                .setButtonText("复制错误信息")
+                .setText(errorMsg)
+                .setButtonOnclick {
+                    copyToClipboard(this, errorMsg)
+                    Toaster.show("已复制到剪贴板")
+                }
+                .show()
+        }
     }
 
     private lateinit var rarityValValues: List<String>
@@ -103,7 +124,7 @@ class RecruitActivity : AppCompatActivity() {
 
         rarityValValues = rarityValues.toList()
         val list = ArrayList<Int>()
-        for (idx in 0..rarityValValues.size) {
+        for (idx in rarityValValues.indices) {
             list.add(rarityDrawable.getResourceId(idx, 1))
         }
         rarityColorIds = list
@@ -114,16 +135,20 @@ class RecruitActivity : AppCompatActivity() {
         val linearLayout = findViewById<LinearLayout>(R.id.ButtonLayout)
         linearLayout.removeAllViews()
 
-        for (buttonList in buttonListAll) {
+        for ((index, buttonList) in buttonListAll.withIndex()) {
             val flowLayout = getFlowLayout()
             for (button in buttonList) {
                 val buttonView = tagButton(button)
                 buttonViewList.add(buttonView)
                 flowLayout.addView(buttonView)
             }
+            if (index == buttonListAll.size - 1) {
+                flowLayout.addView(resetButton())
+            } else {
+                flowLayout.addView(line(this))
+            }
             flowLayoutList.add(flowLayout)
         }
-        flowLayoutList.last().addView(resetButton())
         for (flowLayout in flowLayoutList) {
             linearLayout.addView(flowLayout)
         }
@@ -290,16 +315,16 @@ class RecruitActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
         )
         tagLayoutParams.setMargins(0, 0, dpToPx(this, 5F).toInt(), dpToPx(this, 5F).toInt())
-        println("resultSize" + resultList.size)
         for (result in resultList) {
+            view.addView(line(this))
             val tagLayout = getFlowLayout()
             val opeLayout = getFlowLayout()
+            val rarityButton = resultTagButton(this, "${result.rare}★")
+            tagLayout.addView(rarityButton)
             for (tag in result.tags) {
                 val tagView = resultTagButton(this, tag)
                 tagLayout.addView(tagView)
             }
-            val rarityButton = resultTagButton(this, "${result.rare}★")
-            tagLayout.addView(rarityButton)
             for (operator in result.operators) {
                 val opeView = opeButton(this, operator)
                 opeView.setOnClickListener {
@@ -309,7 +334,7 @@ class RecruitActivity : AppCompatActivity() {
             }
             view.addView(tagLayout)
             view.addView(opeLayout)
-            view.addView(line(this))
+            view.addView(space(this,5F))
         }
         Handler(Looper.getMainLooper()).post {
             linearLayout.removeAllViews()

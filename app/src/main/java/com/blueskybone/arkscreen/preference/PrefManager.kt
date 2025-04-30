@@ -134,7 +134,7 @@ class PrefManager() {
 
     private fun serializerAp(): (ApCache) -> String {
         return { apCache ->
-            "${apCache.lastUpdateTs}@${apCache.lastSyncTs}@${apCache.remainSec}@${apCache.max}@${apCache.current}@${apCache.isnull}"
+            "${apCache.lastUpdateTs}@${apCache.lastSyncTs}@${apCache.remainSec}@${apCache.recoverTime}@${apCache.max}@${apCache.current}@${apCache.isnull}"
         }
     }
 
@@ -148,9 +148,10 @@ class PrefManager() {
                     list[0].toLong(),
                     list[1].toLong(),
                     list[2].toLong(),
-                    list[3].toInt(),
+                    list[3].toLong(),
                     list[4].toInt(),
-                    list[5].toBoolean()
+                    list[5].toInt(),
+                    list[6].toBoolean()
                 )
             } catch (e: Exception) {
                 e.printStackTrace()

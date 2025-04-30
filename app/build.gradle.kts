@@ -13,8 +13,8 @@ android {
         applicationId = "com.blueskybone.arkscreen"
         minSdk = 26
         targetSdk = 34
-        versionCode = 5
-        versionName = "2.0.1"
+        versionCode = 6
+        versionName = "2.0.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
@@ -82,6 +82,7 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("androidx.room:room-runtime:2.6.1")
 
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("io.coil-kt:coil:2.5.0")
     implementation("io.noties.markwon:core:4.2.0")
     implementation("com.fasterxml.jackson.core:jackson-core:2.12.1")

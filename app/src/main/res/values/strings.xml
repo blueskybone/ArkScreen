@@ -1,7 +1,7 @@
 <resources>
     <!-- App Info -->
     <string name="app_name">公招助手</string>
-    <string name="version">2.0.1</string>
+    <string name="version">2.0.2</string>
     <string name="text_default">default text</string>
 
     <!-- Dialogs Action-->
@@ -166,6 +166,7 @@
 
     <!-- About Page -->
     <string name="check_update">检查更新</string>
+    <string name="newest_update">当前是最新版本</string>
     <string name="send_feedback">发送反馈</string>
     <string name="open_license">开源许可</string>
     <string name="open_license_content">[Markwon](https://github.com/noties/Markwon)\n\n
@@ -181,7 +182,6 @@
     <string name="update_log">更新日志</string>
     <string name="qq_group">QQ群聊</string>
     <string name="qq_group_content">意见反馈，聊天吹水</string>
-    <string name="qq_group_num">924153470</string>
     <string name="donate">赞助开发者</string>
     <string name="donate_detail">感谢每一位博士的支持</string>
     <string name="donate_msg">如果软件有帮助到你的话，请开发者喝杯冰阔落吧:D</string>
@@ -197,10 +197,10 @@
 
     <string name="acquire_overlay_permission_content">未授予悬浮窗权限，截屏公招功能可能无法正常使用。</string>
 
-
     <string name="wrong_format">错误的格式</string>
     <string name="copied">已复制到剪贴板</string>
-    <string name="copied_qq_num">已复制群号</string>
+    <string name="copied_qq_group_num">已复制群号</string>
+    <string name="qq_not_install">未安装QQ</string>
 
     <string name="export">导出</string>
     <string name="export_cookie">导出Cookie（包含登录凭证，请勿告知他人）</string>

@@ -149,6 +149,12 @@
             android:layout_height="1dp"
             android:background="?android:attr/listDivider" />
 
+        <TextView
+            android:id="@+id/About"
+            style="@style/Preference"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/about" />
 <!--        <TextView-->
 <!--            style="@style/PreferenceHeader"-->
 <!--            android:layout_width="match_parent"-->
@@ -183,24 +189,19 @@
 <!--            android:background="?android:attr/listDivider"-->
 <!--            android:visibility="gone" />-->
 
-        <TextView
-            style="@style/PreferenceHeader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/about" />
+<!--        <TextView-->
+<!--            style="@style/PreferenceHeader"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/about" />-->
 
-        <TextView
-            android:id="@+id/Manual"
-            style="@style/Preference"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/manual" />
+<!--        <TextView-->
+<!--            android:id="@+id/Manual"-->
+<!--            style="@style/Preference"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/manual" />-->
 
-        <TextView
-            android:id="@+id/About"
-            style="@style/Preference"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/about" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

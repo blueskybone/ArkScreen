@@ -48,7 +48,9 @@ class ImageProcessor {
         val scale: Int = getScale(screenWidth)
         val stdTagFilepath = getAssetsFilepath("target_std.dat")
 
-        val result = getTagText(roiBitmap, stdTagFilepath, scale).split(",".toRegex())
+        val text = getTagText(roiBitmap, stdTagFilepath, scale).split(",".toRegex())
+        println(text)
+        val result = text
             .dropLastWhile { it.isEmpty() }
             .toTypedArray()
 

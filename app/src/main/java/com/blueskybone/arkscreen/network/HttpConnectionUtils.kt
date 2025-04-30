@@ -2,11 +2,18 @@ package com.blueskybone.arkscreen.network
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.DataOutputStream
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.ByteArrayInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import java.nio.charset.Charset
+import java.util.concurrent.TimeUnit
+import java.util.zip.GZIPInputStream
 import javax.net.ssl.HttpsURLConnection
 
 /**
@@ -18,56 +25,100 @@ class HttpConnectionUtils {
     companion object {
         private const val CONNECT_TIMEOUT = 5000 // 连接超时时间
         private const val READ_TIMEOUT = 5000 // 读取超时时间
+
+        private val okHttpClient = OkHttpClient.Builder()
+            .connectTimeout(15, TimeUnit.SECONDS) // 替换你的 CONNECT_TIMEOUT
+            .readTimeout(15, TimeUnit.SECONDS)
+            .build()
+
         suspend fun httpResponse(
             url: URL,
             jsonInput: String?,
             header: Map<String, String>,
             method: RequestMethod
         ): Response {
-            var httpsConn: HttpsURLConnection? = null
             return try {
-                httpsConn = withContext(Dispatchers.IO) {
-                    url.openConnection() as HttpsURLConnection
-                }
-                httpsConn.connectTimeout = CONNECT_TIMEOUT
-                httpsConn.requestMethod = method.toString()
+                // 1. 打印请求基本信息
+                println("=== HTTP 请求信息 ===")
+                println("URL: $url")
+                println("Method: $method")
+                println("Headers: $header")
+                println("Request Body: $jsonInput")
 
-                header.forEach { (key, value) ->
-                    httpsConn.setRequestProperty(key, value)
-                }
-                httpsConn.doInput = true
-                httpsConn.doOutput = method == RequestMethod.POST
-
-                jsonInput?.let {
-                    DataOutputStream(httpsConn.outputStream).use { dataOs ->
-                        withContext(Dispatchers.IO) {
-                            dataOs.writeBytes(it)
-                            dataOs.flush()
+                // 2. 构建 OkHttp 请求
+                val request = Request.Builder()
+                    .url(url)
+                    .apply {
+                        when (method) {
+                            RequestMethod.GET -> get()
+                            RequestMethod.POST -> {
+                                val body =
+                                    jsonInput?.toRequestBody("application/json".toMediaType())
+                                post(body ?: "".toRequestBody(null))
+                            }
+                        }
+                        header.forEach { (key, value) ->
+                            addHeader(key, value)
                         }
                     }
+                    .build()
+
+                // 3. 执行请求并获取响应
+                val okHttpResponse = withContext(Dispatchers.IO) {
+                    okHttpClient.newCall(request).execute()
                 }
 
-                withContext(Dispatchers.IO) {
-                    httpsConn.connect()
+                // 4. 打印响应基本信息
+                println("\n=== HTTP 响应信息 ===")
+                println("Response Code: ${okHttpResponse.code}")
+                println("Response Message: ${okHttpResponse.message}")
+                println("Response Headers:")
+                okHttpResponse.headers.forEach { (name, value) ->
+                    println("  $name: $value")
                 }
 
-                val respCode = httpsConn.responseCode
-                val response = if (respCode == HttpURLConnection.HTTP_OK) {
-                    val inputStream = httpsConn.inputStream
-                    readStream(inputStream)
-                } else {
-                    val errorStream = httpsConn.errorStream
-                    readStream(errorStream)
+                // 5. 获取原始字节流并打印
+                val responseBytes = okHttpResponse.body?.bytes() ?: byteArrayOf()
+                println(
+                    "\nResponse Raw Bytes (Hex): ${
+                        responseBytes.joinToString(" ") {
+                            "%02x".format(
+                                it
+                            )
+                        }
+                    }"
+                )
+                println("Response Raw Bytes (Length): ${responseBytes.size} bytes")
+
+                // 7. 检查是否是GZIP压缩响应
+                if (okHttpResponse.header("Content-Encoding") == "gzip") {
+                    val unzipped =
+                        withContext(Dispatchers.IO) {
+                            GZIPInputStream(ByteArrayInputStream(responseBytes)).bufferedReader()
+                        }.readText()
+                    Response(
+                        responseCode = okHttpResponse.code,
+                        responseContent = unzipped
+                    )
+                }else{
+                    val responseBodyString = try {
+                        String(responseBytes, Charset.forName("UTF-8"))
+                    } catch (e: Exception) {
+                        "无法将响应体解码为UTF-8字符串: ${e.message}"
+                    }
+                    Response(
+                        responseCode = okHttpResponse.code,
+                        responseContent = responseBodyString
+                    )
                 }
-                Response(respCode, response)
+                // 6. 尝试以字符串形式读取响应体
+
             } catch (e: Exception) {
+                println("\n=== 请求发生异常 ===")
+                println("异常类型: ${e.javaClass.name}")
+                println("异常信息: ${e.message}")
                 e.printStackTrace()
-                val respCode = httpsConn?.responseCode ?: -1
-                val errorStream = httpsConn?.errorStream
-                val errorResponse = readStream(errorStream)
-                Response(respCode, errorResponse)
-            } finally {
-                httpsConn?.disconnect()
+                Response(responseCode = -1, responseContent = "请求失败: ${e.message}")
             }
         }
 

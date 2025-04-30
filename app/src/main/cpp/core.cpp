@@ -45,6 +45,11 @@ namespace arkscreen {
 
     //more accurate
     void ResizeLiner(Bitmap8 &src, Bitmap8 &dst, Size size) {
+
+        if ( size.width <= 0 || size.height <= 0) {
+            return;
+        }
+
         double src_x , src_y;
         double dst_width = size.width, dst_height = size.height;
         double src_width = src.cols, src_height = src.rows;
@@ -70,7 +75,6 @@ namespace arkscreen {
             }
         }
     }
-
     size_t DifferImage(uchar *data_ptr1, uchar *data_ptr2, size_t size) {
         size_t cnt = 0;
         for (int i = 0; i < size; i++) {

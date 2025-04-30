@@ -61,6 +61,7 @@ class RealTimeModel : ViewModel() {
                 realTimeData.currentTs,
                 realTimeData.currentTs,
                 realTimeData.apInfo.remainSecs,
+                realTimeData.apInfo.recoverTime,
                 realTimeData.apInfo.max,
                 realTimeData.apInfo.current,
                 false
@@ -69,6 +70,7 @@ class RealTimeModel : ViewModel() {
                 realTimeData.currentTs,
                 realTimeData.currentTs,
                 realTimeData.labor.remainSecs,
+                realTimeData.labor.recoverTime,
                 realTimeData.labor.max,
                 realTimeData.labor.current,
                 false
@@ -220,8 +222,9 @@ class RealTimeModel : ViewModel() {
                 playerData.apInfo.remainSecs = -1L
                 playerData.apInfo.recoverTime = -1L
             } else {
-                playerData.apInfo.current =
-                    (currentTs - lastApAddTime).toInt() / (60 * 6) + current
+//                playerData.apInfo.current =
+//                    (currentTs - lastApAddTime).toInt() / (60 * 6) + current
+                playerData.apInfo.current = max - ((recoverTime - currentTs).toInt() / (60 * 6) + 1)
                 playerData.apInfo.remainSecs = recoverTime - currentTs
                 playerData.apInfo.recoverTime = recoverTime
             }
