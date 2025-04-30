@@ -30,7 +30,9 @@ import java.util.concurrent.TimeUnit
 class AtdAlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        println("AtdAlarmReceiver onReceive")
+        if (intent.action != "android.intent.action.BOOT_COMPLETED") {
+            return
+        }
         CoroutineScope(Dispatchers.IO).launch {
             attendance()
         }
@@ -62,7 +64,7 @@ class AtdAlarmReceiver : BroadcastReceiver() {
         val notificationBuilder = NotificationCompat.Builder(context, channelId)
             .setContentTitle(title)
             .setContentText(message)
-            .setSmallIcon(R.drawable.ic_notification) // 替换为您的图标资源
+            .setSmallIcon(R.drawable.ic_notification)
             .setAutoCancel(true)
 
         notificationManager.notify(notificationId, notificationBuilder.build())

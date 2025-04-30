@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.AppUpdate
@@ -28,13 +29,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
 
+
 /**
  *   Created by blueskybone
  *   Date: 2025/1/7
  */
 class AboutActivity : AppCompatActivity() {
-
-    private val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
     private var _binding: ActivityAboutBinding? = null
     private val binding get() = _binding!!
 
@@ -47,7 +47,6 @@ class AboutActivity : AppCompatActivity() {
 
     private fun setUpBinding() {
         binding.CheckUpdate.setUp(CheckUpdate)
-//        binding.Donate.setUp(DonateList)
         binding.GroupChat.setUp(GroupChat)
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -76,7 +75,7 @@ class AboutActivity : AppCompatActivity() {
                                     }
                                 }.show()
                         }
-                    else Toaster.show("当前是最新版本")
+                    else Toaster.show(getString(R.string.newest_update))
                 }
             }
         }
@@ -90,32 +89,44 @@ class AboutActivity : AppCompatActivity() {
                 .setView(textView)
                 .show()
         }
-//        binding.UpdateLog.setOnClickListener {
-//
-//        }
-        binding.Donate.setOnClickListener {
-            MaterialAlertDialogBuilder(this)
-                .setTitle(R.string.donate)
-                .setMessage(R.string.donate_msg)
-                .setNegativeButton(R.string.cancel, null)
-                .setNeutralButton(R.string.donated) { _, _ -> Toaster.show(getString(R.string.thank_for_donate)) }
-                .setPositiveButton(R.string.save_code) { _, _ ->
-                    saveDrawableToGallery(this, R.drawable.wechat)
-                    saveDrawableToGallery(this, R.drawable.zfb)
-                    Toaster.show("已保存到本地")
-                }.show()
-        }
+
         binding.GroupChat.Layout.setOnClickListener {
-            copyToClipboard(this, getString(R.string.qq_group_num))
-            Toaster.show(getString(R.string.copied_qq_num))
+            val groupId = "924153470"
+            try{
+                val url = "mqqapi://card/show_pslcard?src_type=internal&card_type=group&uin=$groupId"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                intent.setPackage("com.tencent.mobileqq")
+                startActivity(intent)
+            }catch (e:Exception){
+                copyToClipboard(this, groupId)
+                Toaster.show(getString(R.string.copied_qq_group_num))
+            }
         }
         binding.FeedBack.setOnClickListener {
             MenuDialog(this).add("github") {
                 val github = "https://github.com/blueskybone/ArkScreen/issues"
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(github)))
             }.add("bilibili") {
-                val bilibili = "https://space.bilibili.com/13957147"
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(bilibili)))
+                val biliUid = "13957147"
+                try {
+                    val url = "bilibili://space/$biliUid"
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    intent.setPackage("tv.danmaku.bili")
+                    startActivity(intent)
+                } catch (e: java.lang.Exception) {
+                    val bilibili = "https://space.bilibili.com/$biliUid"
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(bilibili)))
+                }
+            }.add("QQ") {
+                try {
+                    val qqNumber = "1980463469"
+                    val url = "mqqapi://card/show_pslcard?src_type=internal&version=1&uin=$qqNumber"
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    intent.setPackage("com.tencent.mobileqq")
+                    startActivity(intent)
+                } catch (e: java.lang.Exception) {
+                    Toaster.show(getString(R.string.qq_not_install))
+                }
             }.show()
         }
     }

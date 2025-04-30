@@ -69,7 +69,7 @@ class WebViewActivity : AppCompatActivity() {
             }
         }
 
-        val url = intent.getStringExtra("url") ?: "https://bilibili.com"
+        val url = intent.getStringExtra("url") ?: "https://prts.wiki/w/"
         webView.loadUrl(url)
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {

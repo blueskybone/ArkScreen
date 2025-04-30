@@ -21,6 +21,7 @@ import com.blueskybone.arkscreen.bindinginfo.WidgetAppearance
 import com.blueskybone.arkscreen.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.receiver.WidgetReceiver.Companion.WORKER_NAME
+import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
 import com.hjq.toast.Toaster
 import org.koin.java.KoinJavaComponent
 import java.util.concurrent.TimeUnit
@@ -76,9 +77,19 @@ class Widget3 : AppWidgetProvider() {
             TypedValue.COMPLEX_UNIT_SP,
             WidgetSize.getTextSize3(size)
         )
+
+        val now = getCurrentTs()
         val apCache = prefManager.apCache.get()
-        views.setTextViewText(R.id.value, "${apCache.current}")
-        views.setTextViewText(R.id.max, "/${apCache.max}")
+        val apMax = apCache.max
+        val current = if (apCache.current >= apMax ) {
+            apCache.current
+        } else if(now > apCache.recoverTime) {
+            apMax
+        }else{
+            apMax - (apCache.recoverTime - now).toInt() / (60 * 6) - 1
+        }
+        views.setTextViewText(R.id.value, "$current")
+        views.setTextViewText(R.id.max, "/$apMax")
         appWidgetManager.updateAppWidget(appWidgetIds, views)
     }
 

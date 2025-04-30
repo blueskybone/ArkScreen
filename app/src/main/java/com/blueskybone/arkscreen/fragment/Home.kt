@@ -14,6 +14,7 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.activity.AboutActivity
 import com.blueskybone.arkscreen.activity.AccountSk
 import com.blueskybone.arkscreen.activity.RealTimeActivity
+import com.blueskybone.arkscreen.activity.RecruitActivity
 import com.blueskybone.arkscreen.activity.WebViewActivity
 import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.databinding.CardApCacheBinding
@@ -26,7 +27,9 @@ import com.blueskybone.arkscreen.room.ApCache
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
 import com.blueskybone.arkscreen.util.TimeUtils.getLastUpdateStr
 import com.blueskybone.arkscreen.util.TimeUtils.getRemainTimeStr
+import com.blueskybone.arkscreen.util.saveDrawableToGallery
 import com.blueskybone.arkscreen.viewmodel.BaseModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -57,10 +60,6 @@ class Home : Fragment(), ItemListener {
         setupBinding()
         setupObserver()
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
     }
 
 
@@ -99,6 +98,34 @@ class Home : Fragment(), ItemListener {
             }
         }
 
+        binding.Recruit.setOnClickListener{
+            startActivity(Intent(requireContext(), RecruitActivity::class.java))
+        }
+
+        binding.Donate.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.donate)
+                .setMessage(R.string.donate_msg)
+                .setNegativeButton(R.string.cancel, null)
+                .setNeutralButton(R.string.donated) { _, _ -> Toaster.show(getString(R.string.thank_for_donate)) }
+                .setPositiveButton(R.string.save_code) { _, _ ->
+                    saveDrawableToGallery(requireContext(), R.drawable.wechat)
+                    saveDrawableToGallery(requireContext(), R.drawable.zfb)
+                    Toaster.show("已保存到本地")
+                }.show()
+        }
+
+        binding.Manual.setOnClickListener {
+            val cvId = "40623349"
+            try {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("bilibili://article/$cvId"))
+                startActivity(intent)
+            } catch (e: Exception) {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.bilibili.com/read/cv$cvId"))
+                startActivity(intent)
+            }
+        }
+
         binding.ExLinks.adapter = adapter
         model.links.observe(viewLifecycleOwner) { value ->
             adapter?.submitList(value)
@@ -112,7 +139,10 @@ class Home : Fragment(), ItemListener {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val path = NetWorkUtils.getSpaceTitleImageUrl()
-                binding.TitleImage.load(path)
+                binding.TitleImage.load(path){
+                    crossfade(true)
+                    crossfade(300)
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -131,23 +161,23 @@ class Home : Fragment(), ItemListener {
     }
 
     private fun CardApCacheBinding.bind(value: ApCache) {
-        val maxText = "/" + value.max.toString()
-        this.Max.text = maxText
-        val passTime = getCurrentTs() - value.lastUpdateTs
-        val passSyncTime = getCurrentTs() - value.lastSyncTs
-        val lastSyncStr = getLastUpdateStr(passSyncTime)
+        val now = getCurrentTs()
+        val lastSyncStr = getLastUpdateStr(now - value.lastSyncTs)
         this.LastSync.text = getString(R.string.last_sync_time, lastSyncStr)
         if (value.current >= value.max) {
             this.Current.text = value.current.toString()
             this.RestTime.text = getString(R.string.recovered)
-        } else if (value.remainSec < passTime) {
+        } else if (now > value.recoverTime) {
             this.Current.text = value.max.toString()
             this.RestTime.text = getString(R.string.recovered)
         } else {
-            val currentStr = (passTime.toInt() / (60 * 6) + value.current).toString()
+            val currentStr =
+                (value.max - ((value.recoverTime - now).toInt() / (60 * 6) + 1)).toString()
             this.Current.text = currentStr
-            this.RestTime.text = getRemainTimeStr(value.remainSec - passTime)
+            this.RestTime.text = getRemainTimeStr(value.recoverTime - now)
         }
+        val maxText = "/" + value.max.toString()
+        this.Max.text = maxText
     }
 
     override fun onDestroy() {

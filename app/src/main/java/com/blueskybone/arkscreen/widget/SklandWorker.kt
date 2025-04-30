@@ -65,20 +65,21 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
             return Result.success()
         }
         if (prefManager.powerSavingMode.get()) {
-            //ap
-            val apCache = prefManager.apCache.get()
             val now = TimeUtils.getCurrentTs()
-            val passTimeAp = now - apCache.lastUpdateTs
-            if (apCache.current >= apCache.max || apCache.remainSec < passTimeAp) {
-                apCache.remainSec = 0L
-            } else {
-                apCache.current = passTimeAp.toInt() / (60 * 6) + apCache.current
-                apCache.remainSec -= passTimeAp
-            }
-            apCache.lastUpdateTs = now
-            prefManager.apCache.set(apCache)
+            //ap
+            // TODO: 删掉这部分。而且写错了
+//            val apCache = prefManager.apCache.get()
+//            val passTimeAp = now - apCache.lastUpdateTs
+//            if (apCache.current >= apCache.max || apCache.remainSec < passTimeAp) {
+//                apCache.remainSec = 0L
+//            } else {
+//                apCache.current += passTimeAp.toInt() / (60 * 6)
+//                apCache.remainSec -= passTimeAp
+//            }
+//            apCache.lastUpdateTs = now
+//            prefManager.apCache.set(apCache)
 
-            //labor
+            //labor TODO: labor的代码也是错的。你紫菜吧
             val laborCache = prefManager.laborCache.get()
             val passTimeLabor = now - laborCache.lastUpdateTs
             if (laborCache.current >= laborCache.max || laborCache.remainSec < passTimeLabor) {
@@ -99,6 +100,7 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
                     playerData.currentTs,
                     playerData.currentTs,
                     playerData.apInfo.remainSecs,
+                    playerData.apInfo.recoverTime,
                     playerData.apInfo.max,
                     playerData.apInfo.current,
                     false
@@ -107,6 +109,7 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
                     playerData.currentTs,
                     playerData.currentTs,
                     playerData.labor.remainSecs,
+                    playerData.labor.recoverTime,
                     playerData.labor.max,
                     playerData.labor.current,
                     false

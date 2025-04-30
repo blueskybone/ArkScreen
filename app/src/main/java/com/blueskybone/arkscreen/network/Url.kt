@@ -13,10 +13,12 @@ data class Response(var responseCode: Int, var responseContent: String)
 const val avatarUrl = "https://web.hycdn.cn/arknights/game/assets/char_skin/avatar/"
 val skinCachePath = "${APP.externalCacheDir}/skin_avatar"
 
-const val equipUrl = "https://gitee.com/blueskybone/ArknightsGameResource/raw/master/equip/"
+//const val equipUrl = "https://gitee.com/blueskybone/ArknightsGameResource/raw/master/equip/"
+const val equipUrl = "https://cdn.jsdelivr.net/gh/blueskybone/ArkScreenResource@master/equip/"
 val equipCachePath = "${APP.externalCacheDir}/equip_icon"
 
-const val skillUrl = "https://gitee.com/blueskybone/ArknightsGameResource/raw/master/skill/"
+//const val skillUrl = "https://gitee.com/blueskybone/ArknightsGameResource/raw/master/skill/"
+const val skillUrl = "https://cdn.jsdelivr.net/gh/blueskybone/ArkScreenResource@master/skill/"
 val skillCachePath = "${APP.externalCacheDir}/skill_icon"
 
 const val biliSettingUrl = "https://space.bilibili.com/ajax/settings/getSettings?mid=161775300"

@@ -22,6 +22,7 @@ import com.blueskybone.arkscreen.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.receiver.WidgetReceiver.Companion.WORKER_NAME
 import com.blueskybone.arkscreen.util.TimeUtils
+import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
 import com.hjq.toast.Toaster
 import org.koin.java.KoinJavaComponent
 import java.util.concurrent.TimeUnit
@@ -102,16 +103,29 @@ class Widget2 : AppWidgetProvider() {
         setTextViewSize(R.id.widget_text_ap_rest, size, false)
         setTextViewSize(R.id.widget_text_labor_rest, size, false)
 
+        val now = getCurrentTs()
         val apCache = prefManager.apCache.get()
         val laborCache = prefManager.laborCache.get()
-        views.setTextViewText(R.id.widget_text_ap, "${apCache.current} / ${apCache.max}")
+
+        //TODO: 计算实际显示数据放在此处，不要放在worker里。
+
+        val apMax = apCache.max
+        val current = if (apCache.current >= apMax ) {
+            apCache.current
+        } else if(now > apCache.recoverTime) {
+            apMax
+        }else{
+            apMax - (apCache.recoverTime - now).toInt() / (60 * 6) - 1
+        }
+        views.setTextViewText(R.id.widget_text_ap, "$current / $apMax")
+        views.setTextViewText(
+            R.id.widget_text_ap_rest,
+            TimeUtils.getRemainTimeMinStr(apCache.recoverTime - now)
+        )
+
         views.setTextViewText(
             R.id.widget_text_labor,
             "${laborCache.current} / ${laborCache.max}"
-        )
-        views.setTextViewText(
-            R.id.widget_text_ap_rest,
-            TimeUtils.getRemainTimeMinStr(apCache.remainSec)
         )
         views.setTextViewText(
             R.id.widget_text_labor_rest,

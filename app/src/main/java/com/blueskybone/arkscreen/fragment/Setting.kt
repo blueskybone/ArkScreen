@@ -129,10 +129,7 @@ class Setting : Fragment() {
             startActivity(Intent(requireContext(), AboutActivity::class.java))
         }
 
-        binding.Manual.setOnClickListener {
-            val url = "https://www.bilibili.com/opus/1031126823526727688"
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-        }
+
         timePickerBinding()
     }
 
