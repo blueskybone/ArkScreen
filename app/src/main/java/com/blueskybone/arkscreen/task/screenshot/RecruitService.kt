@@ -48,7 +48,7 @@ class RecruitService : Service() {
     private val prefManager: PrefManager by getKoin().inject()
     private val handler = Handler(Looper.getMainLooper())
     private var inactivityRunnable: Runnable? = null
-    private val inactivityTimeout: Long = 1 * 60 * 1000 //service kill self timer
+    private val inactivityTimeout: Long = 5 * 60 * 1000 //service kill self timer
 
     companion object {
         private const val FOREGROUND_SERVICE_ID = 2375
@@ -91,13 +91,6 @@ class RecruitService : Service() {
         imageProcessor = ImageProcessor.instance
         floatWindow = FloatWindow(this)
         floatWindow!!.initialize()
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                RecruitDb.update()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -265,7 +258,6 @@ class RecruitService : Service() {
         )
     }
 
-    //in fact, the notification never appear as expected.
     private fun createNotification() {
         val channelFore = NotificationChannel(
             CHANNEL_FORE_ID,
@@ -298,9 +290,9 @@ class RecruitService : Service() {
         startForeground(FOREGROUND_SERVICE_ID, notification)
     }
 
-    private fun background() {
-        stopForeground(STOP_FOREGROUND_DETACH)
-    }
+//    private fun background() {
+//        stopForeground(STOP_FOREGROUND_DETACH)
+//    }
 
     override fun onDestroy() {
         super.onDestroy()

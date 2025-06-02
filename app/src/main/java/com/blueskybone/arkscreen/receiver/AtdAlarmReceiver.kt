@@ -19,7 +19,9 @@ import com.blueskybone.arkscreen.widget.AttendanceWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.getKoin
 import org.koin.java.KoinJavaComponent
+import org.koin.java.KoinJavaComponent.getKoin
 import java.util.concurrent.TimeUnit
 
 /**
@@ -30,17 +32,22 @@ import java.util.concurrent.TimeUnit
 class AtdAlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action != "android.intent.action.BOOT_COMPLETED") {
+        println("Received intent: $intent")
+        if (intent.action == "android.intent.action.BOOT_COMPLETED") { //Intent.ACTION_BOOT_COMPLETED
+            val prefManager: PrefManager by getKoin().inject()
+            if (!prefManager.backAutoAtd.get()) return
+            APP.setDailyAlarm()
             return
+        }else{
+            CoroutineScope(Dispatchers.IO).launch {
+                attendance()
+            }
+            showNotification(context,"森空岛自动签到","已签到")
         }
-        CoroutineScope(Dispatchers.IO).launch {
-            attendance()
-        }
-        showNotification(context,"自动签到","已签到")
     }
 
     private suspend fun attendance() {
-        val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
+        val prefManager: PrefManager by getKoin().inject()
         val database = ArkDatabase.getDatabase(APP)
         val accountSkDao = database.getAccountSkDao()
         val accountList = accountSkDao.getAll()

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.DataUiState
-import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoInputConnection
+import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTask
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.ApCache
@@ -178,20 +178,13 @@ class RealTimeModel : ViewModel() {
         return realTimeUi
     }
 
-    private suspend fun getRealTimeData(account: AccountSk): RealTimeData {
-        val cn = getGameInfoInputConnection(account)
-        val inputStream = cn.inputStream
-        val gzip = withContext(Dispatchers.IO) {
-            GZIPInputStream(inputStream)
-        }
-        val om = ObjectMapper()
-        val result = readRealTimeFromGzip(om.readTree(gzip))
-        withContext(Dispatchers.IO) {
-            gzip.close()
-            inputStream.close()
-        }
-        cn.disconnect()
-        return result
+    private suspend fun getRealTimeData(account:AccountSk):RealTimeData{
+        val response = getGameInfoConnectionTask(account)
+        response.body()?.use{ body ->
+            val gzip = GZIPInputStream(body.byteStream())
+            val result = readRealTimeFromGzip(ObjectMapper().readTree(gzip))
+            return result
+        }?: throw Exception("response body is empty")
     }
 
     private fun readRealTimeFromGzip(tree: JsonNode): RealTimeData {

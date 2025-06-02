@@ -1,10 +1,17 @@
 package com.blueskybone.arkscreen.network
 
-import com.blueskybone.arkscreen.network.NetWorkUtils.Companion.getBasicInfo
-import com.blueskybone.arkscreen.network.NetWorkUtils.Companion.getGachaRecords
+
+import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.createAccountSkList
+import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.doAttendance
+import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getBasicInfo
+import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getCredByGrant
+import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getGachaRecords
+import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getGrantByToken
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Gacha
+import okhttp3.ResponseBody
+import retrofit2.Response
 import javax.net.ssl.HttpsURLConnection
 
 /**
@@ -17,7 +24,7 @@ class NetWorkTask {
         @Throws(Exception::class)
         suspend fun createAccountList(token: String, dId: String): List<AccountSk> {
             val credAndToken = getCredCode(token, dId)
-            return NetWorkUtils.createAccountSkList(
+            return createAccountSkList(
                 credAndToken.cred,
                 credAndToken.token,
                 token,
@@ -25,7 +32,7 @@ class NetWorkTask {
             )
         }
 
-        suspend fun createGachaAccount(channelMasterId: Int, token: String): AccountGc {
+        suspend fun createGachaAccount(channelMasterId: Int, token: String): AccountGc? {
             return getBasicInfo(channelMasterId, token)
         }
 
@@ -37,19 +44,29 @@ class NetWorkTask {
 //            )
 //        }
 
+//        @Throws(Exception::class)
+//        suspend fun getGameInfoInputConnection(accountSk: AccountSk): HttpsURLConnection {
+//            val credAndToken = getCredCode(accountSk)
+//            return NetWorkUtils.getGameInfoConnection(
+//                credAndToken,
+//                accountSk.uid
+//            )
+//        }
+
         @Throws(Exception::class)
-        suspend fun getGameInfoInputConnection(accountSk: AccountSk): HttpsURLConnection {
+        suspend fun getGameInfoConnectionTask(accountSk: AccountSk): Response<ResponseBody> {
             val credAndToken = getCredCode(accountSk)
-            return NetWorkUtils.getGameInfoConnection(
+            return RetrofitUtils.getGameInfoConnection(
                 credAndToken,
                 accountSk.uid
             )
         }
 
-        @Throws(Exception::class)
+
+//        @Throws(Exception::class)
         suspend fun sklandAttendance(accountSk: AccountSk): String {
             val credAndToken = getCredCode(accountSk)
-            return NetWorkUtils.logAttendance(
+            return doAttendance(
                 credAndToken.cred,
                 credAndToken.token,
                 accountSk.uid,
@@ -58,15 +75,15 @@ class NetWorkTask {
         }
 
         @Throws(Exception::class)
-        private suspend fun getCredCode(accountSk: AccountSk): NetWorkUtils.CredAndToken {
-            val grant = NetWorkUtils.getGrantByToken(accountSk.token)
-            return NetWorkUtils.getCredByGrant(grant, accountSk.dId)
+        private suspend fun getCredCode(accountSk: AccountSk): CredAndToken {
+            val grant = getGrantByToken(accountSk.token)
+            return getCredByGrant(grant, accountSk.dId)
         }
 
         @Throws(Exception::class)
-        private suspend fun getCredCode(token: String, dId: String): NetWorkUtils.CredAndToken {
-            val grant = NetWorkUtils.getGrantByToken(token)
-            return NetWorkUtils.getCredByGrant(grant, dId)
+        private suspend fun getCredCode(token: String, dId: String): CredAndToken {
+            val grant = getGrantByToken(token)
+            return getCredByGrant(grant, dId)
         }
 
         suspend fun getNewRecords(

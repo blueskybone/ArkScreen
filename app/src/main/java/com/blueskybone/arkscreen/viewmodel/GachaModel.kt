@@ -10,7 +10,7 @@ import com.blueskybone.arkscreen.CharAllMap
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.Progress
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getNewRecords
-import com.blueskybone.arkscreen.network.NetWorkUtils.Companion.getPoolType
+import com.blueskybone.arkscreen.network.announceUrl
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.ArkDatabase
@@ -28,10 +28,14 @@ import com.hjq.toast.Toaster
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.koin.java.KoinJavaComponent.getKoin
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 
 /**
  *   Created by blueskybone
@@ -404,6 +408,26 @@ class GachaModel : ViewModel() {
         root.set<ObjectNode>("data", data)
 
         return mapper.writeValueAsString(root)
+    }
+
+    private suspend fun getPoolType(): List<String> {
+        val client = OkHttpClient()
+        val request = Request.Builder().url(announceUrl).build()
+        return withContext(Dispatchers.IO) {
+            client.newCall(request).execute().use { response ->
+                response.body?.string().let { resp->
+                    try {
+                        val poolList = mutableListOf<String>()
+                        val list = ObjectMapper().readTree(resp).at("/fes")
+                        for (item in list) poolList.add(item.asText())
+                        poolList
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        emptyList()
+                    }
+                }
+            }
+        }
     }
 
 }

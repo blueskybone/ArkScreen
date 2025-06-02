@@ -16,11 +16,13 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.bindinginfo.WidgetAppearance
 import com.blueskybone.arkscreen.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.network.NetWorkTask
+import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTask
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.receiver.WidgetReceiver
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.ApCache
 import com.blueskybone.arkscreen.room.ArkDatabase
+import com.blueskybone.arkscreen.room.Operator
 import com.blueskybone.arkscreen.room.RealTimeData
 import com.blueskybone.arkscreen.util.TimeUtils
 import com.fasterxml.jackson.databind.JsonNode
@@ -154,20 +156,13 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
         return Result.success()
     }
 
-    private suspend fun getPlayerData(account: AccountSk): RealTimeData {
-        val cn = NetWorkTask.getGameInfoInputConnection(account)
-        val inputStream = cn.inputStream
-        val gzip = withContext(Dispatchers.IO) {
-            GZIPInputStream(inputStream)
-        }
-        val om = ObjectMapper()
-        val result = readRealTimeFromGzip(om.readTree(gzip))
-        withContext(Dispatchers.IO) {
-            gzip.close()
-            inputStream.close()
-        }
-        cn.disconnect()
-        return result
+    private suspend fun getPlayerData(account:AccountSk): RealTimeData {
+        val response = getGameInfoConnectionTask(account)
+        response.body()?.use{ body ->
+            val gzip = GZIPInputStream(body.byteStream())
+            val result = readRealTimeFromGzip(ObjectMapper().readTree(gzip))
+            return result
+        }?: throw Exception("response body is empty")
     }
 
     private fun readRealTimeFromGzip(tree: JsonNode): RealTimeData {

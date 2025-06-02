@@ -26,7 +26,7 @@ class HttpConnectionUtils {
         private const val CONNECT_TIMEOUT = 5000 // 连接超时时间
         private const val READ_TIMEOUT = 5000 // 读取超时时间
 
-        private val okHttpClient = OkHttpClient.Builder()
+        private val okHttpClient:OkHttpClient = OkHttpClient.Builder()
             .connectTimeout(15, TimeUnit.SECONDS) // 替换你的 CONNECT_TIMEOUT
             .readTimeout(15, TimeUnit.SECONDS)
             .build()
@@ -38,14 +38,14 @@ class HttpConnectionUtils {
             method: RequestMethod
         ): Response {
             return try {
-                // 1. 打印请求基本信息
+
                 println("=== HTTP 请求信息 ===")
                 println("URL: $url")
                 println("Method: $method")
                 println("Headers: $header")
                 println("Request Body: $jsonInput")
 
-                // 2. 构建 OkHttp 请求
+
                 val request = Request.Builder()
                     .url(url)
                     .apply {
@@ -63,12 +63,12 @@ class HttpConnectionUtils {
                     }
                     .build()
 
-                // 3. 执行请求并获取响应
+
                 val okHttpResponse = withContext(Dispatchers.IO) {
                     okHttpClient.newCall(request).execute()
                 }
 
-                // 4. 打印响应基本信息
+
                 println("\n=== HTTP 响应信息 ===")
                 println("Response Code: ${okHttpResponse.code}")
                 println("Response Message: ${okHttpResponse.message}")
@@ -77,7 +77,7 @@ class HttpConnectionUtils {
                     println("  $name: $value")
                 }
 
-                // 5. 获取原始字节流并打印
+
                 val responseBytes = okHttpResponse.body?.bytes() ?: byteArrayOf()
                 println(
                     "\nResponse Raw Bytes (Hex): ${
@@ -90,7 +90,6 @@ class HttpConnectionUtils {
                 )
                 println("Response Raw Bytes (Length): ${responseBytes.size} bytes")
 
-                // 7. 检查是否是GZIP压缩响应
                 if (okHttpResponse.header("Content-Encoding") == "gzip") {
                     val unzipped =
                         withContext(Dispatchers.IO) {
@@ -111,7 +110,6 @@ class HttpConnectionUtils {
                         responseContent = responseBodyString
                     )
                 }
-                // 6. 尝试以字符串形式读取响应体
 
             } catch (e: Exception) {
                 println("\n=== 请求发生异常 ===")

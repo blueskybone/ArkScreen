@@ -3,6 +3,9 @@ package com.blueskybone.arkscreen.task.recruit
 import com.blueskybone.arkscreen.RecruitDb
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.FileInputStream
 
 /**
@@ -22,6 +25,13 @@ class RecruitManager {
     }
 
     init {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                RecruitDb.update()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
         val om = ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         recruitDatabase = om.readValue(

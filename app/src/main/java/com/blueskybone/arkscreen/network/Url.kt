@@ -9,7 +9,7 @@ import com.blueskybone.arkscreen.APP
 
 enum class RequestMethod { GET, POST }
 data class Response(var responseCode: Int, var responseContent: String)
-
+data class CredAndToken(val cred: String, val token: String)
 const val avatarUrl = "https://web.hycdn.cn/arknights/game/assets/char_skin/avatar/"
 val skinCachePath = "${APP.externalCacheDir}/skin_avatar"
 
@@ -24,3 +24,12 @@ val skillCachePath = "${APP.externalCacheDir}/skill_icon"
 const val biliSettingUrl = "https://space.bilibili.com/ajax/settings/getSettings?mid=161775300"
 const val titleImageUrl = "https://i0.hdslb.com/"
 
+//const val biliUserInfoApi = "https://api.bilibili.com/x/web-interface/card?mid=161775300&photo=true"
+//const val videoInfoApi = "https://api.bilibili.com/x/web-interface/wbi/view?bvid=BV1zaETzJEcj"
+/*
+* 需要在原本的参数基础上加上wbi w_rid=e6955dba2297a749a7ee9162078f972c  &wts=1747409727，
+* https://github.com/SocialSisterYi/bilibili-API-collect/blob/3cd6dfbd367bd710a5b3be906ab6bba8787ac71f/docs/misc/sign/wbi.md#kotlin
+* */
+
+const val announceUrl = "https://gitee.com/blueskybone/ArkScreen/raw/master/resource/announce.json"
+const val poolTypeUrl = "https://gitee.com/blueskybone/ArkScreen/raw/master/resource/pool_type.json"

@@ -47,7 +47,6 @@ class App : Application() {
     init {
         APP = this
         Toaster.init(this)
-
     }
 
     private fun setCoilDiskCache() {
@@ -86,6 +85,7 @@ class App : Application() {
         setCoilDiskCache()
         setAppTheme()
         setDailyAlarm()
+        //cancelDailyAlarm()
     }
 
     private fun createFolder(path: String) {
@@ -108,8 +108,9 @@ class App : Application() {
     }
 
     fun setDailyAlarm() {
+        println("setDailyAlarm")
         val prefManager: PrefManager by getKoin().inject()
-        if (!prefManager.backAutoAtd.get()) return
+//        if (!prefManager.backAutoAtd.get()) return
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, AtdAlarmReceiver::class.java)
         val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -139,6 +140,7 @@ class App : Application() {
     }
 
     fun cancelDailyAlarm() {
+        println("cancelDailyAlarm")
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, AtdAlarmReceiver::class.java)
         val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -146,9 +148,10 @@ class App : Application() {
         } else {
             PendingIntent.FLAG_UPDATE_CURRENT
         }
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, flags)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, flags)
         alarmManager.cancel(pendingIntent)
     }
+
     private fun setAppTheme() {
         val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
         when (prefManager.appTheme.get()) {

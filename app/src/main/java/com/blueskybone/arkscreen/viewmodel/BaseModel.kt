@@ -9,16 +9,20 @@ import com.blueskybone.arkscreen.AppUpdate
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.createAccountList
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.createGachaAccount
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.sklandAttendance
-import com.blueskybone.arkscreen.network.NetWorkUtils.Companion.getAnnounce
+import com.blueskybone.arkscreen.network.announceUrl
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.ApCache
 import com.blueskybone.arkscreen.room.ArkDatabase
 import com.blueskybone.arkscreen.room.Link
+import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.koin.java.KoinJavaComponent.getKoin
 
 /**
@@ -189,7 +193,7 @@ class BaseModel : ViewModel() {
     fun accountGcLogin(token: String, channelMasterId: Int) {
         executeAsync {
             try {
-                val account = createGachaAccount(channelMasterId, token)
+                val account = createGachaAccount(channelMasterId, token)?:return@executeAsync
                 accountGcDao.insert(account)
                 _accountGcList.postValue(accountGcDao.getAll())
                 if(prefManager.baseAccountGc.get().uid=="")
@@ -249,5 +253,18 @@ class BaseModel : ViewModel() {
 
     private fun executeAsync(function: suspend () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) { function() }
+    }
+
+    private suspend fun getAnnounce():String{
+        val client = OkHttpClient()
+        val request = Request.Builder().url(announceUrl).build()
+        return withContext(Dispatchers.IO) {
+            client.newCall(request).execute().use { response ->
+                response.body?.string().let{json ->
+                    val content = ObjectMapper().readTree(json).at("/content")
+                    content.asText()
+                } ?: "Empty response"
+            }
+        }
     }
 }

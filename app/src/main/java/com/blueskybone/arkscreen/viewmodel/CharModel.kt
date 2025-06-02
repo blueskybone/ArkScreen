@@ -12,9 +12,11 @@ import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.Progress
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.network.NetWorkTask
+import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTask
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Operator
+import com.blueskybone.arkscreen.room.RealTimeData
 import com.blueskybone.arkscreen.util.readFileAsJsonNode
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -190,6 +192,9 @@ class CharModel : ViewModel() {
             }
         }
         val charsAllNode = readFileAsJsonNode(CharAllMap.getResourceFilepath())["charInfoMap"]
+        if(charsAllNode == null) {
+            println("charsAllNode == null")
+        }
         for (item in charList) {
             (charsAllNode as ObjectNode).remove(item.charId)
         }
@@ -208,21 +213,34 @@ class CharModel : ViewModel() {
         return list.sortedWith(customComparator).toMutableList() as ArrayList<Operator>
     }
 
-    private suspend fun getCharsData(account: AccountSk): List<Operator> {
-        val cn = NetWorkTask.getGameInfoInputConnection(account)
-        val inputStream = cn.inputStream
-        val gzip = withContext(Dispatchers.IO) {
-            GZIPInputStream(inputStream)
-        }
-        val om = ObjectMapper()
-        val result = getOpeData(om.readTree(gzip))
-        withContext(Dispatchers.IO) {
-            gzip.close()
-            inputStream.close()
-        }
-        cn.disconnect()
-        return result
+//    private suspend fun getCharsData(account: AccountSk): List<Operator> {
+//        val cn = NetWorkTask.getGameInfoInputConnection(account)
+//        val inputStream = cn.inputStream
+//        val gzip = withContext(Dispatchers.IO) {
+//            GZIPInputStream(inputStream)
+//        }
+//        val om = ObjectMapper()
+//        val result = getOpeData(om.readTree(gzip))
+//        withContext(Dispatchers.IO) {
+//            gzip.close()
+//            inputStream.close()
+//        }
+//        cn.disconnect()
+//        return result
+//    }
+
+
+    private suspend fun getCharsData(account:AccountSk): List<Operator> {
+        val response = getGameInfoConnectionTask(account)
+        response.body()?.use{ body ->
+            val gzip = GZIPInputStream(body.byteStream())
+            val result = getOpeData(ObjectMapper().readTree(gzip))
+            return result
+        }?: throw Exception("response body is empty")
     }
+
+
+
 
     private fun getOpeData(tree: JsonNode): List<Operator> {
         var charList = ArrayList<Operator>()

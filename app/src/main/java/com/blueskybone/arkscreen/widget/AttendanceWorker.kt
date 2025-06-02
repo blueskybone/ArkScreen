@@ -26,7 +26,6 @@ class AttendanceWorker(context: Context, workerParams: WorkerParameters) : Corou
             val lastAttendanceTs = prefManager.lastAttendanceTs.get()
             val currentTs = getCurrentTs()
             if (getDayNum(currentTs) <= getDayNum(lastAttendanceTs)) return Result.success()
-
             val database = ArkDatabase.getDatabase(APP)
             val accountSkDao = database.getAccountSkDao()
             val accountList = accountSkDao.getAll()

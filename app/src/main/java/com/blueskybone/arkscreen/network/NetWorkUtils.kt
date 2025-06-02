@@ -22,8 +22,6 @@ import javax.net.ssl.HttpsURLConnection
  *   Date: 2025/1/14
  */
 class NetWorkUtils {
-    open class CredAndToken(val cred: String, val token: String)
-
     companion object {
         private const val app_code = "4ca99fa6b56cc2ba"
         private const val user_agent =
@@ -97,22 +95,22 @@ class NetWorkUtils {
             }
         }
 
-        suspend fun getAnnounce(): String {
-            val url = URL(resource_url + announce_api)
-            println(url)
-            val resp = httpResponse(url, null, headerNormal, RequestMethod.GET)
-            return if (resp.responseCode == HttpURLConnection.HTTP_OK) {
-                try {
-                    val content = ObjectMapper().readTree(resp.responseContent).at("/content")
-                    return content.asText()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    "json formats wrong in getAnnounce() "
-                }
-            } else {
-                "公告获取失败: code " + resp.responseCode
-            }
-        }
+//        suspend fun getAnnounce(): String {
+//            val url = URL(resource_url + announce_api)
+//            println(url)
+//            val resp = httpResponse(url, null, headerNormal, RequestMethod.GET)
+//            return if (resp.responseCode == HttpURLConnection.HTTP_OK) {
+//                try {
+//                    val content = ObjectMapper().readTree(resp.responseContent).at("/content")
+//                    return content.asText()
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                    "json formats wrong in getAnnounce() "
+//                }
+//            } else {
+//                "公告获取失败: code " + resp.responseCode
+//            }
+//        }
 
         suspend fun getGachaRecords(
             page: Int,
@@ -277,107 +275,6 @@ class NetWorkUtils {
             }
         }
 
-        suspend fun getServerTs(): Long? {
-            val url = URL(skland_url + game_info_api)
-            val resp = httpResponse(url, null, headerLogin, RequestMethod.GET)
-            return try {
-                val om = ObjectMapper()
-                val node = om.readTree(resp.responseContent)
-                node["timestamp"].asLong()
-            } catch (e: java.lang.Exception) {
-                throw Exception(e.message)
-            }
-        }
-
-        suspend fun logAttendance(
-            cred: String,
-            credToken: String,
-            uid: String,
-            channelMasterId: String
-        ): String {
-            val url = URL(skland_url + sign_api)
-            val timeStamp = getCurrentTs().toString()
-            val jsonInputString = "{\"gameId\": $channelMasterId, \"uid\": \"$uid\"}"
-            val sign = SignUtils.generateSign(sign_api, jsonInputString, credToken, timeStamp)
-            headerSign["cred"] = cred
-            headerSign["sign"] = sign
-            headerSign["timestamp"] = timeStamp
-            val resp = httpResponse(url, jsonInputString, headerSign, RequestMethod.POST)
-            println(resp.responseContent)
-            return if (resp.responseCode == HttpURLConnection.HTTP_OK) {
-                try {
-                    val list = ObjectMapper().readTree(resp.responseContent).at("/data/awards")
-                    val awards = StringBuilder()
-                    for (item in list) {
-                        awards.append(item["resource"]["name"].asText() + "×" + item["count"].asInt() + " ")
-                    }
-                    awards.toString()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    println(resp.responseContent)
-//                    throw Exception(e.message)
-                    throw Exception("read json failed.")
-                }
-            } else {
-                getJsonContent(resp.responseContent, "message") ?: "message null"
-            }
-        }
-
-        suspend fun getBasicInfo(channelMasterId: Int, token: String): AccountGc {
-            val url = URL(as_hyper_url + basic_api)
-            val jsonInputString =
-                if (channelMasterId == 1) {
-                    """{"appId":1,"channelMasterId":1,"channelToken":{"token":"$token"}}"""
-                } else {
-                    """{"token":"$token"}"""
-                }
-
-            val resp = httpResponse(url, jsonInputString, headerLogin, RequestMethod.POST)
-            if (resp.responseCode == HttpURLConnection.HTTP_OK) {
-                try {
-                    val node = ObjectMapper().readTree(resp.responseContent).at("/data")
-                    return AccountGc(
-                        uid = node["uid"].asText(),
-                        channelMasterId = node["channelMasterId"].asInt(),
-                        nickName = node["nickName"].asText(),
-                        token = token,
-                        official = channelMasterId == 1
-                    )
-                } catch (e: Exception) {
-                    throw Exception("json format wrong :" + resp.responseContent)
-                }
-            } else {
-                throw Exception("api error: " + resp.responseContent)
-            }
-        }
-
-        suspend fun getGameInfoConnection(
-            credAndToken: CredAndToken,
-            uid: String
-        ): HttpsURLConnection {
-            val url = URL("$skland_url$game_info_api?uid=$uid")
-            val timeStamp = getCurrentTs().toString()
-            val sign =
-                SignUtils.generateSign(game_info_api, "uid=$uid", credAndToken.token, timeStamp)
-            headerSign["cred"] = credAndToken.cred
-            headerSign["sign"] = sign
-            headerSign["timestamp"] = timeStamp
-            return httpResponseConnection(url, headerSign, RequestMethod.GET)
-        }
-
-        suspend fun getCharsAllConnection(
-            credAndToken: CredAndToken,
-            uid: String
-        ): HttpsURLConnection {
-            val url = URL("$skland_url$game_info_api?uid=$uid")
-            val timeStamp = getCurrentTs().toString()
-            val sign =
-                SignUtils.generateSign(game_info_api, "uid=$uid", credAndToken.token, timeStamp)
-            headerSign["cred"] = credAndToken.cred
-            headerSign["sign"] = sign
-            headerSign["timestamp"] = timeStamp
-            return httpResponseConnection(url, headerSign, RequestMethod.GET)
-        }
 
         suspend fun getSpaceTitleImageUrl(): String {
             val resp = httpResponse(URL(biliSettingUrl), null, headerNormal, RequestMethod.GET)
@@ -393,5 +290,108 @@ class NetWorkUtils {
                 throw Exception("api error: " + resp.responseContent)
             }
         }
+
+//        suspend fun getServerTs(): Long? {
+//            val url = URL(skland_url + game_info_api)
+//            val resp = httpResponse(url, null, headerLogin, RequestMethod.GET)
+//            return try {
+//                val om = ObjectMapper()
+//                val node = om.readTree(resp.responseContent)
+//                node["timestamp"].asLong()
+//            } catch (e: java.lang.Exception) {
+//                throw Exception(e.message)
+//            }
+//        }
+//
+//        suspend fun logAttendance(
+//            cred: String,
+//            credToken: String,
+//            uid: String,
+//            channelMasterId: String
+//        ): String {
+//            val url = URL(skland_url + sign_api)
+//            val timeStamp = getCurrentTs().toString()
+//            val jsonInputString = "{\"gameId\": $channelMasterId, \"uid\": \"$uid\"}"
+//            val sign = SignUtils.generateSign(sign_api, jsonInputString, credToken, timeStamp)
+//            headerSign["cred"] = cred
+//            headerSign["sign"] = sign
+//            headerSign["timestamp"] = timeStamp
+//            val resp = httpResponse(url, jsonInputString, headerSign, RequestMethod.POST)
+//            println(resp.responseContent)
+//            return if (resp.responseCode == HttpURLConnection.HTTP_OK) {
+//                try {
+//                    val list = ObjectMapper().readTree(resp.responseContent).at("/data/awards")
+//                    val awards = StringBuilder()
+//                    for (item in list) {
+//                        awards.append(item["resource"]["name"].asText() + "×" + item["count"].asInt() + " ")
+//                    }
+//                    awards.toString()
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                    println(resp.responseContent)
+//                    throw Exception("read json failed.")
+//                }
+//            } else {
+//                getJsonContent(resp.responseContent, "message") ?: "message null"
+//            }
+//        }
+//
+//        suspend fun getBasicInfo(channelMasterId: Int, token: String): AccountGc {
+//            val url = URL(as_hyper_url + basic_api)
+//            val jsonInputString =
+//                if (channelMasterId == 1) {
+//                    """{"appId":1,"channelMasterId":1,"channelToken":{"token":"$token"}}"""
+//                } else {
+//                    """{"token":"$token"}"""
+//                }
+//
+//            val resp = httpResponse(url, jsonInputString, headerLogin, RequestMethod.POST)
+//            if (resp.responseCode == HttpURLConnection.HTTP_OK) {
+//                try {
+//                    val node = ObjectMapper().readTree(resp.responseContent).at("/data")
+//                    return AccountGc(
+//                        uid = node["uid"].asText(),
+//                        channelMasterId = node["channelMasterId"].asInt(),
+//                        nickName = node["nickName"].asText(),
+//                        token = token,
+//                        official = channelMasterId == 1
+//                    )
+//                } catch (e: Exception) {
+//                    throw Exception("json format wrong :" + resp.responseContent)
+//                }
+//            } else {
+//                throw Exception("api error: " + resp.responseContent)
+//            }
+//        }
+//
+//        suspend fun getGameInfoConnection(
+//            credAndToken: CredAndToken,
+//            uid: String
+//        ): HttpsURLConnection {
+//            val url = URL("$skland_url$game_info_api?uid=$uid")
+//            val timeStamp = getCurrentTs().toString()
+//            val sign =
+//                SignUtils.generateSign(game_info_api, "uid=$uid", credAndToken.token, timeStamp)
+//            headerSign["cred"] = credAndToken.cred
+//            headerSign["sign"] = sign
+//            headerSign["timestamp"] = timeStamp
+//            return httpResponseConnection(url, headerSign, RequestMethod.GET)
+//        }
+//
+//        suspend fun getCharsAllConnection(
+//            credAndToken: CredAndToken,
+//            uid: String
+//        ): HttpsURLConnection {
+//            val url = URL("$skland_url$game_info_api?uid=$uid")
+//            val timeStamp = getCurrentTs().toString()
+//            val sign =
+//                SignUtils.generateSign(game_info_api, "uid=$uid", credAndToken.token, timeStamp)
+//            headerSign["cred"] = credAndToken.cred
+//            headerSign["sign"] = sign
+//            headerSign["timestamp"] = timeStamp
+//            return httpResponseConnection(url, headerSign, RequestMethod.GET)
+//        }
+
+
     }
 }
