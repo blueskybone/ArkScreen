@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.FileInputStream
 
 /**
@@ -14,7 +15,7 @@ import java.io.FileInputStream
  */
 class RecruitManager {
 
-    private val recruitDatabase: RecruitDatabase
+    private lateinit var recruitDatabase: RecruitDatabase
 
     private object Holder {
         val INSTANCE = RecruitManager()
@@ -31,13 +32,16 @@ class RecruitManager {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+            val om = ObjectMapper()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            recruitDatabase = withContext(Dispatchers.IO) {
+                om.readValue(
+                    FileInputStream(RecruitDb.getResourceFilepath()),
+                    RecruitDatabase::class.java
+                )
+            }
         }
-        val om = ObjectMapper()
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        recruitDatabase = om.readValue(
-            FileInputStream(RecruitDb.getResourceFilepath()),
-            RecruitDatabase::class.java
-        )
+
     }
 
     fun getRecruitResult(tags: List<String>, filter: Boolean = false): RecruitResult {
@@ -70,7 +74,7 @@ class RecruitManager {
         val opeList = mutableListOf<Operator>()
         for (ope in recruitDatabase.operatorHighList) {
             if (ope.tag.containsAll(tags)) {
-                opeList.add(Operator(ope.name, ope.star, ope.tag))
+                opeList.add(Operator(ope.name, ope.star, ope.tag, ope.skin))
             }
         }
         return opeList
@@ -80,7 +84,7 @@ class RecruitManager {
         val opeList = mutableListOf<Operator>()
         for (ope in recruitDatabase.operatorList) {
             if (ope.tag.containsAll(tags)) {
-                opeList.add(Operator(ope.name, ope.star, ope.tag))
+                opeList.add(Operator(ope.name, ope.star, ope.tag, ope.skin))
             }
         }
         return opeList
@@ -90,7 +94,7 @@ class RecruitManager {
         val opeList = mutableListOf<Operator>()
         for (ope in recruitDatabase.operatorLowList) {
             if (ope.tag.containsAll(tags)) {
-                opeList.add(Operator(ope.name, ope.star, ope.tag))
+                opeList.add(Operator(ope.name, ope.star, ope.tag, ope.skin))
             }
         }
         return opeList
@@ -100,7 +104,7 @@ class RecruitManager {
         val opeList = mutableListOf<Operator>()
         for (ope in recruitDatabase.operatorRobotList) {
             if (ope.tag.containsAll(tags)) {
-                opeList.add(Operator(ope.name, ope.star, ope.tag))
+                opeList.add(Operator(ope.name, ope.star, ope.tag, ope.skin))
             }
         }
         return opeList
@@ -178,7 +182,8 @@ class RecruitManager {
     data class Operator(
         val name: String,
         val rare: Int,
-        val tags: List<String>
+        val tags: List<String>,
+        val skin: String
     ) {
         operator fun compareTo(o: Operator): Int {
             return if (this.rare > o.rare) {

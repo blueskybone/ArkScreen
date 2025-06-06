@@ -16,7 +16,7 @@ import com.blueskybone.arkscreen.util.dpToPx
 
 fun line(context: Context): View {
     val line = View(context)
-    val params = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5)
+    val params = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2)
     params.updateMargins(0, 0, 0, 15)
     line.layoutParams = params
     line.setBackgroundColor(ContextCompat.getColor(context, R.color.grey_500))

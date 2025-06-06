@@ -97,6 +97,7 @@ data object RecruitMode : ListInfo {
     }
 }
 
+
 data object WidgetSize : ListInfo {
     private const val small = "small"
     private const val medium = "medium"

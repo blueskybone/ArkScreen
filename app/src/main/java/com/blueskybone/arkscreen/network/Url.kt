@@ -18,7 +18,8 @@ const val equipUrl = "https://cdn.jsdelivr.net/gh/blueskybone/ArkScreenResource@
 val equipCachePath = "${APP.externalCacheDir}/equip_icon"
 
 //const val skillUrl = "https://gitee.com/blueskybone/ArknightsGameResource/raw/master/skill/"
-const val skillUrl = "https://cdn.jsdelivr.net/gh/blueskybone/ArkScreenResource@master/skill/"
+//const val skillUrl = "https://cdn.jsdelivr.net/gh/blueskybone/ArkScreenResource@master/skill/"
+const val skillUrl = "https://web.hycdn.cn/arknights/game/assets/char_skill/"
 val skillCachePath = "${APP.externalCacheDir}/skill_icon"
 
 const val biliSettingUrl = "https://space.bilibili.com/ajax/settings/getSettings?mid=161775300"

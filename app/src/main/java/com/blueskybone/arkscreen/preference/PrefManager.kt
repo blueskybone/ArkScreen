@@ -96,6 +96,10 @@ class PrefManager() {
     lateinit var appTheme: Preference<String>
     lateinit var showHomeAnnounce: Preference<Boolean>
 
+    //new
+    lateinit var recruitPageShowMode: Preference<String> // simple or complex , default is complex
+
+
     //用于预输入数据标识，一次有效
     lateinit var insertLink: Preference<Boolean>
 

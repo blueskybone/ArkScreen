@@ -31,7 +31,9 @@ data class RecruitDatabase(
         @JsonProperty("star")
         val star: Int,
         @JsonProperty("tag")
-        val tag: List<String>
+        val tag: List<String>,
+        @JsonProperty("skin")
+        val skin: String
     )
 
     data class Operator(
@@ -40,7 +42,9 @@ data class RecruitDatabase(
         @JsonProperty("star")
         val star: Int,
         @JsonProperty("tag")
-        val tag: List<String>
+        val tag: List<String>,
+        @JsonProperty("skin")
+        val skin: String
     )
 
     data class OperatorLow(
@@ -49,7 +53,9 @@ data class RecruitDatabase(
         @JsonProperty("star")
         val star: Int,
         @JsonProperty("tag")
-        val tag: List<String>
+        val tag: List<String>,
+        @JsonProperty("skin")
+        val skin: String
     )
 
     data class OperatorRobot(
@@ -58,7 +64,9 @@ data class RecruitDatabase(
         @JsonProperty("star")
         val star: Int,
         @JsonProperty("tag")
-        val tag: List<String>
+        val tag: List<String>,
+        @JsonProperty("skin")
+        val skin: String
     )
 
     data class Update(

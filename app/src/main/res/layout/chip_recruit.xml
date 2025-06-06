@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:padding="2dp"
+    android:minWidth="105dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/Avatar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/text_default"
+        android:src="@drawable/char_ex_christ"
+        app:shapeAppearanceOverlay="@style/RoundedImageView" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="2dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="莫斯提马"
+            android:textColor="?attr/colorOnBackground"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/Rare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/rare_6"
+            android:text=" 6★ "
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</LinearLayout>

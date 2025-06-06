@@ -55,7 +55,7 @@ class CharAdapter(private val context: Context, override val PAGE_SIZE: Int) :
     private fun bindSkillView(view: IconSkillBinding, skill: Operator.Skill, rank: Int) {
         view.Icon.alpha = 1.0F
 
-        val url = "${skillUrl}skill_icon_${skill.id}.png"
+        val url = "${skillUrl}${skill.id}.png"
         view.Icon.load(url)
 
         if (skill.specializeLevel == 0) {

@@ -10,13 +10,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import android.widget.Space
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -24,11 +23,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import coil.load
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.common.BottomDialog
 import com.blueskybone.arkscreen.common.line
 import com.blueskybone.arkscreen.common.space
+import com.blueskybone.arkscreen.databinding.ChipRecruitBinding
+import com.blueskybone.arkscreen.network.avatarUrl
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.task.recruit.RecruitManager
 import com.blueskybone.arkscreen.util.copyToClipboard
@@ -230,7 +232,6 @@ class RecruitActivity : AppCompatActivity() {
                 model.reset()
             } catch (e: Exception) {
                 e.printStackTrace()
-                // Toaster.show(e.message)
             }
         }
         return button
@@ -250,6 +251,20 @@ class RecruitActivity : AppCompatActivity() {
         }
         button.background = shapeDrawable
         return button
+    }
+
+    private fun opeButton2(context: Context, chars: RecruitManager.Operator): View {
+        // 1. 使用 DataBindingUtil 加载布局
+        val binding = ChipRecruitBinding.inflate(LayoutInflater.from(context))
+        binding.Avatar.load("$avatarUrl${chars.skin}%231.png")
+        binding.Name.text = chars.name
+        binding.Rare.text = " ${chars.rare}★ "
+
+        val rarityIdx = rarityValValues.indexOf((chars.rare).toString())
+        val colorId = rarityColorIds[rarityIdx]
+        binding.Rare.setBackgroundColor(getColor(colorId))
+
+        return binding.root
     }
 
     private fun resultTagButton(context: Context, text: String): Button {
@@ -326,7 +341,7 @@ class RecruitActivity : AppCompatActivity() {
                 tagLayout.addView(tagView)
             }
             for (operator in result.operators) {
-                val opeView = opeButton(this, operator)
+                val opeView = opeButton2(this, operator)
                 opeView.setOnClickListener {
                     displayCharDialog(operator)
                 }
@@ -334,7 +349,7 @@ class RecruitActivity : AppCompatActivity() {
             }
             view.addView(tagLayout)
             view.addView(opeLayout)
-            view.addView(space(this,5F))
+            view.addView(space(this, 5F))
         }
         Handler(Looper.getMainLooper()).post {
             linearLayout.removeAllViews()
