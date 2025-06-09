@@ -46,7 +46,7 @@
                 android:layout_columnSpan="2"
                 android:text="@string/account_manage" />
 
-            <include
+             <include
                 android:id="@+id/SklandAccountManage"
                 layout="@layout/card_function"
                 android:layout_width="150dp"

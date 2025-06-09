@@ -27,6 +27,7 @@
     <color name="purple_bg">#F5F7FD</color>
 
     <color name="LightBlue500">#79B8EA</color>
+    <color name="LightBlue200">#C9DDED</color>
 
     <color name="transparent">#00000000</color>
     <color name="chip_background">#7592B5D1</color>
