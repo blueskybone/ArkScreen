@@ -1,5 +1,7 @@
 package com.blueskybone.arkscreen.network
 
+import com.blueskybone.arkscreen.APP
+import com.blueskybone.arkscreen.logger.FileLoggingInterceptor
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
@@ -20,7 +22,10 @@ object RetrofitClient {
     private val objectMapper = ObjectMapper().registerKotlinModule().apply {
         configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
-
+    private val fileLogger = FileLoggingInterceptor()
+    private val loggingInterceptor = HttpLoggingInterceptor(fileLogger).apply {
+        level = HttpLoggingInterceptor.Level.BODY // 记录请求和响应头和体
+    }
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
         .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
@@ -30,12 +35,16 @@ object RetrofitClient {
         .addInterceptor { chain ->
             val original = chain.request()
             val request = original.newBuilder()
-                .header("User-Agent", "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0")
+                .header(
+                    "User-Agent",
+                    "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0"
+                )
                 .header("Connection", "close")
                 .method(original.method, original.body)
                 .build()
             chain.proceed(request)
         }
+        .addInterceptor(loggingInterceptor)
         .build()
 
     // 主服务

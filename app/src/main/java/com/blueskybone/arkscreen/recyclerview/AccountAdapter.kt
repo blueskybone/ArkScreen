@@ -2,13 +2,17 @@ package com.blueskybone.arkscreen.recyclerview
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.ItemAccountBinding
+import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.Account
+import org.koin.android.ext.android.getKoin
+import org.koin.java.KoinJavaComponent.getKoin
 
 /**
  *   Created by blueskybone
@@ -16,6 +20,8 @@ import com.blueskybone.arkscreen.room.Account
  */
 class AccountAdapter(private val context: Context, private val listener: ItemListener) :
     ListAdapter<Account, AccountAdapter.AccountVH>(DiffCallback) {
+
+    private val prefManager: PrefManager by getKoin().inject()
 
     private object DiffCallback : DiffUtil.ItemCallback<Account>() {
         override fun areItemsTheSame(oldItem: Account, newItem: Account): Boolean {
@@ -36,7 +42,6 @@ class AccountAdapter(private val context: Context, private val listener: ItemLis
     override fun onBindViewHolder(holder: AccountVH, position: Int) {
         holder.bind(getItem(position))
     }
-
     inner class AccountVH(private val binding: ItemAccountBinding, listener: ItemListener) :
         RecyclerView.ViewHolder(binding.root) {
         init {
@@ -51,9 +56,11 @@ class AccountAdapter(private val context: Context, private val listener: ItemLis
 
         fun bind(item: Account) {
             binding.Title.text = item.nickName
-            binding.Value.text = context.getString(R.string.uid_info,item.uid)
+            binding.Value.text = context.getString(R.string.uid_info, item.uid)
             if (item.official) binding.Icon.setImageResource(R.drawable.hg_icon_80x80)
             else binding.Icon.setImageResource(R.drawable.bili_icon_75x71)
+            binding.Checked.visibility =
+                if (item.uid == prefManager.baseAccountSk.get().uid) View.VISIBLE else View.GONE
         }
     }
 }

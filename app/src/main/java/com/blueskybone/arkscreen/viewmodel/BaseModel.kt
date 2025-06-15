@@ -24,6 +24,8 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.java.KoinJavaComponent.getKoin
+import timber.log.Timber
+import java.net.URL
 
 /**
  *   Created by blueskybone
@@ -55,8 +57,8 @@ class BaseModel : ViewModel() {
     private val _apCache = MutableLiveData<ApCache>()
     val apCache: LiveData<ApCache> get() = _apCache
 
-    private val _testText = MutableLiveData<String>()
-    val testText: LiveData<String> get() = _testText
+    private val _attendanceLog = MutableLiveData<String>()
+    val attendanceLog: LiveData<String> get() = _attendanceLog
 
     private val _announce = MutableLiveData<String>()
     val announce: LiveData<String> get() = _announce
@@ -75,7 +77,7 @@ class BaseModel : ViewModel() {
     }
 
     private var job: Job? = null
-    fun testTextRun() {
+    fun runAttendance() {
         job?.cancel()
         job = viewModelScope.launch(Dispatchers.IO) {
             val builder = StringBuilder()
@@ -84,13 +86,13 @@ class BaseModel : ViewModel() {
                 for (account in list) {
                     if (account.uid != "") {
                         builder.append(account.nickName).append(" 签到中...\n")
-                        _testText.postValue(builder.toString())
+                        _attendanceLog.postValue(builder.toString())
                         builder.append(attendance(account)).append("\n")
-                        _testText.postValue(builder.toString())
+                        _attendanceLog.postValue(builder.toString())
                     }
                 }
                 builder.append("签到完成。\n")
-                _testText.postValue(builder.toString())
+                _attendanceLog.postValue(builder.toString())
             }
         }
     }
@@ -106,11 +108,10 @@ class BaseModel : ViewModel() {
     private fun insertLinkData() {
         executeAsync {
             if (!prefManager.insertLink.get()) {
-                linkDao.insert(Link(title = "PRTS", url = "https://prts.wiki/w/"))
+                linkDao.insert(Link(title = "PRTS", url = "https://prts.wiki/w/",icon="https://prts.wiki/public/favicon.ico"))
                 prefManager.insertLink.set(true)
             }
         }
-
     }
 
     private fun checkAppUpdate() {
@@ -126,7 +127,7 @@ class BaseModel : ViewModel() {
     }
 
     fun checkAnnounce() {
-        if(!prefManager.showHomeAnnounce.get())return
+        if (!prefManager.showHomeAnnounce.get()) return
         executeAsync {
             try {
                 val info = getAnnounce()
@@ -142,7 +143,7 @@ class BaseModel : ViewModel() {
         viewModelScope.launch {
             _accountSkList.value = accountSkDao.getAll()
             _accountGcList.value = accountGcDao.getAll()
-            _links.value = linkDao.getAll()
+            _links.value = linkDao.getAll().map { it.copy() }
             getDefaultAccountSk()
             loadApCache()
         }
@@ -180,9 +181,10 @@ class BaseModel : ViewModel() {
         executeAsync {
             try {
                 val list = createAccountList(token, dId)
+                Timber.i("createAccountList end.")
                 accountSkDao.insert(list)
                 _accountSkList.postValue(accountSkDao.getAll())
-                if(prefManager.baseAccountSk.get().uid=="")
+                if (prefManager.baseAccountSk.get().uid == "")
                     prefManager.baseAccountSk.set(list[0])
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -193,10 +195,10 @@ class BaseModel : ViewModel() {
     fun accountGcLogin(token: String, channelMasterId: Int) {
         executeAsync {
             try {
-                val account = createGachaAccount(channelMasterId, token)?:return@executeAsync
+                val account = createGachaAccount(channelMasterId, token) ?: return@executeAsync
                 accountGcDao.insert(account)
                 _accountGcList.postValue(accountGcDao.getAll())
-                if(prefManager.baseAccountGc.get().uid=="")
+                if (prefManager.baseAccountGc.get().uid == "")
                     prefManager.baseAccountGc.set(account)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -228,14 +230,35 @@ class BaseModel : ViewModel() {
 
     fun insertLink(link: Link) {
         executeAsync {
+            link.icon = parseHtmlForIcon(link.url) ?: ""
             linkDao.insert(link)
             _links.postValue(linkDao.getAll())
+//            val icon = parseHtmlForIcon(link.url) ?: ""
+//            linkDao.update(link.id, link.title, link.url, icon)
+//            _links.postValue(linkDao.getAll())
+        }
+    }
+
+    private suspend fun parseHtmlForIcon(url: String): String? = withContext(Dispatchers.IO) {
+        try {
+            val html = URL(url).readText()
+            Regex("""<link.*?rel=(["'])(?:icon|shortcut icon)\1.*?href=(["'])(.*?)\2""")
+                .find(html)
+                ?.groupValues?.get(3)
+                ?.let { iconPath ->
+                    if (iconPath.startsWith("http")) iconPath
+                    else URL(URL(url), iconPath).toString()
+                }
+        } catch (e: Exception) {
+            null
+        }finally {
+
         }
     }
 
     fun updateLink(link: Link) {
         executeAsync {
-            linkDao.update(link.id, link.title, link.url)
+            linkDao.update(link.id, link.title, link.url, link.icon)
             _links.postValue(linkDao.getAll())
         }
     }
@@ -255,12 +278,12 @@ class BaseModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) { function() }
     }
 
-    private suspend fun getAnnounce():String{
+    private suspend fun getAnnounce(): String {
         val client = OkHttpClient()
         val request = Request.Builder().url(announceUrl).build()
         return withContext(Dispatchers.IO) {
             client.newCall(request).execute().use { response ->
-                response.body?.string().let{json ->
+                response.body?.string().let { json ->
                     val content = ObjectMapper().readTree(json).at("/content")
                     content.asText()
                 } ?: "Empty response"

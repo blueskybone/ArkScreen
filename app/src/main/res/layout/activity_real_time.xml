@@ -25,88 +25,89 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:baselineAligned="false"
-                android:orientation="horizontal"
-                android:padding="10dp">
+            <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp">
-
-                    <TextView
-                        android:id="@+id/NickName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.Body1"
-                        android:textColor="?attr/colorPrimary"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/LastLogin"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1">
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
 
                     <LinearLayout
-                        android:id="@+id/ApLayout"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:orientation="horizontal">
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
 
                         <TextView
-                            android:id="@+id/Ap"
+                            android:id="@+id/NickName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:letterSpacing="0"
-                            android:textAppearance="@style/TextAppearance.Body1"
+                            android:textAppearance="@style/TextAppearance.Body2"
                             android:textColor="?attr/colorPrimary"
-                            android:textSize="50sp"
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/ApMax"
+                            android:id="@+id/LastLogin"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:letterSpacing="0"
-                            android:textAppearance="@style/TextAppearance.Body1"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
+                            android:layout_height="wrap_content" />
                     </LinearLayout>
 
-                    <View
-                        android:id="@+id/Line"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_below="@id/ApLayout"
-                        android:background="?android:attr/listDivider" />
-
-                    <TextView
-                        android:id="@+id/ApResTime"
-                        android:layout_width="match_parent"
+                    <RelativeLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/Line"
-                        android:gravity="center"
-                        android:paddingBottom="10dp" />
-                </RelativeLayout>
+                        android:layout_gravity="center"
+                        android:layout_weight="1">
 
-            </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/ApLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="horizontal">
 
+                            <TextView
+                                android:id="@+id/Ap"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:letterSpacing="0"
+                                android:textAppearance="@style/TextAppearance.Body1"
+                                android:textColor="?attr/colorPrimary"
+                                android:textSize="50sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/ApMax"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:letterSpacing="0"
+                                android:textAppearance="@style/TextAppearance.Body1"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/Line"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_below="@id/ApLayout"
+                            android:background="?android:attr/listDivider" />
+
+                        <TextView
+                            android:id="@+id/ApResTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/Line"
+                            android:gravity="center"
+                            android:paddingBottom="10dp" />
+                    </RelativeLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
 
@@ -228,8 +229,8 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView
-                style="@style/CardViewContent">
+            <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+
                 <ImageView
                     android:id="@+id/Starter"
                     android:layout_width="36dp"

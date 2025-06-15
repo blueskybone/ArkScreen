@@ -115,8 +115,13 @@
                 layout="@layout/card_function"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
-                android:layout_margin="5dp"
-                android:visibility="gone" />
+                android:layout_margin="5dp" />
+            <include
+                android:id="@+id/DebugLogClean"
+                layout="@layout/card_function"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp" />
 
             <include
                 android:id="@+id/TimeCorrectButton"

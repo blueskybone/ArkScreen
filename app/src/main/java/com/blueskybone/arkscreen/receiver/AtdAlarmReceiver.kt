@@ -51,6 +51,7 @@ class AtdAlarmReceiver : BroadcastReceiver() {
         val database = ArkDatabase.getDatabase(APP)
         val accountSkDao = database.getAccountSkDao()
         val accountList = accountSkDao.getAll()
+        //TODO:Update Attendance progress in notification
         for (account in accountList) {
             NetWorkTask.sklandAttendance(account)
         }

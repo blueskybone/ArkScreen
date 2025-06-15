@@ -88,6 +88,8 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.12.1")
     implementation("androidx.webkit:webkit:1.12.1")
     implementation("com.nex3z:flow-layout:1.3.3")
+    implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-jackson:2.9.0")

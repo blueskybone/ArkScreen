@@ -12,7 +12,7 @@ import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Gacha
 import okhttp3.ResponseBody
 import retrofit2.Response
-import javax.net.ssl.HttpsURLConnection
+import timber.log.Timber
 
 /**
  *   Created by blueskybone
@@ -23,7 +23,10 @@ class NetWorkTask {
     companion object {
         @Throws(Exception::class)
         suspend fun createAccountList(token: String, dId: String): List<AccountSk> {
+            //TODO:跟踪流程
+            Timber.i("createAccountList")
             val credAndToken = getCredCode(token, dId)
+            Timber.i("getCredCode succ.")
             return createAccountSkList(
                 credAndToken.cred,
                 credAndToken.token,
@@ -35,23 +38,6 @@ class NetWorkTask {
         suspend fun createGachaAccount(channelMasterId: Int, token: String): AccountGc? {
             return getBasicInfo(channelMasterId, token)
         }
-
-//        fun downloadGameData(accountSk: AccountSk) {
-//            val credAndToken = getCredCode(accountSk)
-//            NetWorkUtils.getGameInfoConnection(
-//                credAndToken,
-//                accountSk.uid
-//            )
-//        }
-
-//        @Throws(Exception::class)
-//        suspend fun getGameInfoInputConnection(accountSk: AccountSk): HttpsURLConnection {
-//            val credAndToken = getCredCode(accountSk)
-//            return NetWorkUtils.getGameInfoConnection(
-//                credAndToken,
-//                accountSk.uid
-//            )
-//        }
 
         @Throws(Exception::class)
         suspend fun getGameInfoConnectionTask(accountSk: AccountSk): Response<ResponseBody> {
@@ -82,7 +68,9 @@ class NetWorkTask {
 
         @Throws(Exception::class)
         private suspend fun getCredCode(token: String, dId: String): CredAndToken {
+            Timber.i("try getCredCode")
             val grant = getGrantByToken(token)
+            Timber.i("getGrantByToken succ.")
             return getCredByGrant(grant, dId)
         }
 

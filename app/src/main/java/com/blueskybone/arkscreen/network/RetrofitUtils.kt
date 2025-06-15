@@ -9,10 +9,15 @@ import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Gacha
 import com.blueskybone.arkscreen.util.SignUtils
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
+import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.ResponseBody
 import retrofit2.Response
+import timber.log.Timber
+import java.io.IOException
 import java.net.URLEncoder
 
 /**
@@ -64,6 +69,7 @@ class RetrofitUtils {
             val headers = createSignHeaders(cred, sign, timeStamp)
             val response = RetrofitClient.apiService.getPlayerBinding(headers)
             return if (response.isSuccessful) {
+                Timber.i("getPlayerBinding response.isSuccessful")
                 response.body()?.data?.list?.flatMap { item ->
                     if (item.appCode == "arknights") {
                         item.bindingList.map { user ->
@@ -138,6 +144,18 @@ class RetrofitUtils {
                 ), headers
             )
             return if (response.isSuccessful) {
+                //TODO:检查response header 是否存在
+//                if (response.headers()["Content-Encoding"] == "gzip") {
+//                    val unzipped =
+//                        withContext(Dispatchers.IO) {
+//                            GZIPInputStream(ByteArrayInputStream()).bufferedReader()
+//                        }.readText()
+//                    Response(
+//                        responseCode = okHttpResponse.code,
+//                        responseContent = unzipped
+//                    )
+//                }
+
                 val builder = StringBuilder()
                 response.body()?.data?.awards?.let { list ->
                     for (item in list) {
@@ -191,6 +209,30 @@ class RetrofitUtils {
                 }
             } else {
                 throw Exception("API error: ${response.errorBody()?.string()}")
+            }
+        }
+
+        suspend fun getSpaceTitleImageUrl(): String {
+            print("getSpaceTitleImageUrl")
+            val client = OkHttpClient()
+            val request = Request.Builder()
+                .url(biliSettingUrl)
+                .build()
+
+            return withContext(Dispatchers.IO) {
+                client.newCall(request).execute().use { response ->
+                    print(response)
+                    if (!response.isSuccessful) throw IOException("Unexpected code $response")
+                    else {
+                        try {
+                            val node = ObjectMapper().readTree(response.body?.string())
+                            titleImageUrl + node["data"]["toutu"]["s_img"]
+
+                        } catch (e: Exception) {
+                            throw e
+                        }
+                    }
+                }
             }
         }
 

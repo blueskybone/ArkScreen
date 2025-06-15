@@ -13,6 +13,8 @@ import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.request.CachePolicy
 import com.blueskybone.arkscreen.bindinginfo.AppTheme
+import com.blueskybone.arkscreen.logger.FileLoggingInterceptor
+import com.blueskybone.arkscreen.logger.FileLoggingTree
 import com.blueskybone.arkscreen.network.equipCachePath
 import com.blueskybone.arkscreen.network.skillCachePath
 import com.blueskybone.arkscreen.network.skinCachePath
@@ -22,11 +24,13 @@ import com.blueskybone.arkscreen.receiver.AtdAlarmReceiver
 import com.blueskybone.arkscreen.util.getDensityDpi
 import com.hjq.toast.Toaster
 import com.hjq.toast.style.BlackToastStyle
+import com.hjq.toast.style.WhiteToastStyle
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent
+import timber.log.Timber
 import java.io.File
 import java.util.Calendar
 import java.util.Date
@@ -68,8 +72,8 @@ class App : Application() {
         val screenDensityDpi = getDensityDpi(this)
         setScreenDpi(screenDensityDpi)
 
-        Toaster.setStyle(BlackToastStyle())
-        Toaster.setGravity(Gravity.TOP, 0, 60 * screenDpi.toInt())
+        //Initialize Logger
+        Timber.plant(FileLoggingTree(this))
         val preferenceModule = module {
             single { SharedPreferenceStore(this@App) }
             single { PrefManager(get<SharedPreferenceStore>()) }
@@ -85,6 +89,7 @@ class App : Application() {
         setCoilDiskCache()
         setAppTheme()
         setDailyAlarm()
+        setToaster()
         //cancelDailyAlarm()
     }
 
@@ -159,5 +164,13 @@ class App : Application() {
             AppTheme.dark -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             AppTheme.system -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
+    }
+    private fun setToaster(){
+        val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
+        when(prefManager.appTheme.get()){
+            AppTheme.light -> Toaster.setStyle(BlackToastStyle())
+            AppTheme.dark,AppTheme.system-> Toaster.setStyle(WhiteToastStyle())
+        }
+        Toaster.setGravity(Gravity.TOP, 0, 60 * screenDpi.toInt())
     }
 }

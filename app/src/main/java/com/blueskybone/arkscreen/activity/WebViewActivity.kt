@@ -19,6 +19,10 @@ import com.blueskybone.arkscreen.R
 
 class WebViewActivity : AppCompatActivity() {
 
+    /*
+    * const favicon = document.querySelector('link[rel*="icon"]');
+      console.log(favicon ? favicon.href : "");
+    * */
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
     private lateinit var toolbar: Toolbar
@@ -27,7 +31,6 @@ class WebViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_webview)
-
 
         progressBar = findViewById(R.id.progressBar)
         webView = findViewById(R.id.webView)
