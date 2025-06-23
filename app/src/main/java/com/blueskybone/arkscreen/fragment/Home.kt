@@ -4,10 +4,8 @@ package com.blueskybone.arkscreen.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Rect
-import android.icu.text.CaseMap.Title
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,8 +15,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.activity.AboutActivity
-import com.blueskybone.arkscreen.activity.AccountSk
 import com.blueskybone.arkscreen.activity.CharAssets
 import com.blueskybone.arkscreen.activity.RealTimeActivity
 import com.blueskybone.arkscreen.activity.RecruitActivity
@@ -44,17 +40,13 @@ import com.blueskybone.arkscreen.room.Link
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
 import com.blueskybone.arkscreen.util.TimeUtils.getLastUpdateStr
 import com.blueskybone.arkscreen.util.TimeUtils.getRemainTimeStr
-import com.blueskybone.arkscreen.util.saveDrawableToGallery
 import com.blueskybone.arkscreen.viewmodel.BaseModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.getKoin
-import timber.log.Timber
-import java.net.URL
 
 
 /**
@@ -106,9 +98,6 @@ class Home : Fragment(), ItemListener {
 
 
     private fun setupBinding() {
-        binding.AboutText.setOnClickListener {
-            startActivity(Intent(requireContext(), AboutActivity::class.java))
-        }
         binding.RealTimeData.setOnClickListener {
             startActivity(Intent(requireContext(), RealTimeActivity::class.java))
         }
@@ -117,7 +106,7 @@ class Home : Fragment(), ItemListener {
             model.checkAnnounce()
             model.accountSkList.value!!.let {
                 if (it.isEmpty()) {
-                    startActivity(Intent(requireContext(), AccountSk::class.java))
+                    displayLoginDialog()
                 } else {
                     val menuDialog = MenuDialog(requireContext())
                     for (account in model.accountSkList.value!!) {
@@ -202,6 +191,30 @@ class Home : Fragment(), ItemListener {
             binding.AnnounceTitle.visibility = View.GONE
             binding.AnnounceCard.visibility = View.GONE
         }
+    }
+
+    private fun displayLoginDialog(){
+        val dialogBinding = DialogInputBinding.inflate(layoutInflater)
+        dialogBinding.EditText2.visibility = View.GONE
+        dialogBinding.EditText1.hint = getString(R.string.import_cookie)
+        MaterialAlertDialogBuilder(requireContext())
+            .setView(dialogBinding.root)
+            .setTitle(R.string.import_cookie)
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton(R.string.import_cookie) { _, _ ->
+                val str = dialogBinding.EditText1.text.toString()
+                val list = str.split("@")
+                if (list.size == 2) {
+                    try {
+                        Toaster.show(getString(R.string.getting_info))
+                        model.accountSkLogin(list[0], list[1])
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                } else {
+                    Toaster.show(getString(R.string.wrong_format))
+                }
+            }.show()
     }
 
     @SuppressLint("QueryPermissionsNeeded")

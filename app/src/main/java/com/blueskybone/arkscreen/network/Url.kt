@@ -1,6 +1,12 @@
 package com.blueskybone.arkscreen.network
 
 import com.blueskybone.arkscreen.APP
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.io.IOException
+import java.net.URL
 
 /**
  *   Created by blueskybone
@@ -34,3 +40,21 @@ const val titleImageUrl = "https://i0.hdslb.com/"
 
 const val announceUrl = "https://gitee.com/blueskybone/ArkScreen/raw/master/resource/announce.json"
 const val poolTypeUrl = "https://gitee.com/blueskybone/ArkScreen/raw/master/resource/pool_type.json"
+
+suspend fun makeSuspendRequest(url: URL): String {
+    return withContext(Dispatchers.IO) {
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url(url)
+            .build()
+        try {
+            val response = client.newCall(request).execute()
+            response.use {
+                if (!it.isSuccessful) throw IOException("Unexpected code: ${it.code}")
+                it.body?.string() ?: throw IOException("Empty response")
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+}

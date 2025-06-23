@@ -11,6 +11,7 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.IconEquipBinding
 import com.blueskybone.arkscreen.databinding.IconSkillBinding
 import com.blueskybone.arkscreen.databinding.ItemCharBinding
+import com.blueskybone.arkscreen.databinding.ItemCharCardBinding
 import com.blueskybone.arkscreen.network.avatarUrl
 import com.blueskybone.arkscreen.network.equipUrl
 import com.blueskybone.arkscreen.network.skillUrl
@@ -18,14 +19,12 @@ import com.blueskybone.arkscreen.recyclerview.paging.PagingAdapter
 import com.blueskybone.arkscreen.room.Operator
 import java.net.URLEncoder
 
-
 /**
  *   Created by blueskybone
- *   Date: 2025/1/20
+ *   Date: 2025/6/16
  */
-
-class CharAdapter(context: Context, override val PAGE_SIZE: Int) :
-    PagingAdapter<Operator, CharAdapter.OperatorVH>() {
+class CharGridAdapter(context: Context, override val PAGE_SIZE: Int) :
+    PagingAdapter<Operator, CharGridAdapter.OperatorVH>() {
 
     private val profValues = context.resources.getStringArray(R.array.profession_value)
     private val profDrawable = context.resources.obtainTypedArray(R.array.profession_draw)
@@ -42,9 +41,9 @@ class CharAdapter(context: Context, override val PAGE_SIZE: Int) :
     private val specialValues = context.resources.getStringArray(R.array.special_value)
     private val specialDrawable = context.resources.obtainTypedArray(R.array.special_draw)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharAdapter.OperatorVH {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharGridAdapter.OperatorVH {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemCharBinding.inflate(inflater, parent, false)
+        val binding = ItemCharCardBinding.inflate(inflater, parent, false)
         return OperatorVH(binding)
     }
 
@@ -55,7 +54,7 @@ class CharAdapter(context: Context, override val PAGE_SIZE: Int) :
     private fun bindSkillView(view: IconSkillBinding, skill: Operator.Skill, rank: Int) {
         view.Icon.alpha = 1.0F
 
-        val url = "${skillUrl}${skill.id}.png"
+        val url = "$skillUrl${skill.id}.png"
         view.Icon.load(url)
 
         if (skill.specializeLevel == 0) {
@@ -72,7 +71,7 @@ class CharAdapter(context: Context, override val PAGE_SIZE: Int) :
     }
 
     private fun bindEquipView(view: IconEquipBinding, equip: Operator.Equip) {
-        val url = "${equipUrl}${equip.typeIcon.uppercase()}_icon.png"
+        val url = "$equipUrl${equip.typeIcon.uppercase()}_icon.png"
         view.Icon.load(url)
 
         if (!equip.locked) {
@@ -93,7 +92,7 @@ class CharAdapter(context: Context, override val PAGE_SIZE: Int) :
         view.load(url)
     }
 
-    inner class OperatorVH(private val binding: ItemCharBinding) :
+    inner class OperatorVH(private val binding: ItemCharCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Operator) {
 

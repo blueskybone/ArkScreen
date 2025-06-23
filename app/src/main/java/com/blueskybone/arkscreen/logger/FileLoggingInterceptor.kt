@@ -20,6 +20,10 @@ class FileLoggingInterceptor : HttpLoggingInterceptor.Logger {
     private val timeFormat = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
     private val executor = Executors.newSingleThreadExecutor()
 
+    private val excludedUrls = listOf(
+        "/api/v1/game/player/info"
+    )
+
     init {
         if (!logDir.exists()) {
             logDir.mkdirs()
@@ -28,6 +32,9 @@ class FileLoggingInterceptor : HttpLoggingInterceptor.Logger {
     }
 
     override fun log(message: String) {
+        if (shouldSkipLogging(message)) {
+            return
+        }
         executor.execute {
             try {
                 val date = dateFormat.format(Date())
@@ -43,7 +50,7 @@ class FileLoggingInterceptor : HttpLoggingInterceptor.Logger {
         }
     }
 
-    fun cleanupOldLogs(daysToKeep: Int = 7) {
+    private fun cleanupOldLogs(daysToKeep: Int = 7) {
         val cutoff = System.currentTimeMillis() - (daysToKeep * 24 * 60 * 60 * 1000L)
         logDir.listFiles()?.forEach { file ->
             if (file.lastModified() < cutoff) {
@@ -51,4 +58,9 @@ class FileLoggingInterceptor : HttpLoggingInterceptor.Logger {
             }
         }
     }
+
+    private fun shouldSkipLogging(message: String): Boolean {
+        return excludedUrls.any { url -> message.contains(url) }
+    }
+
 }

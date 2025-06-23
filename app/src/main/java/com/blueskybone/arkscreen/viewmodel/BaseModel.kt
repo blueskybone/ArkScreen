@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.AppUpdate
+import com.blueskybone.arkscreen.UpdateResource
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.createAccountList
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.createGachaAccount
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.sklandAttendance
@@ -51,8 +52,8 @@ class BaseModel : ViewModel() {
     private val _accountGcList = MutableLiveData<List<AccountGc>>()
     val accountGcList: LiveData<List<AccountGc>> get() = _accountGcList
 
-    private val _appUpdateInfo = MutableLiveData<AppUpdate.AppUpdateInfo>()
-    val appUpdateInfo: LiveData<AppUpdate.AppUpdateInfo> get() = _appUpdateInfo
+    private val _appUpdateInfo = MutableLiveData<UpdateResource.UpdateInfo>()
+    val appUpdateInfo: LiveData<UpdateResource.UpdateInfo> get() = _appUpdateInfo
 
     private val _apCache = MutableLiveData<ApCache>()
     val apCache: LiveData<ApCache> get() = _apCache
@@ -108,7 +109,13 @@ class BaseModel : ViewModel() {
     private fun insertLinkData() {
         executeAsync {
             if (!prefManager.insertLink.get()) {
-                linkDao.insert(Link(title = "PRTS", url = "https://prts.wiki/w/",icon="https://prts.wiki/public/favicon.ico"))
+                linkDao.insert(
+                    Link(
+                        title = "PRTS",
+                        url = "https://prts.wiki/w/",
+                        icon = "https://prts.wiki/public/favicon.ico"
+                    )
+                )
                 prefManager.insertLink.set(true)
             }
         }
@@ -118,7 +125,7 @@ class BaseModel : ViewModel() {
         if (!prefManager.autoUpdateApp.get()) return
         executeAsync {
             try {
-                val info = AppUpdate.getUpdateInfo()
+                val info = AppUpdate.getUpdateInfo() ?: return@executeAsync
                 _appUpdateInfo.postValue(info)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -251,7 +258,7 @@ class BaseModel : ViewModel() {
                 }
         } catch (e: Exception) {
             null
-        }finally {
+        } finally {
 
         }
     }

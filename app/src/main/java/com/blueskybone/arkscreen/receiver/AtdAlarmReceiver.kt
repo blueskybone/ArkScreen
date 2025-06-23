@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.getKoin
 import org.koin.java.KoinJavaComponent
 import org.koin.java.KoinJavaComponent.getKoin
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 /**
@@ -38,24 +39,21 @@ class AtdAlarmReceiver : BroadcastReceiver() {
             if (!prefManager.backAutoAtd.get()) return
             APP.setDailyAlarm()
             return
-        }else{
+        } else {
+            val prefManager: PrefManager by getKoin().inject()
+            val database = ArkDatabase.getDatabase(APP)
+            val accountSkDao = database.getAccountSkDao()
             CoroutineScope(Dispatchers.IO).launch {
-                attendance()
+                val accountList = accountSkDao.getAll()
+                Timber.log(1, "账号数量 ${accountList.size}")
+                for (account in accountList) {
+                    Timber.log(1, "签到中 ${account.nickName}")
+                    NetWorkTask.sklandAttendance(account)
+                }
             }
-            showNotification(context,"森空岛自动签到","已签到")
+            prefManager.lastAttendanceTs.set(getCurrentTs())
+            showNotification(context, "森空岛自动签到", "已签到")
         }
-    }
-
-    private suspend fun attendance() {
-        val prefManager: PrefManager by getKoin().inject()
-        val database = ArkDatabase.getDatabase(APP)
-        val accountSkDao = database.getAccountSkDao()
-        val accountList = accountSkDao.getAll()
-        //TODO:Update Attendance progress in notification
-        for (account in accountList) {
-            NetWorkTask.sklandAttendance(account)
-        }
-        prefManager.lastAttendanceTs.set(getCurrentTs())
     }
 
     private fun showNotification(context: Context, title: String, message: String) {

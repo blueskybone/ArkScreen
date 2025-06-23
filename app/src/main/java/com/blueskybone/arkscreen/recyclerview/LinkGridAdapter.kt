@@ -47,8 +47,6 @@ class LinkGridAdapter(private val listener: ItemListener) :
 
         fun bind(item: Link) {
             binding.Title.text = item.title
-            print(item.title + "title测试")
-            print(item.icon+ "icon测试")
             binding.Icon.load(item.icon) {
                 error(R.drawable.ic_default_trans)               // 加载失败的占位图
                 crossfade(true)                     // 淡入淡出效果

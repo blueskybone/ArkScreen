@@ -57,29 +57,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//        setAppTheme()
         setUpNavigation()
         checkAppUpdate(this)
         requestOverlayPermission(this)
     }
 
-    private fun setAppTheme() {
-        val prefManager: PrefManager by getKoin().inject()
-        when (prefManager.appTheme.get()) {
-            AppTheme.light -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            AppTheme.dark -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            AppTheme.system -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-        }
-    }
-
-
     private fun checkAppUpdate(context: Context) {
         model.appUpdateInfo.observe(this) { info ->
             getAppVersionName(context)?.let {
-                if (it < info.version)
+                if (it < info.version.toString())
                     Handler(Looper.getMainLooper()).post {
                         MaterialAlertDialogBuilder(context)
-                            .setTitle(info.version)
+                            .setTitle(info.version.toString())
                             .setMessage(info.content)
                             .setNegativeButton(R.string.cancel, null)
                             .setPositiveButton(getString(R.string.download)) { _, _ ->

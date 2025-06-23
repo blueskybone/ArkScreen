@@ -1,16 +1,30 @@
 package com.blueskybone.arkscreen
 
+import android.content.Context
+import android.text.style.UpdateAppearance
 import android.util.Xml
 import com.blueskybone.arkscreen.UpdateResource.Companion.site
+import com.blueskybone.arkscreen.common.BottomDialog
 import com.blueskybone.arkscreen.network.HttpConnectionUtils.Companion.downloadToLocal
 import com.blueskybone.arkscreen.network.HttpConnectionUtils.Companion.httpResponseConnection
 import com.blueskybone.arkscreen.network.RequestMethod
+import com.blueskybone.arkscreen.network.makeSuspendRequest
+import com.blueskybone.arkscreen.util.copyToClipboard
 import com.blueskybone.arkscreen.util.readFileAsJsonNode
+import com.hjq.toast.Toaster
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import org.xmlpull.v1.XmlPullParser
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
+import java.io.StringReader
 import java.net.URL
 
 /**
@@ -25,7 +39,7 @@ sealed interface UpdateResource {
 
     suspend fun update() {
         val localVersion = getLocalVersion()
-        val remoteInfo = getUpdateInfo()
+        val remoteInfo = getUpdateInfo() ?: return
         if (remoteInfo.version > localVersion) {
             downloadToLocal("${path}/${filename}", URL(remoteInfo.link))
         }
@@ -109,7 +123,62 @@ sealed interface UpdateResource {
         return updateInfo
     }
 
+//    suspend fun getUpdateInfo(): UpdateInfo? {
+//        try {
+//            val response = makeSuspendRequest(url)
+//            val updateInfo = UpdateInfo()
+//            val parser = Xml.newPullParser().apply {
+//                setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
+//                setInput(StringReader(response)) // 将 XML 字符串作为输入
+//            }
+//            var eventType = parser.eventType
+//            while (eventType != XmlPullParser.END_DOCUMENT) {
+//                if (eventType == XmlPullParser.START_TAG) {
+//                    when (parser.name) {
+//                        "version" -> {
+//                            parser.next()
+//                            updateInfo.version = parser.text.toFloat()
+//                        }
+//
+//                        "update" -> {
+//                            parser.next()
+//                            updateInfo.date = parser.text
+//                        }
+//
+//                        "link" -> {
+//                            parser.next()
+//                            updateInfo.link = parser.text
+//                        }
+//
+//                        "content" -> {
+//                            parser.next()
+//                            updateInfo.content = parser.text
+//                        }
+//                        else -> {
+//                            parser.next()
+//                        }
+//                    }
+//                }
+//                eventType = parser.next() // 移动到下一个事件
+//            }
+//            return updateInfo
+//        } catch (e: Exception) {
+//            val errMsg = "error occur in getUpdateInfo: url=${url}, ${e.message}"
+//            Timber.log(1, "${e.message}")
+////            BottomDialog(APP)
+////                .setButtonText("复制")
+////                .setText(e.message.toString())
+////                .setButtonOnclick {
+////                    copyToClipboard(APP, errMsg)
+////                    Toaster.show("已复制到剪贴板")
+////                }
+////                .show()
+//            return null
+//        }
+//    }
+
     data class UpdateInfo(
+        var versionCode: Float = 0F,
         var version: Float = 0F,
         var date: String = "",
         var content: String = "",
@@ -143,61 +212,68 @@ data object RecruitDb : UpdateResource {
     override val path = "${APP.externalCacheDir}"
 }
 
-data object AppUpdate {
-    val url: URL = URL(site + "app_version.xml")
-
-    data class AppUpdateInfo(
-        var versionCode: Float = 0F,
-        var version: String = "",
-        var date: String = "",
-        var content: String = "",
-        var link: String = ""
-    )
-
-    suspend fun getUpdateInfo(): AppUpdateInfo {
-        val updateInfo = AppUpdateInfo()
-        val cn = httpResponseConnection(url, null, RequestMethod.GET)
-        val inputStream = cn.inputStream
-        val xmlPullParser = Xml.newPullParser()
-        xmlPullParser.setInput(inputStream, "utf-8")
-        var eventType = xmlPullParser.eventType
-        while (eventType != XmlPullParser.END_DOCUMENT) {
-            if (eventType == XmlPullParser.START_TAG) {
-                when (xmlPullParser.name) {
-                    "version" -> {
-                        xmlPullParser.next()
-                        updateInfo.version = xmlPullParser.text
-                    }
-
-                    "versionCode" -> {
-                        xmlPullParser.next()
-                        updateInfo.versionCode = xmlPullParser.text.toFloat()
-                    }
-
-                    "link" -> {
-                        xmlPullParser.next()
-                        updateInfo.link = xmlPullParser.text
-                    }
-
-                    "content" -> {
-                        xmlPullParser.next()
-                        updateInfo.content = xmlPullParser.text
-                    }
-
-                    else -> {
-
-                    }
-                }
-            }
-            eventType = xmlPullParser.next()
-        }
-        withContext(Dispatchers.IO) {
-            inputStream.close()
-        }
-        cn.disconnect()
-        return updateInfo
-    }
+data object AppUpdate : UpdateResource {
+    override val filename = "recruit_db.json"
+    override val url: URL = URL(site + "app_version.xml")
+    override val path = "${APP.externalCacheDir}"
 }
+
+
+//data object AppUpdate {
+//    val url: URL = URL(site + "app_version.xml")
+//
+//    data class AppUpdateInfo(
+//        var versionCode: Float = 0F,
+//        var version: String = "",
+//        var date: String = "",
+//        var content: String = "",
+//        var link: String = ""
+//    )
+//
+//    suspend fun getUpdateInfo(): AppUpdateInfo {
+//        val updateInfo = AppUpdateInfo()
+//        val cn = httpResponseConnection(url, null, RequestMethod.GET)
+//        val inputStream = cn.inputStream
+//        val xmlPullParser = Xml.newPullParser()
+//        xmlPullParser.setInput(inputStream, "utf-8")
+//        var eventType = xmlPullParser.eventType
+//        while (eventType != XmlPullParser.END_DOCUMENT) {
+//            if (eventType == XmlPullParser.START_TAG) {
+//                when (xmlPullParser.name) {
+//                    "version" -> {
+//                        xmlPullParser.next()
+//                        updateInfo.version = xmlPullParser.text
+//                    }
+//
+//                    "versionCode" -> {
+//                        xmlPullParser.next()
+//                        updateInfo.versionCode = xmlPullParser.text.toFloat()
+//                    }
+//
+//                    "link" -> {
+//                        xmlPullParser.next()
+//                        updateInfo.link = xmlPullParser.text
+//                    }
+//
+//                    "content" -> {
+//                        xmlPullParser.next()
+//                        updateInfo.content = xmlPullParser.text
+//                    }
+//
+//                    else -> {
+//
+//                    }
+//                }
+//            }
+//            eventType = xmlPullParser.next()
+//        }
+//        withContext(Dispatchers.IO) {
+//            inputStream.close()
+//        }
+//        cn.disconnect()
+//        return updateInfo
+//    }
+//}
 
 
 

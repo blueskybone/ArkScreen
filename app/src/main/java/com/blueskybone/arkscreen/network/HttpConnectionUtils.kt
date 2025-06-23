@@ -26,7 +26,7 @@ class HttpConnectionUtils {
         private const val CONNECT_TIMEOUT = 5000 // 连接超时时间
         private const val READ_TIMEOUT = 5000 // 读取超时时间
 
-        private val okHttpClient:OkHttpClient = OkHttpClient.Builder()
+        private val okHttpClient: OkHttpClient = OkHttpClient.Builder()
             .connectTimeout(15, TimeUnit.SECONDS) // 替换你的 CONNECT_TIMEOUT
             .readTimeout(15, TimeUnit.SECONDS)
             .build()
@@ -99,7 +99,7 @@ class HttpConnectionUtils {
                         responseCode = okHttpResponse.code,
                         responseContent = unzipped
                     )
-                }else{
+                } else {
                     val responseBodyString = try {
                         String(responseBytes, Charset.forName("UTF-8"))
                     } catch (e: Exception) {
@@ -129,24 +129,25 @@ class HttpConnectionUtils {
             header: Map<String, String>? = null,
             method: RequestMethod
         ): HttpsURLConnection {
-            val httpsConn = withContext(Dispatchers.IO) {
-                url.openConnection()
-            } as HttpsURLConnection
-            httpsConn.apply {
-                requestMethod = method.toString()
-                connectTimeout = CONNECT_TIMEOUT
-                readTimeout = READ_TIMEOUT
-                doOutput = method == RequestMethod.POST
-                doInput = true
-                instanceFollowRedirects = true
-            }
-
-            // 设置请求头
-            header?.forEach { (key, value) ->
-                httpsConn.setRequestProperty(key, value)
-            }
-
             return try {
+                val httpsConn = withContext(Dispatchers.IO) {
+                    url.openConnection()
+                } as HttpsURLConnection
+                httpsConn.apply {
+                    requestMethod = method.toString()
+                    connectTimeout = CONNECT_TIMEOUT
+                    readTimeout = READ_TIMEOUT
+                    doOutput = method == RequestMethod.POST
+                    doInput = true
+                    instanceFollowRedirects = true
+                }
+
+                // 设置请求头
+                header?.forEach { (key, value) ->
+                    httpsConn.setRequestProperty(key, value)
+                }
+
+
                 withContext(Dispatchers.IO) {
                     httpsConn.connect()
                 }
@@ -156,7 +157,6 @@ class HttpConnectionUtils {
                     throw HttpException("HTTP error: ${httpsConn.responseCode} - ${httpsConn.responseMessage}")
                 }
             } catch (e: Exception) {
-                httpsConn.disconnect()
                 throw HttpException("Failed to connect: ${e.message}", e)
             }
         }

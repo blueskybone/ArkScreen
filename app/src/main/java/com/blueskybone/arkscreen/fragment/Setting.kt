@@ -17,38 +17,20 @@ import androidx.fragment.app.Fragment
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.AppUpdate
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.activity.AboutActivity
-import com.blueskybone.arkscreen.activity.MainActivity
 import com.blueskybone.arkscreen.bindinginfo.AppTheme
-import com.blueskybone.arkscreen.bindinginfo.BackAutoAtd
 import com.blueskybone.arkscreen.bindinginfo.CheckUpdate
-import com.blueskybone.arkscreen.bindinginfo.FloatWindowAppearance
 import com.blueskybone.arkscreen.bindinginfo.GroupChat
 import com.blueskybone.arkscreen.bindinginfo.ListInfo
-import com.blueskybone.arkscreen.bindinginfo.OpenAutoStartSettings
-import com.blueskybone.arkscreen.bindinginfo.OverlayPermission
-import com.blueskybone.arkscreen.bindinginfo.PowerSavingMode
-import com.blueskybone.arkscreen.bindinginfo.RecruitMode
-import com.blueskybone.arkscreen.bindinginfo.ScreenshotDelay
 import com.blueskybone.arkscreen.bindinginfo.SeekBarInfo
-import com.blueskybone.arkscreen.bindinginfo.SetAtdTime
 import com.blueskybone.arkscreen.bindinginfo.TextInfo
-import com.blueskybone.arkscreen.bindinginfo.TurnOffBatteryOptimization
 import com.blueskybone.arkscreen.bindinginfo.UseInnerWeb
-import com.blueskybone.arkscreen.bindinginfo.WidgetAlpha
-import com.blueskybone.arkscreen.bindinginfo.WidgetAppearance
-import com.blueskybone.arkscreen.bindinginfo.WidgetRefresh
-import com.blueskybone.arkscreen.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.common.MenuDialog
-import com.blueskybone.arkscreen.databinding.DialogTimepickerBinding
 import com.blueskybone.arkscreen.databinding.FragmentSettingBinding
 import com.blueskybone.arkscreen.databinding.PreferenceBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSeekbarBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSwitchBinding
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.preference.preference.Preference
-import com.blueskybone.arkscreen.receiver.WidgetReceiver
-import com.blueskybone.arkscreen.util.TimeUtils.getDigitalString
 import com.blueskybone.arkscreen.util.copyToClipboard
 import com.blueskybone.arkscreen.util.getAppVersionName
 import com.blueskybone.arkscreen.util.saveDrawableToGallery
@@ -154,12 +136,12 @@ class Setting : Fragment() {
 
         binding.CheckUpdate.Layout.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                val info = AppUpdate.getUpdateInfo()
+                val info = AppUpdate.getUpdateInfo()?:return@launch
                 getAppVersionName(APP)?.let {
-                    if (it < info.version)
+                    if (it < info.version.toString())
                         Handler(Looper.getMainLooper()).post {
                             MaterialAlertDialogBuilder(APP)
-                                .setTitle(info.version)
+                                .setTitle(info.version.toString())
                                 .setMessage(info.content)
                                 .setNegativeButton(R.string.cancel, null)
                                 .setPositiveButton(getString(R.string.download)) { _, _ ->

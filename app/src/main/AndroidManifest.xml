@@ -101,27 +101,12 @@
         </activity>
 
         <activity
-            android:name=".activity.AboutActivity"
-            android:exported="true"
-            android:parentActivityName=".activity.MainActivity"
-            android:windowSoftInputMode="adjustNothing" />
-        <activity
             android:name=".activity.RealTimeActivity"
             android:exported="true"
             android:parentActivityName=".activity.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".activity.LoginWeb"
-            android:exported="true"
-            android:parentActivityName=".activity.MainActivity"
-            android:windowSoftInputMode="adjustNothing" />
-        <activity
-            android:name=".activity.AccountSk"
-            android:exported="true"
-            android:parentActivityName=".activity.MainActivity"
-            android:windowSoftInputMode="adjustNothing" />
-        <activity
-            android:name=".activity.AccountGc"
             android:exported="true"
             android:parentActivityName=".activity.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
@@ -137,11 +122,6 @@
             android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".activity.RecruitActivity"
-            android:exported="true"
-            android:parentActivityName=".activity.MainActivity"
-            android:windowSoftInputMode="adjustNothing" />
-        <activity
-            android:name=".activity.LinkMng"
             android:exported="true"
             android:parentActivityName=".activity.MainActivity"
             android:windowSoftInputMode="adjustNothing" />

@@ -2,6 +2,7 @@ package com.blueskybone.arkscreen.fragment
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,11 +11,13 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.ChipCardBinding
 import com.blueskybone.arkscreen.databinding.FragmentCharBinding
 import com.blueskybone.arkscreen.recyclerview.CharAdapter
+import com.blueskybone.arkscreen.recyclerview.CharGridAdapter
 import com.blueskybone.arkscreen.recyclerview.ItemListener
 import com.blueskybone.arkscreen.util.dpToPx
 import com.blueskybone.arkscreen.util.getColorFromAttr
@@ -35,14 +38,16 @@ class CharOwn : Fragment(), ItemListener {
     private val binding get() = _binding!!
 
     private lateinit var adapter: CharAdapter
+    private lateinit var adapter_new: CharGridAdapter
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         adapter = CharAdapter(requireContext(), 20)
+        adapter_new = CharGridAdapter(requireContext(), 20)
         _binding = FragmentCharBinding.inflate(inflater)
-        binding.RecyclerView.adapter = adapter
+
         setupBinding()
         setupListener()
         return binding.root
@@ -61,6 +66,24 @@ class CharOwn : Fragment(), ItemListener {
     }
 
     private fun setupBinding() {
+
+        binding.RecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.RecyclerView.adapter = adapter
+
+//        binding.RecyclerView.adapter = adapter_new
+        binding.RecyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(
+                outRect: Rect,
+                view: View,
+                parent: RecyclerView,
+                state: RecyclerView.State
+            ) {
+                super.getItemOffsets(outRect, view, parent, state)
+                val params = view.layoutParams as RecyclerView.LayoutParams
+                params.width = parent.width / 2
+                view.layoutParams = params
+            }
+        })
 
         model.filterProf.observe(viewLifecycleOwner) { value ->
             binding.Profession.setup(CharModel.ProfFilter, value)

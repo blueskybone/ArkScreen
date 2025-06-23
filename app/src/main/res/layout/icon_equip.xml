@@ -8,16 +8,14 @@
 
     <ImageView
         android:id="@+id/Icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:background="@color/grey_700"
-        android:src="@drawable/skill_icon_default"/>
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:background="@color/grey_700"/>
 
     <TextView
         android:id="@+id/Stage"
         android:layout_width="10dp"
         android:layout_height="match_parent"
-        android:background="@color/grey_700"
         android:gravity="center"
         android:textColor="@color/white"
         android:textSize="11sp"
