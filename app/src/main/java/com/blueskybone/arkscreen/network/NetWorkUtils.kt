@@ -6,8 +6,8 @@ import com.blueskybone.arkscreen.network.HttpConnectionUtils.Companion.httpRespo
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Gacha
-import com.blueskybone.arkscreen.util.SignUtils
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
+import com.blueskybone.arkscreen.util.generateSign
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.Dispatchers
@@ -220,7 +220,7 @@ class NetWorkUtils {
         ): List<AccountSk> {
             val url = URL(skland_url + binding_api)
             val timeStamp = getCurrentTs().toString()
-            val sign = SignUtils.generateSign(binding_api, "", credToken, timeStamp)
+            val sign = generateSign(binding_api, "", credToken, timeStamp)
             headerSign["cred"] = cred
             headerSign["sign"] = sign
             headerSign["timestamp"] = timeStamp

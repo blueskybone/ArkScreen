@@ -7,8 +7,8 @@ import com.blueskybone.arkscreen.network.model.GrantRequest
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Gacha
-import com.blueskybone.arkscreen.util.SignUtils
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
+import com.blueskybone.arkscreen.util.generateSign
 import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -65,7 +65,7 @@ class RetrofitUtils {
         ): List<AccountSk> {
             val timeStamp = getCurrentTs().toString()
             val sign =
-                SignUtils.generateSign("/api/v1/game/player/binding", "", credToken, timeStamp)
+                generateSign("/api/v1/game/player/binding", "", credToken, timeStamp)
             val headers = createSignHeaders(cred, sign, timeStamp)
             val response = RetrofitClient.apiService.getPlayerBinding(headers)
             return if (response.isSuccessful) {
@@ -130,7 +130,7 @@ class RetrofitUtils {
         ): String {
             val timeStamp = getCurrentTs().toString()
             val jsonInputString = "{\"gameId\":$channelMasterId,\"uid\":\"$uid\"}"
-            val sign = SignUtils.generateSign(
+            val sign = generateSign(
                 "/api/v1/game/attendance",
                 jsonInputString,
                 credToken,
@@ -175,7 +175,7 @@ class RetrofitUtils {
             uid: String
         ): Response<ResponseBody> {
             val timeStamp = getCurrentTs().toString()
-            val sign = SignUtils.generateSign(
+            val sign = generateSign(
                 "/api/v1/game/player/info",
                 "uid=$uid",
                 credAndToken.token,

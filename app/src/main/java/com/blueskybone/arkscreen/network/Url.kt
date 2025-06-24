@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.io.File
 import java.io.IOException
 import java.net.URL
 
@@ -57,4 +58,26 @@ suspend fun makeSuspendRequest(url: URL): String {
             throw e
         }
     }
+}
+
+suspend fun downloadFile(url: String, savePath: String): Boolean {
+    return withContext(Dispatchers.IO) {
+        val client = OkHttpClient()
+        val request = Request.Builder().url(url).build()
+
+        try {
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) throw Exception("!response.isSuccessful")
+                response.body?.let { body ->
+                    File(savePath).outputStream().use { output ->
+                        body.byteStream().copyTo(output)
+                    }
+                }
+                true
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
 }

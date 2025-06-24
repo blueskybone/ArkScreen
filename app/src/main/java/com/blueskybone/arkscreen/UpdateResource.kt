@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.style.UpdateAppearance
 import android.util.Xml
 import com.blueskybone.arkscreen.UpdateResource.Companion.site
+import com.blueskybone.arkscreen.UpdateResource.UpdateInfo
 import com.blueskybone.arkscreen.common.BottomDialog
 import com.blueskybone.arkscreen.network.HttpConnectionUtils.Companion.downloadToLocal
 import com.blueskybone.arkscreen.network.HttpConnectionUtils.Companion.httpResponseConnection
@@ -207,8 +208,7 @@ data object I18n : UpdateResource {
 
 data object RecruitDb : UpdateResource {
     override val filename = "recruit_db.json"
-    override val url: URL =
-        URL(site + "recruit_version.xml")
+    override val url: URL = URL(site + "recruit_version.xml")
     override val path = "${APP.externalCacheDir}"
 }
 
@@ -217,7 +217,6 @@ data object AppUpdate : UpdateResource {
     override val url: URL = URL(site + "app_version.xml")
     override val path = "${APP.externalCacheDir}"
 }
-
 
 //data object AppUpdate {
 //    val url: URL = URL(site + "app_version.xml")
