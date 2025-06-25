@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkAppUpdate(context: Context) {
         model.appUpdateInfo.observe(this) { info ->
-            getAppVersionName(context)?.let {
+            getAppVersionName(context).let {
                 if (it < info.version.toString())
                     Handler(Looper.getMainLooper()).post {
                         MaterialAlertDialogBuilder(context)

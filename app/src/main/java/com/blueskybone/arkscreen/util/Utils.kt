@@ -12,6 +12,7 @@ import android.view.WindowManager
 import android.webkit.CookieManager
 import androidx.core.content.ContextCompat.getString
 import com.blueskybone.arkscreen.APP
+import com.blueskybone.arkscreen.BuildConfig
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.hjq.toast.Toaster
@@ -39,16 +40,17 @@ fun getRealScreenSize(context: Context): Point {
 }
 
 
-fun getAppVersionName(context: Context): String? {
-    var versionname: String? = null
-    val pm = context.packageManager
-    try {
-        val packageInfo = pm.getPackageInfo(context.packageName, 0)
-        versionname = packageInfo.versionName
-    } catch (e: PackageManager.NameNotFoundException) {
-        e.printStackTrace()
-    }
-    return versionname
+fun getAppVersionName(context: Context): String {
+//    var versionname: String? = null
+//    val pm = context.packageManager
+//    try {
+//        val packageInfo = pm.getPackageInfo(context.packageName, 0)
+//        versionname = packageInfo.versionName
+//    } catch (e: PackageManager.NameNotFoundException) {
+//        e.printStackTrace()
+//    }
+//    return versionname
+    return BuildConfig.VERSION_NAME
 }
 
 //fun isInternetAvailable(context: Context): Boolean {

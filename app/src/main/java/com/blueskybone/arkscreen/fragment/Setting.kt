@@ -25,6 +25,7 @@ import com.blueskybone.arkscreen.bindinginfo.SeekBarInfo
 import com.blueskybone.arkscreen.bindinginfo.TextInfo
 import com.blueskybone.arkscreen.bindinginfo.UseInnerWeb
 import com.blueskybone.arkscreen.common.MenuDialog
+import com.blueskybone.arkscreen.configres.AppUpdateInfo
 import com.blueskybone.arkscreen.databinding.FragmentSettingBinding
 import com.blueskybone.arkscreen.databinding.PreferenceBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSeekbarBinding
@@ -136,8 +137,8 @@ class Setting : Fragment() {
 
         binding.CheckUpdate.Layout.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                val info = AppUpdate.getUpdateInfo()?:return@launch
-                getAppVersionName(APP)?.let {
+                val info = AppUpdateInfo.remoteInfo()
+                getAppVersionName(APP).let {
                     if (it < info.version.toString())
                         Handler(Looper.getMainLooper()).post {
                             MaterialAlertDialogBuilder(APP)

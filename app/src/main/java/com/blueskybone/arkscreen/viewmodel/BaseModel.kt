@@ -126,7 +126,7 @@ class BaseModel : ViewModel() {
         if (!prefManager.autoUpdateApp.get()) return
         executeAsync {
             try {
-                val info = AppUpdateInfo.remoteInfo() ?: return@executeAsync
+                val info = AppUpdateInfo.remoteInfo()
                 _appUpdateInfo.postValue(info)
             } catch (e: Exception) {
                 e.printStackTrace()
