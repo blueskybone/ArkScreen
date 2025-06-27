@@ -34,8 +34,6 @@ import org.koin.java.KoinJavaComponent.getKoin
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
 
 /**
  *   Created by blueskybone
@@ -82,12 +80,12 @@ class GachaModel : ViewModel() {
             }
             withContext(Dispatchers.IO) {
                 try {
-                    CharAllMap.update()
+                    CharAllMap.updateFile()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
                 try {
-                    charsNode = readFileAsJsonNode(CharAllMap.getResourceFilepath())["charInfoMap"]
+                    charsNode = readFileAsJsonNode(CharAllMap.getFilePath())["charInfoMap"]
                     loadGachaRecords(curAccount)
                     fesPool = getPoolType()
                     _gachaData.postValue(processGachaData(curAccount))

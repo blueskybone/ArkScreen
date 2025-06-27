@@ -53,19 +53,16 @@ fun getAppVersionName(context: Context): String {
     return BuildConfig.VERSION_NAME
 }
 
-//fun isInternetAvailable(context: Context): Boolean {
-//    val connectivityManager =
-//        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//    val networkCapabilities = connectivityManager.activeNetwork ?: return false
-//    val actNw =
-//        connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
-//    return when {
-//        actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-//        actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-//        actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-//        else -> false
-//    }
-//}
+fun getJsonContent(jsonStr: String?, key: String): String {
+    try {
+        val om = ObjectMapper()
+        val tree = om.readTree(jsonStr)
+        val keys = tree.findValues(key)
+        return keys[0].asText()
+    } catch (e: Exception) {
+        throw Exception("try get json content failed: content: $jsonStr , key: $key")
+    }
+}
 
 fun readFileAsJsonNode(path: String): JsonNode {
     val inputStream = FileInputStream(path)
@@ -112,6 +109,7 @@ fun getDensityDpi(context: Context): Int {
 }
 
 
+//TODO: 改一下逻辑，给ConfigRes复用
 fun getAssetsFilepath(filename: String): String {
     val context = APP
     val filePath = "${context.externalCacheDir.toString()}/${filename}"

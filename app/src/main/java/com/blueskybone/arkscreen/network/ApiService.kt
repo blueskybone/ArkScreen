@@ -72,11 +72,4 @@ interface ApiService {
 //        @Body request: LogoutRequest,
 //        @HeaderMap headers: Map<String, String>
 //    ): Response<LogoutResponse>
-
-    // 获取资源文件
-    @GET
-    suspend fun getResourceFile(
-        @Url url: String,
-        @HeaderMap headers: Map<String, String>
-    ): Response<String>
 }

@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.network
 
+import com.blueskybone.arkscreen.network.auth.generateSign
 import com.blueskybone.arkscreen.network.model.AttendanceRequest
 import com.blueskybone.arkscreen.network.model.BasicInfoRequest
 import com.blueskybone.arkscreen.network.model.CredRequest
@@ -8,7 +9,6 @@ import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Gacha
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
-import com.blueskybone.arkscreen.util.generateSign
 import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -27,10 +27,10 @@ import java.net.URLEncoder
 
 class RetrofitUtils {
     companion object {
-        private const val app_code = "4ca99fa6b56cc2ba"
+        private const val APP_CODE = "4ca99fa6b56cc2ba"
 
         suspend fun getGrantByToken(token: String): String {
-            val request = GrantRequest(appCode = app_code, token = token, type = 0)
+            val request = GrantRequest(appCode = APP_CODE, token = token, type = 0)
             val response = RetrofitClient.hypergryphService.getGrant(
                 request,
                 createLoginHeaders()

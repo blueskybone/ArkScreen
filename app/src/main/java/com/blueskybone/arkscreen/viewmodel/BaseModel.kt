@@ -5,13 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.APP
-import com.blueskybone.arkscreen.AppUpdate
-import com.blueskybone.arkscreen.UpdateResource
-import com.blueskybone.arkscreen.configres.AppUpdateInfo
+import com.blueskybone.arkscreen.AppUpdateInfo
+import com.blueskybone.arkscreen.network.BiliVideo
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.createAccountList
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.createGachaAccount
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.sklandAttendance
 import com.blueskybone.arkscreen.network.announceUrl
+import com.blueskybone.arkscreen.network.auth.WbiParams
+import com.blueskybone.arkscreen.network.getVideoList
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
@@ -65,9 +66,16 @@ class BaseModel : ViewModel() {
     private val _announce = MutableLiveData<String>()
     val announce: LiveData<String> get() = _announce
 
+    private val _biliVideo = MutableLiveData<List<BiliVideo>>()
+    val biliVideo: LiveData<List<BiliVideo>> get() = _biliVideo
+
+
+//    private val biliwbi: WbiParams
+
     init {
         initialize()
         checkAppUpdate()
+        getBiliVideoList()
         insertLinkData()
         checkAnnounce()
     }
@@ -128,6 +136,18 @@ class BaseModel : ViewModel() {
             try {
                 val info = AppUpdateInfo.remoteInfo()
                 _appUpdateInfo.postValue(info)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun getBiliVideoList() {
+        executeAsync {
+            try {
+                val list = getVideoList()
+                println("bili video list.size : ${list.size}")
+                _biliVideo.postValue(list)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

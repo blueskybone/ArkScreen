@@ -111,45 +111,6 @@ class Function : Fragment(), ItemListener {
     }
 
     private fun setUpBinding() {
-//        binding.SklandAccountManage.Title.text = getString(R.string.skland_account_manage)
-//        binding.GachaAccountManage.Title.text = getString(R.string.gacha_account_manage)
-//        binding.OperatorAssets.Title.text = getString(R.string.operator_assets)
-////        binding.GameInfo.Title.text = getString(R.string.game_info)
-//        binding.GachaStatistics.Title.text = getString(R.string.gacha_statistics)
-//        binding.Link3rdManage.Title.text = getString(R.string.home_3rd_link_manage)
-//        binding.AttendanceClick.Title.text = getString(R.string.attendance_click)
-//        binding.DebugLogClean.Title.text = getString(R.string.debug_log_clean)
-////        binding.RecruitCalculator.Title.text = getString(R.string.recruit_cal)
-//        binding.TimeCorrectButton.Title.text = getString(R.string.time_correction)
-//        binding.DebugLog.Title.text = getString(R.string.debug_log)
-//
-//        binding.SklandAccountManage.Card.setOnClickListener {
-//            startActivity(Intent(requireContext(), AccountSk::class.java))
-//        }
-//        binding.GachaAccountManage.Card.setOnClickListener {
-//            startActivity(Intent(requireContext(), AccountGc::class.java))
-//        }
-//        binding.OperatorAssets.Card.setOnClickListener {
-//            startActivity(Intent(requireContext(), CharAssets::class.java))
-//        }
-////        binding.RecruitCalculator.Card.setOnClickListener {
-////            startActivity(Intent(requireContext(), RecruitActivity::class.java))
-////        }
-//        binding.Link3rdManage.Card.setOnClickListener {
-//            startActivity(Intent(requireContext(), LinkMng::class.java))
-//        }
-//        binding.AttendanceClick.Card.setOnClickListener {
-//            displayDialog()
-//        }
-//        binding.DebugLog.Card.setOnClickListener {
-//            displayDebugDialog()
-//        }
-//        binding.DebugLogClean.Card.setOnClickListener {
-//            debugLogClean()
-//        }
-//        binding.GachaStatistics.Card.setOnClickListener {
-//            startActivity(Intent(requireContext(), GachaActivity::class.java))
-//        }
 
         binding.AddAccount.setOnClickListener {
             MenuDialog(requireContext())
@@ -163,9 +124,6 @@ class Function : Fragment(), ItemListener {
                 }
                 .show()
         }
-
-
-
 
         bindSwitchView(binding.AutoAttendance, prefManager.autoAttendance)
         binding.RecruitMode.setUp(RecruitMode, prefManager.recruitMode, null)

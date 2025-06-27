@@ -1,6 +1,7 @@
 package com.blueskybone.arkscreen.network
 
 import com.blueskybone.arkscreen.APP
+import com.blueskybone.arkscreen.util.getJsonContent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -14,9 +15,8 @@ import java.net.URL
  *   Date: 2025/1/21
  */
 
-enum class RequestMethod { GET, POST }
-data class Response(var responseCode: Int, var responseContent: String)
 data class CredAndToken(val cred: String, val token: String)
+
 const val avatarUrl = "https://web.hycdn.cn/arknights/game/assets/char_skin/avatar/"
 val skinCachePath = "${APP.externalCacheDir}/skin_avatar"
 
@@ -46,11 +46,12 @@ suspend fun makeSuspendRequest(url: URL): String {
     return withContext(Dispatchers.IO) {
         val client = OkHttpClient()
         val request = Request.Builder()
+            .addHeader("user-agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36")
+            .addHeader("referer","https://space.bilibili.com/161775300/upload/video")
             .url(url)
             .build()
         try {
-            val response = client.newCall(request).execute()
-            response.use {
+            client.newCall(request).execute().use {
                 if (!it.isSuccessful) throw IOException("Unexpected code: ${it.code}")
                 it.body?.string() ?: throw IOException("Empty response")
             }
@@ -64,7 +65,6 @@ suspend fun downloadFile(url: String, savePath: String): Boolean {
     return withContext(Dispatchers.IO) {
         val client = OkHttpClient()
         val request = Request.Builder().url(url).build()
-
         try {
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) throw Exception("!response.isSuccessful")
@@ -79,5 +79,5 @@ suspend fun downloadFile(url: String, savePath: String): Boolean {
             false
         }
     }
-
 }
+

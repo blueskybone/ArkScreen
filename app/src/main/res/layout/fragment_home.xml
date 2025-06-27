@@ -43,7 +43,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:layout_gravity="center"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                android:visibility="gone"/>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/TitleBanner"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"/>
+            <LinearLayout
+                android:id="@+id/BannerIdc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|bottom"
+                android:gravity="center"
+                android:orientation="horizontal" />
 
         </com.google.android.material.card.MaterialCardView>
 

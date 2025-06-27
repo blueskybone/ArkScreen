@@ -2,20 +2,32 @@ package com.blueskybone.arkscreen.fragment
 
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.provider.ContactsContract.CommonDataKinds.Im
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import coil.load
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.activity.CharAssets
+import com.blueskybone.arkscreen.activity.LoginWeb
 import com.blueskybone.arkscreen.activity.RealTimeActivity
 import com.blueskybone.arkscreen.activity.RecruitActivity
 import com.blueskybone.arkscreen.activity.WebViewActivity
@@ -30,11 +42,12 @@ import com.blueskybone.arkscreen.databinding.ChipRoundBinding
 import com.blueskybone.arkscreen.databinding.DialogInfoBinding
 import com.blueskybone.arkscreen.databinding.DialogInputBinding
 import com.blueskybone.arkscreen.databinding.FragmentHomeBinding
-import com.blueskybone.arkscreen.network.NetWorkUtils
+import com.blueskybone.arkscreen.network.BiliVideo
+import com.blueskybone.arkscreen.network.getSpaceTitleImageUrl
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.recyclerview.ItemListener
 import com.blueskybone.arkscreen.recyclerview.LinkGridAdapter
-import com.blueskybone.arkscreen.recyclerview.LinkHomeAdapter
+import com.blueskybone.arkscreen.recyclerview.viewpager.ImagePagerAdapter
 import com.blueskybone.arkscreen.room.ApCache
 import com.blueskybone.arkscreen.room.Link
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
@@ -53,30 +66,96 @@ import org.koin.android.ext.android.getKoin
  *   Created by blueskybone
  *   Date: 2024/12/30
  */
-class Home : Fragment(), ItemListener {
+class Home : Fragment() {
 
     private val prefManager: PrefManager by getKoin().inject()
     private val model: BaseModel by activityViewModels()
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private var adapter: LinkHomeAdapter? = null
-    private var adapter_new: LinkGridAdapter? = null
+    private var adapter: LinkGridAdapter? = null
+    private var adapterBanner: ImagePagerAdapter? = null
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+
+    private val adapterListener = object : ItemListener {
+        override fun onClick(position: Int) {
+            adapter?.currentList?.get(position)?.let { value ->
+                try {
+                    val url = value.url
+                    if (prefManager.useInnerWeb.get()) {
+                        val intent = Intent(requireContext(), WebViewActivity::class.java)
+                        intent.putExtra("url", url)
+                        startActivity(intent)
+                    } else {
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                    }
+                } catch (e: Exception) {
+                    Toaster.show(getString(R.string.illegal_url))
+                    e.printStackTrace()
+                }
+            }
+        }
+        override fun onLongClick(position: Int) {
+            adapter?.currentList?.get(position)?.let { value ->
+                MenuDialog(requireContext())
+                    .add(R.string.edit) { displayEditDialog(value.copy()) }
+                    .add(R.string.delete) { confirmDeletion(value) }
+                    .show()
+            }
+        }
+    }
+
+    private val bannerListener = object : ItemListener {
+        override fun onClick(position: Int) {
+            adapterBanner?.getItem(position)?.let { value ->
+                try {
+                    val url = "bilibili://video/${value.bvid}"
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    intent.setPackage("tv.danmaku.bili")
+                    startActivity(intent)
+                } catch (e: java.lang.Exception) {
+                    val bilibili = "https://bilibili.com/video/${value.bvid}"
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(bilibili)))
+                }
+            }
+        }
+        override fun onLongClick(position: Int) {
+
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        print("这这对吗")
         _binding = FragmentHomeBinding.inflate(inflater)
-        adapter = LinkHomeAdapter(this)
-        adapter_new = LinkGridAdapter(this)
+        adapter = LinkGridAdapter(adapterListener)
+        initialize()
         setupBinding()
         setupObserver()
         return binding.root
     }
 
+    private fun initialize() {
+        activityResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            // 处理返回结果
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                // 解析返回的数据
+                val token = data?.getStringExtra("token")
+                val dId = data?.getStringExtra("dId")
+                if (token != null && dId != null) {
+                    Toaster.show(getString(R.string.getting_info))
+                    model.accountSkLogin(token, dId)
+                } else {
+                    Toaster.show("null")
+                }
+            }
+        }
+    }
 
     private fun setupObserver() {
         model.currentAccount.observe(viewLifecycleOwner) { value ->
@@ -87,12 +166,18 @@ class Home : Fragment(), ItemListener {
             binding.Announce.text = value
         }
         model.links.observe(viewLifecycleOwner) { value ->
-            adapter_new?.submitList(value)
+            adapter?.submitList(value)
             if (value.isEmpty()) {
                 binding.LinkPreference.visibility = View.GONE
             } else {
                 binding.LinkPreference.visibility = View.VISIBLE
             }
+        }
+        model.biliVideo.observe(viewLifecycleOwner) { value ->
+            adapterBanner = ImagePagerAdapter(bannerListener, value)
+            binding.TitleBanner.adapter = adapterBanner
+            setupIndicators(value)
+            binding.TitleBanner.isUserInputEnabled = true
         }
     }
 
@@ -106,7 +191,21 @@ class Home : Fragment(), ItemListener {
             model.checkAnnounce()
             model.accountSkList.value!!.let {
                 if (it.isEmpty()) {
-                    displayLoginDialog()
+                    MenuDialog(requireContext())
+                        .add(getString(R.string.import_cookie)) {
+                            displayLoginDialog()
+                        }
+                        .add(R.string.web_login) {
+                            val intent =
+                                LoginWeb.startIntent(
+                                    requireContext(),
+                                    LoginWeb.Companion.LoginType.SKLAND
+                                )
+                            activityResultLauncher.launch(intent)
+                        }
+                        .show()
+
+//                    displayLoginDialog()
                 } else {
                     val menuDialog = MenuDialog(requireContext())
                     for (account in model.accountSkList.value!!) {
@@ -151,7 +250,7 @@ class Home : Fragment(), ItemListener {
         }
 
         binding.ExLinks.layoutManager = GridLayoutManager(requireContext(), 4)
-        binding.ExLinks.adapter = adapter_new
+        binding.ExLinks.adapter = adapter
         binding.ExLinks.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(
                 outRect: Rect,
@@ -168,10 +267,9 @@ class Home : Fragment(), ItemListener {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val path = NetWorkUtils.getSpaceTitleImageUrl()
-                print("try get space title image url")
-//                val path = getSpaceTitleImageUrl()
-                print(path)
+                val path = getSpaceTitleImageUrl()
+//                print("try get space title image url")
+//                print(path)
                 binding.TitleImage.load(path) {
                     crossfade(true)
                     crossfade(300)
@@ -193,7 +291,7 @@ class Home : Fragment(), ItemListener {
         }
     }
 
-    private fun displayLoginDialog(){
+    private fun displayLoginDialog() {
         val dialogBinding = DialogInputBinding.inflate(layoutInflater)
         dialogBinding.EditText2.visibility = View.GONE
         dialogBinding.EditText1.hint = getString(R.string.import_cookie)
@@ -253,33 +351,6 @@ class Home : Fragment(), ItemListener {
         _binding = null
     }
 
-    override fun onClick(position: Int) {
-        adapter_new?.currentList?.get(position)?.let { value ->
-            try {
-                val url = value.url
-                if (prefManager.useInnerWeb.get()) {
-                    val intent = Intent(requireContext(), WebViewActivity::class.java)
-                    intent.putExtra("url", url)
-                    startActivity(intent)
-                } else {
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-                }
-            } catch (e: Exception) {
-                Toaster.show(getString(R.string.illegal_url))
-                e.printStackTrace()
-            }
-        }
-    }
-
-    override fun onLongClick(position: Int) {
-        adapter_new?.currentList?.get(position)?.let { value ->
-            MenuDialog(requireContext())
-                .add(R.string.edit) { displayEditDialog(value.copy()) }
-                .add(R.string.delete) { confirmDeletion(value) }
-                .show()
-        }
-    }
-
     private fun displayEditDialog(value: Link) {
         val dialogBinding = DialogInputBinding.inflate(layoutInflater)
         dialogBinding.EditText1.setText(value.title)
@@ -323,6 +394,7 @@ class Home : Fragment(), ItemListener {
                 }
             }.show()
     }
+
     private fun displayAttendanceDialog() {
         val dialogBinding = DialogInfoBinding.inflate(layoutInflater)
         MaterialAlertDialogBuilder(requireContext())
@@ -340,4 +412,35 @@ class Home : Fragment(), ItemListener {
         Icon.setImageResource(funcChipInfo.icon)
         Title.setText(funcChipInfo.title)
     }
+
+    private fun setupIndicators(imageList:List<BiliVideo>) {
+        val indicatorLayout =binding.BannerIdc
+        imageList.forEach { _ ->
+            val indicator = ImageView(requireContext()).apply {
+                setImageResource(R.drawable.dot_unselected)
+                layoutParams = LinearLayout.LayoutParams(20.dp, 20.dp).apply {
+                    setMargins(8.dp, 0, 8.dp, 0)
+                }
+            }
+            indicatorLayout.addView(indicator)
+        }
+
+        // 同步指示器与手动滑动
+        binding.TitleBanner.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                updateIndicators(position % imageList.size)
+            }
+        })
+    }
+
+    private fun updateIndicators(position: Int) {
+        val indicatorLayout = binding.BannerIdc
+        for (i in 0 until indicatorLayout.childCount) {
+            (indicatorLayout.getChildAt(i) as ImageView).setImageResource(
+                if (i == position) R.drawable.dot_selected else R.drawable.dot_unselected
+            )
+        }
+    }
+
+    private val Int.dp: Int get() = (this * resources.displayMetrics.density).toInt()
 }

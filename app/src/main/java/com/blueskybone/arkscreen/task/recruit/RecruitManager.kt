@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.task.recruit
 
+
 import com.blueskybone.arkscreen.RecruitDb
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -28,7 +29,7 @@ class RecruitManager {
     init {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                RecruitDb.update()
+                RecruitDb.updateFile()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -36,7 +37,7 @@ class RecruitManager {
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             recruitDatabase = withContext(Dispatchers.IO) {
                 om.readValue(
-                    FileInputStream(RecruitDb.getResourceFilepath()),
+                    FileInputStream(RecruitDb.getFilePath()),
                     RecruitDatabase::class.java
                 )
             }

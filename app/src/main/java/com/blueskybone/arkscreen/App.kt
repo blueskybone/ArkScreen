@@ -12,6 +12,7 @@ import coil.Coil
 import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.request.CachePolicy
+import coil.util.DebugLogger
 import com.blueskybone.arkscreen.bindinginfo.AppTheme
 import com.blueskybone.arkscreen.logger.FileLoggingInterceptor
 import com.blueskybone.arkscreen.logger.FileLoggingTree
@@ -78,6 +79,13 @@ class App : Application() {
             single { SharedPreferenceStore(this@App) }
             single { PrefManager(get<SharedPreferenceStore>()) }
         }
+
+        Coil.setImageLoader(
+            ImageLoader.Builder(this)
+                .logger(DebugLogger()) // 开启日志
+                .build()
+        )
+
         startKoin {
             androidLogger()
             modules(preferenceModule)

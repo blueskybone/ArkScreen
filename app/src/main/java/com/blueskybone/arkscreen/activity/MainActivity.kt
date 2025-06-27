@@ -89,6 +89,8 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigationView: BottomNavigationView = binding.navView
         viewPager.adapter = ViewPagerFragmentAdapter(this)
 
+        viewPager.isUserInputEnabled = false
+
         bottomNavigationView.setOnItemSelectedListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.navigation_home -> {

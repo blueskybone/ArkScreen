@@ -11,12 +11,10 @@ import com.blueskybone.arkscreen.CharAllMap
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.Progress
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.network.NetWorkTask
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTask
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Operator
-import com.blueskybone.arkscreen.room.RealTimeData
 import com.blueskybone.arkscreen.util.readFileAsJsonNode
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -186,12 +184,12 @@ class CharModel : ViewModel() {
     private fun getCharsNotOwn(): List<Operator> {
         executeAsync {
             try {
-                CharAllMap.update()
+                CharAllMap.updateFile()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
-        val charsAllNode = readFileAsJsonNode(CharAllMap.getResourceFilepath())["charInfoMap"]
+        val charsAllNode = readFileAsJsonNode(CharAllMap.getFilePath())["charInfoMap"]
         if(charsAllNode == null) {
             println("charsAllNode == null")
         }

@@ -32,8 +32,6 @@ class PrefManager() {
         autoAttendance = preferenceStore.getBoolean("auto_attendance", true)
         lastAttendanceTs = preferenceStore.getLong("last_attendance_ts", 0L)
         warnOverlayPermission = preferenceStore.getBoolean("warn_overlay_permission", true)
-//        realTimePageAttendance = preferenceStore.getBoolean("real_time_page_attendance", false)
-//        realTimePageShowStarter = preferenceStore.getBoolean("real_time_page_show_starter", true)
         autoUpdateApp = preferenceStore.getBoolean("auto_app_update", true)
         timeCorrect = preferenceStore.getBoolean("time_correct", false)
 //        debugMode = preferenceStore.getBoolean("debug_mode", false)
@@ -65,6 +63,7 @@ class PrefManager() {
         alarmAtdMin = preferenceStore.getInt("alarm_attendance_min", 10)
         useInnerWeb = preferenceStore.getBoolean("use_inner_web", true)
         appTheme = preferenceStore.getString("app_theme", AppTheme.defaultValue)
+        
     }
 
     lateinit var warnOverlayPermission: Preference<Boolean>

@@ -1,9 +1,6 @@
-package com.blueskybone.arkscreen.configres
+package com.blueskybone.arkscreen
 
 import android.util.Xml
-import com.blueskybone.arkscreen.APP
-import com.blueskybone.arkscreen.BuildConfig
-import com.blueskybone.arkscreen.configres.ConfigRes.UpdateInfo
 import com.blueskybone.arkscreen.network.downloadFile
 import com.blueskybone.arkscreen.network.makeSuspendRequest
 import com.blueskybone.arkscreen.util.readFileAsJsonNode
@@ -33,6 +30,11 @@ sealed interface ConfigRes {
         return node["update"]["date"].asText()
     }
 
+    fun getFilePath(): String {
+        copyAssetsFile()
+        return filepath
+    }
+    
     //private:
     suspend fun remoteInfo(): UpdateInfo {
         val updateInfo = UpdateInfo()
@@ -96,21 +98,21 @@ data object CharAllMap : ConfigRes {
     override val filename = "char_info_map.json"
     override val url: URL =
         URL("https://gitee.com/blueskybone/ArkScreen/raw/master/resource/char_info_map_version.xml")
-    override val filepath = "${APP.externalCacheDir}/${filename}"
+    override val filepath = "${APP.externalCacheDir}/$filename"
 }
 
 data object I18n : ConfigRes {
     override val filename = "i18n.json"
     override val url: URL =
         URL("https://gitee.com/blueskybone/ArkScreen/raw/master/resource/i18n_version.xml")
-    override val filepath = "${APP.externalCacheDir}/${filename}"
+    override val filepath = "${APP.externalCacheDir}/$filename"
 }
 
 data object RecruitDb : ConfigRes {
     override val filename = "recruit_db.json"
     override val url: URL =
         URL("https://gitee.com/blueskybone/ArkScreen/raw/master/resource/recruit_version.xml")
-    override val filepath = "${APP.externalCacheDir}/${filename}"
+    override val filepath = "${APP.externalCacheDir}/$filename"
 }
 
 data object AppUpdateInfo {
@@ -143,7 +145,7 @@ data object AppUpdateInfo {
             }
             return updateInfo
         } catch (e: Exception) {
-            val errMsg = "error occur in getUpdateInfo: url=${url}, ${e.message}"
+            val errMsg = "error occur in getUpdateInfo: url=$url, ${e.message}"
             return updateInfo
         }
     }

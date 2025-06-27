@@ -15,7 +15,6 @@ import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import com.blueskybone.arkscreen.APP
-import com.blueskybone.arkscreen.AppUpdate
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.bindinginfo.AppTheme
 import com.blueskybone.arkscreen.bindinginfo.CheckUpdate
@@ -25,7 +24,7 @@ import com.blueskybone.arkscreen.bindinginfo.SeekBarInfo
 import com.blueskybone.arkscreen.bindinginfo.TextInfo
 import com.blueskybone.arkscreen.bindinginfo.UseInnerWeb
 import com.blueskybone.arkscreen.common.MenuDialog
-import com.blueskybone.arkscreen.configres.AppUpdateInfo
+import com.blueskybone.arkscreen.AppUpdateInfo
 import com.blueskybone.arkscreen.databinding.FragmentSettingBinding
 import com.blueskybone.arkscreen.databinding.PreferenceBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSeekbarBinding
