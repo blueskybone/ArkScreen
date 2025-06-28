@@ -43,13 +43,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:layout_gravity="center"
+                android:contentDescription="@string/text_default"
                 android:scaleType="centerCrop"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/TitleBanner"
+
+            <com.blueskybone.arkscreen.common.NestedScrollableHost
                 android:layout_width="match_parent"
-                android:layout_height="120dp"/>
+                android:layout_height="match_parent">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/TitleBanner"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp" />
+            </com.blueskybone.arkscreen.common.NestedScrollableHost>
+
             <LinearLayout
                 android:id="@+id/BannerIdc"
                 android:layout_width="wrap_content"
@@ -66,17 +74,18 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:layout_gravity="start"
                 style="@style/PreferenceHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="start"
                 android:text="@string/real_time_data" />
+
             <TextView
-                android:layout_gravity="end"
                 android:id="@+id/RefreshGame"
                 style="@style/PreferenceHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end"
                 android:text="@string/refresh" />
         </FrameLayout>
 
@@ -184,18 +193,19 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:layout_gravity="start"
                 android:id="@+id/LinkPreference"
                 style="@style/PreferenceHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="start"
                 android:text="@string/tools_3rd" />
+
             <TextView
-                android:layout_gravity="end"
                 android:id="@+id/AddLink"
                 style="@style/PreferenceHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end"
                 android:text="@string/add" />
         </FrameLayout>
 
@@ -240,40 +250,40 @@
         </com.google.android.material.card.MaterialCardView>
 
 
-<!--        <TextView-->
-<!--            style="@style/PreferenceHeader"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@string/mess_option" />-->
+        <!--        <TextView-->
+        <!--            style="@style/PreferenceHeader"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="@string/mess_option" />-->
 
-<!--        <com.google.android.material.card.MaterialCardView-->
-<!--            style="@style/CardViewContent"-->
-<!--            android:clickable="false"-->
-<!--            android:focusable="false">-->
+        <!--        <com.google.android.material.card.MaterialCardView-->
+        <!--            style="@style/CardViewContent"-->
+        <!--            android:clickable="false"-->
+        <!--            android:focusable="false">-->
 
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="vertical">-->
+        <!--            <LinearLayout-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:orientation="vertical">-->
 
-<!--                <TextView-->
-<!--                    android:id="@+id/Manual"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:padding="16dp"-->
-<!--                    android:text="@string/manual"-->
-<!--                    android:textAppearance="?attr/textAppearanceBody2" />-->
+        <!--                <TextView-->
+        <!--                    android:id="@+id/Manual"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:padding="16dp"-->
+        <!--                    android:text="@string/manual"-->
+        <!--                    android:textAppearance="?attr/textAppearanceBody2" />-->
 
-<!--                <TextView-->
-<!--                    android:id="@+id/Donate"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:padding="16dp"-->
-<!--                    android:text="@string/donate"-->
-<!--                    android:textAppearance="?attr/textAppearanceBody2" />-->
-<!--            </LinearLayout>-->
+        <!--                <TextView-->
+        <!--                    android:id="@+id/Donate"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:padding="16dp"-->
+        <!--                    android:text="@string/donate"-->
+        <!--                    android:textAppearance="?attr/textAppearanceBody2" />-->
+        <!--            </LinearLayout>-->
 
-<!--        </com.google.android.material.card.MaterialCardView>-->
+        <!--        </com.google.android.material.card.MaterialCardView>-->
 
         <TextView
             android:id="@+id/AnnounceTitle"

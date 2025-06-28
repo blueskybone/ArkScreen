@@ -4,14 +4,15 @@ package com.blueskybone.arkscreen.logger
  *   Created by blueskybone
  *   Date: 2025/6/13
  */
+import android.annotation.SuppressLint
 import timber.log.Timber
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
-import android.content.Context
 import android.util.Log
 import com.blueskybone.arkscreen.APP
 
+@SuppressLint("ConstantLocale")
 class FileLoggingTree : Timber.Tree() {
 
     companion object{
