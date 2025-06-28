@@ -1,6 +1,5 @@
 package com.blueskybone.arkscreen.network
 
-import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.logger.FileLoggingInterceptor
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -24,13 +23,13 @@ object RetrofitClient {
     }
     private val fileLogger = FileLoggingInterceptor()
     private val loggingInterceptor = HttpLoggingInterceptor(fileLogger).apply {
-        level = HttpLoggingInterceptor.Level.BODY // 记录请求和响应头和体
+        level = HttpLoggingInterceptor.Level.BODY
     }
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
         .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
         .addInterceptor(HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            level = HttpLoggingInterceptor.Level.HEADERS
         })
         .addInterceptor { chain ->
             val original = chain.request()

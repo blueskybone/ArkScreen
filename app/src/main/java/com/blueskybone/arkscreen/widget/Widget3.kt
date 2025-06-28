@@ -16,9 +16,9 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.activity.RealTimeActivity
-import com.blueskybone.arkscreen.bindinginfo.WidgetAppearance
-import com.blueskybone.arkscreen.bindinginfo.WidgetSize
+import com.blueskybone.arkscreen.ui.activity.RealTimeActivity
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetAppearance
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.receiver.WidgetReceiver.Companion.WORKER_NAME
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs

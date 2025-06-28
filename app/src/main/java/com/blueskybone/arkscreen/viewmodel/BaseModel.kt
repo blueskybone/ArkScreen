@@ -11,12 +11,11 @@ import com.blueskybone.arkscreen.network.NetWorkTask.Companion.createAccountList
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.createGachaAccount
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.sklandAttendance
 import com.blueskybone.arkscreen.network.announceUrl
-import com.blueskybone.arkscreen.network.auth.WbiParams
 import com.blueskybone.arkscreen.network.getVideoList
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
-import com.blueskybone.arkscreen.room.ApCache
+import com.blueskybone.arkscreen.playerinfo.ApCache
 import com.blueskybone.arkscreen.room.ArkDatabase
 import com.blueskybone.arkscreen.room.Link
 import com.fasterxml.jackson.databind.ObjectMapper

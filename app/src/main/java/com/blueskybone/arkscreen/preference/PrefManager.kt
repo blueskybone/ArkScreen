@@ -1,17 +1,17 @@
 package com.blueskybone.arkscreen.preference
 
-import com.blueskybone.arkscreen.bindinginfo.FloatWindowAppearance
-import com.blueskybone.arkscreen.bindinginfo.RecruitMode
-import com.blueskybone.arkscreen.bindinginfo.ScreenshotDelay
-import com.blueskybone.arkscreen.bindinginfo.WidgetAlpha
-import com.blueskybone.arkscreen.bindinginfo.WidgetAppearance
-import com.blueskybone.arkscreen.bindinginfo.WidgetSize
-import com.blueskybone.arkscreen.bindinginfo.AppTheme
+import com.blueskybone.arkscreen.ui.bindinginfo.FloatWindowAppearance
+import com.blueskybone.arkscreen.ui.bindinginfo.RecruitMode
+import com.blueskybone.arkscreen.ui.bindinginfo.ScreenshotDelay
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetAlpha
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetAppearance
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize
+import com.blueskybone.arkscreen.ui.bindinginfo.AppTheme
 import com.blueskybone.arkscreen.preference.preference.Preference
 import com.blueskybone.arkscreen.preference.preference.PreferenceStore
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
-import com.blueskybone.arkscreen.room.ApCache
+import com.blueskybone.arkscreen.playerinfo.ApCache
 import java.util.function.Function
 
 /**
@@ -36,7 +36,7 @@ class PrefManager() {
         timeCorrect = preferenceStore.getBoolean("time_correct", false)
 //        debugMode = preferenceStore.getBoolean("debug_mode", false)
         showHomeAnnounce = preferenceStore.getBoolean("show_home_announce", true)
-        timeCorrectSec = preferenceStore.getInt("time_correct_sec", 0)
+        timeCorrectSec = preferenceStore.getLong("time_correct_sec", 0L)
         baseAccountSk = preferenceStore.getObject(
             "base_account_sk",
             AccountSk.default(),
@@ -83,7 +83,7 @@ class PrefManager() {
     lateinit var timeCorrect: Preference<Boolean>
 
     //    lateinit var debugMode: Preference<Boolean>
-    lateinit var timeCorrectSec: Preference<Int>
+    lateinit var timeCorrectSec: Preference<Long>
     lateinit var baseAccountSk: Preference<AccountSk>
     lateinit var baseAccountGc: Preference<AccountGc>
     lateinit var apCache: Preference<ApCache>

@@ -6,11 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTask
+import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTaskTest
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountSk
-import com.blueskybone.arkscreen.room.ApCache
-import com.blueskybone.arkscreen.room.RealTimeData
-import com.blueskybone.arkscreen.room.RealTimeUi
+import com.blueskybone.arkscreen.playerinfo.ApCache
+import com.blueskybone.arkscreen.playerinfo.RealTimeData
+import com.blueskybone.arkscreen.playerinfo.RealTimeUi
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
 import com.blueskybone.arkscreen.util.TimeUtils.getDayNum
 import com.blueskybone.arkscreen.util.TimeUtils.getRemainTimeStr
@@ -178,7 +179,24 @@ class RealTimeModel : ViewModel() {
         return realTimeUi
     }
 
-    private suspend fun getRealTimeData(account:AccountSk):RealTimeData{
+    private suspend fun  getRealTimeData(account:AccountSk): RealTimeData {
+
+//        try{
+//            val playerInfoRespTest = getGameInfoConnectionTaskTest(account)
+//            println("playerInfoRespTest success")
+////            println(playerInfoRespTest.body()?.data?.building?.manufactures?.get(0)?.chars?.get(0)?.charId)
+//            val train = playerInfoRespTest.body()?.data?.building?.training
+//            if(train == null){
+//                println("training is null SUCE")
+//            }else{
+//                println("training not null fail")
+//
+//            }
+//        }catch (e: Exception){
+//            e.printStackTrace()
+//            println("playerInfoRespTest failed" )
+//        }
+
         val response = getGameInfoConnectionTask(account)
         response.body()?.use{ body ->
             val gzip = GZIPInputStream(body.byteStream())

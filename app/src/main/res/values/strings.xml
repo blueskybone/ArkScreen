@@ -42,6 +42,7 @@
     <string name="delete">删除</string>
     <string name="edit">编辑</string>
     <string name="reset">重置</string>
+    <string name="refresh">刷新</string>
 
     <!-- Home Page -->
     <string name="announcement">公告</string>
@@ -114,7 +115,7 @@
     <!--    <string name="debug_mode">调试模式</string>-->
     <!--    <string name="debug_mode_detail">可能拖慢性能</string>-->
     <string name="click_correction">点击校准</string>
-    <string name="time_correction_detail">适用于修改过本地时间的root设备</string>
+    <string name="time_correction_detail">适用于修改过本地时间的设备</string>
     <!--    <string name="click_to_correct">点击校准</string>-->
     <!--    <string name="real_time_attendance">实时数据页触发签到</string>-->
     <!--    <string name="real_time_attendance_detail">打开实时数据详情页同时触发签到</string>-->
@@ -171,6 +172,8 @@
     <string name="newest_update">当前是最新版本</string>
     <string name="send_feedback">发送反馈</string>
     <string name="open_license">开源许可</string>
+    <string name="check_logs">查看日志</string>
+    <string name="clean_logs">清除日志</string>
     <string name="open_license_content">[Markwon](https://github.com/noties/Markwon)\n\n
 [AndroidX](https://github.com/androidx/androidx)\n\n
 [Material Components for Android](https://github.com/material-components/material-components-android)\n\n

@@ -5,6 +5,7 @@ import com.blueskybone.arkscreen.network.model.AttendanceRequest
 import com.blueskybone.arkscreen.network.model.BasicInfoRequest
 import com.blueskybone.arkscreen.network.model.CredRequest
 import com.blueskybone.arkscreen.network.model.GrantRequest
+import com.blueskybone.arkscreen.network.model.PlayerInfoResp
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Gacha
@@ -187,6 +188,24 @@ class RetrofitUtils {
             )
         }
 
+        suspend fun getGameInfoConnectionTest(
+            credAndToken: CredAndToken,
+            uid: String
+        ): Response<PlayerInfoResp> {
+            val timeStamp = getCurrentTs().toString()
+            val sign = generateSign(
+                "/api/v1/game/player/info",
+                "uid=$uid",
+                credAndToken.token,
+                timeStamp
+            )
+            val headers = createSignHeaders(credAndToken.cred, sign, timeStamp)
+            return RetrofitClient.apiService.getPlayerInfoJson(
+                uid, headers
+            )
+        }
+
+
         suspend fun getBasicInfo(channelMasterId: Int, token: String): AccountGc? {
             val requestBody: BasicInfoRequest = if (channelMasterId == 1) {
                 BasicInfoRequest.OfficialRequest(1, channelMasterId, token)
@@ -260,7 +279,7 @@ class RetrofitUtils {
             return mapOf(
                 "cred" to cred,
                 "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
-                "Accept-Encoding" to "gzip",
+//                "Accept-Encoding" to "gzip",
                 "Connection" to "close",
                 "Content-Type" to "application/json",
                 "sign" to sign,

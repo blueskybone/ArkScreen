@@ -22,3 +22,11 @@ data class Gacha(
     var record: String, //val records: List<Record>,
     //val isValid: Boolean        //排除数据不相连错误
 )
+
+data class Gachas(
+    val pool: String,
+    var count: Int = 0,
+    var ts: Long = 0L,
+    var isFes:Boolean = false,
+    var data: MutableList<Records> = mutableListOf()
+)

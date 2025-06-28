@@ -22,7 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.updateMargins
 import androidx.drawerlayout.widget.DrawerLayout
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.common.FlowLayout
+import com.blueskybone.arkscreen.ui.common.FlowLayout
 import com.blueskybone.arkscreen.task.recruit.RecruitManager
 import com.blueskybone.arkscreen.util.getRealScreenSize
 import java.util.concurrent.atomic.AtomicInteger

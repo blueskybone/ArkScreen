@@ -90,7 +90,7 @@
         </receiver>
 
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:launchMode="singleTask">
@@ -101,32 +101,37 @@
         </activity>
 
         <activity
-            android:name=".activity.RealTimeActivity"
+            android:name=".ui.activity.RealTimeActivity"
             android:exported="true"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".activity.LoginWeb"
+            android:name=".ui.activity.LoginWeb"
             android:exported="true"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".activity.CharAssets"
+            android:name=".ui.activity.LogActivity"
             android:exported="true"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".activity.GachaActivity"
+            android:name=".ui.activity.CharAssets"
             android:exported="true"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".activity.RecruitActivity"
+            android:name=".ui.activity.GachaActivity"
             android:exported="true"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName=".ui.activity.MainActivity"
+            android:windowSoftInputMode="adjustNothing" />
+        <activity
+            android:name=".ui.activity.RecruitActivity"
+            android:exported="true"
+            android:parentActivityName=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
 
-        <activity android:name=".activity.WebViewActivity" />
+        <activity android:name=".ui.activity.WebViewActivity" />
 
         <activity
             android:name=".task.screenshot.AcquireCapturePermission"

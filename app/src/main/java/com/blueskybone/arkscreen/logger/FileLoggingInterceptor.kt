@@ -15,15 +15,14 @@ import java.util.concurrent.Executors
 
 class FileLoggingInterceptor : HttpLoggingInterceptor.Logger {
 
-    private val logDir = File(APP.externalCacheDir, "network_logs")
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    private val timeFormat = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
-    private val executor = Executors.newSingleThreadExecutor()
+    companion object{
+        val logDir = File(APP.externalCacheDir, "network_logs")
+        private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        private val timeFormat = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
+        private val executor = Executors.newSingleThreadExecutor()
 
-    private val excludedUrls = listOf(
-        "/api/v1/game/player/info"
-    )
-
+        private val excludedUrls = listOf("/api/v1/game/player/info")
+    }
     init {
         if (!logDir.exists()) {
             logDir.mkdirs()
@@ -32,9 +31,9 @@ class FileLoggingInterceptor : HttpLoggingInterceptor.Logger {
     }
 
     override fun log(message: String) {
-        if (shouldSkipLogging(message)) {
-            return
-        }
+//        if (shouldSkipLogging(message)) {
+//            return
+//        }
         executor.execute {
             try {
                 val date = dateFormat.format(Date())

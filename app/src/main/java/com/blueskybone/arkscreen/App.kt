@@ -13,7 +13,7 @@ import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.request.CachePolicy
 import coil.util.DebugLogger
-import com.blueskybone.arkscreen.bindinginfo.AppTheme
+import com.blueskybone.arkscreen.ui.bindinginfo.AppTheme
 import com.blueskybone.arkscreen.logger.FileLoggingInterceptor
 import com.blueskybone.arkscreen.logger.FileLoggingTree
 import com.blueskybone.arkscreen.network.equipCachePath
@@ -74,7 +74,8 @@ class App : Application() {
         setScreenDpi(screenDensityDpi)
 
         //Initialize Logger
-        Timber.plant(FileLoggingTree(this))
+        Timber.plant(FileLoggingTree())
+
         val preferenceModule = module {
             single { SharedPreferenceStore(this@App) }
             single { PrefManager(get<SharedPreferenceStore>()) }
@@ -177,7 +178,7 @@ class App : Application() {
         val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
         when(prefManager.appTheme.get()){
             AppTheme.light -> Toaster.setStyle(BlackToastStyle())
-            AppTheme.dark,AppTheme.system-> Toaster.setStyle(WhiteToastStyle())
+            AppTheme.dark, AppTheme.system-> Toaster.setStyle(WhiteToastStyle())
         }
         Toaster.setGravity(Gravity.TOP, 0, 60 * screenDpi.toInt())
     }

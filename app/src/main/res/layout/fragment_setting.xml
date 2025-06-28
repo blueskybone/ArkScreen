@@ -16,110 +16,6 @@
             android:layout_height="wrap_content"
             android:text="@string/setting" />
 
-        <!--        <TextView-->
-        <!--            style="@style/PreferenceHeader"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="@string/quick_recruit" />-->
-
-        <!--        <include-->
-        <!--            android:id="@+id/RecruitMode"-->
-        <!--            layout="@layout/preference" />-->
-
-        <!--        <include-->
-        <!--            android:id="@+id/FloatWindowAppearance"-->
-        <!--            layout="@layout/preference"-->
-        <!--            android:visibility="gone" />-->
-
-        <!--        <include-->
-        <!--            android:id="@+id/ScreenShotDelay"-->
-        <!--            layout="@layout/preference_seekbar" />-->
-
-        <!--        <include-->
-        <!--            android:id="@+id/OverlayPermission"-->
-        <!--            layout="@layout/preference" />-->
-
-        <!--        <View-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="1dp"-->
-        <!--            android:background="?android:attr/listDivider" />-->
-
-        <!--        <TextView-->
-        <!--            style="@style/PreferenceHeader"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="@string/widget" />-->
-
-        <!--        <androidx.appcompat.widget.SwitchCompat-->
-        <!--            android:id="@+id/AutoAttendance"-->
-        <!--            style="@style/SwitchPreference"-->
-        <!--            android:text="@string/skland_auto_attendance" />-->
-
-        <!--        <include-->
-        <!--            android:id="@+id/PowerSavingMode"-->
-        <!--            layout="@layout/preference_switch" />-->
-
-        <!--        <include-->
-        <!--            android:id="@+id/TurnOffBatteryOptimization"-->
-        <!--            layout="@layout/preference" />-->
-
-        <!--        <include-->
-        <!--            android:id="@+id/WidgetAppearance"-->
-        <!--            layout="@layout/preference" />-->
-
-        <!--        <include-->
-        <!--            android:id="@+id/WidgetContentSize"-->
-        <!--            layout="@layout/preference" />-->
-
-        <!--        <include-->
-        <!--            android:id="@+id/WidgetAlpha"-->
-        <!--            layout="@layout/preference_seekbar" />-->
-
-        <!--        <include-->
-        <!--            android:id="@+id/WidgetRefresh"-->
-        <!--            layout="@layout/preference" />-->
-
-        <!--        <View-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="1dp"-->
-        <!--            android:background="?android:attr/listDivider" />-->
-
-
-        <!--        <TextView-->
-        <!--            style="@style/PreferenceHeader"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="@string/auto_attendance" />-->
-
-        <!--        <include-->
-        <!--            android:id="@+id/BackAutoAtd"-->
-        <!--            layout="@layout/preference_switch" />-->
-
-        <!--        <include-->
-        <!--            android:id="@+id/SetAtdTime"-->
-        <!--            layout="@layout/preference" />-->
-
-        <!--        <include-->
-        <!--            android:id="@+id/OpenAutoStartSettings"-->
-        <!--            layout="@layout/preference" />-->
-
-        <!--        <View-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="1dp"-->
-        <!--            android:background="?android:attr/listDivider" />-->
-
-        <!--        <androidx.appcompat.widget.SwitchCompat-->
-        <!--            android:id="@+id/RealTimePageAttendance"-->
-        <!--            style="@style/SwitchPreference"-->
-        <!--            android:text="@string/real_time_attendance"-->
-        <!--            android:visibility="gone" />-->
-
-        <!--        <TextView-->
-        <!--            style="@style/PreferenceHeader"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="@string/mess_option" />-->
-
         <include
             android:id="@+id/AppTheme"
             layout="@layout/preference" />
@@ -127,12 +23,6 @@
         <include
             android:id="@+id/UseInnerWeb"
             layout="@layout/preference_switch" />
-
-
-        <!--        <androidx.appcompat.widget.SwitchCompat-->
-        <!--            android:id="@+id/RealTimePageShowStarter"-->
-        <!--            style="@style/SwitchPreference"-->
-        <!--            android:text="@string/real_time_show_starter" />-->
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/ShowHomeAnnounce"
@@ -143,6 +33,10 @@
             android:id="@+id/AutoUpdateApp"
             style="@style/SwitchPreference"
             android:text="@string/auto_check_update" />
+
+        <include
+            android:id="@+id/TimeCorrect"
+            layout="@layout/preference_switch" />
 
         <View
             android:layout_width="match_parent"
@@ -160,7 +54,6 @@
             layout="@layout/preference" />
 
 
-
         <TextView
             android:id="@+id/OpenSourceLicense"
             style="@style/Preference"
@@ -168,21 +61,30 @@
             android:layout_height="wrap_content"
             android:text="@string/open_license" />
 
-        <!--            <TextView-->
-        <!--                android:id="@+id/UpdateLog"-->
-        <!--                style="@style/Preference"-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:text="@string/update_log" />-->
-
-
-        <!--            <include-->
-        <!--                android:id="@+id/Donate"-->
-        <!--                layout="@layout/preference" />-->
-
         <include
             android:id="@+id/GroupChat"
             layout="@layout/preference" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+
+        <TextView
+            android:id="@+id/CheckLogs"
+            style="@style/Preference"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/check_logs" />
+
+        <TextView
+            android:id="@+id/CleanLogs"
+            style="@style/Preference"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/clean_logs" />
+
 
         <TextView
             android:id="@+id/FeedBack"
@@ -190,8 +92,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/send_feedback" />
-
-
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -203,59 +103,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/manual" />
+
         <TextView
             android:id="@+id/Donate"
             style="@style/Preference"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/donate" />
-
-        <!--        <TextView-->
-        <!--            style="@style/PreferenceHeader"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="@string/advanced"-->
-        <!--            android:visibility="gone" />-->
-
-        <!--        <androidx.appcompat.widget.SwitchCompat-->
-        <!--            android:id="@+id/TimeCorrect"-->
-        <!--            style="@style/SwitchPreference"-->
-        <!--            android:text="@string/time_correction"-->
-        <!--            android:visibility="gone" />-->
-
-        <!--        <androidx.appcompat.widget.AppCompatButton-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_gravity="center"-->
-        <!--            android:background="@color/LightBlue500"-->
-        <!--            android:text="@string/click_correction"-->
-        <!--            android:visibility="gone" />-->
-
-
-        <!--        <androidx.appcompat.widget.SwitchCompat-->
-        <!--            android:id="@+id/DebugMode"-->
-        <!--            style="@style/SwitchPreference"-->
-        <!--            android:text="@string/debug_mode"-->
-        <!--            android:visibility="gone" />-->
-
-        <!--        <View-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="1dp"-->
-        <!--            android:background="?android:attr/listDivider"-->
-        <!--            android:visibility="gone" />-->
-
-        <!--        <TextView-->
-        <!--            style="@style/PreferenceHeader"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="@string/about" />-->
-
-        <!--        <TextView-->
-        <!--            android:id="@+id/Manual"-->
-        <!--            style="@style/Preference"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="@string/manual" />-->
 
 
     </LinearLayout>

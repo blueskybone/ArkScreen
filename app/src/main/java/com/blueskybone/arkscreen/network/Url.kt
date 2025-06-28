@@ -46,8 +46,11 @@ suspend fun makeSuspendRequest(url: URL): String {
     return withContext(Dispatchers.IO) {
         val client = OkHttpClient()
         val request = Request.Builder()
-            .addHeader("user-agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36")
-            .addHeader("referer","https://space.bilibili.com/161775300/upload/video")
+            .addHeader(
+                "user-agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+            )
+            .addHeader("referer", "https://space.bilibili.com/161775300/upload/video")
             .url(url)
             .build()
         try {
@@ -77,6 +80,25 @@ suspend fun downloadFile(url: String, savePath: String): Boolean {
             }
         } catch (e: Exception) {
             false
+        }
+    }
+}
+
+suspend fun getSklandServerTs(): Long {
+    return withContext(Dispatchers.IO) {
+        val client = OkHttpClient()
+        val url = "https://zonai.skland.com/api/v1/game/player/info"
+        val request = Request.Builder()
+            .url(url)
+            .build()
+        try {
+            client.newCall(request).execute().use {
+                val resp = it.body?.string()
+                if (resp == null) throw IOException("Empty response")
+                else getJsonContent(resp, "timestamp").toLong()
+            }
+        } catch (e: Exception) {
+            throw e
         }
     }
 }

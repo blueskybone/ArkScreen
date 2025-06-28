@@ -12,12 +12,15 @@ import android.content.Context
 import android.util.Log
 import com.blueskybone.arkscreen.APP
 
-class FileLoggingTree(context: Context) : Timber.Tree() {
-    private val logDir = File(APP.externalCacheDir, "logs")
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    private val timeFormat = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
-    private val maxFileSize = 1024 * 1024 // 1MB
-    private val maxFileCount = 5 // 最多保留5个日志文件
+class FileLoggingTree : Timber.Tree() {
+
+    companion object{
+        val logDir = File(APP.externalCacheDir, "logs")
+        private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        private val timeFormat = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
+        private const val MAX_FILE_SIZE = 1024 * 1024 // 1MB
+        private const val MAX_FILE_COUNT = 5 // 最多保留5个日志文件
+    }
 
     init {
         if (!logDir.exists()) {
@@ -47,7 +50,7 @@ class FileLoggingTree(context: Context) : Timber.Tree() {
             }
 
             // 检查文件大小，如果过大则滚动
-            if (logFile.exists() && logFile.length() > maxFileSize) {
+            if (logFile.exists() && logFile.length() > MAX_FILE_SIZE) {
                 rollOver(logFile, date)
             }
 
@@ -72,7 +75,7 @@ class FileLoggingTree(context: Context) : Timber.Tree() {
     }
 
     private fun rollOver(currentFile: File, date: String) {
-        for (i in maxFileCount - 1 downTo 1) {
+        for (i in MAX_FILE_COUNT - 1 downTo 1) {
             val src = File(logDir, "app_${date}_${i}.log")
             val dst = File(logDir, "app_${date}_${i + 1}.log")
             if (src.exists()) {
@@ -85,8 +88,8 @@ class FileLoggingTree(context: Context) : Timber.Tree() {
     private fun cleanupOldLogs() {
         val files = logDir.listFiles()?.sortedBy { it.lastModified() }
         files?.let {
-            if (it.size > maxFileCount) {
-                for (i in 0 until it.size - maxFileCount) {
+            if (it.size > MAX_FILE_COUNT) {
+                for (i in 0 until it.size - MAX_FILE_COUNT) {
                     it[i].delete()
                 }
             }

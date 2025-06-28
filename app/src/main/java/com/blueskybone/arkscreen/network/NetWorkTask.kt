@@ -7,6 +7,7 @@ import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getBasicInfo
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getCredByGrant
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getGachaRecords
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getGrantByToken
+import com.blueskybone.arkscreen.network.model.PlayerInfoResp
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Gacha
@@ -47,6 +48,18 @@ class NetWorkTask {
                 accountSk.uid
             )
         }
+
+
+        @Throws(Exception::class)
+        suspend fun getGameInfoConnectionTaskTest(accountSk: AccountSk): Response<PlayerInfoResp> {
+            val credAndToken = getCredCode(accountSk)
+            return RetrofitUtils.getGameInfoConnectionTest(
+                credAndToken,
+                accountSk.uid
+            )
+        }
+
+
 
 
 //        @Throws(Exception::class)

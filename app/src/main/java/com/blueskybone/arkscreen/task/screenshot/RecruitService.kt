@@ -23,7 +23,7 @@ import androidx.core.app.NotificationCompat
 import com.blueskybone.arkscreen.App
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.RecruitDb
-import com.blueskybone.arkscreen.bindinginfo.RecruitMode
+import com.blueskybone.arkscreen.ui.bindinginfo.RecruitMode
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.task.CapturePermission
 import com.blueskybone.arkscreen.task.recruit.RecruitManager

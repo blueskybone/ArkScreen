@@ -14,7 +14,7 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTask
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountSk
-import com.blueskybone.arkscreen.room.Operator
+import com.blueskybone.arkscreen.playerinfo.Operator
 import com.blueskybone.arkscreen.util.readFileAsJsonNode
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper

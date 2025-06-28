@@ -10,6 +10,7 @@ import com.blueskybone.arkscreen.network.model.CredResponse
 import com.blueskybone.arkscreen.network.model.GachaResponse
 import com.blueskybone.arkscreen.network.model.GrantRequest
 import com.blueskybone.arkscreen.network.model.GrantResponse
+import com.blueskybone.arkscreen.network.model.PlayerInfoResp
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*
@@ -49,6 +50,15 @@ interface ApiService {
         @Query("uid") uid: String,
         @HeaderMap headers: Map<String, String>
     ): Response<ResponseBody>
+
+
+    @Streaming
+    @GET("/api/v1/game/player/info")
+    suspend fun getPlayerInfoJson(
+        @Query("uid") uid: String,
+        @HeaderMap headers: Map<String, String>
+    ): Response<PlayerInfoResp>
+
 
     // 获取基础信息
     @POST("/u8/user/info/v1/basic")

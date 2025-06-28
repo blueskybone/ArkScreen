@@ -13,3 +13,11 @@ data class Record(
     val rarity: Int,
     val isNew: Boolean
 )
+
+data class Records(
+    val id: Int,
+    val name: String,
+    val charId: String,
+    val isNew: Boolean,
+    val count: Int
+)
