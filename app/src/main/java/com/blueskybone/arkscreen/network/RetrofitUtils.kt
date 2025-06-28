@@ -231,40 +231,16 @@ class RetrofitUtils {
             }
         }
 
-        suspend fun getSpaceTitleImageUrl(): String {
-            print("getSpaceTitleImageUrl")
-            val client = OkHttpClient()
-            val request = Request.Builder()
-                .url(biliSettingUrl)
-                .build()
-
-            return withContext(Dispatchers.IO) {
-                client.newCall(request).execute().use { response ->
-                    print(response)
-                    if (!response.isSuccessful) throw IOException("Unexpected code $response")
-                    else {
-                        try {
-                            val node = ObjectMapper().readTree(response.body?.string())
-                            titleImageUrl + node["data"]["toutu"]["s_img"]
-
-                        } catch (e: Exception) {
-                            throw e
-                        }
-                    }
-                }
-            }
-        }
-
         private fun createNormalHeaders(): Map<String, String> {
             return mapOf(
-                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
+//                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
                 "Connection" to "close"
             )
         }
 
         private fun createLoginHeaders(): Map<String, String> {
             return mapOf(
-                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
+//                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
                 "Accept-Encoding" to "gzip",
                 "Connection" to "close",
                 "Content-Type" to "application/json"
@@ -278,7 +254,7 @@ class RetrofitUtils {
         ): Map<String, String> {
             return mapOf(
                 "cred" to cred,
-                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
+//                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
 //                "Accept-Encoding" to "gzip",
                 "Connection" to "close",
                 "Content-Type" to "application/json",

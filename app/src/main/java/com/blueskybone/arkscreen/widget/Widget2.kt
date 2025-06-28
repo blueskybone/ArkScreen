@@ -71,6 +71,7 @@ class Widget2 : AppWidgetProvider() {
                 boltIcon = R.drawable.ic_bolt
                 droneIcon = R.drawable.ic_drone
             }
+
             else -> {
                 backgroundColor = Color.WHITE
                 textColor = Color.BLACK
@@ -107,14 +108,13 @@ class Widget2 : AppWidgetProvider() {
         val apCache = prefManager.apCache.get()
         val laborCache = prefManager.laborCache.get()
 
-        //TODO: 计算实际显示数据放在此处，不要放在worker里。
 
         val apMax = apCache.max
-        val current = if (apCache.current >= apMax ) {
+        val current = if (apCache.current >= apMax) {
             apCache.current
-        } else if(now > apCache.recoverTime) {
+        } else if (now > apCache.recoverTime) {
             apMax
-        }else{
+        } else {
             apMax - (apCache.recoverTime - now).toInt() / (60 * 6) - 1
         }
         views.setTextViewText(R.id.widget_text_ap, "$current / $apMax")
@@ -123,15 +123,20 @@ class Widget2 : AppWidgetProvider() {
             TimeUtils.getRemainTimeMinStr(apCache.recoverTime - now)
         )
 
+        val currentLabor = run {
+            if (laborCache.remainSec == 0L) laborCache.max
+            val progress = (now - laborCache.lastSyncTs) * (laborCache.max - laborCache.current)
+            val calculated = ((progress / laborCache.remainSec) + laborCache.current).toInt()
+            calculated.coerceAtMost(laborCache.max)
+        }
         views.setTextViewText(
             R.id.widget_text_labor,
-            "${laborCache.current} / ${laborCache.max}"
+            "$currentLabor / ${laborCache.max}"
         )
         views.setTextViewText(
             R.id.widget_text_labor_rest,
-            TimeUtils.getRemainTimeMinStr(laborCache.remainSec)
+            TimeUtils.getRemainTimeMinStr(laborCache.remainSec - now + laborCache.lastSyncTs)
         )
-
         appWidgetManager.updateAppWidget(appWidgetIds, views)
     }
 

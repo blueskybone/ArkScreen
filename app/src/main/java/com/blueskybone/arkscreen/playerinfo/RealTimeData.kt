@@ -8,16 +8,16 @@ package com.blueskybone.arkscreen.playerinfo
 data class RealTimeData(
     var currentTs: Long = -1L,
     val playerStatus: PlayerStatus = PlayerStatus(),
-    val apInfo: Ap = Ap(),
-    val train: Train = Train(),
-    val recruits: Recruits = Recruits(),
-    val hire: Hire = Hire(),
-    val labor: Labor = Labor(),
-    val dormitories: Dormitories = Dormitories(),
-    val tired: Tired = Tired(),
-    val meeting: Meeting = Meeting(),
-    val manufactures: Manufactures = Manufactures(),
-    val tradings: Tradings = Tradings(),
+    var apInfo: Ap = Ap(),
+    var train: Train = Train(),
+    var recruits: Recruits = Recruits(),
+    var hire: Hire = Hire(),
+    var labor: Labor = Labor(),
+    var dormitories: Dormitories = Dormitories(),
+    var tired: Tired = Tired(),
+    var meeting: Meeting = Meeting(),
+    var manufactures: Manufactures = Manufactures(),
+    var tradings: Tradings = Tradings(),
     val routine: Routine = Routine()
 ) {
 

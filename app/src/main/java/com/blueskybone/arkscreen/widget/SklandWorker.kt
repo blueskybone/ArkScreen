@@ -8,17 +8,17 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.network.NetWorkTask
-import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTask
+import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTaskTest
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.playerinfo.ApCache
+import com.blueskybone.arkscreen.playerinfo.LaborCache
 import com.blueskybone.arkscreen.room.ArkDatabase
 import com.blueskybone.arkscreen.playerinfo.RealTimeData
+import com.blueskybone.arkscreen.playerinfo.geneRealTimeData
 import com.blueskybone.arkscreen.util.TimeUtils
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.koin.java.KoinJavaComponent.getKoin
-import java.util.zip.GZIPInputStream
 
 /**
  *   Created by blueskybone
@@ -71,7 +71,7 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
 
             //labor TODO: labor的代码也是错的。你紫菜吧
             val laborCache = prefManager.laborCache.get()
-            val passTimeLabor = now - laborCache.lastUpdateTs
+            val passTimeLabor = now - laborCache.lastSyncTs
             if (laborCache.current >= laborCache.max || laborCache.remainSec < passTimeLabor) {
                 laborCache.remainSec = 0L
             } else {
@@ -80,14 +80,13 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
                             / laborCache.remainSec + laborCache.current).toInt()
                 laborCache.remainSec -= passTimeLabor
             }
-            laborCache.lastUpdateTs = now
+            laborCache.lastSyncTs = now
             prefManager.laborCache.set(laborCache)
 
         } else {
-            try{
+            try {
                 val playerData = getPlayerData(account)
                 val apCache = ApCache(
-                    playerData.currentTs,
                     playerData.currentTs,
                     playerData.apInfo.remainSecs,
                     playerData.apInfo.recoverTime,
@@ -95,18 +94,16 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
                     playerData.apInfo.current,
                     false
                 )
-                val laborCache = ApCache(
-                    playerData.currentTs,
+                val laborCache = LaborCache(
                     playerData.currentTs,
                     playerData.labor.remainSecs,
-                    playerData.labor.recoverTime,
                     playerData.labor.max,
                     playerData.labor.current,
                     false
                 )
                 prefManager.apCache.set(apCache)
                 prefManager.laborCache.set(laborCache)
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
                 return Result.failure()
             }
@@ -144,85 +141,10 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
         return Result.success()
     }
 
-    private suspend fun getPlayerData(account:AccountSk): RealTimeData {
-        val response = getGameInfoConnectionTask(account)
-        response.body()?.use{ body ->
-            val gzip = GZIPInputStream(body.byteStream())
-            val result = readRealTimeFromGzip(ObjectMapper().readTree(gzip))
-            return result
-        }?: throw Exception("response body is empty")
-    }
-
-    private fun readRealTimeFromGzip(tree: JsonNode): RealTimeData {
-        val currentTs = tree.at("/data/currentTs").asLong()
-        val playerData = RealTimeData()
-        playerData.currentTs = currentTs
-        //status
-        run {
-            playerData.playerStatus.uid = tree.at("/data/status/uid").asText()
-            playerData.playerStatus.nickname = tree.at("/data/status/name").asText()
-            playerData.playerStatus.level = tree.at("/data/status/level").asInt()
-            playerData.playerStatus.registerTs = tree.at("/data/status/registerTs").asLong()
-            playerData.playerStatus.lastOnlineTs = tree.at("/data/status/lastOnlineTs").asLong()
-        }
-        //ap
-        run {
-            val current: Int = tree.at("/data/status/ap/current").asInt()
-            val max: Int = tree.at("/data/status/ap/max").asInt()
-            val lastApAddTime: Long = tree.at("/data/status/ap/lastApAddTime").asLong()
-            val recoverTime: Long = tree.at("/data/status/ap/completeRecoveryTime").asLong()
-
-            playerData.apInfo.max = max
-
-            playerData.apInfo.remainSecs = -1L
-            playerData.apInfo.recoverTime = -1L
-
-            when {
-                current >= max -> {
-                    playerData.apInfo.current = current
-                }
-
-                recoverTime < currentTs -> {
-                    playerData.apInfo.current = max
-                }
-
-                else -> {
-                    val elapsedTime = (currentTs - lastApAddTime).toInt() / (60 * 6)
-                    playerData.apInfo.current = current + elapsedTime
-                    playerData.apInfo.remainSecs = recoverTime - currentTs
-                    playerData.apInfo.recoverTime = recoverTime
-                }
-            }
-        }
-
-        //labor
-        run {
-            val laborNode = tree.at("/data/building/labor")
-
-            // 获取基本值
-            val laborValue = laborNode["value"].asInt()
-            val laborMax = laborNode["maxValue"].asInt()
-            val remainSecs = laborNode["remainSecs"].asLong()
-            val lastUpdateTime = laborNode["lastUpdateTime"].asLong()
-
-            val laborCurrent = if (remainSecs == 0L) {
-                laborValue
-            } else {
-                val elapsedTime = currentTs - lastUpdateTime
-                ((elapsedTime * (laborMax - laborValue) / remainSecs) + laborValue).coerceAtMost(
-                    laborMax.toLong()
-                ).toInt()
-            }
-            val laborRemain = remainSecs - (currentTs - lastUpdateTime).toInt().coerceAtLeast(0)
-            val recoverTime = remainSecs + lastUpdateTime
-
-            playerData.labor.apply {
-                this.current = laborCurrent
-                this.max = laborMax
-                this.remainSecs = laborRemain
-                this.recoverTime = recoverTime
-            }
-        }
-        return playerData
+    private suspend fun getPlayerData(account: AccountSk): RealTimeData {
+        val response = getGameInfoConnectionTaskTest(account)
+        if (!response.isSuccessful) throw Exception("!response.isSuccessful")
+        response.body() ?: throw Exception("response empty")
+        return geneRealTimeData(response.body()!!)
     }
 }

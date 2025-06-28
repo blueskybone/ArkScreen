@@ -30,7 +30,7 @@ import com.blueskybone.arkscreen.ui.bindinginfo.FuncChipInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.GachaStat
 import com.blueskybone.arkscreen.ui.bindinginfo.OpeAssets
 import com.blueskybone.arkscreen.ui.bindinginfo.RecruitCal
-import com.blueskybone.arkscreen.ui.common.MenuDialog
+import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.databinding.CardApCacheBinding
 import com.blueskybone.arkscreen.databinding.ChipRoundBinding
 import com.blueskybone.arkscreen.databinding.DialogInfoBinding

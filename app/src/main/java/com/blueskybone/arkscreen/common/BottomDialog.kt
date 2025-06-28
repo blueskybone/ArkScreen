@@ -1,4 +1,4 @@
-package com.blueskybone.arkscreen.ui.common
+package com.blueskybone.arkscreen.common
 
 import android.content.Context
 import android.view.Gravity

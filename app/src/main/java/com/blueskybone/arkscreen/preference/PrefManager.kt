@@ -12,6 +12,7 @@ import com.blueskybone.arkscreen.preference.preference.PreferenceStore
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.playerinfo.ApCache
+import com.blueskybone.arkscreen.playerinfo.LaborCache
 import java.util.function.Function
 
 /**
@@ -55,7 +56,7 @@ class PrefManager() {
         )
         laborCache = preferenceStore.getObject(
             "labor_cache",
-            ApCache.default(), serializerAp(), deserializerAp()
+            LaborCache.default(), serializerLabor(), deserializerLabor()
         )
         insertLink = preferenceStore.getBoolean("insert_link", false)
         backAutoAtd = preferenceStore.getBoolean("back_auto_attendance", false)
@@ -87,7 +88,7 @@ class PrefManager() {
     lateinit var baseAccountSk: Preference<AccountSk>
     lateinit var baseAccountGc: Preference<AccountGc>
     lateinit var apCache: Preference<ApCache>
-    lateinit var laborCache: Preference<ApCache>
+    lateinit var laborCache: Preference<LaborCache>
     lateinit var backAutoAtd: Preference<Boolean>
     lateinit var alarmAtdHour: Preference<Int>
     lateinit var alarmAtdMin: Preference<Int>
@@ -136,8 +137,8 @@ class PrefManager() {
     }
 
     private fun serializerAp(): (ApCache) -> String {
-        return { apCache ->
-            "${apCache.lastUpdateTs}@${apCache.lastSyncTs}@${apCache.remainSec}@${apCache.recoverTime}@${apCache.max}@${apCache.current}@${apCache.isnull}"
+        return { cache ->
+            "${cache.lastSyncTs}@${cache.remainSec}@${cache.recoverTime}@${cache.max}@${cache.current}@${cache.isnull}"
         }
     }
 
@@ -151,19 +152,42 @@ class PrefManager() {
                     list[0].toLong(),
                     list[1].toLong(),
                     list[2].toLong(),
-                    list[3].toLong(),
+                    list[3].toInt(),
                     list[4].toInt(),
-                    list[5].toInt(),
-                    list[6].toBoolean()
+                    list[5].toBoolean()
                 )
             } catch (e: Exception) {
                 e.printStackTrace()
                 return@Function ApCache.default()
             }
         }
-
-
     }
+    private fun serializerLabor(): (LaborCache) -> String {
+        return { cache ->
+            "${cache.lastSyncTs}@${cache.remainSec}@${cache.max}@${cache.current}@${cache.isnull}"
+        }
+    }
+    private fun deserializerLabor(): Function<String, LaborCache> {
+        return Function { string: String ->
+            try {
+                val list =
+                    string.split("@".toRegex()).dropLastWhile { it.isEmpty() }
+                        .toTypedArray()
+                return@Function LaborCache(
+                    list[0].toLong(),
+                    list[1].toLong(),
+                    list[2].toInt(),
+                    list[3].toInt(),
+                    list[4].toBoolean()
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@Function LaborCache.default()
+            }
+        }
+    }
+
+
 
     private fun serializerGc(): Function<AccountGc, String> {
         return Function<AccountGc, String> { account: AccountGc ->

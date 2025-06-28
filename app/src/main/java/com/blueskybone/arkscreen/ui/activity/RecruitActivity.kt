@@ -26,9 +26,9 @@ import androidx.core.content.ContextCompat
 import coil.load
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.ui.common.BottomDialog
-import com.blueskybone.arkscreen.ui.common.line
-import com.blueskybone.arkscreen.ui.common.space
+import com.blueskybone.arkscreen.common.BottomDialog
+import com.blueskybone.arkscreen.common.line
+import com.blueskybone.arkscreen.common.space
 import com.blueskybone.arkscreen.databinding.ChipRecruitBinding
 import com.blueskybone.arkscreen.network.avatarUrl
 import com.blueskybone.arkscreen.preference.PrefManager

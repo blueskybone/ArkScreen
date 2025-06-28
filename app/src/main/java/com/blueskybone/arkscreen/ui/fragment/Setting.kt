@@ -23,7 +23,7 @@ import com.blueskybone.arkscreen.ui.bindinginfo.ListInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.SeekBarInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.TextInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.UseInnerWeb
-import com.blueskybone.arkscreen.ui.common.MenuDialog
+import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.AppUpdateInfo
 import com.blueskybone.arkscreen.ui.activity.LogActivity
 import com.blueskybone.arkscreen.ui.activity.LoginWeb

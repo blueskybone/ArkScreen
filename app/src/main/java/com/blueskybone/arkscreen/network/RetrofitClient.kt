@@ -38,7 +38,6 @@ object RetrofitClient {
                     "User-Agent",
                     "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0"
                 )
-                .header("Connection", "close")
                 .method(original.method, original.body)
                 .build()
             chain.proceed(request)

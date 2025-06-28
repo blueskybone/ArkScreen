@@ -5,7 +5,7 @@ package com.blueskybone.arkscreen.playerinfo
  *   Date: 2025/2/6
  */
 data class LaborCache(
-    var lastUpdateTs: Long,
+    var lastSyncTs: Long,
     var remainSec: Long,
     var max: Int,
     var current: Int,

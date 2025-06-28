@@ -37,7 +37,7 @@ import com.blueskybone.arkscreen.ui.bindinginfo.WidgetAlpha
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetAppearance
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetRefresh
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize
-import com.blueskybone.arkscreen.ui.common.MenuDialog
+import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.databinding.DialogInfoBinding
 import com.blueskybone.arkscreen.databinding.DialogInputBinding
 import com.blueskybone.arkscreen.databinding.DialogTimepickerBinding

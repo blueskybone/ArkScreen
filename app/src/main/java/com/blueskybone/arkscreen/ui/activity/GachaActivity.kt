@@ -11,7 +11,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.ui.common.MenuDialog
+import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.databinding.ActivityGachaBinding
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.ui.recyclerview.GachaAdapter
