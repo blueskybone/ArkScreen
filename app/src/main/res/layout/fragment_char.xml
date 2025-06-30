@@ -5,15 +5,126 @@
     android:layout_height="match_parent"
     android:paddingTop="?attr/actionBarSize">
 
+
+<!--    <com.blueskybone.arkscreen.common.FlowLayout-->
+<!--        android:id="@+id/ProfGroup"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content" />-->
+<!--    <com.blueskybone.arkscreen.common.FlowLayout-->
+<!--        android:id="@+id/LevelGroup"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content" />-->
+<!--    <com.blueskybone.arkscreen.common.FlowLayout-->
+<!--        android:id="@+id/RarityGroup"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content" />-->
+
+
+    <!--    <RadioGroup-->
+    <!--        android:id="@+id/ProfessionG"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:cursorVisible="false"-->
+    <!--        android:orientation="horizontal">-->
+    <!--        -->
+
+    <!--        <RadioButton-->
+    <!--            android:layout_width="65dp"-->
+    <!--            android:layout_height="24dp"-->
+    <!--            android:layout_margin="5dp"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:background="@drawable/button_radio"-->
+    <!--            android:button="@null"-->
+    <!--            android:gravity="center"-->
+    <!--            android:text="精二" />-->
+    <!--        <RadioButton-->
+    <!--            android:layout_width="65dp"-->
+    <!--            android:layout_height="24dp"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:layout_margin="5dp"-->
+    <!--            android:background="@drawable/button_radio"-->
+    <!--            android:button="@null"-->
+    <!--            android:gravity="center"-->
+    <!--            android:text="精一" />-->
+    <!--        <RadioButton-->
+    <!--            android:layout_width="65dp"-->
+    <!--            android:layout_height="24dp"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:layout_margin="5dp"-->
+    <!--            android:background="@drawable/button_radio"-->
+    <!--            android:button="@null"-->
+    <!--            android:gravity="center"-->
+    <!--            android:text="精零" />-->
+
+    <!--    </RadioGroup>-->
+    <!--    -->
+    <!--    <RadioGroup-->
+    <!--        android:id="@+id/testGroup"-->
+    <!--        android:layout_below="@+id/ProfessionG"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:cursorVisible="false"-->
+    <!--        android:orientation="horizontal">-->
+    <!--        -->
+    <!--        <RadioButton-->
+    <!--            android:layout_width="65dp"-->
+    <!--            android:layout_height="24dp"-->
+    <!--            android:layout_margin="5dp"-->
+    <!--            android:background="@drawable/button_radio"-->
+    <!--            android:button="@null"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:gravity="center"-->
+    <!--            android:text="6星" />-->
+
+    <!--        <RadioButton-->
+    <!--            android:layout_width="65dp"-->
+    <!--            android:layout_height="24dp"-->
+    <!--            android:layout_margin="5dp"-->
+    <!--            android:background="@drawable/button_radio"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:button="@null"-->
+    <!--            android:gravity="center"-->
+    <!--            android:text="5星" />-->
+
+    <!--        <RadioButton-->
+    <!--            android:layout_width="65dp"-->
+    <!--            android:layout_height="24dp"-->
+    <!--            android:layout_margin="5dp"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:background="@drawable/button_radio"-->
+    <!--            android:button="@null"-->
+    <!--            android:gravity="center"-->
+    <!--            android:text="4星" />-->
+    <!--        <RadioButton-->
+    <!--            android:layout_width="65dp"-->
+    <!--            android:layout_height="24dp"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:layout_margin="5dp"-->
+    <!--            android:background="@drawable/button_radio"-->
+    <!--            android:button="@null"-->
+    <!--            android:gravity="center"-->
+    <!--            android:text="1~3星" />-->
+
+    <!--    </RadioGroup>-->
+
+    <!--    -->
+    <LinearLayout
+        android:id="@+id/ButtonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp" />
     <LinearLayout
         android:id="@+id/FilterBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/ButtonLayout"
+        android:baselineAligned="false"
         android:gravity="start"
         android:orientation="horizontal"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:baselineAligned="false">
+        android:visibility="gone">
 
         <include
             android:id="@+id/Profession"

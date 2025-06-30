@@ -1,5 +1,7 @@
 package com.blueskybone.arkscreen.playerinfo
 
+
+
 /**
  *   Created by blueskybone
  *   Date: 2024/3/11
@@ -8,6 +10,7 @@ package com.blueskybone.arkscreen.playerinfo
 data class RealTimeData(
     var currentTs: Long = -1L,
     val playerStatus: PlayerStatus = PlayerStatus(),
+    var avatar: Avatar = Avatar(),
     var apInfo: Ap = Ap(),
     var train: Train = Train(),
     var recruits: Recruits = Recruits(),
@@ -29,6 +32,11 @@ data class RealTimeData(
         var lastOnlineTs: Long = 0L
     )
 
+    data class Avatar(
+        var type: String = "",
+        var id: String = "",
+        var url: String = ""
+    )
     data class Ap(
         var current: Int = -1,
         var max: Int = -1,
@@ -39,7 +47,7 @@ data class RealTimeData(
     )
 
     data class Train(
-        var isNull: Boolean = false,
+        var isNull: Boolean = true,
         var trainee: String = "",               //real name from mapinfo
         var traineeIsNull: Boolean = false,     //null: 空闲中
         var profession: String = "",            //职业
@@ -61,7 +69,7 @@ data class RealTimeData(
     )
 
     data class Recruits(
-        var isNull: Boolean = false,
+        var isNull: Boolean = true,
         var max: Int = -1,
         var complete: Int = -1,
         var remainSecs: Long = 0L,
@@ -69,8 +77,8 @@ data class RealTimeData(
     )
 
     data class Hire(
-        var isNull: Boolean = false,
-        var count: Int = -1,
+        var isNull: Boolean = true,
+        var count: Int = 0,
         var completeTime: Long = 0L,
         var remainSecs: Long = 0L
     )
@@ -97,7 +105,7 @@ data class RealTimeData(
     )
 
     data class Meeting(
-        var isNull: Boolean = false,
+        var isNull: Boolean = true,
         var current: Int = -1,
         var max: Int = 7,
         var remainSecs: Long = -1L,

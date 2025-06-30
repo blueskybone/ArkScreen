@@ -51,7 +51,7 @@ suspend fun getVideoList(): List<BiliVideo> {
 }
 
 
-suspend fun getSpaceTitleImageUrl(): String {
-    val resp = makeSuspendRequest(URL(biliSettingUrl))
-    return titleImageUrl + getJsonContent(resp, "s_img")
-}
+//suspend fun getSpaceTitleImageUrl(): String {
+//    val resp = makeSuspendRequest(URL(biliSettingUrl))
+//    return titleImageUrl + getJsonContent(resp, "s_img")
+//}

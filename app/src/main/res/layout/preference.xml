@@ -13,14 +13,12 @@
         android:id="@+id/Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="测试文本"
         android:textAppearance="@style/PreferenceTitle" />
 
     <TextView
         android:id="@+id/Value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="测试文本"
         android:textAppearance="?attr/textAppearanceBody2"
         android:textColor="?attr/colorControlNormal" />
 

@@ -124,10 +124,13 @@ class Widget2 : AppWidgetProvider() {
         )
 
         val currentLabor = run {
-            if (laborCache.remainSec == 0L) laborCache.max
-            val progress = (now - laborCache.lastSyncTs) * (laborCache.max - laborCache.current)
-            val calculated = ((progress / laborCache.remainSec) + laborCache.current).toInt()
-            calculated.coerceAtMost(laborCache.max)
+            if (laborCache.remainSec == 0L) {
+                laborCache.max
+            } else {
+                val progress = (now - laborCache.lastSyncTs) * (laborCache.max - laborCache.current)
+                val calculated = ((progress / laborCache.remainSec) + laborCache.current).toInt()
+                calculated.coerceAtMost(laborCache.max)
+            }
         }
         views.setTextViewText(
             R.id.widget_text_labor,

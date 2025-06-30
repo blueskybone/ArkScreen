@@ -27,7 +27,9 @@ import coil.load
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.common.BottomDialog
+import com.blueskybone.arkscreen.common.getFlowLayout
 import com.blueskybone.arkscreen.common.line
+import com.blueskybone.arkscreen.common.setTagLayout
 import com.blueskybone.arkscreen.common.space
 import com.blueskybone.arkscreen.databinding.ChipRecruitBinding
 import com.blueskybone.arkscreen.network.avatarUrl
@@ -138,7 +140,7 @@ class RecruitActivity : AppCompatActivity() {
         linearLayout.removeAllViews()
 
         for ((index, buttonList) in buttonListAll.withIndex()) {
-            val flowLayout = getFlowLayout()
+            val flowLayout = getFlowLayout(this)
             for (button in buttonList) {
                 val buttonView = tagButton(button)
                 buttonViewList.add(buttonView)
@@ -156,39 +158,6 @@ class RecruitActivity : AppCompatActivity() {
         }
     }
 
-    private fun getFlowLayout(): FlowLayout {
-        val flowLayout = FlowLayout(this)
-        flowLayout.childSpacingForLastRow = FlowLayout.SPACING_ALIGN
-        val layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        flowLayout.layoutParams = layoutParams
-        return flowLayout
-    }
-
-    private fun Button.setTagLayout(text: String) {
-        val layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        layoutParams.setMargins(0, 0, dpToPx(context, 5F).toInt(), dpToPx(context, 5F).toInt())
-        this.layoutParams = layoutParams
-        this.text = text
-        this.minWidth = 0
-        this.minHeight = 0
-        this.minimumWidth = 0
-        this.minimumHeight = 0
-        this.setPadding(
-            dpToPx(context, 10F).toInt(),
-            dpToPx(context, 5F).toInt(),
-            dpToPx(context, 10F).toInt(),
-            dpToPx(context, 5F).toInt()
-        )
-        this.isEnabled = true
-        this.isSelected = false
-        this.isClickable = true
-        this.stateListAnimator = null
-        this.setTextColor(Color.WHITE)
-    }
 
     private fun tagButton(text: String): Button {
         val button = Button(this)
@@ -292,7 +261,7 @@ class RecruitActivity : AppCompatActivity() {
         linearLayout.orientation = LinearLayout.VERTICAL
         linearLayout.setPadding(20, 20, 20, 20)
 
-        val flowLayout = getFlowLayout()
+        val flowLayout = getFlowLayout(this)
         for (tag in operator.tags) {
             val tagView = resultTagButton(this, tag)
             buttonViewList.add(tagView)
@@ -332,8 +301,8 @@ class RecruitActivity : AppCompatActivity() {
         tagLayoutParams.setMargins(0, 0, dpToPx(this, 5F).toInt(), dpToPx(this, 5F).toInt())
         for (result in resultList) {
             view.addView(line(this))
-            val tagLayout = getFlowLayout()
-            val opeLayout = getFlowLayout()
+            val tagLayout = getFlowLayout(this)
+            val opeLayout = getFlowLayout(this)
             val rarityButton = resultTagButton(this, "${result.rare}★")
             tagLayout.addView(rarityButton)
             for (tag in result.tags) {

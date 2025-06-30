@@ -85,7 +85,8 @@
 
                 <include
                     android:id="@+id/ScreenShotDelay"
-                    layout="@layout/preference_seekbar" />
+                    layout="@layout/preference_seekbar"
+                    android:visibility="gone"/>
 
                 <include
                     android:id="@+id/OverlayPermission"
@@ -110,6 +111,7 @@
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/AutoAttendance"
                     style="@style/SwitchPreference"
+                    android:visibility="gone"
                     android:text="@string/skland_auto_attendance" />
 
                 <include

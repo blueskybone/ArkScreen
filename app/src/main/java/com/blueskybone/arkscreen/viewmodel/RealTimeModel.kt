@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.DataUiState
-import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTask
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTaskTest
+import com.blueskybone.arkscreen.network.avatarUrl
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.playerinfo.ApCache
@@ -14,19 +14,17 @@ import com.blueskybone.arkscreen.playerinfo.LaborCache
 import com.blueskybone.arkscreen.playerinfo.RealTimeData
 import com.blueskybone.arkscreen.playerinfo.RealTimeUi
 import com.blueskybone.arkscreen.playerinfo.geneRealTimeData
+import com.blueskybone.arkscreen.util.TimeUtils
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
 import com.blueskybone.arkscreen.util.TimeUtils.getDayNum
 import com.blueskybone.arkscreen.util.TimeUtils.getRemainTimeStr
 import com.blueskybone.arkscreen.util.TimeUtils.getTimeStr
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.getKoin
-import java.io.File
-import java.util.zip.GZIPInputStream
+import java.net.URLEncoder
 
 /**
  *   Created by blueskybone
@@ -89,10 +87,23 @@ class RealTimeModel : ViewModel() {
 
     private fun processData(data: RealTimeData, official: Boolean): RealTimeUi {
         val realTimeUi = RealTimeUi()
+        realTimeUi.level = data.playerStatus.level
+        realTimeUi.avatarUrl = when (data.avatar.type) {
+            "ASSISTANT" -> {
+                val skinUrl = URLEncoder.encode(data.avatar.id, "UTF-8")
+                "$avatarUrl$skinUrl.png"
+            }
+
+            else -> data.avatar.url
+        }
+
         realTimeUi.official = official
         realTimeUi.apNow = data.apInfo.current.toString()
         realTimeUi.apMax = "/" + data.apInfo.max
-        realTimeUi.apResTime = data.apInfo.remainSecsStr
+        getRemainTimeStr(data.apInfo.remainSecs).let {
+            if (it == "") realTimeUi.apResTime = "已恢复"
+            else realTimeUi.apResTime = it
+        }
         realTimeUi.nickName = data.playerStatus.nickname
         realTimeUi.lastLogin = "上次登录 " +
                 when (getDayNum(getCurrentTs()) - getDayNum(data.playerStatus.lastOnlineTs)) {

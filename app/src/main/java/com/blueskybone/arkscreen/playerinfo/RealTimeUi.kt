@@ -7,6 +7,8 @@ package com.blueskybone.arkscreen.playerinfo
 data class RealTimeUi(
     var nickName: String = "",
     var lastLogin: String = "",
+    var level: Int = 0,
+    var avatarUrl: String = "",
     var apMax: String = "",
     var apNow: String = "",
     var apResTime: String = "",

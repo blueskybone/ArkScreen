@@ -319,7 +319,11 @@ class Home : Fragment() {
 
     private fun CardApCacheBinding.bind(value: ApCache) {
         val now = getCurrentTs()
-        val lastSyncStr = getLastUpdateStr(now - value.lastSyncTs)
+        val lastSyncStr = getLastUpdateStr(now - value.lastSyncTs).let {
+            if (it.isEmpty()) "刚刚" else "${it}前"
+        }
+
+
         this.LastSync.text = getString(R.string.last_sync_time, lastSyncStr)
         if (value.current >= value.max) {
             this.Current.text = value.current.toString()

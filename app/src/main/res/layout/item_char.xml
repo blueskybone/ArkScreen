@@ -11,22 +11,25 @@
         app:cardCornerRadius="5dp"
         app:cardElevation="0dp">
 
+
         <LinearLayout
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:layout_gravity="center">
+
 
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/Avatar"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="5dp"
                     android:src="@drawable/char_ex_christ"
@@ -45,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|bottom"
                     android:layout_margin="5dp"
-                    android:background="@color/LightBlue200"
+                    android:background="@color/trans_grey"
                     android:gravity="center"
                     android:orientation="horizontal"
                     app:layout_constraintBottom_toBottomOf="@id/Avatar"
@@ -53,19 +56,20 @@
 
                     <ImageView
                         android:id="@+id/Evolve"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp" />
+                        android:layout_width="14dp"
+                        android:layout_height="14dp" />
 
                     <TextView
                         android:id="@+id/Level"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/white"
+                        android:textSize="11sp" />
 
                     <ImageView
                         android:id="@+id/Potential"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp" />
+                        android:layout_width="14dp"
+                        android:layout_height="14dp" />
 
                 </LinearLayout>
             </FrameLayout>
@@ -75,15 +79,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="5dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/Name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?attr/textAppearanceBody2"
-                    android:textStyle="bold" />
+                    android:textColor="?attr/colorOnBackground"
+                    android:textSize="12sp" />
 
                 <LinearLayout
                     android:id="@+id/Skills"
@@ -126,5 +132,10 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
+<!--        <View-->
+<!--            android:background="@drawable/gradient_bg"-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_gravity="end|bottom"-->
+<!--            android:layout_height="36dp" />-->
     </com.google.android.material.card.MaterialCardView>
 </FrameLayout>

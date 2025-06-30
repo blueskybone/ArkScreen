@@ -119,7 +119,7 @@ class CharGridAdapter(context: Context, override val PAGE_SIZE: Int) :
 
             val colorId = rarityValues.indexOf((item.rarity + 1).toString())
             val draw = rarityDrawable.getDrawable(colorId)
-            binding.Avatar.background = draw
+//            binding.Avatar.background = draw
             binding.Avatar.setImageDrawable(null)
             bindAvatarView(binding.Avatar, item.skinId)
 

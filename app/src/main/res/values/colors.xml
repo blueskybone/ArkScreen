@@ -29,6 +29,8 @@
     <color name="LightBlue500">#79B8EA</color>
     <color name="LightBlue200">#65C9DDED</color>
 
+    <color name="trans_grey">#77494F55</color>
+
     <color name="transparent">#00000000</color>
     <color name="chip_background">#7592B5D1</color>
     <color name="day_background">#FFFFFF</color>

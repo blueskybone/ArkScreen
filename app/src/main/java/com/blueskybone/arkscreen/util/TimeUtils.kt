@@ -41,7 +41,6 @@ object TimeUtils {
         if (wdhms.day > 0) stringBuilder.append("${wdhms.day}天")
         if (wdhms.hour > 0) stringBuilder.append("${wdhms.hour}时")
         if (wdhms.min > 0) stringBuilder.append("${wdhms.min}分")
-
         return stringBuilder.toString()
     }
 
@@ -51,9 +50,7 @@ object TimeUtils {
         if (wdhms.day > 0) stringBuilder.append("${wdhms.day}天")
         if (wdhms.hour > 0) stringBuilder.append("${wdhms.hour}小时")
         if (wdhms.min > 0) stringBuilder.append("${wdhms.min}分钟")
-        //TODO: should handle in calling func
-        if (stringBuilder.isEmpty()) return "刚刚"
-        return stringBuilder.toString() + "前"
+        return stringBuilder.toString()
     }
 
     private fun getWDHMSToStr3(wdhms: WDHMS): String {

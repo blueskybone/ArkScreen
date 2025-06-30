@@ -14,6 +14,7 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.ItemCharMissBinding
+import com.blueskybone.arkscreen.databinding.ItemCharNotOwnBinding
 import com.blueskybone.arkscreen.network.avatarUrl
 import com.blueskybone.arkscreen.network.skinCachePath
 import com.blueskybone.arkscreen.ui.recyclerview.paging.PagingAdapter
@@ -44,7 +45,7 @@ class CharNotOwnAdapter(private val context: Context, override val PAGE_SIZE: In
         viewType: Int
     ): OperatorVH {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemCharMissBinding.inflate(inflater, parent, false)
+        val binding = ItemCharNotOwnBinding.inflate(inflater, parent, false)
         return OperatorVH(binding)
     }
 
@@ -88,10 +89,10 @@ class CharNotOwnAdapter(private val context: Context, override val PAGE_SIZE: In
         holder.bind(currentList[position])
     }
 
-    inner class OperatorVH(private val binding: ItemCharMissBinding) :
+    inner class OperatorVH(private val binding: ItemCharNotOwnBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Operator) {
-            binding.Name.text = item.name
+//            binding.Name.text = item.name
             binding.Profession.setImageResource(
                 profDrawable.getResourceId(
                     profValues.indexOf(item.profession),

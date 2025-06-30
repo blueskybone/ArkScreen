@@ -8,12 +8,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.PopupWindow
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.R
+import com.blueskybone.arkscreen.common.getFlowLayout
+import com.blueskybone.arkscreen.common.setTagLayout
 import com.blueskybone.arkscreen.databinding.ChipCardBinding
 import com.blueskybone.arkscreen.databinding.FragmentCharBinding
 import com.blueskybone.arkscreen.ui.recyclerview.CharAdapter
@@ -24,6 +27,7 @@ import com.blueskybone.arkscreen.util.getColorFromAttr
 import com.blueskybone.arkscreen.viewmodel.CharModel
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.nex3z.flowlayout.FlowLayout
 
 
 /**
@@ -41,6 +45,15 @@ class CharOwn : Fragment(), ItemListener {
     private lateinit var adapter_new: CharGridAdapter
 
 
+    private val profList = listOf("先锋", "近卫", "狙击", "重装")
+    private val levelList = listOf("精英二", "精英一", "精英零")
+    private val rarityList = listOf("6★", "5★", "4★", "1~3★")
+
+    private val layoutList = listOf(profList, levelList, rarityList)
+
+    private val buttonViewList: MutableList<Button> = ArrayList()
+    private val flowLayoutList: MutableList<FlowLayout> = ArrayList()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -49,8 +62,48 @@ class CharOwn : Fragment(), ItemListener {
         _binding = FragmentCharBinding.inflate(inflater)
 
         setupBinding()
+        setButtonLayout()
         setupListener()
         return binding.root
+    }
+
+
+    private fun setButtonLayout() {
+        val linearLayout = binding.ButtonLayout
+        linearLayout.removeAllViews()
+        for (buttonList in layoutList) {
+            val flowLayout = getFlowLayout(requireContext())
+            for (button in buttonList) {
+                val buttonView = tagButton(button)
+                buttonViewList.add(buttonView)
+                flowLayout.addView(buttonView)
+            }
+            flowLayoutList.add(flowLayout)
+        }
+        for (flowLayout in flowLayoutList) {
+            linearLayout.addView(flowLayout)
+        }
+    }
+
+    private fun tagButton(text: String): Button {
+        val button = Button(requireContext())
+        button.setTagLayout(text)
+        button.setBackgroundResource(R.drawable.button_tag)
+        button.setOnClickListener {
+            button.isSelected = !button.isSelected
+//            try {
+//                val tags = ArrayList<String>()
+//                for (buttonView in buttonViewList) {
+//                    if (buttonView.isSelected) {
+//                        tags.add(buttonView.text.toString())
+//                    }
+//                }
+//                model.startCalculate(tags)
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+        }
+        return button
     }
 
     private fun setupListener() {

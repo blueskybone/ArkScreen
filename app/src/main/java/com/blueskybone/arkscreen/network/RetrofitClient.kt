@@ -23,7 +23,7 @@ object RetrofitClient {
     }
     private val fileLogger = FileLoggingInterceptor()
     private val loggingInterceptor = HttpLoggingInterceptor(fileLogger).apply {
-        level = HttpLoggingInterceptor.Level.BODY
+        level = HttpLoggingInterceptor.Level.HEADERS
     }
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)

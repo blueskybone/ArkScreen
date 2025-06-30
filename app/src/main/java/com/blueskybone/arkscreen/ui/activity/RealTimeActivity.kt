@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import coil.load
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.ui.bindinginfo.Campaign
 import com.blueskybone.arkscreen.ui.bindinginfo.DataInfo
@@ -102,6 +103,8 @@ class RealTimeActivity : AppCompatActivity() {
         }
         binding.Ap.text = data.apNow
         binding.ApMax.text = data.apMax
+        binding.Avatar.load(data.avatarUrl)
+        binding.Level.text = data.level.toString()
         binding.ApResTime.text = data.apResTime
         binding.NickName.text = data.nickName
         binding.LastLogin.text = data.lastLogin

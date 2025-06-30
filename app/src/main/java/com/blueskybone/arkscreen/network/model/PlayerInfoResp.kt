@@ -28,7 +28,7 @@ data class Status(
     var uid: String,
     var name: String,
     var level: Int,
-    var avatar: Avatar = Avatar(),
+    var avatar: Avatar,
     var registerTs: Long,
     var mainStageProgress: String,
     var ap: Ap? = null,
@@ -49,8 +49,8 @@ data class Ap(
     )
 
 data class Avatar(
-    var type: String? = null,
-    var id: String? = null,
+    var type: String,
+    var id: String,
     var url: String? = null
 )
 
