@@ -24,10 +24,7 @@ class NetWorkTask {
     companion object {
         @Throws(Exception::class)
         suspend fun createAccountList(token: String, dId: String): List<AccountSk> {
-            //TODO:跟踪流程
-            Timber.i("createAccountList")
             val credAndToken = getCredCode(token, dId)
-            Timber.i("getCredCode succ.")
             return createAccountSkList(
                 credAndToken.cred,
                 credAndToken.token,
@@ -60,9 +57,6 @@ class NetWorkTask {
         }
 
 
-
-
-//        @Throws(Exception::class)
         suspend fun sklandAttendance(accountSk: AccountSk): String {
             val credAndToken = getCredCode(accountSk)
             return doAttendance(
@@ -81,9 +75,7 @@ class NetWorkTask {
 
         @Throws(Exception::class)
         private suspend fun getCredCode(token: String, dId: String): CredAndToken {
-            Timber.i("try getCredCode")
             val grant = getGrantByToken(token)
-            Timber.i("getGrantByToken succ.")
             return getCredByGrant(grant, dId)
         }
 

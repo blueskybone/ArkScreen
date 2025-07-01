@@ -87,7 +87,7 @@ class RealTimeModel : ViewModel() {
 
     private fun processData(data: RealTimeData, official: Boolean): RealTimeUi {
         val realTimeUi = RealTimeUi()
-        realTimeUi.level = data.playerStatus.level
+        realTimeUi.level = "Lv" + data.playerStatus.level
         realTimeUi.avatarUrl = when (data.avatar.type) {
             "ASSISTANT" -> {
                 val skinUrl = URLEncoder.encode(data.avatar.id, "UTF-8")

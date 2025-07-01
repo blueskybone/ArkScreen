@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.databinding.FragmentCharNotOwnBinding
+import com.blueskybone.arkscreen.ui.recyclerview.CharMissFlowAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.CharNotOwnAdapter
 import com.blueskybone.arkscreen.viewmodel.CharModel
 
@@ -23,6 +24,7 @@ class CharNotOwn : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: CharNotOwnAdapter
+    private lateinit var adapterFlow: CharMissFlowAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,6 +35,8 @@ class CharNotOwn : Fragment() {
 
         adapter = CharNotOwnAdapter(requireContext(), 20)
         binding.RecyclerView.adapter = adapter
+//        binding.FlowLayout.adapter = adapter
+        adapterFlow = CharMissFlowAdapter(requireContext(), binding.FlowLayout)
         setupBinding()
         setupListener()
         return binding.root
@@ -40,8 +44,10 @@ class CharNotOwn : Fragment() {
 
     private fun setupBinding() {
         model.charsNotOwnList.observe(viewLifecycleOwner) { value ->
-            adapter.refreshData(value)
-            binding.RecyclerView.scrollToPosition(0)
+//            adapter.refreshData(value)
+//            binding.RecyclerView.scrollToPosition(0)
+
+            adapterFlow.submitList(value)
         }
     }
 

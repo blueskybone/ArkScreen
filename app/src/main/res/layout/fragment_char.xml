@@ -6,158 +6,61 @@
     android:paddingTop="?attr/actionBarSize">
 
 
-<!--    <com.blueskybone.arkscreen.common.FlowLayout-->
-<!--        android:id="@+id/ProfGroup"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content" />-->
-<!--    <com.blueskybone.arkscreen.common.FlowLayout-->
-<!--        android:id="@+id/LevelGroup"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content" />-->
-<!--    <com.blueskybone.arkscreen.common.FlowLayout-->
-<!--        android:id="@+id/RarityGroup"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content" />-->
-
-
-    <!--    <RadioGroup-->
-    <!--        android:id="@+id/ProfessionG"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:cursorVisible="false"-->
-    <!--        android:orientation="horizontal">-->
-    <!--        -->
-
-    <!--        <RadioButton-->
-    <!--            android:layout_width="65dp"-->
-    <!--            android:layout_height="24dp"-->
-    <!--            android:layout_margin="5dp"-->
-    <!--            android:textColor="@color/white"-->
-    <!--            android:background="@drawable/button_radio"-->
-    <!--            android:button="@null"-->
-    <!--            android:gravity="center"-->
-    <!--            android:text="精二" />-->
-    <!--        <RadioButton-->
-    <!--            android:layout_width="65dp"-->
-    <!--            android:layout_height="24dp"-->
-    <!--            android:textColor="@color/white"-->
-    <!--            android:layout_margin="5dp"-->
-    <!--            android:background="@drawable/button_radio"-->
-    <!--            android:button="@null"-->
-    <!--            android:gravity="center"-->
-    <!--            android:text="精一" />-->
-    <!--        <RadioButton-->
-    <!--            android:layout_width="65dp"-->
-    <!--            android:layout_height="24dp"-->
-    <!--            android:textColor="@color/white"-->
-    <!--            android:layout_margin="5dp"-->
-    <!--            android:background="@drawable/button_radio"-->
-    <!--            android:button="@null"-->
-    <!--            android:gravity="center"-->
-    <!--            android:text="精零" />-->
-
-    <!--    </RadioGroup>-->
-    <!--    -->
-    <!--    <RadioGroup-->
-    <!--        android:id="@+id/testGroup"-->
-    <!--        android:layout_below="@+id/ProfessionG"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:cursorVisible="false"-->
-    <!--        android:orientation="horizontal">-->
-    <!--        -->
-    <!--        <RadioButton-->
-    <!--            android:layout_width="65dp"-->
-    <!--            android:layout_height="24dp"-->
-    <!--            android:layout_margin="5dp"-->
-    <!--            android:background="@drawable/button_radio"-->
-    <!--            android:button="@null"-->
-    <!--            android:textColor="@color/white"-->
-    <!--            android:gravity="center"-->
-    <!--            android:text="6星" />-->
-
-    <!--        <RadioButton-->
-    <!--            android:layout_width="65dp"-->
-    <!--            android:layout_height="24dp"-->
-    <!--            android:layout_margin="5dp"-->
-    <!--            android:background="@drawable/button_radio"-->
-    <!--            android:textColor="@color/white"-->
-    <!--            android:button="@null"-->
-    <!--            android:gravity="center"-->
-    <!--            android:text="5星" />-->
-
-    <!--        <RadioButton-->
-    <!--            android:layout_width="65dp"-->
-    <!--            android:layout_height="24dp"-->
-    <!--            android:layout_margin="5dp"-->
-    <!--            android:textColor="@color/white"-->
-    <!--            android:background="@drawable/button_radio"-->
-    <!--            android:button="@null"-->
-    <!--            android:gravity="center"-->
-    <!--            android:text="4星" />-->
-    <!--        <RadioButton-->
-    <!--            android:layout_width="65dp"-->
-    <!--            android:layout_height="24dp"-->
-    <!--            android:textColor="@color/white"-->
-    <!--            android:layout_margin="5dp"-->
-    <!--            android:background="@drawable/button_radio"-->
-    <!--            android:button="@null"-->
-    <!--            android:gravity="center"-->
-    <!--            android:text="1~3星" />-->
-
-    <!--    </RadioGroup>-->
-
-    <!--    -->
     <LinearLayout
-        android:id="@+id/ButtonLayout"
+        android:id="@+id/Section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp" />
-    <LinearLayout
-        android:id="@+id/FilterBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ButtonLayout"
-        android:baselineAligned="false"
-        android:gravity="start"
         android:orientation="horizontal"
         android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:visibility="gone">
+        android:paddingEnd="8dp">
 
-        <include
-            android:id="@+id/Profession"
-            layout="@layout/chip_card"
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1" />
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="上次更新" />
 
-        <include
-            android:id="@+id/Rarity"
-            layout="@layout/chip_card"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1" />
+        <ImageView
 
-        <include
-            android:id="@+id/Level"
-            layout="@layout/chip_card"
-            android:layout_width="0dp"
+            android:id="@+id/Filter"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1" />
+            android:layout_gravity="end"
+            android:contentDescription="@string/text_default"
+            android:padding="5dp"
+            android:src="@drawable/ic_filter" />
+
+        <ImageView
+            android:id="@+id/ListGrid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:contentDescription="@string/text_default"
+            android:padding="5dp"
+            android:src="@drawable/ic_list" />
+
+
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/RecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/FilterBar"
+        android:layout_below="@id/Section"
         android:scrollbarSize="5dp"
         android:scrollbarThumbVertical="@color/grey_500"
         android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <LinearLayout
+        android:id="@+id/ButtonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Section"
+        android:background="?attr/android:colorBackground"
+        android:orientation="vertical"
+        android:focusable="true"
+        android:padding="8dp"
+        android:visibility="gone" />
 </RelativeLayout>

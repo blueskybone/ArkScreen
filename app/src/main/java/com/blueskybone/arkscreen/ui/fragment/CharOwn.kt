@@ -42,10 +42,10 @@ class CharOwn : Fragment(), ItemListener {
     private val binding get() = _binding!!
 
     private lateinit var adapter: CharAdapter
-    private lateinit var adapter_new: CharGridAdapter
+//    private lateinit var adapter_new: CharGridAdapter
 
 
-    private val profList = listOf("先锋", "近卫", "狙击", "重装")
+    private val profList = listOf("先锋", "近卫", "狙击", "重装", "术师", "医疗", "辅助", "特种")
     private val levelList = listOf("精英二", "精英一", "精英零")
     private val rarityList = listOf("6★", "5★", "4★", "1~3★")
 
@@ -58,7 +58,7 @@ class CharOwn : Fragment(), ItemListener {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         adapter = CharAdapter(requireContext(), 20)
-        adapter_new = CharGridAdapter(requireContext(), 20)
+//        adapter_new = CharGridAdapter(requireContext(), 20)
         _binding = FragmentCharBinding.inflate(inflater)
 
         setupBinding()
@@ -137,16 +137,20 @@ class CharOwn : Fragment(), ItemListener {
                 view.layoutParams = params
             }
         })
-
-        model.filterProf.observe(viewLifecycleOwner) { value ->
-            binding.Profession.setup(CharModel.ProfFilter, value)
+        binding.Filter.setOnClickListener {
+            if (binding.ButtonLayout.visibility == View.GONE)
+                binding.ButtonLayout.visibility = View.VISIBLE
+            else binding.ButtonLayout.visibility = View.GONE
         }
-        model.filterRarity.observe(viewLifecycleOwner) { value ->
-            binding.Rarity.setup(CharModel.RarityFilter, value)
-        }
-        model.filterLevel.observe(viewLifecycleOwner) { value ->
-            binding.Level.setup(CharModel.LevelFilter, value)
-        }
+//        model.filterProf.observe(viewLifecycleOwner) { value ->
+//            binding.Profession.setup(CharModel.ProfFilter, value)
+//        }
+//        model.filterRarity.observe(viewLifecycleOwner) { value ->
+//            binding.Rarity.setup(CharModel.RarityFilter, value)
+//        }
+//        model.filterLevel.observe(viewLifecycleOwner) { value ->
+//            binding.Level.setup(CharModel.LevelFilter, value)
+//        }
         model.charsList.observe(viewLifecycleOwner) { value ->
             adapter.refreshData(value)
             binding.RecyclerView.scrollToPosition(0)
@@ -189,13 +193,13 @@ class CharOwn : Fragment(), ItemListener {
 //        popupWindow.setOnDismissListener {
 //
 //        }
-        popupWindow.showAsDropDown(binding.FilterBar)
-
-        binding.FilterBar.setOnClickListener {
-            if (popupWindow.isShowing) {
-                popupWindow.dismiss()
-            }
-        }
+//        popupWindow.showAsDropDown(binding.FilterBar)
+//
+//        binding.FilterBar.setOnClickListener {
+//            if (popupWindow.isShowing) {
+//                popupWindow.dismiss()
+//            }
+//        }
     }
 
     private fun ChipCardBinding.setup(filter: CharModel.Filter, value: String) {

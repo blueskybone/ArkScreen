@@ -10,6 +10,7 @@ import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Gacha
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
+import com.blueskybone.arkscreen.util.getJsonContent
 import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -145,28 +146,23 @@ class RetrofitUtils {
                 ), headers
             )
             return if (response.isSuccessful) {
-                //TODO:检查response header 是否存在
-//                if (response.headers()["Content-Encoding"] == "gzip") {
-//                    val unzipped =
-//                        withContext(Dispatchers.IO) {
-//                            GZIPInputStream(ByteArrayInputStream()).bufferedReader()
-//                        }.readText()
-//                    Response(
-//                        responseCode = okHttpResponse.code,
-//                        responseContent = unzipped
-//                    )
-//                }
-
-                val builder = StringBuilder()
-                response.body()?.data?.awards?.let { list ->
-                    for (item in list) {
-                        builder.append(item.resource.name).append("×").append(item.count)
-                            .append("  ")
-                    }
-                    builder.toString()
-                } ?: "response content is empty"
+                try {
+                    response.body()?.data?.awards?.joinToString("  ") {
+                        "${it.resource.name}×${it.count}"
+                    } ?: "response content is empty"
+                } catch (e: Exception) {
+                    Timber.e(response.body().toString())
+                    "content error: can't analysis response body"
+                }
             } else {
-                return "API error: ${response.errorBody()?.string()}"
+                try {
+                    response.errorBody()?.string()?.let { errorBody ->
+                        getJsonContent(errorBody, "message")
+                    } ?: "API error: no error body"
+                } catch (e: Exception) {
+                    Timber.e(response.errorBody()?.string())
+                    "API error: ${response.errorBody()?.string()}"
+                }
             }
         }
 

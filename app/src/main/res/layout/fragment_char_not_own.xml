@@ -5,7 +5,13 @@
     android:layout_height="match_parent"
     android:paddingTop="?attr/actionBarSize">
 
+    <com.nex3z.flowlayout.FlowLayout
+        android:id="@+id/FlowLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <androidx.recyclerview.widget.RecyclerView
+        android:visibility="gone"
         android:id="@+id/RecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
