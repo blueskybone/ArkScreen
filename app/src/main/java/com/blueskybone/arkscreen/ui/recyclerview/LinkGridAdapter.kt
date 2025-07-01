@@ -1,18 +1,12 @@
 package com.blueskybone.arkscreen.ui.recyclerview
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.databinding.ItemLinkBinding
 import com.blueskybone.arkscreen.databinding.ItemLinkRoundBinding
 import com.blueskybone.arkscreen.room.Link
 

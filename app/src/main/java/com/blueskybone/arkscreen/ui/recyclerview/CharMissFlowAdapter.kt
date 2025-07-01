@@ -3,12 +3,9 @@ package com.blueskybone.arkscreen.ui.recyclerview
 import android.content.Context
 import android.graphics.Bitmap
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.ImageView
-import androidx.core.graphics.drawable.toBitmap
 import coil.ImageLoader
 import coil.load
-import coil.request.ImageRequest
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.ItemCharNotOwnBinding
 import com.blueskybone.arkscreen.network.avatarUrl
@@ -18,8 +15,6 @@ import com.nex3z.flowlayout.FlowLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException

@@ -17,18 +17,16 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.ui.bindinginfo.AppTheme
 import com.blueskybone.arkscreen.databinding.ActivityMainBinding
+import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.ui.fragment.Function
 import com.blueskybone.arkscreen.ui.fragment.Home
 import com.blueskybone.arkscreen.ui.fragment.Setting
-import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.util.getAppVersionName
 import com.blueskybone.arkscreen.viewmodel.BaseModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -158,6 +156,34 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
             Toaster.show("无法打开页面，请手动设置")
+        }
+    }
+
+    fun openNotificationSettings(context: Context) {
+        try {
+            // 尝试 Android 8.0+ 的方式
+            val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            context.startActivity(intent)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            try {
+                // 回退到应用详情页面
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.parse("package:${context.packageName}")
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                // 最终回退到系统设置主页
+                val intent = Intent(Settings.ACTION_SETTINGS).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                context.startActivity(intent)
+            }
         }
     }
 

@@ -1,7 +1,5 @@
 package com.blueskybone.arkscreen.network.model
 
-import kotlin.Char
-
 
 data class PlayerInfoResp(
 

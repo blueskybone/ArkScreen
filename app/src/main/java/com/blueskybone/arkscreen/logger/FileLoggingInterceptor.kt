@@ -4,13 +4,13 @@ package com.blueskybone.arkscreen.logger
  *   Created by blueskybone
  *   Date: 2025/6/14
  */
-import android.content.Context
 import com.blueskybone.arkscreen.APP
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
 import java.io.FileWriter
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import java.util.concurrent.Executors
 
 class FileLoggingInterceptor : HttpLoggingInterceptor.Logger {

@@ -1,7 +1,6 @@
 package com.blueskybone.arkscreen.ui.bindinginfo
 
 import com.blueskybone.arkscreen.R
-import org.w3c.dom.Text
 
 /**
  *   Created by blueskybone

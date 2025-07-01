@@ -11,17 +11,13 @@ import com.blueskybone.arkscreen.CharAllMap
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.Progress
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTask
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTaskTest
-import com.blueskybone.arkscreen.preference.PrefManager
-import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.playerinfo.Operator
 import com.blueskybone.arkscreen.playerinfo.compareOperators
-import com.blueskybone.arkscreen.playerinfo.geneRealTimeData
 import com.blueskybone.arkscreen.playerinfo.getOperatorData
+import com.blueskybone.arkscreen.preference.PrefManager
+import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.util.readFileAsJsonNode
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.Dispatchers
@@ -29,8 +25,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.getKoin
 import java.io.IOException
-import java.text.Collator
-import java.util.zip.GZIPInputStream
 
 
 /**

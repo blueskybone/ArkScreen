@@ -1,6 +1,5 @@
 package com.blueskybone.arkscreen.ui.bindinginfo
 
-import android.graphics.Color
 import com.blueskybone.arkscreen.R
 
 /**

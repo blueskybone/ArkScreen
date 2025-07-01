@@ -1,6 +1,5 @@
 package com.blueskybone.arkscreen.ui.recyclerview.viewpager
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -8,7 +7,6 @@ import coil.load
 import com.blueskybone.arkscreen.databinding.ItemBannerBinding
 import com.blueskybone.arkscreen.network.BiliVideo
 import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
-import timber.log.Timber
 
 
 class ImagePagerAdapter(

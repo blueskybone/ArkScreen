@@ -4,7 +4,6 @@ package com.blueskybone.arkscreen.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.TypedArray
-import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle

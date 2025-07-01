@@ -13,8 +13,6 @@ import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.request.CachePolicy
 import coil.util.DebugLogger
-import com.blueskybone.arkscreen.ui.bindinginfo.AppTheme
-import com.blueskybone.arkscreen.logger.FileLoggingInterceptor
 import com.blueskybone.arkscreen.logger.FileLoggingTree
 import com.blueskybone.arkscreen.network.equipCachePath
 import com.blueskybone.arkscreen.network.skillCachePath
@@ -22,6 +20,7 @@ import com.blueskybone.arkscreen.network.skinCachePath
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.preference.preference.shared.SharedPreferenceStore
 import com.blueskybone.arkscreen.receiver.AtdAlarmReceiver
+import com.blueskybone.arkscreen.ui.bindinginfo.AppTheme
 import com.blueskybone.arkscreen.util.getDensityDpi
 import com.hjq.toast.Toaster
 import com.hjq.toast.style.BlackToastStyle
@@ -34,7 +33,6 @@ import org.koin.java.KoinJavaComponent
 import timber.log.Timber
 import java.io.File
 import java.util.Calendar
-import java.util.Date
 
 /**
  *   Created by blueskybone

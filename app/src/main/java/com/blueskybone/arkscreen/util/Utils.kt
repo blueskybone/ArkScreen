@@ -3,7 +3,6 @@ package com.blueskybone.arkscreen.util
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Point
 import android.os.Build
 import android.util.DisplayMetrics

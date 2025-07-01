@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,11 +19,23 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.R
+import com.blueskybone.arkscreen.common.MenuDialog
+import com.blueskybone.arkscreen.databinding.DialogInputBinding
+import com.blueskybone.arkscreen.databinding.DialogTimepickerBinding
+import com.blueskybone.arkscreen.databinding.FragmentDashboardBinding
+import com.blueskybone.arkscreen.databinding.PreferenceBinding
+import com.blueskybone.arkscreen.databinding.PreferenceSeekbarBinding
+import com.blueskybone.arkscreen.databinding.PreferenceSwitchBinding
+import com.blueskybone.arkscreen.preference.PrefManager
+import com.blueskybone.arkscreen.preference.preference.Preference
+import com.blueskybone.arkscreen.receiver.WidgetReceiver
+import com.blueskybone.arkscreen.room.Account
 import com.blueskybone.arkscreen.ui.activity.LoginWeb
 import com.blueskybone.arkscreen.ui.activity.MainActivity
 import com.blueskybone.arkscreen.ui.bindinginfo.BackAutoAtd
 import com.blueskybone.arkscreen.ui.bindinginfo.FloatWindowAppearance
 import com.blueskybone.arkscreen.ui.bindinginfo.ListInfo
+import com.blueskybone.arkscreen.ui.bindinginfo.NotifyPermission
 import com.blueskybone.arkscreen.ui.bindinginfo.OpenAutoStartSettings
 import com.blueskybone.arkscreen.ui.bindinginfo.OverlayPermission
 import com.blueskybone.arkscreen.ui.bindinginfo.PowerSavingMode
@@ -38,29 +49,14 @@ import com.blueskybone.arkscreen.ui.bindinginfo.WidgetAlpha
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetAppearance
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetRefresh
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize
-import com.blueskybone.arkscreen.common.MenuDialog
-import com.blueskybone.arkscreen.databinding.DialogInfoBinding
-import com.blueskybone.arkscreen.databinding.DialogInputBinding
-import com.blueskybone.arkscreen.databinding.DialogTimepickerBinding
-import com.blueskybone.arkscreen.databinding.FragmentDashboardBinding
-import com.blueskybone.arkscreen.databinding.PreferenceBinding
-import com.blueskybone.arkscreen.databinding.PreferenceSeekbarBinding
-import com.blueskybone.arkscreen.databinding.PreferenceSwitchBinding
-import com.blueskybone.arkscreen.preference.PrefManager
-import com.blueskybone.arkscreen.preference.preference.Preference
-import com.blueskybone.arkscreen.receiver.WidgetReceiver
 import com.blueskybone.arkscreen.ui.recyclerview.AccountAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
-import com.blueskybone.arkscreen.room.Account
-import com.blueskybone.arkscreen.ui.bindinginfo.NotifyPermission
 import com.blueskybone.arkscreen.util.TimeUtils
 import com.blueskybone.arkscreen.util.copyToClipboard
 import com.blueskybone.arkscreen.viewmodel.BaseModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
 import org.koin.android.ext.android.getKoin
-import timber.log.Timber
-import java.io.File
 import java.util.Locale
 
 /**
@@ -180,7 +176,7 @@ class Function : Fragment(), ItemListener {
             (activity as MainActivity?)?.jumpToPermission(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
         }
         binding.NotifyPermission.Layout.setOnClickListener {
-            (activity as MainActivity?)?.jumpToPermission(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+            (activity as MainActivity?)?.openNotificationSettings(requireContext())
         }
         timePickerBinding()
     }

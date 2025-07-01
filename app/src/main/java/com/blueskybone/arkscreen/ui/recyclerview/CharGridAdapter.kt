@@ -14,8 +14,8 @@ import com.blueskybone.arkscreen.databinding.ItemCharCardBinding
 import com.blueskybone.arkscreen.network.avatarUrl
 import com.blueskybone.arkscreen.network.equipUrl
 import com.blueskybone.arkscreen.network.skillUrl
-import com.blueskybone.arkscreen.ui.recyclerview.paging.PagingAdapter
 import com.blueskybone.arkscreen.playerinfo.Operator
+import com.blueskybone.arkscreen.ui.recyclerview.paging.PagingAdapter
 import java.net.URLEncoder
 
 /**

@@ -1,8 +1,5 @@
 package com.blueskybone.arkscreen.network
 
-import com.blueskybone.arkscreen.network.auth.getBiliWbi
-import com.blueskybone.arkscreen.network.auth.wbiParams
-import com.blueskybone.arkscreen.util.getJsonContent
 import com.fasterxml.jackson.databind.ObjectMapper
 import java.net.URL
 

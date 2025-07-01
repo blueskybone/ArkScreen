@@ -3,7 +3,6 @@ package com.blueskybone.arkscreen.ui.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.blueskybone.arkscreen.databinding.ActivityLogBinding
-import com.blueskybone.arkscreen.databinding.ActivityRealTimeBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

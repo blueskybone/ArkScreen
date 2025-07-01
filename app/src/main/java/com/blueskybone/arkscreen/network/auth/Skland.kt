@@ -1,10 +1,6 @@
 package com.blueskybone.arkscreen.network.auth
 
 
-import java.math.BigInteger
-import java.security.MessageDigest
-
-
 //Skland Authentication in HEADER <sign>
 fun generateSign(api: String, params: String, key: String, timeStamp: String): String {
     val jsonArgs = "{\"platform\":\"\",\"timestamp\":\"$timeStamp\",\"dId\":\"\",\"vName\":\"\"}"

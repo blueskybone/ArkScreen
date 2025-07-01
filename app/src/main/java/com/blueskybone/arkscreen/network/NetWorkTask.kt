@@ -13,7 +13,6 @@ import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Gacha
 import okhttp3.ResponseBody
 import retrofit2.Response
-import timber.log.Timber
 
 /**
  *   Created by blueskybone

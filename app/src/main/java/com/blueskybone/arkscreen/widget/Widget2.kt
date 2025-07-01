@@ -8,22 +8,19 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
-import android.os.Bundle
 import android.util.TypedValue
 import android.widget.RemoteViews
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.blueskybone.arkscreen.R
+import com.blueskybone.arkscreen.preference.PrefManager
+import com.blueskybone.arkscreen.receiver.WidgetReceiver.Companion.WORKER_NAME
 import com.blueskybone.arkscreen.ui.activity.RealTimeActivity
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetAppearance
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize
-import com.blueskybone.arkscreen.preference.PrefManager
-import com.blueskybone.arkscreen.receiver.WidgetReceiver.Companion.WORKER_NAME
 import com.blueskybone.arkscreen.util.TimeUtils
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
-import com.hjq.toast.Toaster
 import org.koin.java.KoinJavaComponent
 import java.util.concurrent.TimeUnit
 

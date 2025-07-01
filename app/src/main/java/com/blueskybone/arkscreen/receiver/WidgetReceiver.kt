@@ -6,7 +6,6 @@ import android.content.Intent
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.blueskybone.arkscreen.widget.SklandWorker
-import com.blueskybone.arkscreen.widget.Widget1
 import com.hjq.toast.Toaster
 
 /**

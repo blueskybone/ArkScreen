@@ -11,7 +11,6 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.ItemAccountBinding
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.Account
-import org.koin.android.ext.android.getKoin
 import org.koin.java.KoinJavaComponent.getKoin
 
 /**

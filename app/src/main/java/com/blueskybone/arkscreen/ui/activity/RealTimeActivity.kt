@@ -8,6 +8,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
 import com.blueskybone.arkscreen.DataUiState
+import com.blueskybone.arkscreen.databinding.ActivityRealTimeBinding
+import com.blueskybone.arkscreen.databinding.InfoCardBinding
+import com.blueskybone.arkscreen.playerinfo.RealTimeUi
 import com.blueskybone.arkscreen.ui.bindinginfo.Campaign
 import com.blueskybone.arkscreen.ui.bindinginfo.DataInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.Dormitories
@@ -19,9 +22,6 @@ import com.blueskybone.arkscreen.ui.bindinginfo.RecruitRefresh
 import com.blueskybone.arkscreen.ui.bindinginfo.Tired
 import com.blueskybone.arkscreen.ui.bindinginfo.Trading
 import com.blueskybone.arkscreen.ui.bindinginfo.Train
-import com.blueskybone.arkscreen.databinding.ActivityRealTimeBinding
-import com.blueskybone.arkscreen.databinding.InfoCardBinding
-import com.blueskybone.arkscreen.playerinfo.RealTimeUi
 import com.blueskybone.arkscreen.viewmodel.RealTimeModel
 import com.hjq.toast.Toaster
 

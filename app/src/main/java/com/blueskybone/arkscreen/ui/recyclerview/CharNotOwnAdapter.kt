@@ -13,12 +13,11 @@ import coil.load
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.databinding.ItemCharMissBinding
 import com.blueskybone.arkscreen.databinding.ItemCharNotOwnBinding
 import com.blueskybone.arkscreen.network.avatarUrl
 import com.blueskybone.arkscreen.network.skinCachePath
-import com.blueskybone.arkscreen.ui.recyclerview.paging.PagingAdapter
 import com.blueskybone.arkscreen.playerinfo.Operator
+import com.blueskybone.arkscreen.ui.recyclerview.paging.PagingAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

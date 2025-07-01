@@ -1,10 +1,7 @@
 package com.blueskybone.arkscreen.ui.fragment
 
-import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -15,20 +12,9 @@ import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import com.blueskybone.arkscreen.APP
-import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.ui.bindinginfo.AppTheme
-import com.blueskybone.arkscreen.ui.bindinginfo.CheckUpdate
-import com.blueskybone.arkscreen.ui.bindinginfo.GroupChat
-import com.blueskybone.arkscreen.ui.bindinginfo.ListInfo
-import com.blueskybone.arkscreen.ui.bindinginfo.SeekBarInfo
-import com.blueskybone.arkscreen.ui.bindinginfo.TextInfo
-import com.blueskybone.arkscreen.ui.bindinginfo.UseInnerWeb
-import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.AppUpdateInfo
-import com.blueskybone.arkscreen.ui.activity.LogActivity
-import com.blueskybone.arkscreen.ui.activity.LoginWeb
-import com.blueskybone.arkscreen.ui.activity.WebViewActivity
-import com.blueskybone.arkscreen.ui.bindinginfo.TimeCorrection
+import com.blueskybone.arkscreen.R
+import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.databinding.FragmentSettingBinding
 import com.blueskybone.arkscreen.databinding.PreferenceBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSeekbarBinding
@@ -38,6 +24,15 @@ import com.blueskybone.arkscreen.logger.FileLoggingTree
 import com.blueskybone.arkscreen.network.getSklandServerTs
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.preference.preference.Preference
+import com.blueskybone.arkscreen.ui.activity.LogActivity
+import com.blueskybone.arkscreen.ui.bindinginfo.AppTheme
+import com.blueskybone.arkscreen.ui.bindinginfo.CheckUpdate
+import com.blueskybone.arkscreen.ui.bindinginfo.GroupChat
+import com.blueskybone.arkscreen.ui.bindinginfo.ListInfo
+import com.blueskybone.arkscreen.ui.bindinginfo.SeekBarInfo
+import com.blueskybone.arkscreen.ui.bindinginfo.TextInfo
+import com.blueskybone.arkscreen.ui.bindinginfo.TimeCorrection
+import com.blueskybone.arkscreen.ui.bindinginfo.UseInnerWeb
 import com.blueskybone.arkscreen.util.copyToClipboard
 import com.blueskybone.arkscreen.util.getAppVersionName
 import com.blueskybone.arkscreen.util.saveDrawableToGallery
@@ -50,7 +45,6 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.getKoin
 import timber.log.Timber
 import java.io.File
-import java.util.Locale
 
 /**
  *   Created by blueskybone

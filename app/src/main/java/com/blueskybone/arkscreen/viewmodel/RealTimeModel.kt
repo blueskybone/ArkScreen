@@ -7,14 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTaskTest
 import com.blueskybone.arkscreen.network.avatarUrl
-import com.blueskybone.arkscreen.preference.PrefManager
-import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.playerinfo.ApCache
 import com.blueskybone.arkscreen.playerinfo.LaborCache
 import com.blueskybone.arkscreen.playerinfo.RealTimeData
 import com.blueskybone.arkscreen.playerinfo.RealTimeUi
 import com.blueskybone.arkscreen.playerinfo.geneRealTimeData
-import com.blueskybone.arkscreen.util.TimeUtils
+import com.blueskybone.arkscreen.preference.PrefManager
+import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
 import com.blueskybone.arkscreen.util.TimeUtils.getDayNum
 import com.blueskybone.arkscreen.util.TimeUtils.getRemainTimeStr

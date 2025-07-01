@@ -17,9 +17,9 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.ActivityCharAssetsBinding
+import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.ui.fragment.CharNotOwn
 import com.blueskybone.arkscreen.ui.fragment.CharOwn
-import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.viewmodel.CharModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout

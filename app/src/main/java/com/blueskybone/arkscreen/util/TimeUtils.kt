@@ -5,13 +5,9 @@ import com.blueskybone.arkscreen.preference.PrefManager
 import org.koin.java.KoinJavaComponent.getKoin
 import java.text.SimpleDateFormat
 import java.time.Instant
-import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoField
-import java.time.temporal.WeekFields
 import java.util.Date
-import java.util.Locale
 import java.util.TimeZone
 
 

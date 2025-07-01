@@ -13,7 +13,12 @@ import com.blueskybone.arkscreen.network.model.GrantResponse
 import com.blueskybone.arkscreen.network.model.PlayerInfoResp
 import okhttp3.ResponseBody
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.HeaderMap
+import retrofit2.http.POST
+import retrofit2.http.Query
+import retrofit2.http.Streaming
 
 interface ApiService {
     // 获取凭证

@@ -9,15 +9,14 @@ import androidx.work.WorkerParameters
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.network.NetWorkTask
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTaskTest
-import com.blueskybone.arkscreen.preference.PrefManager
-import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.playerinfo.ApCache
 import com.blueskybone.arkscreen.playerinfo.LaborCache
-import com.blueskybone.arkscreen.room.ArkDatabase
 import com.blueskybone.arkscreen.playerinfo.RealTimeData
 import com.blueskybone.arkscreen.playerinfo.geneRealTimeData
+import com.blueskybone.arkscreen.preference.PrefManager
+import com.blueskybone.arkscreen.room.AccountSk
+import com.blueskybone.arkscreen.room.ArkDatabase
 import com.blueskybone.arkscreen.util.TimeUtils
-import com.fasterxml.jackson.databind.JsonNode
 import org.koin.java.KoinJavaComponent.getKoin
 
 /**

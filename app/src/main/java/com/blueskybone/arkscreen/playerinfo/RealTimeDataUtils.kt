@@ -2,7 +2,6 @@ package com.blueskybone.arkscreen.playerinfo
 
 import com.blueskybone.arkscreen.network.model.Ap
 import com.blueskybone.arkscreen.network.model.Building
-import com.blueskybone.arkscreen.network.model.Campaign
 import com.blueskybone.arkscreen.network.model.CharInfo
 import com.blueskybone.arkscreen.network.model.Dormitories
 import com.blueskybone.arkscreen.network.model.Hire
@@ -11,15 +10,10 @@ import com.blueskybone.arkscreen.network.model.MChars
 import com.blueskybone.arkscreen.network.model.ManufactureFormulaInfo
 import com.blueskybone.arkscreen.network.model.Manufactures
 import com.blueskybone.arkscreen.network.model.Meeting
-import com.blueskybone.arkscreen.network.model.PlayerInfoData
 import com.blueskybone.arkscreen.network.model.PlayerInfoResp
 import com.blueskybone.arkscreen.network.model.Recruit
 import com.blueskybone.arkscreen.network.model.Tradings
-import com.blueskybone.arkscreen.network.model.Trainee
 import com.blueskybone.arkscreen.network.model.Training
-import com.blueskybone.arkscreen.util.TimeUtils.getRemainTimeStr
-import com.blueskybone.arkscreen.util.TimeUtils.getTimeStr
-import com.fasterxml.jackson.databind.JsonNode
 
 
 fun geneRealTimeData(playerInfoResp: PlayerInfoResp): RealTimeData {

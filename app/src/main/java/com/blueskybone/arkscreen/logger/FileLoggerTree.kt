@@ -5,12 +5,14 @@ package com.blueskybone.arkscreen.logger
  *   Date: 2025/6/13
  */
 import android.annotation.SuppressLint
-import timber.log.Timber
-import java.io.*
-import java.text.SimpleDateFormat
-import java.util.*
 import android.util.Log
 import com.blueskybone.arkscreen.APP
+import timber.log.Timber
+import java.io.File
+import java.io.FileWriter
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @SuppressLint("ConstantLocale")
 class FileLoggingTree : Timber.Tree() {

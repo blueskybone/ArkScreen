@@ -20,7 +20,6 @@ import com.blueskybone.arkscreen.common.setTagLayout
 import com.blueskybone.arkscreen.databinding.ChipCardBinding
 import com.blueskybone.arkscreen.databinding.FragmentCharBinding
 import com.blueskybone.arkscreen.ui.recyclerview.CharAdapter
-import com.blueskybone.arkscreen.ui.recyclerview.CharGridAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
 import com.blueskybone.arkscreen.util.dpToPx
 import com.blueskybone.arkscreen.util.getColorFromAttr

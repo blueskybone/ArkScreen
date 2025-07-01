@@ -9,8 +9,6 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.ContextCompat
 import com.blueskybone.arkscreen.APP
-import java.io.File
-import java.io.FileOutputStream
 
 /**
  *   Created by blueskybone
