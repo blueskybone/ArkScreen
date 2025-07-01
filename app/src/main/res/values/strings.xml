@@ -64,8 +64,11 @@
     <string name="screenshot_delay">截图延迟秒数</string>
     <string name="screenshot_delay_detail">部分情况出现“未获取有效信息”可能是截图前摇过短截取了错误画面引起的</string>
 
-    <string name="jump_to_overlay_permission">获取悬浮窗权限</string>
-    <string name="jump_to_overlay_permission_detail">快速公招功能需要悬浮窗权限</string>
+    <string name="overlay_permission">获取悬浮窗权限</string>
+    <string name="overlay_permission_detail">快速公招功能需要悬浮窗权限</string>
+
+    <string name="notify_permission">通知权限</string>
+    <string name="notify_permission_detail">部分机型需要通知权限</string>
 
     <string name="widget">桌面组件</string>
     <string name="widget_appearance">桌面组件外观</string>

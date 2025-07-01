@@ -38,8 +38,13 @@ data object BackAutoAtd : TextInfo {
 }
 
 data object OverlayPermission : TextInfo {
-    override val title = R.string.jump_to_overlay_permission
-    override val subTitle = R.string.jump_to_overlay_permission_detail
+    override val title = R.string.overlay_permission
+    override val subTitle = R.string.overlay_permission_detail
+}
+
+data object NotifyPermission : TextInfo {
+    override val title = R.string.notify_permission
+    override val subTitle = R.string.notify_permission_detail
 }
 
 data object OpenAutoStartSettings : TextInfo {

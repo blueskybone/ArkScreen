@@ -36,6 +36,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.getKoin
+import timber.log.Timber
 
 /**
  *   Created by blueskybone
@@ -81,20 +82,34 @@ class RecruitService : Service() {
         screenHeight = point.y
     }
 
+    private var sleepScreenshot = false
+
 
     override fun onCreate() {
         super.onCreate()
         setScreenSize()
         createNotification()
         startInactivityTimer()
+
         recruitManager = RecruitManager.instance
         imageProcessor = ImageProcessor.instance
         floatWindow = FloatWindow(this)
         floatWindow!!.initialize()
+
     }
+
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         println("测试6 onStartCommand")
+
+        try {
+            val start = intent?.getStringExtra("start_from")
+            if (start == "QuickTileService") sleepScreenshot = true
+        } catch (e: Exception) {
+            Timber.e(e.message)
+        }
+
+
         if (mutex) {
             return START_NOT_STICKY
         }
@@ -129,7 +144,10 @@ class RecruitService : Service() {
 //        startActivity(emptyIntent)
         try {
             println("测试3 try screenshot")
-            Thread.sleep(prefManager.screenShotDelay.get() * 1000L)
+            if (sleepScreenshot) {
+                Thread.sleep(1000L)
+            }
+//            Thread.sleep(prefManager.screenShotDelay.get() * 1000L)
             imageReader!!.acquireLatestImage().use { image ->
                 println("测试4 image get")
                 // TransActivity.finishActivity()

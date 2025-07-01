@@ -8,6 +8,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
@@ -51,6 +52,7 @@ import com.blueskybone.arkscreen.receiver.WidgetReceiver
 import com.blueskybone.arkscreen.ui.recyclerview.AccountAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
 import com.blueskybone.arkscreen.room.Account
+import com.blueskybone.arkscreen.ui.bindinginfo.NotifyPermission
 import com.blueskybone.arkscreen.util.TimeUtils
 import com.blueskybone.arkscreen.util.copyToClipboard
 import com.blueskybone.arkscreen.viewmodel.BaseModel
@@ -140,6 +142,7 @@ class Function : Fragment(), ItemListener {
         binding.WidgetRefresh.setUp(WidgetRefresh)
 
         binding.OverlayPermission.setUp(OverlayPermission)
+        binding.NotifyPermission.setUp(NotifyPermission)
         binding.PowerSavingMode.setUp(PowerSavingMode, prefManager.powerSavingMode, null, null)
         binding.OpenAutoStartSettings.setUp(OpenAutoStartSettings)
         binding.RecruitVideo.setOnClickListener {
@@ -174,7 +177,10 @@ class Function : Fragment(), ItemListener {
             openAutoStartSettings(requireContext())
         }
         binding.OverlayPermission.Layout.setOnClickListener {
-            (activity as MainActivity?)?.jumpToOverlayPermission()
+            (activity as MainActivity?)?.jumpToPermission(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+        }
+        binding.NotifyPermission.Layout.setOnClickListener {
+            (activity as MainActivity?)?.jumpToPermission(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
         }
         timePickerBinding()
     }
@@ -274,54 +280,6 @@ class Function : Fragment(), ItemListener {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-
-    private fun displayDebugDialog() {
-        val path = APP.externalCacheDir
-
-        val logDir = File(path, "network_logs")
-
-        val dialogBinding = DialogInfoBinding.inflate(layoutInflater)
-        val dialogBuilder = MaterialAlertDialogBuilder(requireContext())
-            .setView(dialogBinding.root)
-            .setTitle(R.string.debug_log)
-
-        if (!logDir.exists()) {
-            dialogBinding.Text.text = "No logs available"
-            return
-        }
-
-        val logFiles = logDir.listFiles()?.sortedByDescending { it.lastModified() }
-        val stringBuilder = StringBuilder()
-
-        logFiles?.forEach { file ->
-            stringBuilder.append("=== ${file.name} ===\n")
-            file.readLines().forEach { line ->
-                stringBuilder.append(line).append("\n")
-            }
-        }
-
-        dialogBinding.Text.text = stringBuilder.toString()
-        dialogBinding.Text.movementMethod = ScrollingMovementMethod()
-
-        dialogBuilder.show()
-    }
-
-    private fun debugLogClean() {
-        val path = APP.externalCacheDir
-        val logDir = File(path, "network_logs")
-        if (!logDir.exists() || !logDir.isDirectory) {
-            Toaster.show("目录不存在")
-            return
-        }
-        logDir.listFiles()?.forEach { file ->
-            try {
-                file.delete()
-            } catch (e: Exception) {
-                Timber.e(e, "删除日志文件失败: ${file.name}")
-            }
-        }
-        Toaster.show("已清除日志")
     }
 
     private fun timePickerBinding() {

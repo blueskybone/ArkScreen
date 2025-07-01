@@ -91,6 +91,10 @@
                 <include
                     android:id="@+id/OverlayPermission"
                     layout="@layout/preference" />
+
+                <include
+                    android:id="@+id/NotifyPermission"
+                    layout="@layout/preference" />
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
@@ -124,14 +128,17 @@
                     layout="@layout/preference" />
 
                 <include
+                    android:visibility="gone"
                     android:id="@+id/WidgetContentSize"
                     layout="@layout/preference" />
 
                 <include
+                    android:visibility="gone"
                     android:id="@+id/WidgetAlpha"
                     layout="@layout/preference_seekbar" />
 
                 <include
+                    android:visibility="gone"
                     android:id="@+id/WidgetRefresh"
                     layout="@layout/preference" />
 

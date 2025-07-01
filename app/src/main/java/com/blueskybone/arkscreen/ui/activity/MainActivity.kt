@@ -89,8 +89,6 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigationView: BottomNavigationView = binding.navView
         viewPager.adapter = ViewPagerFragmentAdapter(this)
 
-//        viewPager.isUserInputEnabled = false
-
         bottomNavigationView.setOnItemSelectedListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.navigation_home -> {
@@ -139,19 +137,19 @@ class MainActivity : AppCompatActivity() {
         if (Settings.canDrawOverlays(context)) return
         if (!prefManager.warnOverlayPermission.get()) return
         MaterialAlertDialogBuilder(this)
-            .setTitle(getString(R.string.jump_to_overlay_permission))
+            .setTitle(getString(R.string.overlay_permission))
             .setMessage(getString(R.string.acquire_overlay_permission_content))
             .setNegativeButton(R.string.no_more_warn) { _, _ ->
                 prefManager.warnOverlayPermission.set(false)
             }
-            .setPositiveButton(getString(R.string.jump_to)) { _, _ -> jumpToOverlayPermission() }
+            .setPositiveButton(getString(R.string.jump_to)) { _, _ -> jumpToPermission(Settings.ACTION_MANAGE_OVERLAY_PERMISSION) }
             .show()
     }
 
-    fun jumpToOverlayPermission() {
+    fun jumpToPermission(permission: String) {
         try {
             val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse(
+                permission, Uri.parse(
                     "package:$packageName"
                 )
             )
@@ -159,10 +157,12 @@ class MainActivity : AppCompatActivity() {
             intentActivityResultLauncher.launch(intent)
         } catch (e: Exception) {
             e.printStackTrace()
+            Toaster.show("无法打开页面，请手动设置")
         }
-
     }
 
+
+    //TODO:合并
     fun requestIgnoreBatteryOptimizations() {
         try {
             val intent = Intent()
