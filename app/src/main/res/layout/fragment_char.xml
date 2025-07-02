@@ -11,9 +11,9 @@
     <FrameLayout
         android:id="@+id/Section"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_height="wrap_content">
+        android:layout_marginEnd="8dp">
 
         <ImageView
             android:id="@+id/Filter"
@@ -62,8 +62,8 @@
         android:id="@+id/FrameDialog"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/trans_grey"
         android:layout_below="@id/Section"
+        android:background="@color/trans_grey"
         android:visibility="gone" />
 
     <LinearLayout
@@ -76,5 +76,100 @@
         android:orientation="vertical"
         android:padding="8dp"
         android:visibility="gone" />
+
+<!--    <com.blueskybone.arkscreen.common.FlowRadioGroup-->
+<!--        android:id="@+id/radioGroup1"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@id/Section"-->
+<!--        android:background="?attr/android:colorBackground"-->
+<!--        android:focusable="true"-->
+<!--        android:orientation="vertical"-->
+<!--        android:padding="8dp"-->
+<!--        app:horizontalSpacing="5dp"-->
+<!--        app:verticalSpacing="5dp">-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_caster" />-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_sniper" />-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_pioneer" />-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_warrior" />-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_medic" />-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_support" />-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_special" />-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_tank" />-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_special" />-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_tank" />-->
+
+
+<!--    </com.blueskybone.arkscreen.common.FlowRadioGroup>-->
 
 </RelativeLayout>

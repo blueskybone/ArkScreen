@@ -2,12 +2,17 @@ package com.blueskybone.arkscreen.common
 
 import android.content.Context
 import android.graphics.Color
+import android.view.ContentInfo
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Space
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginBottom
 import androidx.core.view.updateMargins
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.util.dpToPx
@@ -27,7 +32,7 @@ fun line(context: Context): View {
     return line
 }
 
-fun space(context:Context, dp:Float): Space {
+fun space(context: Context, dp: Float): Space {
     val px = dpToPx(context, dp)
     return Space(context).apply {
         layoutParams = ViewGroup.LayoutParams(
@@ -36,7 +41,6 @@ fun space(context:Context, dp:Float): Space {
         )
     }
 }
-
 
 
 fun Button.setTagLayout(text: String) {
@@ -71,4 +75,78 @@ fun getFlowLayout(context: Context): FlowLayout {
     )
     flowLayout.layoutParams = layoutParams
     return flowLayout
+}
+
+fun getFlowRadioGroup(context: Context): FlowRadioGroup {
+    val flowRadioGroup = FlowRadioGroup(context).apply {
+        layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+            val sectionView = findViewById<View>(R.id.Section)
+            (layoutParams as? FrameLayout.LayoutParams)?.apply {
+                topMargin = sectionView.bottom + sectionView.marginBottom
+            }
+        }
+        // 设置可聚焦
+        isFocusable = true
+        // 设置内边距
+        setPadding(
+            dpToPx(8), // 左
+            dpToPx(8), // 上
+            dpToPx(8), // 右
+            dpToPx(8)  // 下
+        )
+        val typedArray = context.obtainStyledAttributes(
+            null,
+            R.styleable.FlowRadioGroup,
+            0,
+            0
+        )
+        try {
+            // 设置水平间距
+            horizontalSpacing = typedArray.getDimensionPixelSize(
+                R.styleable.FlowRadioGroup_horizontalSpacing,
+                dpToPx(5)
+            )
+
+            // 设置垂直间距
+            verticalSpacing = typedArray.getDimensionPixelSize(
+                R.styleable.FlowRadioGroup_verticalSpacing,
+                dpToPx(5)
+            )
+        } finally {
+            typedArray.recycle()
+        }
+    }
+    return flowRadioGroup
+}
+
+fun profImageButton(
+    context: Context,
+    drawableResId: Int,
+    contentInfo: String,
+    layoutWidth: Int = dpToPx(36),
+    layoutHeight: Int = dpToPx(36)
+): ImageButton {
+    return ImageButton(context).apply {
+        // 设置布局参数
+        layoutParams = FrameLayout.LayoutParams(layoutWidth, layoutHeight)
+
+        // 设置背景
+        background = ContextCompat.getDrawable(context, R.drawable.button_tag)
+
+        contentDescription = contentInfo
+
+        // 设置内边距
+        setPadding(
+            dpToPx(2), // 左
+            dpToPx(2), // 上
+            dpToPx(2), // 右
+            dpToPx(2)  // 下
+        )
+        scaleType = ImageView.ScaleType.FIT_XY
+
+        setImageResource(drawableResId)
+    }
 }

@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.common.getFlowLayout
+import com.blueskybone.arkscreen.common.getFlowRadioGroup
+import com.blueskybone.arkscreen.common.profImageButton
 import com.blueskybone.arkscreen.common.setTagLayout
 import com.blueskybone.arkscreen.databinding.ChipCardBinding
 import com.blueskybone.arkscreen.databinding.FragmentCharBinding
@@ -43,10 +45,20 @@ class CharOwn : Fragment(), ItemListener {
     private lateinit var adapter: CharAdapter
 //    private lateinit var adapter_new: CharGridAdapter
 
-
-    private val profList = listOf("先锋", "近卫", "狙击", "重装", "术师", "医疗", "辅助", "特种")
-    private val levelList = listOf("精英二", "精英一", "精英零")
-    private val rarityList = listOf("6★", "5★", "4★", "1~3★")
+    private val profList =
+        listOf("PIONEER", "WARRIOR", "TANK", "SNIPER", "CASTER", "MEDIC", "SUPPORT", "SPECIAL")
+    private val profListIcon = listOf(
+        R.drawable.icon_pioneer,
+        R.drawable.icon_warrior,
+        R.drawable.icon_tank,
+        R.drawable.icon_sniper,
+        R.drawable.icon_caster,
+        R.drawable.icon_medic,
+        R.drawable.icon_support,
+        R.drawable.icon_special
+    )
+    private val levelList = listOf("精零", "精一", "精二")
+    private val rarityList = listOf("1~3★", "4★", "5★", "6★")
 
     private val layoutList = listOf(profList, levelList, rarityList)
 
@@ -70,18 +82,24 @@ class CharOwn : Fragment(), ItemListener {
     private fun setButtonLayout() {
         val linearLayout = binding.ButtonLayout
         linearLayout.removeAllViews()
-        for (buttonList in layoutList) {
-            val flowLayout = getFlowLayout(requireContext())
-            for (button in buttonList) {
-                val buttonView = tagButton(button)
-                buttonViewList.add(buttonView)
-                flowLayout.addView(buttonView)
-            }
-            flowLayoutList.add(flowLayout)
+        val profLayout = getFlowRadioGroup(requireContext())
+        for ((idx, prof) in profList.withIndex()) {
+            val but = profImageButton(requireContext(), profListIcon[idx], prof)
+            profLayout.addView(but)
         }
-        for (flowLayout in flowLayoutList) {
-            linearLayout.addView(flowLayout)
+        linearLayout.addView(profLayout)
+        val levelLayout = getFlowRadioGroup(requireContext())
+        for (level in levelList) {
+            val but = tagButton(level)
+            levelLayout.addView(but)
         }
+        linearLayout.addView(levelLayout)
+        val rarityLayout = getFlowRadioGroup(requireContext())
+        for (rarity in rarityList) {
+            val but = tagButton(rarity)
+            rarityLayout.addView(but)
+        }
+        linearLayout.addView(rarityLayout)
     }
 
     private fun tagButton(text: String): Button {
@@ -90,17 +108,6 @@ class CharOwn : Fragment(), ItemListener {
         button.setBackgroundResource(R.drawable.button_tag)
         button.setOnClickListener {
             button.isSelected = !button.isSelected
-//            try {
-//                val tags = ArrayList<String>()
-//                for (buttonView in buttonViewList) {
-//                    if (buttonView.isSelected) {
-//                        tags.add(buttonView.text.toString())
-//                    }
-//                }
-//                model.startCalculate(tags)
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//            }
         }
         return button
     }
@@ -139,11 +146,11 @@ class CharOwn : Fragment(), ItemListener {
         binding.Filter.setOnClickListener {
             if (binding.ButtonLayout.visibility == View.GONE) {
                 binding.ButtonLayout.visibility = View.VISIBLE
-                binding.FrameDialog.visibility =  View.VISIBLE
+                binding.FrameDialog.visibility = View.VISIBLE
                 binding.ButtonLayout.requestFocus()
             } else {
                 binding.ButtonLayout.visibility = View.GONE
-                binding.FrameDialog.visibility =  View.GONE
+                binding.FrameDialog.visibility = View.GONE
             }
         }
 
@@ -152,16 +159,19 @@ class CharOwn : Fragment(), ItemListener {
         binding.ButtonLayout.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus && binding.ButtonLayout.visibility == View.VISIBLE) {
                 binding.ButtonLayout.visibility = View.GONE
-                binding.FrameDialog.visibility =  View.GONE
+                binding.FrameDialog.visibility = View.GONE
+
+                //TODO: model.sublime.filter
+
             }
         }
 
         binding.ButtonLayout.setOnClickListener {
             // 空实现，拦截点击，防止点击事件穿透
         }
-        binding.FrameDialog.setOnClickListener{
+        binding.FrameDialog.setOnClickListener {
             binding.ButtonLayout.visibility = View.GONE
-            binding.FrameDialog.visibility =  View.GONE
+            binding.FrameDialog.visibility = View.GONE
         }
 
         model.charsList.observe(viewLifecycleOwner) { value ->

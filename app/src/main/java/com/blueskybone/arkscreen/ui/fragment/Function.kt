@@ -283,7 +283,7 @@ class Function : Fragment(), ItemListener {
         val hour = prefManager.alarmAtdHour.get()
         val min = prefManager.alarmAtdMin.get()
         binding.SetAtdTime.Value.text =
-            getString(R.string.auto_attendance_time, TimeUtils.getDigitalString(hour, min))
+            TimeUtils.getDigitalString(hour, min)
         binding.SetAtdTime.Layout.setOnClickListener {
             val dialogBinding = DialogTimepickerBinding.inflate(layoutInflater).apply {
                 TimePicker.hour = prefManager.alarmAtdHour.get()

@@ -81,6 +81,10 @@ fun dpToPx(context: Context, dp: Float): Float {
     )
 }
 
+fun dpToPx(dp: Int): Int {
+    return (dp * APP.resources.displayMetrics.density).toInt()
+}
+
 fun spToPx(context: Context, sp: Float): Float {
     return TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_SP,
