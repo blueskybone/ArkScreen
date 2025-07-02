@@ -208,7 +208,7 @@ fun updateNotification(
     val notificationBuilder = NotificationCompat.Builder(context, channelId)
         .setContentTitle(title)
         .setContentText(message)
-        .setSmallIcon(R.drawable.ic_notification)
+        .setSmallIcon(R.mipmap.ic_rosm)
         .setAutoCancel(true)
         .setOnlyAlertOnce(true)
     notificationManager.notify(notificationId, notificationBuilder.build())
