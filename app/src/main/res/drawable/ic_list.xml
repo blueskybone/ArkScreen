@@ -1,25 +1,29 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
-    android:tint="?attr/colorPrimary"
+    android:tint="?attr/colorOnBackground"
     android:viewportWidth="24"
     android:viewportHeight="24">
+
+    <!-- 三条横线（左侧留15%间距，右侧留15%间距） -->
     <path
         android:fillColor="@android:color/white"
-        android:pathData="M7,6H23a1,1,0,0,0,0-2H7A1,1,0,0,0,7,6Z" />
+        android:pathData="M4.8 4, H19.2, V6, H8.8, V4,z" />
     <path
         android:fillColor="@android:color/white"
-        android:pathData="M23,11H7a1,1,0,0,0,0,2H23a1,1,0,0,0,0-2Z" />
+        android:pathData="M4.8 11, H19.2, V13, H8.8, V11,z" />
     <path
         android:fillColor="@android:color/white"
-        android:pathData="M23,18H7a1,1,0,0,0,0,2H23a1,1,0,0,0,0-2Z" />
+        android:pathData="M4.8 18, H19.2, V20,H8.8, V18,z" />
+
+    <!-- 三个圆点（左侧留15%间距） -->
     <path
         android:fillColor="@android:color/white"
-        android:pathData="M 2 5 m -2, 0 a 2, 2 0 1,0 4,0 a 2, 2 0 1,0 -4,0" />
+        android:pathData="M4.8 5 m -2, 0 a 2, 2 0 1,0 4,0 a 2, 2 0 1,0 -4,0" />
     <path
         android:fillColor="@android:color/white"
-        android:pathData="M 2 12 m -2, 0 a 2, 2 0 1,0 4,0 a 2, 2 0 1,0 -4,0" />
+        android:pathData="M4.8 12 m -2, 0 a 2, 2 0 1,0 4,0 a 2, 2 0 1,0 -4,0" />
     <path
         android:fillColor="@android:color/white"
-        android:pathData="M 2 19 m -2, 0 a 2, 2 0 1,0 4,0 a 2, 2 0 1,0 -4,0" />
+        android:pathData="M4.8 19 m -2, 0 a 2, 2 0 1,0 4,0 a 2, 2 0 1,0 -4,0" />
 </vector>

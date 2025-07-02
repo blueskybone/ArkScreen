@@ -3,45 +3,50 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
     android:paddingTop="?attr/actionBarSize">
 
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/Section"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:text="上次更新" />
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_height="wrap_content">
 
         <ImageView
-
             android:id="@+id/Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
+            android:layout_gravity="start"
             android:contentDescription="@string/text_default"
             android:padding="5dp"
+
             android:src="@drawable/ic_filter" />
 
+
         <ImageView
-            android:id="@+id/ListGrid"
+            android:id="@+id/Grid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:contentDescription="@string/text_default"
             android:padding="5dp"
-            android:src="@drawable/ic_list" />
+            android:src="@drawable/ic_grid" />
+
+        <ImageView
+            android:id="@+id/List"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:contentDescription="@string/text_default"
+            android:padding="5dp"
+            android:src="@drawable/ic_list"
+            android:visibility="gone" />
 
 
-    </LinearLayout>
+    </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/RecyclerView"
@@ -53,14 +58,23 @@
         android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+    <FrameLayout
+        android:id="@+id/FrameDialog"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/trans_grey"
+        android:layout_below="@id/Section"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/ButtonLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/Section"
         android:background="?attr/android:colorBackground"
-        android:orientation="vertical"
         android:focusable="true"
+        android:orientation="vertical"
         android:padding="8dp"
         android:visibility="gone" />
+
 </RelativeLayout>

@@ -137,78 +137,50 @@ class CharOwn : Fragment(), ItemListener {
             }
         })
         binding.Filter.setOnClickListener {
-            if (binding.ButtonLayout.visibility == View.GONE)
+            if (binding.ButtonLayout.visibility == View.GONE) {
                 binding.ButtonLayout.visibility = View.VISIBLE
-            else binding.ButtonLayout.visibility = View.GONE
+                binding.FrameDialog.visibility =  View.VISIBLE
+                binding.ButtonLayout.requestFocus()
+            } else {
+                binding.ButtonLayout.visibility = View.GONE
+                binding.FrameDialog.visibility =  View.GONE
+            }
         }
-//        model.filterProf.observe(viewLifecycleOwner) { value ->
-//            binding.Profession.setup(CharModel.ProfFilter, value)
-//        }
-//        model.filterRarity.observe(viewLifecycleOwner) { value ->
-//            binding.Rarity.setup(CharModel.RarityFilter, value)
-//        }
-//        model.filterLevel.observe(viewLifecycleOwner) { value ->
-//            binding.Level.setup(CharModel.LevelFilter, value)
-//        }
+
+
+        // 保留原有的焦点监听作为备用
+        binding.ButtonLayout.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus && binding.ButtonLayout.visibility == View.VISIBLE) {
+                binding.ButtonLayout.visibility = View.GONE
+                binding.FrameDialog.visibility =  View.GONE
+            }
+        }
+
+        binding.ButtonLayout.setOnClickListener {
+            // 空实现，拦截点击，防止点击事件穿透
+        }
+        binding.FrameDialog.setOnClickListener{
+            binding.ButtonLayout.visibility = View.GONE
+            binding.FrameDialog.visibility =  View.GONE
+        }
+
         model.charsList.observe(viewLifecycleOwner) { value ->
             adapter.refreshData(value)
             binding.RecyclerView.scrollToPosition(0)
         }
     }
 
-    private fun displayPopupWindow(filter: CharModel.Filter) {
-        val popupWindow = PopupWindow(context)
-        val view = layoutInflater.inflate(R.layout.pop_filter, null)
-        val chipGroup = view.findViewById<ChipGroup>(R.id.FilterChipGroup)
-        val context = requireContext()
-        val entries = filter.getEntries(context)
-        for (item in entries) {
-            val chip = Chip(context)
-            chip.text = item
-            chip.setTextColor(getColorFromAttr(context, androidx.appcompat.R.attr.colorPrimary))
-            chip.chipBackgroundColor = ColorStateList.valueOf(
-                getColorFromAttr(
-                    context, com.google.android.material.R.attr.colorBackgroundFloating
-                )
-            )
-            chip.chipStrokeWidth = dpToPx(context, 1F)
-            chip.chipStrokeColor = (ColorStateList.valueOf(
-                getColorFromAttr(
-                    context, androidx.appcompat.R.attr.colorPrimary
-                )
-            ))
-            chip.setOnClickListener {
-                model.setFilter(filter, item, context)
-                if (popupWindow.isShowing) {
-                    popupWindow.dismiss()
-                }
-            }
-            chipGroup.addView(chip)
-        }
-        popupWindow.contentView = view
-        popupWindow.isFocusable = true
-        popupWindow.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        popupWindow.isOutsideTouchable = true
-//        popupWindow.setOnDismissListener {
-//
-//        }
-//        popupWindow.showAsDropDown(binding.FilterBar)
-//
-//        binding.FilterBar.setOnClickListener {
-//            if (popupWindow.isShowing) {
-//                popupWindow.dismiss()
-//            }
-//        }
-    }
+//    private fun displayPopupWindow(filter: CharModel.Filter) {
+//    }
 
-    private fun ChipCardBinding.setup(filter: CharModel.Filter, value: String) {
-        val checked = filter.getEntryValues().indexOf(value)
-        val entries = filter.getEntries(requireContext())
-        Value.text = entries[checked]
-        root.setOnClickListener {
-            displayPopupWindow(filter)
-        }
-    }
+//    private fun ChipCardBinding.setup(filter: CharModel.Filter, value: String) {
+//        val checked = filter.getEntryValues().indexOf(value)
+//        val entries = filter.getEntries(requireContext())
+//        Value.text = entries[checked]
+//        root.setOnClickListener {
+//            displayPopupWindow(filter)
+//        }
+//    }
 
     override fun onDestroy() {
         _binding = null
