@@ -1,5 +1,7 @@
 package com.blueskybone.arkscreen.util
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -9,9 +11,11 @@ import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.WindowManager
 import android.webkit.CookieManager
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getString
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.BuildConfig
+import com.blueskybone.arkscreen.R
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.hjq.toast.Toaster
@@ -185,4 +189,27 @@ fun copyToClipboard(context: Context, text: String) {
     val clipData = ClipData.newPlainText("label", text)
     clipboardManager.setPrimaryClip(clipData)
     Toaster.show(getString(context, com.blueskybone.arkscreen.R.string.copied))
+}
+
+fun updateNotification(
+    context: Context,
+    title: String,
+    message: String,
+    channelId: String,
+    channelName: String
+) {
+    // 创建通知渠道（适用于 Android 8.0 及以上）
+    val notificationManager =
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    val notificationId = 1
+    val channel =
+        NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
+    notificationManager.createNotificationChannel(channel)
+    val notificationBuilder = NotificationCompat.Builder(context, channelId)
+        .setContentTitle(title)
+        .setContentText(message)
+        .setSmallIcon(R.drawable.ic_notification)
+        .setAutoCancel(true)
+        .setOnlyAlertOnce(true)
+    notificationManager.notify(notificationId, notificationBuilder.build())
 }

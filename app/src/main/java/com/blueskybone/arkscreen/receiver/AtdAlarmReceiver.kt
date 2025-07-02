@@ -12,6 +12,7 @@ import com.blueskybone.arkscreen.network.NetWorkTask
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.ArkDatabase
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
+import com.blueskybone.arkscreen.util.updateNotification
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,35 +39,37 @@ class AtdAlarmReceiver : BroadcastReceiver() {
             val accountSkDao = database.getAccountSkDao()
             CoroutineScope(Dispatchers.IO).launch {
                 val accountList = accountSkDao.getAll()
-                Timber.log(1, "账号数量 ${accountList.size}")
-                for (account in accountList) {
-                    Timber.log(1, "签到中 ${account.nickName}")
-                    NetWorkTask.sklandAttendance(account)
+                val channelId = "atd_notify_channel"
+                val channelName = "签到通知"
+                for ((idx, account) in accountList.withIndex()) {
+                    updateNotification(
+                        context,
+                        "正在签到中 (${idx + 1}/ ${accountList.size})",
+                        account.nickName,
+                        channelId,
+                        channelName
+                    )
+                    val msg = NetWorkTask.sklandAttendance(account)
+                    Timber.i(msg)
+                    updateNotification(
+                        context,
+                        "正在签到中 (${idx + 1}/ ${accountList.size})",
+                        account.nickName + ":" + msg,
+                        channelId,
+                        channelName
+                    )
+                    Thread.sleep(500)
                 }
+                updateNotification(
+                    context,
+                    "签到完成 (${accountList.size}/ ${accountList.size})",
+                    "",
+                    channelId,
+                    channelName
+                )
             }
             prefManager.lastAttendanceTs.set(getCurrentTs())
-            showNotification(context, "森空岛自动签到", "已签到")
         }
-    }
-
-    private fun showNotification(context: Context, title: String, message: String) {
-        // 创建通知渠道（适用于 Android 8.0 及以上）
-        val notificationManager =
-            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val notificationId = 1
-        val channelId = "sign_in_channel"
-
-        val channel =
-            NotificationChannel(channelId, "签到通知", NotificationManager.IMPORTANCE_DEFAULT)
-        notificationManager.createNotificationChannel(channel)
-
-        val notificationBuilder = NotificationCompat.Builder(context, channelId)
-            .setContentTitle(title)
-            .setContentText(message)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setAutoCancel(true)
-
-        notificationManager.notify(notificationId, notificationBuilder.build())
     }
 }
 

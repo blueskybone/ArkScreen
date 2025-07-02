@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.AppUpdateInfo
 import com.blueskybone.arkscreen.network.BiliVideo
+import com.blueskybone.arkscreen.network.NetWorkTask
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.createAccountList
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.createGachaAccount
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.sklandAttendance
@@ -18,7 +20,10 @@ import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.ArkDatabase
 import com.blueskybone.arkscreen.room.Link
+import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
+import com.blueskybone.arkscreen.util.updateNotification
 import com.fasterxml.jackson.databind.ObjectMapper
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -104,6 +109,45 @@ class BaseModel : ViewModel() {
                 _attendanceLog.postValue(builder.toString())
             }
         }
+    }
+
+
+    fun startAttendance(context: Context) {
+        val prefManager: PrefManager by getKoin().inject()
+        val database = ArkDatabase.getDatabase(APP)
+        val accountSkDao = database.getAccountSkDao()
+        CoroutineScope(Dispatchers.IO).launch {
+            val accountList = accountSkDao.getAll()
+            val channelId = "atd_notify_channel"
+            val channelName = "签到通知"
+            for ((idx, account) in accountList.withIndex()) {
+                updateNotification(
+                    context,
+                    "正在签到中 (${idx + 1}/ ${accountList.size})",
+                    account.nickName,
+                    channelId,
+                    channelName
+                )
+                val msg = sklandAttendance(account)
+                Timber.i(msg)
+                updateNotification(
+                    context,
+                    "正在签到中 (${idx + 1}/ ${accountList.size})",
+                    account.nickName + ":" + msg,
+                    channelId,
+                    channelName
+                )
+                Thread.sleep(500)
+            }
+            updateNotification(
+                context,
+                "签到完成 (${accountList.size}/ ${accountList.size})",
+                "",
+                channelId,
+                channelName
+            )
+        }
+        prefManager.lastAttendanceTs.set(getCurrentTs())
     }
 
     private suspend fun attendance(account: AccountSk): String {

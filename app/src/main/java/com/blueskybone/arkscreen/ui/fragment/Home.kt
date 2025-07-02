@@ -239,7 +239,9 @@ class Home : Fragment() {
             onAddButtonClick()
         }
         binding.Attendance.Layout.setOnClickListener {
-            displayAttendanceDialog()
+            Toaster.show("签到开始，可在通知栏查看进度")
+            model.startAttendance(requireContext())
+            //displayAttendanceDialog()
         }
 
         binding.ExLinks.layoutManager = GridLayoutManager(requireContext(), 4)
