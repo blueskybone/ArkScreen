@@ -50,7 +50,7 @@ class AtdAlarmReceiver : BroadcastReceiver() {
                         channelName
                     )
                     val msg = NetWorkTask.sklandAttendance(account)
-                    Timber.i(msg)
+                    Timber.i(account.nickName + " : " + msg)
                     updateNotification(
                         context,
                         "正在签到中 (${idx + 1}/ ${accountList.size})",
