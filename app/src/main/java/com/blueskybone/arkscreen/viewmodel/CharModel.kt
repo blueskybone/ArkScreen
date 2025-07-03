@@ -188,7 +188,7 @@ class CharModel : ViewModel() {
             }
         }
         val charsAllNode = readFileAsJsonNode(CharAllMap.getFilePath())["charInfoMap"]
-        if(charsAllNode == null) {
+        if (charsAllNode == null) {
             println("charsAllNode == null")
         }
         for (item in charList) {
@@ -210,8 +210,7 @@ class CharModel : ViewModel() {
     }
 
 
-
-    private suspend fun getCharsData(account:AccountSk): List<Operator> {
+    private suspend fun getCharsData(account: AccountSk): List<Operator> {
         val response = getGameInfoConnectionTaskTest(account)
         if (!response.isSuccessful) throw Exception("!response.isSuccessful")
         response.body() ?: throw Exception("response empty")
@@ -249,6 +248,32 @@ class CharModel : ViewModel() {
         }
         return list3
     }
+
+
+    fun applyFilterNew(prof: String, level: String, rarity: String) {
+        executeAsync {
+            val list1 = when (prof) {
+                "ALL" -> charList
+                else -> charList.filter { chars -> chars.profession == prof }
+            }
+            val list2 = when (rarity) {
+                "1~3★" -> list1.filter { chars -> chars.rarity == 0 || chars.rarity == 1 || chars.rarity == 2 }
+                "4★" -> list1.filter { chars -> chars.rarity == 3 }
+                "5★" -> list1.filter { chars -> chars.rarity == 4 }
+                "6★" -> list1.filter { chars -> chars.rarity == 5 }
+                else -> list1
+            }
+            val list3 = when (level) {
+                "精零" -> list2.filter { chars -> chars.evolvePhase == 0 }
+                "精一" -> list2.filter { chars -> chars.evolvePhase == 1 }
+                "精二" -> list2.filter { chars -> chars.evolvePhase == 2 }
+                else -> list2
+            }
+            _charsList.postValue(list3)
+        }
+
+    }
+
 
     fun setFilter(filter: Filter, item: String, context: Context) {
         when (filter) {

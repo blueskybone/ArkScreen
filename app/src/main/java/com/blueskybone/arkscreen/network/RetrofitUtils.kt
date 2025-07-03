@@ -144,7 +144,7 @@ class RetrofitUtils {
             return if (response.isSuccessful) {
                 try {
                     response.body()?.data?.awards?.joinToString("  ") {
-                         "${it.resource.name}×${it.count}"
+                        "${it.resource.name}×${it.count}"
                     } ?: "response content is empty"
                 } catch (e: Exception) {
                     Timber.e(response.body().toString())

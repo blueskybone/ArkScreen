@@ -144,7 +144,7 @@ class FlowRadioGroup @JvmOverloads constructor(
         child.isFocusable = true
     }
 
-    private val childOnClickListener = View.OnClickListener { v ->
+    private val childOnClickListener = OnClickListener { v ->
         onChildClicked(v)
     }
 
@@ -157,7 +157,7 @@ class FlowRadioGroup @JvmOverloads constructor(
         }
     }
 
-    fun check(id: Int) {
+    private fun check(id: Int) {
         if (id != -1 && id == checkedId) {
             return
         }

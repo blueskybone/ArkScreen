@@ -43,7 +43,8 @@ fun space(context: Context, dp: Float): Space {
 }
 
 
-fun Button.setTagLayout(text: String) {
+//TODO：赶紧改了
+private fun Button.setTagLayout(text: String) {
     val layoutParams = LinearLayout.LayoutParams(
         LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
     )
@@ -149,4 +150,14 @@ fun profImageButton(
 
         setImageResource(drawableResId)
     }
+}
+
+fun tagButton(context: Context, text: String): Button {
+    val button = Button(context)
+    button.setTagLayout(text)
+    button.setBackgroundResource(R.drawable.button_tag)
+    button.setOnClickListener {
+        button.isSelected = !button.isSelected
+    }
+    return button
 }

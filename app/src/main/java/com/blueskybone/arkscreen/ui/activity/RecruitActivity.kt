@@ -16,7 +16,6 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -28,8 +27,8 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.common.BottomDialog
 import com.blueskybone.arkscreen.common.getFlowLayout
 import com.blueskybone.arkscreen.common.line
-import com.blueskybone.arkscreen.common.setTagLayout
 import com.blueskybone.arkscreen.common.space
+import com.blueskybone.arkscreen.common.tagButton
 import com.blueskybone.arkscreen.databinding.ChipRecruitBinding
 import com.blueskybone.arkscreen.network.avatarUrl
 import com.blueskybone.arkscreen.preference.PrefManager
@@ -141,7 +140,8 @@ class RecruitActivity : AppCompatActivity() {
         for ((index, buttonList) in buttonListAll.withIndex()) {
             val flowLayout = getFlowLayout(this)
             for (button in buttonList) {
-                val buttonView = tagButton(button)
+                val buttonView = tagButton(this, button)
+                buttonView.setup()
                 buttonViewList.add(buttonView)
                 flowLayout.addView(buttonView)
             }
@@ -158,19 +158,16 @@ class RecruitActivity : AppCompatActivity() {
     }
 
 
-    private fun tagButton(text: String): Button {
-        val button = Button(this)
-        button.setTagLayout(text)
-        button.setBackgroundResource(R.drawable.button_tag)
-        button.setOnClickListener {
-            if (button.isSelected) {
-                button.isSelected = false
+    private fun Button.setup() {
+        this.setOnClickListener {
+            if (this.isSelected) {
+                this.isSelected = false
                 selectedTag--
             } else if (selectedTag < TAG_MAX) {
-                button.isSelected = true
+                this.isSelected = true
                 selectedTag++
             } else {
-                Toast.makeText(this, "最多选择${TAG_MAX}个标签", Toast.LENGTH_SHORT).show()
+                Toaster.show("最多选择${TAG_MAX}个标签")
             }
             try {
                 val tags = ArrayList<String>()
@@ -184,12 +181,10 @@ class RecruitActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
         }
-        return button
     }
 
     private fun resetButton(): Button {
-        val button = Button(this)
-        button.setTagLayout(getString(R.string.reset))
+        val button = tagButton(this,getString(R.string.reset))
         button.setBackgroundResource(R.drawable.button_reset)
         button.setOnClickListener {
             for (buttonView in buttonViewList) {
@@ -206,9 +201,7 @@ class RecruitActivity : AppCompatActivity() {
     }
 
     private fun opeButton(context: Context, chars: RecruitManager.Operator): Button {
-        val button = Button(this)
-        button.setTagLayout(chars.name)
-
+        val button = tagButton(this,chars.name)
         val rarityIdx = rarityValValues.indexOf((chars.rare).toString())
         val colorId = rarityColorIds[rarityIdx]
         button.setBackgroundColor(getColor(colorId))
@@ -236,8 +229,7 @@ class RecruitActivity : AppCompatActivity() {
     }
 
     private fun resultTagButton(context: Context, text: String): Button {
-        val button = Button(context)
-        button.setTagLayout(text)
+        val button = tagButton(this,text)
         val shapeDrawable = GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
             cornerRadius = dpToPx(context, 2F)
@@ -268,7 +260,7 @@ class RecruitActivity : AppCompatActivity() {
         }
         flowLayoutList.add(flowLayout)
 
-        linearLayout.addView(opeButton(this, operator))
+        linearLayout.addView(opeButton2(this, operator))
         linearLayout.addView(flowLayout)
 
         builder.setView(linearLayout)

@@ -1,34 +1,23 @@
 package com.blueskybone.arkscreen.ui.fragment
 
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.PopupWindow
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.common.getFlowLayout
+import com.blueskybone.arkscreen.common.FlowRadioGroup
 import com.blueskybone.arkscreen.common.getFlowRadioGroup
 import com.blueskybone.arkscreen.common.profImageButton
-import com.blueskybone.arkscreen.common.setTagLayout
-import com.blueskybone.arkscreen.databinding.ChipCardBinding
+import com.blueskybone.arkscreen.common.tagButton
 import com.blueskybone.arkscreen.databinding.FragmentCharBinding
 import com.blueskybone.arkscreen.ui.recyclerview.CharAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
-import com.blueskybone.arkscreen.util.dpToPx
-import com.blueskybone.arkscreen.util.getColorFromAttr
 import com.blueskybone.arkscreen.viewmodel.CharModel
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
-import com.nex3z.flowlayout.FlowLayout
 
 
 /**
@@ -60,15 +49,14 @@ class CharOwn : Fragment(), ItemListener {
     private val levelList = listOf("精零", "精一", "精二")
     private val rarityList = listOf("1~3★", "4★", "5★", "6★")
 
-    private val layoutList = listOf(profList, levelList, rarityList)
-
-    private val buttonViewList: MutableList<Button> = ArrayList()
-    private val flowLayoutList: MutableList<FlowLayout> = ArrayList()
+    private lateinit var profRadioGroup: FlowRadioGroup
+    private lateinit var levelRadioGroup: FlowRadioGroup
+    private lateinit var rarityRadioGroup: FlowRadioGroup
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        adapter = CharAdapter(requireContext(), 20)
+        adapter = CharAdapter(requireContext(), 24)
 //        adapter_new = CharGridAdapter(requireContext(), 20)
         _binding = FragmentCharBinding.inflate(inflater)
 
@@ -82,34 +70,24 @@ class CharOwn : Fragment(), ItemListener {
     private fun setButtonLayout() {
         val linearLayout = binding.ButtonLayout
         linearLayout.removeAllViews()
-        val profLayout = getFlowRadioGroup(requireContext())
+        profRadioGroup = getFlowRadioGroup(requireContext())
         for ((idx, prof) in profList.withIndex()) {
             val but = profImageButton(requireContext(), profListIcon[idx], prof)
-            profLayout.addView(but)
+            profRadioGroup.addView(but)
         }
-        linearLayout.addView(profLayout)
-        val levelLayout = getFlowRadioGroup(requireContext())
+        linearLayout.addView(profRadioGroup)
+        levelRadioGroup = getFlowRadioGroup(requireContext())
         for (level in levelList) {
-            val but = tagButton(level)
-            levelLayout.addView(but)
+            val but = tagButton(requireContext(), level)
+            levelRadioGroup.addView(but)
         }
-        linearLayout.addView(levelLayout)
-        val rarityLayout = getFlowRadioGroup(requireContext())
+        linearLayout.addView(levelRadioGroup)
+        rarityRadioGroup = getFlowRadioGroup(requireContext())
         for (rarity in rarityList) {
-            val but = tagButton(rarity)
-            rarityLayout.addView(but)
+            val but = tagButton(requireContext(), rarity)
+            rarityRadioGroup.addView(but)
         }
-        linearLayout.addView(rarityLayout)
-    }
-
-    private fun tagButton(text: String): Button {
-        val button = Button(requireContext())
-        button.setTagLayout(text)
-        button.setBackgroundResource(R.drawable.button_tag)
-        button.setOnClickListener {
-            button.isSelected = !button.isSelected
-        }
-        return button
+        linearLayout.addView(rarityRadioGroup)
     }
 
     private fun setupListener() {
@@ -151,20 +129,23 @@ class CharOwn : Fragment(), ItemListener {
             } else {
                 binding.ButtonLayout.visibility = View.GONE
                 binding.FrameDialog.visibility = View.GONE
+
+                //TODO: model.sublime.filter
+                submitFilter()
             }
         }
 
 
         // 保留原有的焦点监听作为备用
-        binding.ButtonLayout.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus && binding.ButtonLayout.visibility == View.VISIBLE) {
-                binding.ButtonLayout.visibility = View.GONE
-                binding.FrameDialog.visibility = View.GONE
-
-                //TODO: model.sublime.filter
-
-            }
-        }
+//        binding.ButtonLayout.setOnFocusChangeListener { _, hasFocus ->
+//            if (!hasFocus && binding.ButtonLayout.visibility == View.VISIBLE) {
+//                binding.ButtonLayout.visibility = View.GONE
+//                binding.FrameDialog.visibility = View.GONE
+//
+//                //TODO: model.sublime.filter
+//                submitFilter()
+//            }
+//        }
 
         binding.ButtonLayout.setOnClickListener {
             // 空实现，拦截点击，防止点击事件穿透
@@ -172,6 +153,9 @@ class CharOwn : Fragment(), ItemListener {
         binding.FrameDialog.setOnClickListener {
             binding.ButtonLayout.visibility = View.GONE
             binding.FrameDialog.visibility = View.GONE
+
+            //TODO: model.sublime.filter
+            submitFilter()
         }
 
         model.charsList.observe(viewLifecycleOwner) { value ->
@@ -180,17 +164,18 @@ class CharOwn : Fragment(), ItemListener {
         }
     }
 
-//    private fun displayPopupWindow(filter: CharModel.Filter) {
-//    }
+    private fun submitFilter() {
 
-//    private fun ChipCardBinding.setup(filter: CharModel.Filter, value: String) {
-//        val checked = filter.getEntryValues().indexOf(value)
-//        val entries = filter.getEntries(requireContext())
-//        Value.text = entries[checked]
-//        root.setOnClickListener {
-//            displayPopupWindow(filter)
-//        }
-//    }
+        //TODO：id获取有问题，检查一下
+        val id1 = profRadioGroup.getCheckedRadioButtonId()
+        val filter1 = if (id1 != -1) profList[id1 - 6] else "ALL"
+        val id2 = levelRadioGroup.getCheckedRadioButtonId()
+        val filter2 = if (id2 != -1) levelList[id2 - 14] else "ALL"
+        val id3 = rarityRadioGroup.getCheckedRadioButtonId()
+        val filter3 = if (id3 != -1) rarityList[id3 - 17] else "ALL"
+
+        model.applyFilterNew(filter1, filter2, filter3)
+    }
 
     override fun onDestroy() {
         _binding = null

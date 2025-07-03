@@ -136,7 +136,6 @@
                                 app:strokeWidth="2dp" />
 
                             <LinearLayout
-                                android:layout_gravity="center"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
@@ -171,8 +170,6 @@
                     </FrameLayout>
 
                     <LinearLayout
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginStart="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -204,7 +201,7 @@
 
                         <View
                             android:id="@+id/Line"
-                            android:layout_width="100dp"
+                            android:layout_width="80dp"
                             android:layout_gravity="center"
                             android:layout_height="1dp"
                             android:background="?android:attr/listDivider" />
@@ -215,6 +212,56 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center" />
                     </LinearLayout>
+                    <!--                    <RelativeLayout-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_gravity="center">-->
+
+                    <!--                        &lt;!&ndash;                        <LinearLayout&ndash;&gt;-->
+                    <!--                        &lt;!&ndash;                            android:id="@+id/ApLayout"&ndash;&gt;-->
+                    <!--                        &lt;!&ndash;                            android:layout_width="match_parent"&ndash;&gt;-->
+                    <!--                        &lt;!&ndash;                            android:layout_height="wrap_content"&ndash;&gt;-->
+                    <!--                        &lt;!&ndash;                            android:gravity="center_horizontal"&ndash;&gt;-->
+                    <!--                        &lt;!&ndash;                            android:orientation="horizontal">&ndash;&gt;-->
+
+                    <!--                        <TextView-->
+                    <!--                            android:id="@+id/Ap"-->
+                    <!--                            android:layout_width="wrap_content"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:letterSpacing="0"-->
+                    <!--                            android:textAppearance="@style/TextAppearance.Body1"-->
+                    <!--                            android:textColor="?attr/colorPrimary"-->
+                    <!--                            android:textSize="45sp"-->
+                    <!--                            android:textStyle="bold" />-->
+
+                    <!--                        &lt;!&ndash;                    &ndash;&gt;-->
+                    <!--                        &lt;!&ndash;                        </LinearLayout>&ndash;&gt;-->
+
+                    <!--                        <View-->
+                    <!--                            android:id="@+id/Line"-->
+                    <!--                            android:layout_width="wrap_content"-->
+                    <!--                            android:layout_height="1dp"-->
+                    <!--                            android:layout_below="@id/Ap"-->
+                    <!--                            android:background="?android:attr/listDivider" />-->
+
+                    <!--                        <TextView-->
+                    <!--                            android:id="@+id/ApMax"-->
+                    <!--                            android:layout_width="wrap_content"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:layout_below="@id/Line"-->
+                    <!--                            android:letterSpacing="0"-->
+                    <!--                            android:textAppearance="@style/TextAppearance.Body1"-->
+                    <!--                            android:textSize="20sp"-->
+                    <!--                            android:textStyle="bold" />-->
+
+                    <!--                        <TextView-->
+                    <!--                            android:id="@+id/ApResTime"-->
+                    <!--                            android:layout_width="wrap_content"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:layout_below="@id/ApMax"-->
+                    <!--                            android:gravity="center"-->
+                    <!--                            android:paddingBottom="10dp" />-->
+                    <!--                    </RelativeLayout>-->
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
