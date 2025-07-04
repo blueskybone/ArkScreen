@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:orientation="horizontal">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="top">
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/Avatar"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_margin="5dp"
+            android:src="@drawable/char_ex_blaze"
+            app:shapeAppearanceOverlay="@style/RoundedImageView" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:background="@color/trans_grey"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/Avatar"
+            app:layout_constraintEnd_toEndOf="@id/Avatar">
+
+            <ImageView
+                android:id="@+id/Evolve"
+                android:layout_width="16dp"
+                android:layout_height="16dp" />
+            <TextView
+                android:id="@+id/Level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+            <ImageView
+                android:id="@+id/Potential"
+                android:layout_width="16dp"
+                android:layout_height="16dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/Rarity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="★★★★★★"
+            android:textColor="?attr/colorOnBackground" />
+
+
+        <TextView
+            android:id="@+id/Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="缄默德克萨斯"
+            android:textColor="?attr/colorOnBackground" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/Profession"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:contentDescription="@string/text_default"
+                android:src="@drawable/icon_special" />
+
+            <TextView
+                android:id="@+id/SubProf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="处决者"
+                android:textColor="?attr/colorOnBackground" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/Skills"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <include
+                android:id="@+id/Skill1"
+                layout="@layout/icon_skill" />
+
+            <include
+                android:id="@+id/Skill2"
+                layout="@layout/icon_skill" />
+
+            <include
+                android:id="@+id/Skill3"
+                layout="@layout/icon_skill" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/Equips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <include
+                android:id="@+id/Equip1"
+                layout="@layout/icon_equip" />
+
+            <include
+                android:id="@+id/Equip2"
+                layout="@layout/icon_equip" />
+
+            <include
+                android:id="@+id/Equip3"
+                layout="@layout/icon_equip" />
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/GetTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="获取时间：2025.6.7"
+            android:textColor="?attr/colorOnBackground" />
+
+        <TextView
+            android:id="@+id/Love"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="信赖值：200%"
+            android:textColor="?attr/colorOnBackground" />
+    </LinearLayout>
+    <TextView
+        android:textAppearance="?attr/textAppearanceSubtitle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:padding="5dp"
+        android:textStyle="bold"
+        android:text="前往PRTS" />
+</LinearLayout>
+

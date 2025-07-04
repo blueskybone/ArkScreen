@@ -24,7 +24,11 @@ import java.net.URLEncoder
  *   Date: 2025/1/20
  */
 
-class CharAdapter(context: Context, override val PAGE_SIZE: Int) :
+class CharAdapter(
+    context: Context,
+    override val PAGE_SIZE: Int,
+    private val listener: ItemListener
+) :
     PagingAdapter<Operator, CharAdapter.OperatorVH>() {
 
     private val profValues = context.resources.getStringArray(R.array.profession_value)
@@ -45,7 +49,7 @@ class CharAdapter(context: Context, override val PAGE_SIZE: Int) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OperatorVH {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemCharBinding.inflate(inflater, parent, false)
-        return OperatorVH(binding)
+        return OperatorVH(binding, listener)
     }
 
     override fun onBindViewHolder(holder: OperatorVH, position: Int) {
@@ -101,8 +105,19 @@ class CharAdapter(context: Context, override val PAGE_SIZE: Int) :
         }
     }
 
-    inner class OperatorVH(private val binding: ItemCharBinding) :
+    inner class OperatorVH(private val binding: ItemCharBinding, listener: ItemListener) :
         RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnLongClickListener {
+                listener.onLongClick(bindingAdapterPosition)
+                true
+            }
+            binding.root.setOnClickListener {
+                listener.onClick(bindingAdapterPosition)
+            }
+        }
+
         fun bind(item: Operator) {
 
             binding.Name.text = item.name
@@ -173,5 +188,12 @@ class CharAdapter(context: Context, override val PAGE_SIZE: Int) :
                 }
             }
         }
+    }
+    fun cleanup() {
+        profDrawable.recycle()
+        potentialDrawable.recycle()
+        evolveDrawable.recycle()
+        rarityDrawable.recycle()
+        specialDrawable.recycle()
     }
 }
