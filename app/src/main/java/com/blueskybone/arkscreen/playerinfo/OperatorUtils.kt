@@ -1,6 +1,19 @@
 package com.blueskybone.arkscreen.playerinfo
 
+import android.content.Context
+import android.view.View
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
+import coil.load
+import com.blueskybone.arkscreen.APP
+import com.blueskybone.arkscreen.R
+import com.blueskybone.arkscreen.databinding.IconEquipBinding
+import com.blueskybone.arkscreen.databinding.IconSkillBinding
+import com.blueskybone.arkscreen.network.avatarUrl
+import com.blueskybone.arkscreen.network.equipUrl
 import com.blueskybone.arkscreen.network.model.PlayerInfoResp
+import com.blueskybone.arkscreen.network.skillUrl
+import java.net.URLEncoder
 import java.text.Collator
 
 fun getOperatorData(playerInfoResp: PlayerInfoResp): List<Operator> {
@@ -27,10 +40,9 @@ fun getOperatorData(playerInfoResp: PlayerInfoResp): List<Operator> {
 
             // 模组信息
             equips = char.equip.mapIndexedNotNull { index, equip ->
-                if(equip.id == "uniequip_001_kalts") println( "========TEST==========" +data.equipmentInfoMap[equip.id]!!.typeName2.toString())
                 data.equipmentInfoMap[equip.id]?.takeIf { it.typeName2 != null }?.let { equipInfo ->
                     Operator.Equip(
-                        index -1 ,
+                        index - 1,
                         equip.id,
                         equip.locked,
                         equipInfo.typeIcon,
@@ -52,16 +64,11 @@ fun getOperatorData(playerInfoResp: PlayerInfoResp): List<Operator> {
             }
 
             equipString = equips.joinToString(" ") { "${it.typeName2}-${it.stage}" }
-
-            if(this.charId=="char_003_kalts"){
-                println(equips.size)
-                println(equips)
-            }
         }
     }.sortedWith(compareOperators)
 }
 
- val compareOperators = compareBy<Operator>(
+val compareOperators = compareBy<Operator>(
     { -it.rarity },          // 稀有度降序
     { -it.evolvePhase },     // 精英化等级降序
     { -it.level }            // 等级降序
@@ -81,107 +88,94 @@ private val customOrder = listOf(
 
 // 中文排序器
 val collator: Collator = Collator.getInstance(java.util.Locale.CHINA)
-//private fun getOpeData(playerInfoResp: PlayerInfoResp): List<Operator> {
-//    var charList = ArrayList<Operator>()
-//    val charsNode = playerInfoResp.data!!.chars
-//    val charInfoMap = playerInfoResp.data!!.charInfoMap
-//    val equipInfoMap = playerInfoResp.data!!.equipmentInfoMap
-//    for (char in charsNode) {
-//        val operator = Operator()
-//
-//        operator.charId = char.charId
-//        val skin = char.skinId
-////            val skinId = if ('@' in skin) {
-////                skin.replace('@', '_')
-////            } else if ("#1" in skin) {
-////                skin.replace("#1", "")
-////            } else {
-////                skin.replace('#', '_')
-////            }
-//        operator.skinId = skin
-//        operator.level = char.level
-//        operator.evolvePhase = char.evolvePhase
-//        operator.potentialRank = char.potentialRank
-//        operator.mainSkillLvl = char.mainSkillLvl
-//        operator.favorPercent = char.favorPercent
-//        operator.defaultSkillId = char.defaultSkillId
-//        operator.gainTime = char.gainTime
-//        operator.defaultEquipId = char.defaultEquipId
-//
-//        for ((idx, skill) in char.skills.withIndex()) {
-//            operator.skills.add(
-//                Operator.Skill(
-//                    idx,
-//                    skill.id,
-//                    skill.specializeLevel
-//                )
-//            )
-//        }
-//
-//
-//        var index = 0
-//        for (equip in char.equip) {
-//            val equipId = equip.id
-//            val equipInfo = equipInfoMap[equipId]!!
-//            if (equipInfo.typeName2 != null) {
-//                operator.equips.add(
-//                    Operator.Equip(
-//                        index,
-//                        equipId,
-//                        equip.locked,
-//                        equipInfo.typeIcon,
-//                        equipInfo.typeName2.toString(),
-//                        equip.level
-//                    )
-//                )
-//                index++
-//            }
-//        }
-//
-//        val charInfo = charInfoMap[operator.charId]!!
-//        operator.name = charInfo.name
-//        operator.nationId = charInfo.nationId
-//        operator.groupId = charInfo.groupId
-//        operator.displayNumber = charInfo.displayNumber
-//        operator.rarity = charInfo.rarity
-//        operator.profession = charInfo.profession
-//        operator.subProfessionId = charInfo.subProfessionId
-////            operator.professionName = i18n.convert(operator.profession, I18n.ConvertType.Profession)
-////            operator.subProfessionName =
-////                i18n.convert(operator.subProfessionId, I18n.ConvertType.SubProfession)
-//
-//        val stringBuilder = StringBuilder()
-//        for (equip in operator.equips) {
-//            stringBuilder.append(equip.typeName2).append("-").append(equip.stage)
-//                .append(" ")
-//        }
-//        operator.equipString = stringBuilder.toString()
-//        charList.add(operator)
-//    }
-//    //排序：稀有度
-//
-//    charList = charList
-//        .sortedWith(compareBy(collator) { it.name })
-//        .sortedBy { customOrder.indexOf(it.profession) }
-//        .sortedWith(customComparator).toMutableList() as ArrayList<Operator>
-//    return charList
-//}
-//
-//val customComparator = Comparator<Operator> { u1, u2 ->
-//    if (u1.rarity != u2.rarity) {
-//        u2.rarity - u1.rarity
-//    } else {
-//        if (u1.evolvePhase != u2.evolvePhase) {
-//            u2.evolvePhase - u1.evolvePhase
-//        } else {
-//            u2.level - u1.level
-//        }
-//    }
-//}
-//
-////排序：职业
-//val customOrder = listOf(
-//    "PIONEER", "WARRIOR", "TANK", "SNIPER",
-//    "CASTER", "MEDIC", "SUPPORT", "SPECIAL"
-//)
-//val collator: Collator = Collator.getInstance(java.util.Locale.CHINA)
+
+
+val profIconMap = mapOf(
+    "PIONEER" to R.drawable.icon_pioneer,
+    "WARRIOR" to R.drawable.icon_warrior,
+    "TANK" to R.drawable.icon_tank,
+    "SNIPER" to R.drawable.icon_sniper,
+    "CASTER" to R.drawable.icon_caster,
+    "MEDIC" to R.drawable.icon_medic,
+    "SUPPORT" to R.drawable.icon_support,
+    "SPECIAL" to R.drawable.icon_special,
+)
+
+val evolveIconMap = mapOf(
+    0 to R.drawable.evolve_phase_0,
+    1 to R.drawable.evolve_phase_1,
+    2 to R.drawable.evolve_phase_2
+)
+val specialIconMap = mapOf(
+    1 to R.drawable.special_1,
+    2 to R.drawable.special_2,
+    3 to R.drawable.special_3
+)
+
+val potentialIconMap = mapOf(
+    0 to R.drawable.potential_rank_0,
+    1 to R.drawable.potential_rank_1,
+    2 to R.drawable.potential_rank_2,
+    3 to R.drawable.potential_rank_3,
+    4 to R.drawable.potential_rank_4,
+    5 to R.drawable.potential_rank_5
+)
+
+val rarityColorMap = mapOf(
+    1 to R.color.rare_1,
+    2 to R.color.rare_2,
+    3 to R.color.rare_3,
+    4 to R.color.rare_4,
+    5 to R.color.rare_5,
+    6 to R.color.rare_6,
+)
+
+fun bindSkillView(context: Context, view: IconSkillBinding, skill: Operator.Skill, rank: Int) {
+    view.root.visibility = View.VISIBLE
+    view.Icon.alpha = 1.0F
+
+    val url = "$skillUrl${skill.id}.png"
+    view.Icon.load(url) {
+        crossfade(true)
+        crossfade(300)
+    }
+
+    if (skill.specializeLevel == 0) {
+        view.MainRank.text = rank.toString()
+        view.MainRank.visibility = View.VISIBLE
+        view.Special.visibility = View.GONE
+    } else {
+        val drawID = specialIconMap[skill.specializeLevel]
+        val draw = ContextCompat.getDrawable(context, drawID!!)
+        view.Special.setImageDrawable(draw)
+        view.MainRank.visibility = View.GONE
+        view.Special.visibility = View.VISIBLE
+    }
+}
+
+fun bindEquipView(view: IconEquipBinding, equip: Operator.Equip) {
+    view.root.visibility = View.VISIBLE
+    val url = "$equipUrl${equip.typeIcon.uppercase()}_icon.png"
+    view.Icon.load(url) {
+        crossfade(true)
+        crossfade(300)
+    }
+    if (!equip.locked) {
+        view.Stage.text = equip.stage.toString()
+        view.Stage.visibility = View.VISIBLE
+        view.Icon.alpha = 1.0F
+    } else {
+        view.Stage.visibility = View.GONE
+        view.Icon.alpha = 0.4F
+    }
+}
+
+fun bindAvatarView(view: ImageView, skinId: String) {
+    val skinUrl = URLEncoder.encode(skinId, "UTF-8")
+    val url = "$avatarUrl$skinUrl.png"
+    view.load(url) {
+        crossfade(true)
+        crossfade(300)
+    }
+}
+

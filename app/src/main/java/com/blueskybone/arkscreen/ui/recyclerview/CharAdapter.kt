@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.blueskybone.arkscreen.R
@@ -15,6 +16,13 @@ import com.blueskybone.arkscreen.network.avatarUrl
 import com.blueskybone.arkscreen.network.equipUrl
 import com.blueskybone.arkscreen.network.skillUrl
 import com.blueskybone.arkscreen.playerinfo.Operator
+import com.blueskybone.arkscreen.playerinfo.bindAvatarView
+import com.blueskybone.arkscreen.playerinfo.bindEquipView
+import com.blueskybone.arkscreen.playerinfo.bindSkillView
+import com.blueskybone.arkscreen.playerinfo.evolveIconMap
+import com.blueskybone.arkscreen.playerinfo.potentialIconMap
+import com.blueskybone.arkscreen.playerinfo.profIconMap
+import com.blueskybone.arkscreen.playerinfo.rarityColorMap
 import com.blueskybone.arkscreen.ui.recyclerview.paging.PagingAdapter
 import java.net.URLEncoder
 
@@ -25,7 +33,7 @@ import java.net.URLEncoder
  */
 
 class CharAdapter(
-    context: Context,
+    private val context: Context,
     override val PAGE_SIZE: Int,
     private val listener: ItemListener
 ) :
@@ -49,63 +57,19 @@ class CharAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OperatorVH {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemCharBinding.inflate(inflater, parent, false)
-        return OperatorVH(binding, listener)
+        return OperatorVH(context, binding, listener)
     }
 
     override fun onBindViewHolder(holder: OperatorVH, position: Int) {
         holder.bind(currentList[position])
     }
 
-    private fun bindSkillView(view: IconSkillBinding, skill: Operator.Skill, rank: Int) {
-        view.Icon.alpha = 1.0F
 
-        val url = "${skillUrl}${skill.id}.png"
-        view.Icon.load(url){
-            crossfade(true)
-            crossfade(300)
-        }
-
-        if (skill.specializeLevel == 0) {
-            view.MainRank.text = rank.toString()
-            view.MainRank.visibility = View.VISIBLE
-            view.Special.visibility = View.GONE
-        } else {
-            val drawId = specialValues.indexOf((skill.specializeLevel).toString())
-            val draw = specialDrawable.getDrawable(drawId)
-            view.Special.setImageDrawable(draw)
-            view.MainRank.visibility = View.GONE
-            view.Special.visibility = View.VISIBLE
-        }
-    }
-
-    private fun bindEquipView(view: IconEquipBinding, equip: Operator.Equip) {
-        val url = "${equipUrl}${equip.typeIcon.uppercase()}_icon.png"
-        view.Icon.load(url){
-            crossfade(true)
-            crossfade(300)
-        }
-
-        if (!equip.locked) {
-            view.Stage.text = equip.stage.toString()
-            view.Stage.visibility = View.VISIBLE
-            view.Icon.alpha = 1.0F
-        } else {
-            view.Stage.visibility = View.GONE
-            view.Icon.alpha = 0.4F
-        }
-    }
-
-
-    private fun bindAvatarView(view: ImageView, skinId: String) {
-        val skinUrl = URLEncoder.encode(skinId, "UTF-8")
-        val url = "$avatarUrl$skinUrl.png"
-        view.load(url){
-            crossfade(true)
-            crossfade(300)
-        }
-    }
-
-    inner class OperatorVH(private val binding: ItemCharBinding, listener: ItemListener) :
+    inner class OperatorVH(
+        private val context: Context,
+        private val binding: ItemCharBinding,
+        listener: ItemListener,
+    ) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {
@@ -123,29 +87,22 @@ class CharAdapter(
             binding.Name.text = item.name
             binding.Level.text = item.level.toString()
 
+            val profRsc = profIconMap[item.profession]!!
+            ContextCompat.getDrawable(context, profRsc)
+
             binding.Profession.setImageResource(
-                profDrawable.getResourceId(
-                    profValues.indexOf(item.profession),
-                    -1
-                )
+                profIconMap[item.profession] ?: R.drawable.skill_icon_default
             )
             binding.Potential.setImageResource(
-                potentialDrawable.getResourceId(
-                    potentialValues.indexOf(item.potentialRank.toString()),
-                    -1
-                )
+                potentialIconMap[item.potentialRank] ?: R.drawable.skill_icon_default
             )
             binding.Evolve.setImageResource(
-                evolveDrawable.getResourceId(
-                    evolveValues.indexOf(item.evolvePhase.toString()),
-                    -1
-                )
+                evolveIconMap[item.evolvePhase] ?: R.drawable.skill_icon_default
             )
 
-            val colorId = rarityValues.indexOf((item.rarity + 1).toString())
-            val draw = rarityDrawable.getDrawable(colorId)
-//            binding.Avatar.background = draw
-            binding.Avatar.setImageDrawable(null)
+            val colorId = rarityColorMap[item.rarity + 1] ?: R.color.red
+            val draw = ContextCompat.getDrawable(context, colorId)
+
             bindAvatarView(binding.Avatar, item.skinId)
 
             binding.Skill1.Icon.setImageResource(R.drawable.skill_icon_default)
@@ -163,9 +120,9 @@ class CharAdapter(
 
             for (skill in item.skills) {
                 when (skill.index) {
-                    0 -> bindSkillView(binding.Skill1, skill, item.mainSkillLvl)
-                    1 -> bindSkillView(binding.Skill2, skill, item.mainSkillLvl)
-                    2 -> bindSkillView(binding.Skill3, skill, item.mainSkillLvl)
+                    0 -> bindSkillView(context, binding.Skill1, skill, item.mainSkillLvl)
+                    1 -> bindSkillView(context, binding.Skill2, skill, item.mainSkillLvl)
+                    2 -> bindSkillView(context, binding.Skill3, skill, item.mainSkillLvl)
                     else -> {}
                 }
             }
@@ -189,11 +146,5 @@ class CharAdapter(
             }
         }
     }
-    fun cleanup() {
-        profDrawable.recycle()
-        potentialDrawable.recycle()
-        evolveDrawable.recycle()
-        rarityDrawable.recycle()
-        specialDrawable.recycle()
-    }
+
 }

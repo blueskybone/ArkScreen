@@ -1,33 +1,20 @@
 package com.blueskybone.arkscreen.ui.recyclerview
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.view.LayoutInflater
-import android.widget.ImageView
-import coil.ImageLoader
-import coil.load
+import androidx.core.content.ContextCompat
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.databinding.ItemCharNotOwnBinding
-import com.blueskybone.arkscreen.network.avatarUrl
-import com.blueskybone.arkscreen.network.skinCachePath
+import com.blueskybone.arkscreen.databinding.ItemCharMissBinding
 import com.blueskybone.arkscreen.playerinfo.Operator
+import com.blueskybone.arkscreen.playerinfo.bindAvatarView
+import com.blueskybone.arkscreen.playerinfo.profIconMap
+import com.blueskybone.arkscreen.playerinfo.rarityColorMap
 import com.nex3z.flowlayout.FlowLayout
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.net.URLEncoder
 
 class CharMissFlowAdapter(
     private val context: Context,
     private val flowLayout: FlowLayout
 ) {
-    private val profValues = context.resources.getStringArray(R.array.profession_value)
-    private val profDrawable = context.resources.obtainTypedArray(R.array.profession_draw)
-    private val rarityValues = context.resources.getStringArray(R.array.rarity_value)
-    private val rarityDrawable = context.resources.obtainTypedArray(R.array.rarity_draw)
 
     private var operators: List<Operator> = emptyList()
 
@@ -35,45 +22,27 @@ class CharMissFlowAdapter(
         operators = newList
         flowLayout.removeAllViews()
         newList.forEach { operator ->
-            addOperatorView(operator)
+            addOperatorView(operator,flowLayout)
         }
     }
 
-    private fun addOperatorView(operator: Operator) {
-
-        val binding = ItemCharNotOwnBinding.inflate(
+    private fun addOperatorView(operator: Operator, flowLayout: FlowLayout) {
+        val binding = ItemCharMissBinding.inflate(
             LayoutInflater.from(context),
             flowLayout,
             false
         )
         bindView(binding, operator)
+        flowLayout.addView(binding.root)
     }
 
-    private fun bindView(binding: ItemCharNotOwnBinding, item: Operator) {
+    private fun bindView(binding: ItemCharMissBinding, item: Operator) {
         binding.Profession.setImageResource(
-            profDrawable.getResourceId(
-                profValues.indexOf(item.profession),
-                -1
-            )
+            profIconMap[item.profession] ?: R.drawable.skill_icon_default
         )
-
-        val colorId = rarityValues.indexOf((item.rarity + 1).toString())
-        val draw = rarityDrawable.getDrawable(colorId)
-        binding.Avatar.background = draw
-
-        loadImage(binding.Avatar, item.skinId)
+        val colorId = rarityColorMap[item.rarity + 1] ?: R.color.red
+        val draw = ContextCompat.getDrawable(context, colorId)
+        binding.Avatar.setBackgroundDrawable(draw)
+        bindAvatarView(binding.Avatar, item.skinId)
     }
-
-    private fun loadImage(view: ImageView, skinId: String) {
-        val skinUrl = URLEncoder.encode(skinId, "UTF-8")
-        val url = "$avatarUrl$skinUrl.png"
-
-        view.load(url){
-
-        }
-    }
-
-
-    private val Int.dp: Int
-        get() = (this * context.resources.displayMetrics.density + 0.5f).toInt()
 }

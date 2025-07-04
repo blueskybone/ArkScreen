@@ -383,7 +383,6 @@ class Home : Fragment() {
             .setTitle(R.string.add_site)
             .setNegativeButton(R.string.cancel, null)
             .setPositiveButton(R.string.save) { _, _ ->
-
                 val title = dialogBinding.EditText1.text.toString().trim()
                 val url = dialogBinding.EditText2.text.toString().trim()
                 if (title.isNotEmpty() && url.isNotEmpty()) {

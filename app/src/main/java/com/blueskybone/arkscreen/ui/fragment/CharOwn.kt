@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -19,12 +20,31 @@ import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.common.getFlowRadioGroup
 import com.blueskybone.arkscreen.common.profImageButton
 import com.blueskybone.arkscreen.common.tagButton
+import com.blueskybone.arkscreen.databinding.DialogCharBinding
+import com.blueskybone.arkscreen.databinding.DialogInputBinding
 import com.blueskybone.arkscreen.databinding.FragmentCharBinding
+import com.blueskybone.arkscreen.playerinfo.bindAvatarView
+import com.blueskybone.arkscreen.playerinfo.bindEquipView
+import com.blueskybone.arkscreen.playerinfo.bindSkillView
+import com.blueskybone.arkscreen.playerinfo.evolveIconMap
+import com.blueskybone.arkscreen.playerinfo.potentialIconMap
+import com.blueskybone.arkscreen.playerinfo.profIconMap
+import com.blueskybone.arkscreen.playerinfo.rarityColorMap
+import com.blueskybone.arkscreen.preference.PrefManager
+import com.blueskybone.arkscreen.room.Link
+import com.blueskybone.arkscreen.task.recruit.I18nManager
 import com.blueskybone.arkscreen.ui.activity.WebViewActivity
 import com.blueskybone.arkscreen.ui.recyclerview.CharAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
+import com.blueskybone.arkscreen.util.TimeUtils.getTimeStrYMD
 import com.blueskybone.arkscreen.viewmodel.CharModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.getKoin
+import java.net.URLEncoder
 
 
 /**
@@ -39,7 +59,10 @@ class CharOwn : Fragment(), ItemListener {
     private val binding get() = _binding!!
 
     private lateinit var adapter: CharAdapter
-//    private lateinit var adapter_new: CharGridAdapter
+
+    //    private lateinit var adapter_new: CharGridAdapter
+    private val prefManager: PrefManager by getKoin().inject()
+    private var i18nManager: I18nManager = I18nManager.instance
 
     private val profList =
         listOf("PIONEER", "WARRIOR", "TANK", "SNIPER", "CASTER", "MEDIC", "SUPPORT", "SPECIAL")
@@ -62,9 +85,111 @@ class CharOwn : Fragment(), ItemListener {
 
     private val adapterListener = object : ItemListener {
         override fun onClick(position: Int) {
-            adapter.currentList[position].let { value ->
+
+            adapter.currentList[position].let { item ->
+                val binding = DialogCharBinding.inflate(layoutInflater)
+//                binding.Name.text = item.name
+                binding.Level.text = item.level.toString()
+
+                val profRsc = profIconMap[item.profession]!!
+                ContextCompat.getDrawable(requireContext(), profRsc)
+
+                binding.Profession.setImageResource(
+                    profIconMap[item.profession] ?: R.drawable.skill_icon_default
+                )
+                binding.Potential.setImageResource(
+                    potentialIconMap[item.potentialRank] ?: R.drawable.skill_icon_default
+                )
+                binding.Evolve.setImageResource(
+                    evolveIconMap[item.evolvePhase] ?: R.drawable.skill_icon_default
+                )
+
+                val colorId = rarityColorMap[item.rarity + 1] ?: R.color.red
+                val draw = ContextCompat.getDrawable(requireContext(), colorId)
+
+                binding.Avatar.setBackgroundDrawable(draw)
+                bindAvatarView(binding.Avatar, item.skinId)
+
+                binding.Rarity.text = "★".repeat(item.rarity + 1)
+                binding.GetTime.text = "获取时间：" + getTimeStrYMD(item.gainTime)
+                binding.SubProf.text = "· " + i18nManager.convert(
+                    item.subProfessionId,
+                    I18nManager.ConvertType.SubProfession
+                )
+
+                binding.Love.text = "信赖值：" + item.favorPercent + "%"
+
+                binding.PRTSlink.setOnClickListener {
+                    val url = "https://prts.wiki/w/" + URLEncoder.encode(item.name, "UTF-8")
+                    if (prefManager.useInnerWeb.get()) {
+                        val intent = Intent(requireContext(), WebViewActivity::class.java)
+                        intent.putExtra("url", url)
+                        startActivity(intent)
+                    } else {
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                    }
+                }
+
+                binding.Skill1.Icon.alpha = 0.0F
+                binding.Skill2.Icon.alpha = 0.0F
+                binding.Skill3.Icon.alpha = 0.0F
+                binding.Skill1.Special.visibility = View.GONE
+                binding.Skill2.Special.visibility = View.GONE
+                binding.Skill3.Special.visibility = View.GONE
+                binding.Skill1.MainRank.visibility = View.GONE
+                binding.Skill2.MainRank.visibility = View.GONE
+                binding.Skill3.MainRank.visibility = View.GONE
+
+                for (skill in item.skills) {
+                    when (skill.index) {
+                        0 -> bindSkillView(
+                            requireContext(),
+                            binding.Skill1,
+                            skill,
+                            item.mainSkillLvl
+                        )
+
+                        1 -> bindSkillView(
+                            requireContext(),
+                            binding.Skill2,
+                            skill,
+                            item.mainSkillLvl
+                        )
+
+                        2 -> bindSkillView(
+                            requireContext(),
+                            binding.Skill3,
+                            skill,
+                            item.mainSkillLvl
+                        )
+
+                        else -> {}
+                    }
+                }
+                binding.Equip1.Icon.alpha = 0.0F
+                binding.Equip2.Icon.alpha = 0.0F
+                binding.Equip3.Icon.alpha = 0.0F
+                binding.Equip1.Stage.visibility = View.GONE
+                binding.Equip2.Stage.visibility = View.GONE
+                binding.Equip3.Stage.visibility = View.GONE
+                for (equip in item.equips) {
+                    when (equip.index) {
+                        0 -> bindEquipView(binding.Equip1, equip)
+                        1 -> bindEquipView(binding.Equip2, equip)
+                        2 -> bindEquipView(binding.Equip3, equip)
+                        else -> {}
+                    }
+                }
+
+                MaterialAlertDialogBuilder(requireContext())
+//                    .setBackground(R.dra)
+                    .setView(binding.root)
+                    .setTitle(item.name)
+                    .show()
+
             }
         }
+
         override fun onLongClick(position: Int) {
         }
     }
@@ -72,7 +197,7 @@ class CharOwn : Fragment(), ItemListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        adapter = CharAdapter(requireContext(), 24,adapterListener)
+        adapter = CharAdapter(requireContext(), 24, adapterListener)
 //        adapter_new = CharGridAdapter(requireContext(), 20)
         _binding = FragmentCharBinding.inflate(inflater)
 
@@ -169,15 +294,15 @@ class CharOwn : Fragment(), ItemListener {
     }
 
     private fun submitFilter() {
-
         val id1 = profRadioGroup.getCheckedRadioButtonId()
         val filter1 = if (id1 != -1) {
-            (profRadioGroup.findViewById<View>(id1) as? ImageButton)?.contentDescription?.toString() ?: "ALL"
+            (profRadioGroup.findViewById<View>(id1) as? ImageButton)?.contentDescription?.toString()
+                ?: "ALL"
         } else "ALL"
 
         val id2 = levelRadioGroup.getCheckedRadioButtonId()
         val filter2 = if (id2 != -1) {
-          (levelRadioGroup.findViewById<View>(id2) as? Button)?.text?.toString() ?: "ALL"
+            (levelRadioGroup.findViewById<View>(id2) as? Button)?.text?.toString() ?: "ALL"
         } else "ALL"
 
         val id3 = rarityRadioGroup.getCheckedRadioButtonId()
@@ -185,7 +310,9 @@ class CharOwn : Fragment(), ItemListener {
             (rarityRadioGroup.findViewById<View>(id3) as? Button)?.text?.toString() ?: "ALL"
         } else "ALL"
 
-        model.applyFilterNew(filter1, filter2, filter3)
+        CoroutineScope(Dispatchers.IO).launch {
+            model.applyFilter(filter1, filter2, filter3)
+        }
     }
 
     override fun onDestroy() {

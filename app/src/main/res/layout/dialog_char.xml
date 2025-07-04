@@ -3,13 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
+    android:padding="20dp"
     android:orientation="horizontal">
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="top">
+        android:layout_gravity="top"
+        android:orientation="vertical">
+
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/Avatar"
             android:layout_width="64dp"
@@ -17,6 +19,7 @@
             android:layout_margin="5dp"
             android:src="@drawable/char_ex_blaze"
             app:shapeAppearanceOverlay="@style/RoundedImageView" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,12 +34,14 @@
                 android:id="@+id/Evolve"
                 android:layout_width="16dp"
                 android:layout_height="16dp" />
+
             <TextView
                 android:id="@+id/Level"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
+
             <ImageView
                 android:id="@+id/Potential"
                 android:layout_width="16dp"
@@ -44,6 +49,7 @@
         </LinearLayout>
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -61,12 +67,12 @@
             android:textColor="?attr/colorOnBackground" />
 
 
-        <TextView
-            android:id="@+id/Name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="缄默德克萨斯"
-            android:textColor="?attr/colorOnBackground" />
+        <!--        <TextView-->
+        <!--            android:id="@+id/Name"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="缄默德克萨斯"-->
+        <!--            android:textColor="?attr/colorOnBackground" />-->
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -145,14 +151,16 @@
             android:layout_height="wrap_content"
             android:text="信赖值：200%"
             android:textColor="?attr/colorOnBackground" />
+        <TextView
+            android:id="@+id/PRTSlink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:padding="5dp"
+            android:text="前往PRTS"
+            android:textAppearance="?attr/textAppearanceSubtitle2"
+            android:textStyle="bold" />
     </LinearLayout>
-    <TextView
-        android:textAppearance="?attr/textAppearanceSubtitle2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:padding="5dp"
-        android:textStyle="bold"
-        android:text="前往PRTS" />
+
 </LinearLayout>
 

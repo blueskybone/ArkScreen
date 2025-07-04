@@ -41,14 +41,14 @@ class CharModel : ViewModel() {
     private val _uiState = MutableLiveData<DataUiState>()
     val uiState: LiveData<DataUiState> get() = _uiState
 
-    private val _filterProf = MutableLiveData<String>()
-    val filterProf: LiveData<String> get() = _filterProf
-
-    private val _filterRarity = MutableLiveData<String>()
-    val filterRarity: LiveData<String> get() = _filterRarity
-
-    private val _filterLevel = MutableLiveData<String>()
-    val filterLevel: LiveData<String> get() = _filterLevel
+//    private val _filterProf = MutableLiveData<String>()
+//    val filterProf: LiveData<String> get() = _filterProf
+//
+//    private val _filterRarity = MutableLiveData<String>()
+//    val filterRarity: LiveData<String> get() = _filterRarity
+//
+//    private val _filterLevel = MutableLiveData<String>()
+//    val filterLevel: LiveData<String> get() = _filterLevel
 
     private val _charsList = MutableLiveData<List<Operator>>()
     val charsList: LiveData<List<Operator>> get() = _charsList
@@ -110,9 +110,9 @@ class CharModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            _filterProf.value = ProfFilter.defaultValue
-            _filterRarity.value = RarityFilter.defaultValue
-            _filterLevel.value = LevelFilter.defaultValue
+//            _filterProf.value = ProfFilter.defaultValue
+//            _filterRarity.value = RarityFilter.defaultValue
+//            _filterLevel.value = LevelFilter.defaultValue
             _uiState.value = DataUiState.Loading("LOADING...")
             withContext(Dispatchers.IO) {
                 loadCharAssets()
@@ -206,6 +206,7 @@ class CharModel : ViewModel() {
             operator.profession = charInfo["profession"].asText()
             list.add(operator)
         }
+        println("list.size ${list.size}")
         return list.sortedWith(compareOperators).toMutableList() as ArrayList<Operator>
     }
 
@@ -215,42 +216,9 @@ class CharModel : ViewModel() {
         if (!response.isSuccessful) throw Exception("!response.isSuccessful")
         response.body() ?: throw Exception("response empty")
         return getOperatorData(response.body()!!)
-
-//        response.body()?.use{ body ->
-//            val gzip = GZIPInputStream(body.byteStream())
-//            val result = getOpeData(ObjectMapper().readTree(gzip))
-//            return result
-//        }?: throw Exception("response body is empty")
     }
 
-
-    private fun applyFilter(): List<Operator> {
-        val prof = filterProf.value
-        val rarity = filterRarity.value
-        val level = filterLevel.value
-
-        val list1 = when (prof) {
-            ProfFilter.ALL -> charList
-            else -> charList.filter { chars -> chars.profession == prof }
-        }
-        val list2 = when (rarity) {
-            RarityFilter.RARITY_1_3 -> list1.filter { chars -> chars.rarity == 0 || chars.rarity == 1 || chars.rarity == 2 }
-            RarityFilter.RARITY_4 -> list1.filter { chars -> chars.rarity == 3 }
-            RarityFilter.RARITY_5 -> list1.filter { chars -> chars.rarity == 4 }
-            RarityFilter.RARITY_6 -> list1.filter { chars -> chars.rarity == 5 }
-            else -> list1
-        }
-        val list3 = when (level) {
-            LevelFilter.EVOLVE_0 -> list2.filter { chars -> chars.evolvePhase == 0 }
-            LevelFilter.EVOLVE_1 -> list2.filter { chars -> chars.evolvePhase == 1 }
-            LevelFilter.EVOLVE_2 -> list2.filter { chars -> chars.evolvePhase == 2 }
-            else -> list2
-        }
-        return list3
-    }
-
-
-    fun applyFilterNew(prof: String, level: String, rarity: String) {
+    fun applyFilter(prof: String, level: String, rarity: String) {
         executeAsync {
             val list1 = when (prof) {
                 "ALL" -> charList
@@ -270,106 +238,6 @@ class CharModel : ViewModel() {
                 else -> list2
             }
             _charsList.postValue(list3)
-        }
-
-    }
-
-
-    fun setFilter(filter: Filter, item: String, context: Context) {
-        when (filter) {
-            is ProfFilter -> {
-                _filterProf.value = ProfFilter.getValue(item, context)
-            }
-
-            is RarityFilter -> {
-                _filterRarity.value = RarityFilter.getValue(item, context)
-            }
-
-            is LevelFilter -> {
-                _filterLevel.value = LevelFilter.getValue(item, context)
-            }
-        }
-        executeAsync {
-            _charsList.postValue(applyFilter())
-        }
-    }
-
-    sealed interface Filter {
-        val defaultValue: String
-        fun getEntryValues(): Array<String>
-        fun getEntries(context: Context): Array<String>
-    }
-
-    data object ProfFilter : Filter {
-        const val ALL = "ALL"
-        private const val PIONEER = "PIONEER"
-        private const val WARRIOR = "WARRIOR"
-        private const val TANK = "TANK"
-        private const val SNIPER = "SNIPER"
-        private const val CASTER = "CASTER"
-        private const val MEDIC = "MEDIC"
-        private const val SUPPORT = "SUPPORT"
-        private const val SPECIAL = "SPECIAL"
-
-        override val defaultValue = ALL
-
-        override fun getEntryValues() = arrayOf(
-            ALL, PIONEER, WARRIOR, TANK, SNIPER, CASTER, MEDIC, SUPPORT, SPECIAL
-        )
-
-        override fun getEntries(context: Context): Array<String> {
-            return context.resources.getStringArray(R.array.profession)
-        }
-
-        fun getValue(item: String, context: Context): String {
-            val index = this.getEntries(context).indexOf(item)
-            return this.getEntryValues()[index]
-        }
-    }
-
-    data object RarityFilter : Filter {
-        private const val ALL = "ALL"
-        const val RARITY_1_3 = "RARITY_1_3"
-        const val RARITY_4 = "RARITY_4"
-        const val RARITY_5 = "RARITY_5"
-        const val RARITY_6 = "RARITY_6"
-
-        override val defaultValue = ALL
-
-        override fun getEntryValues() = arrayOf(
-            ALL, RARITY_1_3, RARITY_4, RARITY_5, RARITY_6
-        )
-
-        override fun getEntries(context: Context): Array<String> {
-            return context.resources.getStringArray(R.array.rarity)
-        }
-
-        fun getValue(item: String, context: Context): String {
-            val index = this.getEntries(context).indexOf(item)
-            return this.getEntryValues()[index]
-        }
-
-    }
-
-    data object LevelFilter : Filter {
-        private const val ALL = "ALL"
-        const val EVOLVE_0 = "EVOLVE_0"
-        const val EVOLVE_1 = "EVOLVE_1"
-        const val EVOLVE_2 = "EVOLVE_2"
-
-        override val defaultValue = ALL
-
-        override fun getEntryValues() = arrayOf(
-            ALL, EVOLVE_0, EVOLVE_1, EVOLVE_2
-        )
-
-        override fun getEntries(context: Context): Array<String> {
-            return context.resources.getStringArray(R.array.level)
-        }
-
-        fun getValue(item: String, context: Context): String {
-            val index = this.getEntries(context).indexOf(item)
-            return this.getEntryValues()[index]
         }
 
     }
