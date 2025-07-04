@@ -10,7 +10,7 @@ import coil.load
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.IconEquipBinding
 import com.blueskybone.arkscreen.databinding.IconSkillBinding
-import com.blueskybone.arkscreen.databinding.ItemCharCardBinding
+import com.blueskybone.arkscreen.databinding.ItemCharBakBinding
 import com.blueskybone.arkscreen.network.avatarUrl
 import com.blueskybone.arkscreen.network.equipUrl
 import com.blueskybone.arkscreen.network.skillUrl
@@ -42,7 +42,7 @@ class CharGridAdapter(context: Context, override val PAGE_SIZE: Int) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OperatorVH {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemCharCardBinding.inflate(inflater, parent, false)
+        val binding = ItemCharBakBinding.inflate(inflater, parent, false)
         return OperatorVH(binding)
     }
 
@@ -91,7 +91,7 @@ class CharGridAdapter(context: Context, override val PAGE_SIZE: Int) :
         view.load(url)
     }
 
-    inner class OperatorVH(private val binding: ItemCharCardBinding) :
+    inner class OperatorVH(private val binding: ItemCharBakBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Operator) {
 
