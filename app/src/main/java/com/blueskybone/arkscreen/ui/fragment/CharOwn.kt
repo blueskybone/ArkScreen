@@ -1,6 +1,8 @@
 package com.blueskybone.arkscreen.ui.fragment
 
+import android.content.Intent
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,13 +13,16 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.common.FlowRadioGroup
+import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.common.getFlowRadioGroup
 import com.blueskybone.arkscreen.common.profImageButton
 import com.blueskybone.arkscreen.common.tagButton
 import com.blueskybone.arkscreen.databinding.FragmentCharBinding
+import com.blueskybone.arkscreen.ui.activity.WebViewActivity
 import com.blueskybone.arkscreen.ui.recyclerview.CharAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
 import com.blueskybone.arkscreen.viewmodel.CharModel
+import com.hjq.toast.Toaster
 
 
 /**
@@ -53,10 +58,19 @@ class CharOwn : Fragment(), ItemListener {
     private lateinit var levelRadioGroup: FlowRadioGroup
     private lateinit var rarityRadioGroup: FlowRadioGroup
 
+    private val adapterListener = object : ItemListener {
+        override fun onClick(position: Int) {
+            adapter.currentList[position].let { value ->
+            }
+        }
+        override fun onLongClick(position: Int) {
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        adapter = CharAdapter(requireContext(), 24)
+        adapter = CharAdapter(requireContext(), 24,adapterListener)
 //        adapter_new = CharGridAdapter(requireContext(), 20)
         _binding = FragmentCharBinding.inflate(inflater)
 

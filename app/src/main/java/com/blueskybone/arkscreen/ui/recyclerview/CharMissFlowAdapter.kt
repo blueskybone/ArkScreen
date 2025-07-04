@@ -29,22 +29,7 @@ class CharMissFlowAdapter(
     private val rarityValues = context.resources.getStringArray(R.array.rarity_value)
     private val rarityDrawable = context.resources.obtainTypedArray(R.array.rarity_draw)
 
-    private val imageLoader = ImageLoader(context)
-    private val scope = CoroutineScope(Dispatchers.Main + Job())
-
     private var operators: List<Operator> = emptyList()
-
-//    init {
-//        // 回收资源
-//        flowLayout.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-//            override fun onViewAttachedToWindow(v: View) {}
-//            override fun onViewDetachedFromWindow(v: View) {
-//                scope.cancel()
-//                profDrawable.recycle()
-//                rarityDrawable.recycle()
-//            }
-//        })
-//    }
 
     fun submitList(newList: List<Operator>) {
         operators = newList
@@ -55,26 +40,13 @@ class CharMissFlowAdapter(
     }
 
     private fun addOperatorView(operator: Operator) {
-        // 动态加载布局
+
         val binding = ItemCharNotOwnBinding.inflate(
             LayoutInflater.from(context),
             flowLayout,
             false
         )
-
-        // 绑定数据
         bindView(binding, operator)
-
-        // 添加到FlowLayout
-        flowLayout.addView(binding.root.apply {
-            // 设置布局参数
-//            layoutParams = FlowLayout.LayoutParams(
-//                FlowLayout.LayoutParams.WRAP_CONTENT,
-//                FlowLayout.LayoutParams.WRAP_CONTENT
-//            ).apply {
-//                setMargins(8.dp, 8.dp, 8.dp, 8.dp)
-//            }
-        })
     }
 
     private fun bindView(binding: ItemCharNotOwnBinding, item: Operator) {
@@ -96,42 +68,11 @@ class CharMissFlowAdapter(
         val skinUrl = URLEncoder.encode(skinId, "UTF-8")
         val url = "$avatarUrl$skinUrl.png"
 
-        view.load(url)
+        view.load(url){
 
-
-//        val file = File(skinCachePath, "$skinId.png")
-//        if (file.exists()) {
-//            view.load(file.absolutePath)
-//        } else {
-//            val skinUrl = URLEncoder.encode(skinId, "UTF-8")
-//            val url = "$avatarUrl$skinUrl.png"
-//
-//            val request = ImageRequest.Builder(context)
-//                .data(url)
-//                .target { drawable ->
-//                    view.setImageDrawable(drawable)
-//                    drawable.toBitmap().let { bitmap ->
-//                        scope.launch(Dispatchers.IO) {
-//                            saveImage(bitmap, skinId)
-//                        }
-//                    }
-//                }
-//                .build()
-//
-//            imageLoader.enqueue(request)
-//        }
-    }
-
-    private fun saveImage(bitmap: Bitmap, skinId: String) {
-        try {
-            val file = File(skinCachePath, "$skinId.png")
-            FileOutputStream(file).use { out ->
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
         }
     }
+
 
     private val Int.dp: Int
         get() = (this * context.resources.displayMetrics.density + 0.5f).toInt()
