@@ -46,6 +46,7 @@ import com.blueskybone.arkscreen.ui.recyclerview.viewpager.ImagePagerAdapter
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
 import com.blueskybone.arkscreen.util.TimeUtils.getLastUpdateStr
 import com.blueskybone.arkscreen.util.TimeUtils.getRemainTimeStr
+import com.blueskybone.arkscreen.util.openLink
 import com.blueskybone.arkscreen.viewmodel.BaseModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
@@ -72,19 +73,14 @@ class Home : Fragment() {
             adapter?.currentList?.get(position)?.let { value ->
                 try {
                     val url = value.url
-                    if (prefManager.useInnerWeb.get()) {
-                        val intent = Intent(requireContext(), WebViewActivity::class.java)
-                        intent.putExtra("url", url)
-                        startActivity(intent)
-                    } else {
-                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-                    }
+                    openLink(requireContext(), url, prefManager)
                 } catch (e: Exception) {
                     Toaster.show(getString(R.string.illegal_url))
                     e.printStackTrace()
                 }
             }
         }
+
         override fun onLongClick(position: Int) {
             adapter?.currentList?.get(position)?.let { value ->
                 MenuDialog(requireContext())
@@ -109,6 +105,7 @@ class Home : Fragment() {
                 }
             }
         }
+
         override fun onLongClick(position: Int) {
 
         }
@@ -177,7 +174,7 @@ class Home : Fragment() {
             startActivity(Intent(requireContext(), RealTimeActivity::class.java))
         }
 
-        binding.RefreshGame.setOnClickListener{
+        binding.RefreshGame.setOnClickListener {
             //
         }
 
@@ -259,18 +256,6 @@ class Home : Fragment() {
                 view.layoutParams = params
             }
         })
-
-//        CoroutineScope(Dispatchers.IO).launch {
-//            try {
-//                val path = getSpaceTitleImageUrl()
-//                binding.TitleImage.load(path) {
-//                    crossfade(true)
-//                    crossfade(300)
-//                }
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//            }
-//        }
 
         model.apCache.observe(viewLifecycleOwner) { value ->
             if (!value.isnull) {
@@ -410,8 +395,8 @@ class Home : Fragment() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setupIndicators(imageList:List<BiliVideo>) {
-        val indicatorLayout =binding.BannerIdc
+    private fun setupIndicators(imageList: List<BiliVideo>) {
+        val indicatorLayout = binding.BannerIdc
         imageList.forEach { _ ->
             val indicator = ImageView(requireContext()).apply {
                 setImageResource(R.drawable.dot_unselected)
@@ -423,7 +408,8 @@ class Home : Fragment() {
         }
 
         // 同步指示器与手动滑动
-        binding.TitleBanner.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.TitleBanner.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 updateIndicators(position % imageList.size)
             }

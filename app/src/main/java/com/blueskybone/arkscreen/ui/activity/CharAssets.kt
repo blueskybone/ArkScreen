@@ -59,7 +59,7 @@ class CharAssets : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_export -> {
-                launcherForTxt?.launch(prefManager.baseAccountGc.get().uid + "_char_assets")
+                launcherForTxt?.launch(prefManager.baseAccountSk.get().nickName + "_char_assets")
                 true
             }
             R.id.menu_statistics -> {

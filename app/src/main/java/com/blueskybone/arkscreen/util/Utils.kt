@@ -5,7 +5,9 @@ import android.app.NotificationManager
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.graphics.Point
+import android.net.Uri
 import android.os.Build
 import android.util.DisplayMetrics
 import android.util.TypedValue
@@ -16,9 +18,12 @@ import androidx.core.content.ContextCompat.getString
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.BuildConfig
 import com.blueskybone.arkscreen.R
+import com.blueskybone.arkscreen.preference.PrefManager
+import com.blueskybone.arkscreen.ui.activity.WebViewActivity
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.hjq.toast.Toaster
+import org.koin.mp.KoinPlatform.getKoin
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -216,4 +221,15 @@ fun updateNotification(
         .setAutoCancel(true)
         .setOnlyAlertOnce(true)
     notificationManager.notify(notificationId, notificationBuilder.build())
+}
+
+
+fun openLink(context: Context, url: String, prefManager: PrefManager) {
+    if (prefManager.useInnerWeb.get()) {
+        val intent = Intent(context, WebViewActivity::class.java)
+        intent.putExtra("url", url)
+        context.startActivity(intent)
+    } else {
+        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    }
 }

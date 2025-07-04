@@ -156,9 +156,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:padding="5dp"
+            android:padding="2dp"
             android:text="前往PRTS"
-            android:textAppearance="?attr/textAppearanceSubtitle2"
+            android:textColor="?attr/colorPrimary"
             android:textStyle="bold" />
     </LinearLayout>
 

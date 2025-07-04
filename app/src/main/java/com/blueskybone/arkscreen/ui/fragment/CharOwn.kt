@@ -37,6 +37,7 @@ import com.blueskybone.arkscreen.ui.activity.WebViewActivity
 import com.blueskybone.arkscreen.ui.recyclerview.CharAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
 import com.blueskybone.arkscreen.util.TimeUtils.getTimeStrYMD
+import com.blueskybone.arkscreen.util.openLink
 import com.blueskybone.arkscreen.viewmodel.CharModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
@@ -82,117 +83,6 @@ class CharOwn : Fragment(), ItemListener {
     private lateinit var profRadioGroup: FlowRadioGroup
     private lateinit var levelRadioGroup: FlowRadioGroup
     private lateinit var rarityRadioGroup: FlowRadioGroup
-
-    private val adapterListener = object : ItemListener {
-        override fun onClick(position: Int) {
-
-            adapter.currentList[position].let { item ->
-                val binding = DialogCharBinding.inflate(layoutInflater)
-//                binding.Name.text = item.name
-                binding.Level.text = item.level.toString()
-
-                val profRsc = profIconMap[item.profession]!!
-                ContextCompat.getDrawable(requireContext(), profRsc)
-
-                binding.Profession.setImageResource(
-                    profIconMap[item.profession] ?: R.drawable.skill_icon_default
-                )
-                binding.Potential.setImageResource(
-                    potentialIconMap[item.potentialRank] ?: R.drawable.skill_icon_default
-                )
-                binding.Evolve.setImageResource(
-                    evolveIconMap[item.evolvePhase] ?: R.drawable.skill_icon_default
-                )
-
-                val colorId = rarityColorMap[item.rarity + 1] ?: R.color.red
-                val draw = ContextCompat.getDrawable(requireContext(), colorId)
-
-                binding.Avatar.setBackgroundDrawable(draw)
-                bindAvatarView(binding.Avatar, item.skinId)
-
-                binding.Rarity.text = "★".repeat(item.rarity + 1)
-                binding.GetTime.text = "获取时间：" + getTimeStrYMD(item.gainTime)
-                binding.SubProf.text = "· " + i18nManager.convert(
-                    item.subProfessionId,
-                    I18nManager.ConvertType.SubProfession
-                )
-
-                binding.Love.text = "信赖值：" + item.favorPercent + "%"
-
-                binding.PRTSlink.setOnClickListener {
-                    val url = "https://prts.wiki/w/" + URLEncoder.encode(item.name, "UTF-8")
-                    if (prefManager.useInnerWeb.get()) {
-                        val intent = Intent(requireContext(), WebViewActivity::class.java)
-                        intent.putExtra("url", url)
-                        startActivity(intent)
-                    } else {
-                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-                    }
-                }
-
-                binding.Skill1.Icon.alpha = 0.0F
-                binding.Skill2.Icon.alpha = 0.0F
-                binding.Skill3.Icon.alpha = 0.0F
-                binding.Skill1.Special.visibility = View.GONE
-                binding.Skill2.Special.visibility = View.GONE
-                binding.Skill3.Special.visibility = View.GONE
-                binding.Skill1.MainRank.visibility = View.GONE
-                binding.Skill2.MainRank.visibility = View.GONE
-                binding.Skill3.MainRank.visibility = View.GONE
-
-                for (skill in item.skills) {
-                    when (skill.index) {
-                        0 -> bindSkillView(
-                            requireContext(),
-                            binding.Skill1,
-                            skill,
-                            item.mainSkillLvl
-                        )
-
-                        1 -> bindSkillView(
-                            requireContext(),
-                            binding.Skill2,
-                            skill,
-                            item.mainSkillLvl
-                        )
-
-                        2 -> bindSkillView(
-                            requireContext(),
-                            binding.Skill3,
-                            skill,
-                            item.mainSkillLvl
-                        )
-
-                        else -> {}
-                    }
-                }
-                binding.Equip1.Icon.alpha = 0.0F
-                binding.Equip2.Icon.alpha = 0.0F
-                binding.Equip3.Icon.alpha = 0.0F
-                binding.Equip1.Stage.visibility = View.GONE
-                binding.Equip2.Stage.visibility = View.GONE
-                binding.Equip3.Stage.visibility = View.GONE
-                for (equip in item.equips) {
-                    when (equip.index) {
-                        0 -> bindEquipView(binding.Equip1, equip)
-                        1 -> bindEquipView(binding.Equip2, equip)
-                        2 -> bindEquipView(binding.Equip3, equip)
-                        else -> {}
-                    }
-                }
-
-                MaterialAlertDialogBuilder(requireContext())
-//                    .setBackground(R.dra)
-                    .setView(binding.root)
-                    .setTitle(item.name)
-                    .show()
-
-            }
-        }
-
-        override fun onLongClick(position: Int) {
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -283,7 +173,6 @@ class CharOwn : Fragment(), ItemListener {
             binding.ButtonLayout.visibility = View.GONE
             binding.FrameDialog.visibility = View.GONE
 
-            //TODO: model.sublime.filter
             submitFilter()
         }
 
@@ -312,6 +201,109 @@ class CharOwn : Fragment(), ItemListener {
 
         CoroutineScope(Dispatchers.IO).launch {
             model.applyFilter(filter1, filter2, filter3)
+        }
+    }
+
+    private val adapterListener = object : ItemListener {
+        override fun onClick(position: Int) {
+
+            adapter.currentList[position].let { item ->
+                val binding = DialogCharBinding.inflate(layoutInflater)
+                binding.Level.text = item.level.toString()
+
+                val profRsc = profIconMap[item.profession]!!
+                ContextCompat.getDrawable(requireContext(), profRsc)
+
+                binding.Profession.setImageResource(
+                    profIconMap[item.profession] ?: R.drawable.skill_icon_default
+                )
+                binding.Potential.setImageResource(
+                    potentialIconMap[item.potentialRank] ?: R.drawable.skill_icon_default
+                )
+                binding.Evolve.setImageResource(
+                    evolveIconMap[item.evolvePhase] ?: R.drawable.skill_icon_default
+                )
+
+                val colorId = rarityColorMap[item.rarity + 1] ?: R.color.red
+                val draw = ContextCompat.getDrawable(requireContext(), colorId)
+
+                binding.Avatar.setBackgroundDrawable(draw)
+                bindAvatarView(binding.Avatar, item.skinId)
+
+                binding.Rarity.text = "★".repeat(item.rarity + 1)
+                binding.GetTime.text = "获取时间：" + getTimeStrYMD(item.gainTime)
+                binding.SubProf.text = "· " + i18nManager.convert(
+                    item.subProfessionId,
+                    I18nManager.ConvertType.SubProfession
+                )
+
+                binding.Love.text = "信赖值：" + item.favorPercent + "%"
+
+                binding.PRTSlink.setOnClickListener {
+                    val url = "https://prts.wiki/w/" + URLEncoder.encode(item.name, "UTF-8")
+                    openLink(requireContext(), url,prefManager)
+                }
+
+                binding.Skill1.Icon.alpha = 0.0F
+                binding.Skill2.Icon.alpha = 0.0F
+                binding.Skill3.Icon.alpha = 0.0F
+                binding.Skill1.Special.visibility = View.GONE
+                binding.Skill2.Special.visibility = View.GONE
+                binding.Skill3.Special.visibility = View.GONE
+                binding.Skill1.MainRank.visibility = View.GONE
+                binding.Skill2.MainRank.visibility = View.GONE
+                binding.Skill3.MainRank.visibility = View.GONE
+
+                for (skill in item.skills) {
+                    when (skill.index) {
+                        0 -> bindSkillView(
+                            requireContext(),
+                            binding.Skill1,
+                            skill,
+                            item.mainSkillLvl
+                        )
+
+                        1 -> bindSkillView(
+                            requireContext(),
+                            binding.Skill2,
+                            skill,
+                            item.mainSkillLvl
+                        )
+
+                        2 -> bindSkillView(
+                            requireContext(),
+                            binding.Skill3,
+                            skill,
+                            item.mainSkillLvl
+                        )
+
+                        else -> {}
+                    }
+                }
+                binding.Equip1.Icon.alpha = 0.0F
+                binding.Equip2.Icon.alpha = 0.0F
+                binding.Equip3.Icon.alpha = 0.0F
+                binding.Equip1.Stage.visibility = View.GONE
+                binding.Equip2.Stage.visibility = View.GONE
+                binding.Equip3.Stage.visibility = View.GONE
+                for (equip in item.equips) {
+                    when (equip.index) {
+                        0 -> bindEquipView(binding.Equip1, equip)
+                        1 -> bindEquipView(binding.Equip2, equip)
+                        2 -> bindEquipView(binding.Equip3, equip)
+                        else -> {}
+                    }
+                }
+
+                MaterialAlertDialogBuilder(requireContext())
+                    .setView(binding.root)
+                    .setTitle(item.name)
+                    .show()
+
+            }
+        }
+
+        override fun onLongClick(position: Int) {
         }
     }
 
