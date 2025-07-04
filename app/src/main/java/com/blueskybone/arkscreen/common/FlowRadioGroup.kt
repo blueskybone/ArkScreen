@@ -17,7 +17,6 @@ class FlowRadioGroup @JvmOverloads constructor(
 ) : ViewGroup(context, attrs, defStyleAttr) {
 
     private var checkedId = -1
-    private var protectFromCheckedChange = false
     private var onCheckedChangeListener: OnCheckedChangeListener? = null
     var horizontalSpacing = 0
     var verticalSpacing = 0
@@ -182,7 +181,7 @@ class FlowRadioGroup @JvmOverloads constructor(
         findViewById<View>(viewId)?.isSelected = checked
     }
 
-    fun clearCheck() {
+    private fun clearCheck() {
         check(-1)
     }
 

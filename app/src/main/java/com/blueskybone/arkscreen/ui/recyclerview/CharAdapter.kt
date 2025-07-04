@@ -56,7 +56,10 @@ class CharAdapter(context: Context, override val PAGE_SIZE: Int) :
         view.Icon.alpha = 1.0F
 
         val url = "${skillUrl}${skill.id}.png"
-        view.Icon.load(url)
+        view.Icon.load(url){
+            crossfade(true)
+            crossfade(300)
+        }
 
         if (skill.specializeLevel == 0) {
             view.MainRank.text = rank.toString()
@@ -73,7 +76,10 @@ class CharAdapter(context: Context, override val PAGE_SIZE: Int) :
 
     private fun bindEquipView(view: IconEquipBinding, equip: Operator.Equip) {
         val url = "${equipUrl}${equip.typeIcon.uppercase()}_icon.png"
-        view.Icon.load(url)
+        view.Icon.load(url){
+            crossfade(true)
+            crossfade(300)
+        }
 
         if (!equip.locked) {
             view.Stage.text = equip.stage.toString()
@@ -89,7 +95,10 @@ class CharAdapter(context: Context, override val PAGE_SIZE: Int) :
     private fun bindAvatarView(view: ImageView, skinId: String) {
         val skinUrl = URLEncoder.encode(skinId, "UTF-8")
         val url = "$avatarUrl$skinUrl.png"
-        view.load(url)
+        view.load(url){
+            crossfade(true)
+            crossfade(300)
+        }
     }
 
     inner class OperatorVH(private val binding: ItemCharBinding) :

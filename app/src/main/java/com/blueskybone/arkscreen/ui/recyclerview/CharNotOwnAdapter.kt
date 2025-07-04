@@ -51,7 +51,10 @@ class CharNotOwnAdapter(private val context: Context, override val PAGE_SIZE: In
     private fun loadImage(view: ImageView, skinId: String) {
         val file = File(skinCachePath, "$skinId.png")
         if (file.exists())
-            view.load(file.absolutePath)
+            view.load(file.absolutePath){
+                crossfade(true)
+                crossfade(300)
+            }
         else {
             val skinUrl = URLEncoder.encode(skinId, "UTF-8")
             val url = "$avatarUrl$skinUrl.png"

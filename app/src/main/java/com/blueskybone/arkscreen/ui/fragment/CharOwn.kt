@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -135,18 +137,6 @@ class CharOwn : Fragment(), ItemListener {
             }
         }
 
-
-        // 保留原有的焦点监听作为备用
-//        binding.ButtonLayout.setOnFocusChangeListener { _, hasFocus ->
-//            if (!hasFocus && binding.ButtonLayout.visibility == View.VISIBLE) {
-//                binding.ButtonLayout.visibility = View.GONE
-//                binding.FrameDialog.visibility = View.GONE
-//
-//                //TODO: model.sublime.filter
-//                submitFilter()
-//            }
-//        }
-
         binding.ButtonLayout.setOnClickListener {
             // 空实现，拦截点击，防止点击事件穿透
         }
@@ -166,13 +156,20 @@ class CharOwn : Fragment(), ItemListener {
 
     private fun submitFilter() {
 
-        //TODO：id获取有问题，检查一下
         val id1 = profRadioGroup.getCheckedRadioButtonId()
-        val filter1 = if (id1 != -1) profList[id1 - 6] else "ALL"
+        val filter1 = if (id1 != -1) {
+            (profRadioGroup.findViewById<View>(id1) as? ImageButton)?.contentDescription?.toString() ?: "ALL"
+        } else "ALL"
+
         val id2 = levelRadioGroup.getCheckedRadioButtonId()
-        val filter2 = if (id2 != -1) levelList[id2 - 14] else "ALL"
+        val filter2 = if (id2 != -1) {
+          (levelRadioGroup.findViewById<View>(id2) as? Button)?.text?.toString() ?: "ALL"
+        } else "ALL"
+
         val id3 = rarityRadioGroup.getCheckedRadioButtonId()
-        val filter3 = if (id3 != -1) rarityList[id3 - 17] else "ALL"
+        val filter3 = if (id3 != -1) {
+            (rarityRadioGroup.findViewById<View>(id3) as? Button)?.text?.toString() ?: "ALL"
+        } else "ALL"
 
         model.applyFilterNew(filter1, filter2, filter3)
     }

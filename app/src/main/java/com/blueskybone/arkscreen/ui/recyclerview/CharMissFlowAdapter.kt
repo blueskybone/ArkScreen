@@ -96,7 +96,10 @@ class CharMissFlowAdapter(
         val skinUrl = URLEncoder.encode(skinId, "UTF-8")
         val url = "$avatarUrl$skinUrl.png"
 
-        view.load(url)
+        view.load(url){
+            crossfade(true)
+            crossfade(300)
+        }
 
 
 //        val file = File(skinCachePath, "$skinId.png")
