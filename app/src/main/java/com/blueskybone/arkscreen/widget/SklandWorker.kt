@@ -137,6 +137,15 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, intArrayOf(id))
             applicationContext.sendBroadcast(intent)
         }
+
+        val widget4Ids =
+            appWidgetManager.getAppWidgetIds(ComponentName(applicationContext, AttendanceWidget::class.java))
+        widget4Ids.forEach { id ->
+            val intent = Intent(applicationContext, AttendanceWidget::class.java)
+            intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, intArrayOf(id))
+            applicationContext.sendBroadcast(intent)
+        }
         return Result.success()
     }
 

@@ -192,18 +192,21 @@
                 android:paddingEnd="16dp">
 
                 <CheckBox
+                    android:id="@+id/RecruitCheckBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:text="公招|刷新" />
 
                 <CheckBox
+                    android:id="@+id/ApLaborCheckBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:text="理智|无人机" />
 
                 <CheckBox
+                    android:id="@+id/TrainCheckBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"

@@ -7,6 +7,6 @@
     android:minHeight="40dp"
     android:previewImage="@drawable/ic_rosm_trans"
     android:resizeMode="horizontal|vertical"
-    android:targetCellWidth="2"
-    android:targetCellHeight="1"
+    android:targetCellWidth="3"
+    android:targetCellHeight="2"
     android:updatePeriodMillis="0" />

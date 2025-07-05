@@ -4,9 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore.Audio.Radio
 import android.view.View
+import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.RadioButton
 import androidx.appcompat.app.AppCompatActivity
+import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.common.CustomRadioGroup
 import com.blueskybone.arkscreen.common.CustomRadioGroup.OnCheckedChangeListener
@@ -20,6 +22,7 @@ import com.blueskybone.arkscreen.databinding.PreferenceRadioBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSeekbarBinding
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.preference.preference.Preference
+import com.blueskybone.arkscreen.receiver.WidgetReceiver
 import com.blueskybone.arkscreen.ui.bindinginfo.ListInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.SeekBarInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetAlpha
@@ -41,9 +44,13 @@ class WidgetThemeActivity : AppCompatActivity() {
             R.drawable.widget_background,
             R.drawable.widget_bg_white,
             R.drawable.activity,
-            R.drawable.act_1,
             R.drawable.act_2,
-            R.drawable.act_3
+            R.drawable.act_6,
+            R.drawable.act_7,
+//            R.drawable.act_12,
+            R.drawable.act_9,
+            R.drawable.act_11,
+//            R.drawable.act_prts,
         )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,6 +80,16 @@ class WidgetThemeActivity : AppCompatActivity() {
         binding.Context2x22.setUp(WidgetContent, prefManager.widget3Content2, null)
 
         binding.TextColor.setUp(WidgetTextColor, prefManager.widgetTextColor)
+        binding.RecruitCheckBox.setup(prefManager.widget4ShowRecruit)
+        binding.ApLaborCheckBox.setup(prefManager.widget4ShowDatabase)
+        binding.TrainCheckBox.setup(prefManager.widget4ShowTrain)
+
+        binding.Apply.setOnClickListener{
+            val intent = Intent(APP, WidgetReceiver::class.java)
+            intent.action = WidgetReceiver.MANUAL_UPDATE
+            intent.putExtra("msg", "组件刷新中...")
+            APP.sendBroadcast(intent)
+        }
     }
 
     private fun PreferenceSeekbarBinding.setUp(
@@ -144,11 +161,7 @@ class WidgetThemeActivity : AppCompatActivity() {
         this.Title.text = getString(listInfo.title)
         val entries = listInfo.getEntries(this@WidgetThemeActivity)
         val entryValues = listInfo.getEntryValues()
-
-        // 先清除所有已有视图
         this.RadioGroup.removeAllViews()
-
-        // 添加RadioButtons
         entries.forEachIndexed { index, entry ->
             val button = getRadioButton(this@WidgetThemeActivity).apply {
                 id = View.generateViewId() // 为每个按钮生成唯一ID
@@ -157,12 +170,23 @@ class WidgetThemeActivity : AppCompatActivity() {
             }
             this.RadioGroup.addView(button)
         }
-
-        // 设置RadioGroup的监听器
         this.RadioGroup.setOnCheckedChangeListener { group, checkedId ->
             val checkedIndex = group.indexOfChild(group.findViewById(checkedId))
             if (checkedIndex >= 0) {
                 pref.set(entryValues[checkedIndex])
+            }
+        }
+    }
+
+    private fun CheckBox.setup(pref: Preference<Boolean>) {
+        if (pref.get()) {
+            this.isChecked = true
+        }
+        this.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                pref.set(true)
+            } else {
+                pref.set(false)
             }
         }
     }

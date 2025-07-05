@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Handler
 import android.os.Looper
 import android.view.View
@@ -16,6 +17,7 @@ import androidx.work.WorkManager
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetAppearance
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetTextColor
 import org.koin.java.KoinJavaComponent
 
 import java.util.concurrent.TimeUnit
@@ -43,17 +45,32 @@ class AttendanceWidget : AppWidgetProvider() {
             val views = RemoteViews(context.packageName, R.layout.widget_attendance)
 
 
-            views.setImageViewResource(R.id.widget_skland_bg, R.drawable.widget_background)
+            views.setImageViewResource(R.id.widget_skland_bg, prefManager.widgetBg.get())
 //
-            views.setInt(R.id.widget_skland_bg, "setAlpha", 200)
-            val colorFilter =
-                if (prefManager.widgetAppearance.get() == WidgetAppearance.whiteOnBlack) {
-                    Color.BLACK
-                } else {
-                    Color.WHITE
-                }
+            views.setInt(R.id.widget_skland_bg, "setAlpha", prefManager.widgetAlpha.get())
+            val textColor = WidgetTextColor.getColorInt(prefManager.widgetTextColor.get())
+            println("textColor ${prefManager.widgetTextColor.get()} $textColor")
 
-//            views.setInt(R.id.widget_skland_bg, "setColorFilter", colorFilter)
+            views.setInt(R.id.recruit, "setTextColor", textColor)
+            views.setInt(R.id.refresh, "setTextColor", textColor)
+
+            views.setInt(R.id.ap_current, "setTextColor", textColor)
+            views.setInt(R.id.ap_max, "setTextColor", textColor)
+            views.setInt(R.id.ap_resc, "setTextColor", textColor)
+            views.setImageViewResource(R.id.ic_bolt, R.drawable.ic_bolt)
+            views.setInt(R.id.ic_bolt, "setColorFilter", textColor)
+
+            views.setInt(R.id.labor_current, "setTextColor", textColor)
+            views.setInt(R.id.labor_max, "setTextColor", textColor)
+            views.setInt(R.id.labor_resc, "setTextColor", textColor)
+            views.setImageViewResource(R.id.ic_labor, R.drawable.ic_drone)
+            views.setInt(R.id.ic_labor, "setColorFilter", textColor)
+
+            views.setInt(R.id.train, "setTextColor", textColor)
+            views.setInt(R.id.train_name, "setTextColor", textColor)
+            views.setInt(R.id.train_resc, "setTextColor", textColor)
+            views.setImageViewResource(R.id.ic_train, R.drawable.ic_train)
+            views.setInt(R.id.ic_train, "setColorFilter", textColor)
 
 
             // 设置点击意图

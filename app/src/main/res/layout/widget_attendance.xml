@@ -38,7 +38,6 @@
         android:scaleType="centerCrop"
         tools:background="@drawable/widget_background" />
 
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,10 +51,10 @@
             android:rowCount="3">
 
             <TextView
+                android:id="@+id/recruit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:clickable="true"
                 android:padding="5dp"
                 android:text="公开招募 3/4"
                 android:textAppearance="?attr/textAppearanceHeadline5"
@@ -64,12 +63,11 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/refresh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:clickable="true"
                 android:padding="5dp"
-
                 android:text="公招刷新 1/3"
                 android:textAppearance="?attr/textAppearanceHeadline5"
                 android:textColor="@color/white"
@@ -90,6 +88,7 @@
                     tools:ignore="UseCompoundDrawables">
 
                     <TextView
+                        android:id="@+id/ap_current"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -101,6 +100,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/ap_max"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
@@ -119,13 +119,15 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:id="@+id/ic_bolt"
                         android:layout_width="12dp"
                         android:layout_height="12dp"
                         android:layout_gravity="center"
                         android:contentDescription="@null"
-                        android:src="@drawable/ic_bolt" />
+                        />
 
                     <TextView
+                        android:id="@+id/ap_resc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="1h23m"
@@ -141,7 +143,6 @@
                 android:padding="5dp">
 
                 <LinearLayout
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -149,6 +150,7 @@
                     tools:ignore="UseCompoundDrawables">
 
                     <TextView
+                        android:id="@+id/labor_current"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -160,6 +162,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/labor_max"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
@@ -178,18 +181,20 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:id="@+id/ic_labor"
                         android:layout_width="12dp"
                         android:layout_height="12dp"
                         android:layout_gravity="center"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_drone" />
+                        android:contentDescription="@null" />
 
                     <TextView
+                        android:id="@+id/labor_resc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="restored"
                         android:textColor="@color/white"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:textStyle="bold"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -199,29 +204,29 @@
                 android:layout_columnSpan="2"
                 android:layout_gravity="start|center"
                 android:orientation="vertical"
-                android:padding="5dp"
-                android:visibility="gone">
+                android:padding="5dp">
 
                 <LinearLayout
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:orientation="horizontal"
                     tools:ignore="UseCompoundDrawables">
 
-                    <!--                    <TextView-->
-                    <!--                        android:layout_width="wrap_content"-->
-                    <!--                        android:layout_height="wrap_content"-->
-                    <!--                        android:layout_gravity="center"-->
-                    <!--                        android:clickable="true"-->
-                    <!--                        android:text="235"-->
-                    <!--                        android:textAppearance="?attr/textAppearanceHeadline5"-->
-                    <!--                        android:textColor="@color/white"-->
-                    <!--                        android:textSize="24sp"-->
-                    <!--                        android:textStyle="bold" />-->
+                    <TextView
+                        android:id="@+id/train"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:clickable="true"
+                        android:text="训练室/"
+                        android:textAppearance="?attr/textAppearanceHeadline5"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/train_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
@@ -240,18 +245,20 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:id="@+id/ic_train"
                         android:layout_width="12dp"
                         android:layout_height="12dp"
                         android:layout_gravity="center"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_train" />
+                        android:contentDescription="@null" />
 
                     <TextView
+                        android:id="@+id/train_resc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="3h27m"
                         android:textColor="@color/white"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:textStyle="bold"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -371,37 +378,13 @@
         </GridLayout>
 
         <ImageView
-            android:layout_marginStart="5dp"
             android:id="@+id/loading"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_gravity="center"
+            android:layout_marginStart="5dp"
             android:contentDescription="@null"
             android:src="@drawable/ic_starter" />
     </LinearLayout>
-    <!--     <GridLayout -->
-
-
-    <!--    <ViewFlipper-->
-    <!--        android:id="@+id/view_flipper"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_gravity="center"-->
-    <!--        android:autoStart="true"-->
-    <!--        android:flipInterval="3000">-->
-    <!--        &lt;!&ndash;  第一个子视图  &ndash;&gt;-->
-    <!--        <TextView-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:text="第一页内容"-->
-    <!--            android:textColor="@color/white" />-->
-    <!--        &lt;!&ndash;  第二个子视图  &ndash;&gt;-->
-    <!--        <TextView-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:text="第二页内容"-->
-    <!--            android:textColor="@color/white" />-->
-    <!--        &lt;!&ndash;  可以添加更多子视图  &ndash;&gt;-->
-    <!--    </ViewFlipper>-->
 
 </FrameLayout>
