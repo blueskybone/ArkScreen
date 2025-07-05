@@ -3,8 +3,8 @@
     android:description="@null"
     android:initialKeyguardLayout="@layout/widget_attendance"
     android:initialLayout="@layout/widget_attendance"
-    android:minWidth="40dp"
-    android:minHeight="40dp"
+    android:minWidth="100dp"
+    android:minHeight="100dp"
     android:previewImage="@drawable/ic_rosm_trans"
     android:updatePeriodMillis="0"
     android:widgetCategory="home_screen" />

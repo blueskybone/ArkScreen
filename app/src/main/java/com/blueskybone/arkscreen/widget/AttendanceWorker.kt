@@ -42,8 +42,13 @@ class AttendanceWorker(context: Context, workerParams: WorkerParameters) : Corou
 //            return Result.success()
 
             val prefManager: PrefManager by getKoin().inject()
+            val lastAttendanceTs = prefManager.lastAttendanceTs.get()
+            val currentTs = getCurrentTs()
+            if (getDayNum(currentTs) <= getDayNum(lastAttendanceTs)) return Result.success()
+
             val database = ArkDatabase.getDatabase(APP)
             val accountSkDao = database.getAccountSkDao()
+
             CoroutineScope(Dispatchers.IO).launch {
                 val accountList = accountSkDao.getAll()
                 val channelId = "atd_notify_channel"
@@ -51,17 +56,17 @@ class AttendanceWorker(context: Context, workerParams: WorkerParameters) : Corou
                 for ((idx, account) in accountList.withIndex()) {
                     updateNotification(
                         APP,
-                        "正在签到中 (${idx + 1}/ ${accountList.size})",
+                        "正在签到中 (${idx + 1}/${accountList.size})",
                         account.nickName,
                         channelId,
                         channelName
                     )
                     val msg = sklandAttendance(account)
-                    Timber.i(account.nickName +" : " +msg)
+                    Timber.i(account.nickName + " : " + msg)
                     updateNotification(
                         APP,
-                        "正在签到中 (${idx + 1}/ ${accountList.size})",
-                        account.nickName + ":" + msg,
+                        "正在签到中 (${idx + 1}/${accountList.size})",
+                        account.nickName + " : " + msg,
                         channelId,
                         channelName
                     )
@@ -69,7 +74,7 @@ class AttendanceWorker(context: Context, workerParams: WorkerParameters) : Corou
                 }
                 updateNotification(
                     APP,
-                    "签到完成 (${accountList.size}/ ${accountList.size})",
+                    "签到完成 (${accountList.size}/${accountList.size})",
                     "",
                     channelId,
                     channelName

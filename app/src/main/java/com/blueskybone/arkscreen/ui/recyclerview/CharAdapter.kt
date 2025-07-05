@@ -4,17 +4,10 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.databinding.IconEquipBinding
-import com.blueskybone.arkscreen.databinding.IconSkillBinding
 import com.blueskybone.arkscreen.databinding.ItemCharBinding
-import com.blueskybone.arkscreen.network.avatarUrl
-import com.blueskybone.arkscreen.network.equipUrl
-import com.blueskybone.arkscreen.network.skillUrl
 import com.blueskybone.arkscreen.playerinfo.Operator
 import com.blueskybone.arkscreen.playerinfo.bindAvatarView
 import com.blueskybone.arkscreen.playerinfo.bindEquipView
@@ -38,21 +31,6 @@ class CharAdapter(
     private val listener: ItemListener
 ) :
     PagingAdapter<Operator, CharAdapter.OperatorVH>() {
-
-    private val profValues = context.resources.getStringArray(R.array.profession_value)
-    private val profDrawable = context.resources.obtainTypedArray(R.array.profession_draw)
-
-    private val potentialValues = context.resources.getStringArray(R.array.potential_value)
-    private val potentialDrawable = context.resources.obtainTypedArray(R.array.potential_draw)
-
-    private val evolveValues = context.resources.getStringArray(R.array.evolve_value)
-    private val evolveDrawable = context.resources.obtainTypedArray(R.array.evolve_draw)
-
-    private val rarityValues = context.resources.getStringArray(R.array.rarity_value)
-    private val rarityDrawable = context.resources.obtainTypedArray(R.array.rarity_draw)
-
-    private val specialValues = context.resources.getStringArray(R.array.special_value)
-    private val specialDrawable = context.resources.obtainTypedArray(R.array.special_draw)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OperatorVH {
         val inflater = LayoutInflater.from(parent.context)

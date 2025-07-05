@@ -71,13 +71,29 @@
     <string name="notify_permission_detail">部分机型需要通知权限</string>
 
     <string name="widget">桌面组件</string>
+    <string name="min_15">15分钟</string>
+    <string name="min_30">30分钟</string>
+    <string name="hour_1">1小时</string>
     <string name="widget_appearance">桌面组件外观</string>
+    <string name="base_setting">基础设置</string>
+    <string name="setting_1x1">1×1组件</string>
+    <string name="setting_1x2">1×2组件</string>
+    <string name="setting_2x2">2×2组件</string>
+    <string name="setting_2x3">2×3组件</string>
+    <string name="text_color">文字颜色</string>
+    <string name="background">背景</string>
     <string name="black_on_white">黑底白字</string>
     <string name="white_on_black">白底黑字</string>
-    <string name="widget_size">桌面组件大小</string>
+    <string name="white">白</string>
+    <string name="black">黑</string>
+    <string name="widget_size">文字大小</string>
     <string name="small">小</string>
     <string name="medium">中</string>
     <string name="large">大</string>
+    <string name="widget_content">显示内容</string>
+    <string name="widget_update_freq">更新频率</string>
+    <string name="widget_setting_info">说明：由于文字大小适配困难，请根据实机效果，自行修改文字大小。更改完成后，需要点击右下角浮动按钮立即更新外观。\nAPI版本较高的机型可以尝试缩放组件。</string>
+
     <string name="widget_alpha">不透明度</string>
     <string name="widget_refresh">刷新桌面组件</string>
     <string name="widget_refresh_detail">更改外观后点此刷新组件</string>
@@ -163,6 +179,7 @@
     <string name="trading">贸易站</string>
     <string name="manufactures">制造站</string>
     <string name="labor">无人机</string>
+    <string name="ap">理智</string>
     <string name="campaign">剿灭</string>
     <string name="routine_day">日常</string>
     <string name="routine_week">周常</string>

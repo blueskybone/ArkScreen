@@ -35,6 +35,7 @@ import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.task.recruit.RecruitManager
 import com.blueskybone.arkscreen.util.copyToClipboard
 import com.blueskybone.arkscreen.util.dpToPx
+import com.blueskybone.arkscreen.util.openLink
 import com.blueskybone.arkscreen.viewmodel.RecruitModel
 import com.hjq.toast.Toaster
 import com.nex3z.flowlayout.FlowLayout
@@ -184,7 +185,7 @@ class RecruitActivity : AppCompatActivity() {
     }
 
     private fun resetButton(): Button {
-        val button = tagButton(this,getString(R.string.reset))
+        val button = tagButton(this, getString(R.string.reset))
         button.setBackgroundResource(R.drawable.button_reset)
         button.setOnClickListener {
             for (buttonView in buttonViewList) {
@@ -201,7 +202,7 @@ class RecruitActivity : AppCompatActivity() {
     }
 
     private fun opeButton(context: Context, chars: RecruitManager.Operator): Button {
-        val button = tagButton(this,chars.name)
+        val button = tagButton(this, chars.name)
         val rarityIdx = rarityValValues.indexOf((chars.rare).toString())
         val colorId = rarityColorIds[rarityIdx]
         button.setBackgroundColor(getColor(colorId))
@@ -217,7 +218,10 @@ class RecruitActivity : AppCompatActivity() {
     private fun opeButton2(context: Context, chars: RecruitManager.Operator): View {
         // 1. 使用 DataBindingUtil 加载布局
         val binding = ChipRecruitBinding.inflate(LayoutInflater.from(context))
-        binding.Avatar.load("$avatarUrl${chars.skin}%231.png")
+        binding.Avatar.load("$avatarUrl${chars.skin}%231.png") {
+            crossfade(true)
+            crossfade(300)
+        }
         binding.Name.text = chars.name
         binding.Rare.text = " ${chars.rare}★ "
 
@@ -229,7 +233,7 @@ class RecruitActivity : AppCompatActivity() {
     }
 
     private fun resultTagButton(context: Context, text: String): Button {
-        val button = tagButton(this,text)
+        val button = tagButton(this, text)
         val shapeDrawable = GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
             cornerRadius = dpToPx(context, 2F)
@@ -250,7 +254,7 @@ class RecruitActivity : AppCompatActivity() {
         val linearLayout = LinearLayout(this)
         linearLayout.layoutParams = layoutParams
         linearLayout.orientation = LinearLayout.VERTICAL
-        linearLayout.setPadding(20, 20, 20, 20)
+        linearLayout.setPadding(80, 80, 80, 80)
 
         val flowLayout = getFlowLayout(this)
         for (tag in operator.tags) {
@@ -266,13 +270,7 @@ class RecruitActivity : AppCompatActivity() {
         builder.setView(linearLayout)
             .setPositiveButton(getString(R.string.goto_PRTS)) { _, _ ->
                 val url = "https://prts.wiki/w/" + URLEncoder.encode(operator.name, "UTF-8")
-                if (prefManager.useInnerWeb.get()) {
-                    val intent = Intent(this, WebViewActivity::class.java)
-                    intent.putExtra("url", url)
-                    startActivity(intent)
-                } else {
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-                }
+                openLink(this, url, prefManager)
             }
         builder.create().show()
     }

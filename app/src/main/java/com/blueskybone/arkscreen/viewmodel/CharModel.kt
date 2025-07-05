@@ -1,6 +1,5 @@
 package com.blueskybone.arkscreen.viewmodel
 
-import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,7 +9,6 @@ import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.CharAllMap
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.Progress
-import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTaskTest
 import com.blueskybone.arkscreen.playerinfo.Operator
 import com.blueskybone.arkscreen.playerinfo.compareOperators

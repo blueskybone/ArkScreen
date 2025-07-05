@@ -64,16 +64,16 @@ class Widget3 : AppWidgetProvider() {
         views.setInt(R.id.max, "setTextColor", textColor)
 
         val size = prefManager.widgetContentSize.get()
-        views.setTextViewTextSize(
-            R.id.value,
-            TypedValue.COMPLEX_UNIT_SP,
-            WidgetSize.getTextSize(size)
-        )
-        views.setTextViewTextSize(
-            R.id.max,
-            TypedValue.COMPLEX_UNIT_SP,
-            WidgetSize.getTextSize3(size)
-        )
+//        views.setTextViewTextSize(
+//            R.id.value,
+//            TypedValue.COMPLEX_UNIT_SP,
+//            WidgetSize.getTextSize(size)
+//        )
+//        views.setTextViewTextSize(
+//            R.id.max,
+//            TypedValue.COMPLEX_UNIT_SP,
+//            WidgetSize.getTextSize3(size)
+//        )
 
         val now = getCurrentTs()
         val apCache = prefManager.apCache.get()

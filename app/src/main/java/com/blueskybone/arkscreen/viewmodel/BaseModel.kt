@@ -8,10 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.AppUpdateInfo
 import com.blueskybone.arkscreen.network.BiliVideo
-import com.blueskybone.arkscreen.network.NetWorkTask
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.createAccountList
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.createGachaAccount
-import com.blueskybone.arkscreen.network.NetWorkTask.Companion.sklandAttendance
 import com.blueskybone.arkscreen.network.announceUrl
 import com.blueskybone.arkscreen.network.getVideoList
 import com.blueskybone.arkscreen.playerinfo.ApCache
@@ -20,11 +18,10 @@ import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.ArkDatabase
 import com.blueskybone.arkscreen.room.Link
+import com.blueskybone.arkscreen.task.attendance.doSklandAttendance
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
-import com.blueskybone.arkscreen.util.updateNotification
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.hjq.toast.Toaster
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -65,8 +62,8 @@ class BaseModel : ViewModel() {
     private val _apCache = MutableLiveData<ApCache>()
     val apCache: LiveData<ApCache> get() = _apCache
 
-    private val _attendanceLog = MutableLiveData<String>()
-    val attendanceLog: LiveData<String> get() = _attendanceLog
+//    private val _attendanceLog = MutableLiveData<String>()
+//    val attendanceLog: LiveData<String> get() = _attendanceLog
 
     private val _announce = MutableLiveData<String>()
     val announce: LiveData<String> get() = _announce
@@ -91,64 +88,33 @@ class BaseModel : ViewModel() {
         }
     }
 
+//    fun runAttendance() {
+//        job?.cancel()
+//        job = viewModelScope.launch(Dispatchers.IO) {
+//            val builder = StringBuilder()
+//            accountSkList.value?.let { list ->
+//                builder.append("开始任务：\n")
+//                for (account in list) {
+//                    if (account.uid != "") {
+//                        builder.append(account.nickName).append(" 签到中...\n")
+//                        _attendanceLog.postValue(builder.toString())
+//                        builder.append(attendance(account)).append("\n")
+//                        _attendanceLog.postValue(builder.toString())
+//                    }
+//                }
+//                builder.append("签到完成。\n")
+//                _attendanceLog.postValue(builder.toString())
+//            }
+//        }
+//    }
+
     private var job: Job? = null
-    fun runAttendance() {
-        job?.cancel()
-        job = viewModelScope.launch(Dispatchers.IO) {
-            val builder = StringBuilder()
-            accountSkList.value?.let { list ->
-                builder.append("开始任务：\n")
-                for (account in list) {
-                    if (account.uid != "") {
-                        builder.append(account.nickName).append(" 签到中...\n")
-                        _attendanceLog.postValue(builder.toString())
-                        builder.append(attendance(account)).append("\n")
-                        _attendanceLog.postValue(builder.toString())
-                    }
-                }
-                builder.append("签到完成。\n")
-                _attendanceLog.postValue(builder.toString())
-            }
-        }
-    }
-
-
     fun startAttendance(context: Context) {
         job?.cancel()
         job = viewModelScope.launch(Dispatchers.IO) {
             val prefManager: PrefManager by getKoin().inject()
-            val database = ArkDatabase.getDatabase(APP)
-            val accountSkDao = database.getAccountSkDao()
             try {
-                val accountList = accountSkDao.getAll()
-                val channelId = "atd_notify_channel"
-                val channelName = "签到通知"
-                for ((idx, account) in accountList.withIndex()) {
-                    updateNotification(
-                        context,
-                        "正在签到中 (${idx + 1}/ ${accountList.size})",
-                        account.nickName,
-                        channelId,
-                        channelName
-                    )
-                    val msg = sklandAttendance(account)
-                    Timber.i(account.nickName + " : " + msg)
-                    updateNotification(
-                        context,
-                        "正在签到中 (${idx + 1}/ ${accountList.size})",
-                        account.nickName + ":" + msg,
-                        channelId,
-                        channelName
-                    )
-                    Thread.sleep(500)
-                }
-                updateNotification(
-                    context,
-                    "签到完成 (${accountList.size}/ ${accountList.size})",
-                    "",
-                    channelId,
-                    channelName
-                )
+                doSklandAttendance(context)
                 prefManager.lastAttendanceTs.set(getCurrentTs())
             } catch (e: Exception) {
                 Toaster.show(e.message)
@@ -157,13 +123,13 @@ class BaseModel : ViewModel() {
         }
     }
 
-    private suspend fun attendance(account: AccountSk): String {
-        return try {
-            "签到结果：" + sklandAttendance(account)
-        } catch (e: Exception) {
-            e.message ?: "什么都没有发生喵"
-        }
-    }
+//    private suspend fun attendance(account: AccountSk): String {
+//        return try {
+//            "签到结果：" + sklandAttendance(account)
+//        } catch (e: Exception) {
+//            e.message ?: "什么都没有发生喵"
+//        }
+//    }
 
     private fun insertLinkData() {
         executeAsync {
@@ -259,7 +225,6 @@ class BaseModel : ViewModel() {
         executeAsync {
             try {
                 val list = createAccountList(token, dId)
-                Timber.i("createAccountList end.")
                 accountSkDao.insert(list)
                 _accountSkList.postValue(accountSkDao.getAll())
                 if (prefManager.baseAccountSk.get().uid == "")
@@ -311,9 +276,6 @@ class BaseModel : ViewModel() {
             link.icon = parseHtmlForIcon(link.url) ?: ""
             linkDao.insert(link)
             _links.postValue(linkDao.getAll())
-//            val icon = parseHtmlForIcon(link.url) ?: ""
-//            linkDao.update(link.id, link.title, link.url, icon)
-//            _links.postValue(linkDao.getAll())
         }
     }
 

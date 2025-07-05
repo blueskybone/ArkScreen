@@ -1,8 +1,14 @@
 package com.blueskybone.arkscreen.ui.bindinginfo
 
 import android.content.Context
+import android.graphics.Color
 import androidx.core.content.ContextCompat.getString
 import com.blueskybone.arkscreen.R
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetContent.ap
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize.large
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize.medium
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize.small
+import kotlin.math.min
 
 /**
  *   Created by blueskybone
@@ -161,3 +167,72 @@ data object WidgetSize : ListInfo {
 //        }
 //    }
 }
+
+data object WidgetTextColor : ListInfo {
+    private const val WHITE = "white"
+    private const val BLACK = "black"
+    override val title: Int = R.string.text_color
+    override val key: String = "widget_text_color"
+    override val defaultValue: String = WHITE
+    override fun getEntryValues() = arrayOf(WHITE, BLACK)
+    override fun getEntries(context: Context): Array<String> {
+        val white = getString(context, R.string.white)
+        val black = getString(context, R.string.black)
+        return arrayOf(white, black)
+    }
+
+    fun getColorInt(color: String): Int {
+        return when (color) {
+            WHITE -> Color.WHITE
+            BLACK -> Color.BLACK
+            else -> throw IllegalArgumentException("Invalid : $color")
+        }
+    }
+}
+
+data object WidgetContent : ListInfo {
+    private const val ap = "ap"
+    private const val labor = "labor"
+    private const val train = "train"
+    override val title: Int = R.string.widget_content
+    override val key: String = "widget_content"
+    override val defaultValue: String = ap
+    const val defaultValue2: String = labor
+    override fun getEntryValues() = arrayOf(ap, labor, train)
+
+    override fun getEntries(context: Context): Array<String> {
+        val ap = getString(context, R.string.ap)
+        val labor = getString(context, R.string.labor)
+        val train = getString(context, R.string.train)
+        return arrayOf(ap, labor, train)
+    }
+}
+
+data object WidgetUpdateFreq : ListInfo {
+    private const val min_15 = "min_15"
+    private const val min_30 = "min_30"
+    private const val hour_1 = "hour_1"
+    override val title: Int = R.string.widget_update_freq
+    override val key: String = "widget_update_freq"
+    override val defaultValue: String = min_15
+    override fun getEntryValues() = arrayOf(min_15, min_30, hour_1)
+
+    override fun getEntries(context: Context): Array<String> {
+        val min_15 = getString(context, R.string.min_15)
+        val min_30 = getString(context, R.string.min_30)
+        val hour_1 = getString(context, R.string.hour_1)
+        return arrayOf(min_15, min_30, hour_1)
+    }
+
+    fun getValue(str: String): Int {
+        return when (str) {
+            min_15 -> 900
+            min_30 -> 1800
+            hour_1 -> 3600
+            else -> 1800
+        }
+    }
+}
+
+
+

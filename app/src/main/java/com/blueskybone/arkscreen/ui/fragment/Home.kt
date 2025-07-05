@@ -376,18 +376,18 @@ class Home : Fragment() {
             }.show()
     }
 
-    private fun displayAttendanceDialog() {
-        val dialogBinding = DialogInfoBinding.inflate(layoutInflater)
-        MaterialAlertDialogBuilder(requireContext())
-            .setView(dialogBinding.root)
-            .setTitle(R.string.attendance_click)
-            .setPositiveButton(R.string.confirm, null).show()
-
-        model.runAttendance()
-        model.attendanceLog.observe(viewLifecycleOwner) {
-            dialogBinding.Text.text = it
-        }
-    }
+//    private fun displayAttendanceDialog() {
+//        val dialogBinding = DialogInfoBinding.inflate(layoutInflater)
+//        MaterialAlertDialogBuilder(requireContext())
+//            .setView(dialogBinding.root)
+//            .setTitle(R.string.attendance_click)
+//            .setPositiveButton(R.string.confirm, null).show()
+//
+//        model.runAttendance()
+//        model.attendanceLog.observe(viewLifecycleOwner) {
+//            dialogBinding.Text.text = it
+//        }
+//    }
 
     private fun ChipRoundBinding.setup(funcChipInfo: FuncChipInfo) {
         Icon.setImageResource(funcChipInfo.icon)

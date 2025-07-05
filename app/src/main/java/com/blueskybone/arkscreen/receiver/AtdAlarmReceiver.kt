@@ -44,7 +44,7 @@ class AtdAlarmReceiver : BroadcastReceiver() {
                 for ((idx, account) in accountList.withIndex()) {
                     updateNotification(
                         context,
-                        "正在签到中 (${idx + 1}/ ${accountList.size})",
+                        "正在签到中 (${idx + 1}/${accountList.size})",
                         account.nickName,
                         channelId,
                         channelName
@@ -53,8 +53,8 @@ class AtdAlarmReceiver : BroadcastReceiver() {
                     Timber.i(account.nickName + " : " + msg)
                     updateNotification(
                         context,
-                        "正在签到中 (${idx + 1}/ ${accountList.size})",
-                        account.nickName + ":" + msg,
+                        "正在签到中 (${idx + 1}/${accountList.size})",
+                        account.nickName + " : " + msg,
                         channelId,
                         channelName
                     )
@@ -62,7 +62,7 @@ class AtdAlarmReceiver : BroadcastReceiver() {
                 }
                 updateNotification(
                     context,
-                    "签到完成 (${accountList.size}/ ${accountList.size})",
+                    "签到完成 (${accountList.size}/${accountList.size})",
                     "",
                     channelId,
                     channelName

@@ -32,6 +32,7 @@ import com.blueskybone.arkscreen.receiver.WidgetReceiver
 import com.blueskybone.arkscreen.room.Account
 import com.blueskybone.arkscreen.ui.activity.LoginWeb
 import com.blueskybone.arkscreen.ui.activity.MainActivity
+import com.blueskybone.arkscreen.ui.activity.WidgetThemeActivity
 import com.blueskybone.arkscreen.ui.bindinginfo.BackAutoAtd
 import com.blueskybone.arkscreen.ui.bindinginfo.FloatWindowAppearance
 import com.blueskybone.arkscreen.ui.bindinginfo.ListInfo
@@ -49,6 +50,7 @@ import com.blueskybone.arkscreen.ui.bindinginfo.WidgetAlpha
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetAppearance
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetRefresh
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq
 import com.blueskybone.arkscreen.ui.recyclerview.AccountAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
 import com.blueskybone.arkscreen.util.TimeUtils
@@ -132,10 +134,12 @@ class Function : Fragment(), ItemListener {
 
         binding.ScreenShotDelay.setUp(ScreenshotDelay, prefManager.screenShotDelay)
         binding.TurnOffBatteryOptimization.setUp(TurnOffBatteryOptimization)
-        binding.WidgetAppearance.setUp(WidgetAppearance, prefManager.widgetAppearance, null)
-        binding.WidgetAlpha.setUp(WidgetAlpha, prefManager.widgetAlpha)
-        binding.WidgetContentSize.setUp(WidgetSize, prefManager.widgetContentSize, null)
-        binding.WidgetRefresh.setUp(WidgetRefresh)
+        binding.WidgetAppearance.setOnClickListener {
+            startActivity(Intent(requireContext(), WidgetThemeActivity::class.java))
+        }
+//        binding.WidgetAlpha.setUp(WidgetAlpha, prefManager.widgetAlpha)
+//        binding.WidgetContentSize.setUp(WidgetSize, prefManager.widgetContentSize, null)
+        binding.WidgetRefresh.setUp(WidgetUpdateFreq, prefManager.widgetUpdateFreq, null)
 
         binding.OverlayPermission.setUp(OverlayPermission)
         binding.NotifyPermission.setUp(NotifyPermission)
@@ -157,12 +161,12 @@ class Function : Fragment(), ItemListener {
         binding.TurnOffBatteryOptimization.Layout.setOnClickListener {
             (activity as MainActivity?)?.requestIgnoreBatteryOptimizations()
         }
-        binding.WidgetRefresh.Layout.setOnClickListener {
-            val intent = Intent(APP, WidgetReceiver::class.java)
-            intent.action = WidgetReceiver.MANUAL_UPDATE
-            intent.putExtra("msg", "组件刷新中...")
-            APP.sendBroadcast(intent)
-        }
+//        binding.WidgetRefresh.Layout.setOnClickListener {
+//            val intent = Intent(APP, WidgetReceiver::class.java)
+//            intent.action = WidgetReceiver.MANUAL_UPDATE
+//            intent.putExtra("msg", "组件刷新中...")
+//            APP.sendBroadcast(intent)
+//        }
         binding.BackAutoAtd.setUp(
             BackAutoAtd,
             prefManager.backAutoAtd,
