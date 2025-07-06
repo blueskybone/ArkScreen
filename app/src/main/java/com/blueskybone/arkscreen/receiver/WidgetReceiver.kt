@@ -7,6 +7,7 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.blueskybone.arkscreen.widget.SklandWorker
 import com.hjq.toast.Toaster
+import timber.log.Timber
 
 /**
  *   Created by blueskybone
@@ -24,6 +25,7 @@ class WidgetReceiver : BroadcastReceiver() {
             intent.getStringExtra("msg")?.let { msg ->
                 Toaster.show(msg)
             }
+            Timber.i("WidgetReceiver onReceive")
             WorkManager.getInstance(context!!)
                 .enqueue(OneTimeWorkRequest.from(SklandWorker::class.java))
         }

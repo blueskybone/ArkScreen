@@ -1,9 +1,11 @@
 package com.blueskybone.arkscreen.widget
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.util.TypedValue
 import android.widget.RemoteViews
@@ -13,6 +15,8 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.preference.PrefManager
+import com.blueskybone.arkscreen.receiver.WidgetReceiver
+import com.blueskybone.arkscreen.receiver.WidgetReceiver.Companion.MANUAL_UPDATE
 import com.blueskybone.arkscreen.receiver.WidgetReceiver.Companion.WORKER_NAME
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetContent
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize
@@ -33,63 +37,84 @@ class Widget2 : AppWidgetProvider() {
 
     private val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
 
+
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
-        appWidgetIds: IntArray?
+        appWidgetIds: IntArray
     ) {
-        val views = RemoteViews(context.packageName, R.layout.widget_1x2)
-        //绑定事件
-//        val onClickPendingIntent: PendingIntent
-//        val onClickIntent = Intent(context, RealTimeActivity::class.java)
-//        val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//            PendingIntent.FLAG_MUTABLE
-//        } else {
-//            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+
+        appWidgetIds.forEach { appWidgetId ->
+
+
+            val views = RemoteViews(context.packageName, R.layout.widget_1x2)
+
+
+            //layout
+            views.setImageViewResource(R.id.widget_bg, prefManager.widgetBg.get())
+            views.setInt(R.id.widget_bg, "setAlpha", prefManager.widgetAlpha.get())
+
+            //textColor
+            val textColor = WidgetTextColor.getColorInt(prefManager.widgetTextColor.get())
+            views.setInt(R.id.text, "setTextColor", textColor)
+            views.setInt(R.id.rest, "setTextColor", textColor)
+
+            val drawable = WidgetContent.getDrawableIcon(prefManager.widget2Content.get())
+            views.setImageViewResource(R.id.icon, drawable)
+            views.setInt(R.id.icon, "setColorFilter", textColor)
+
+            //content
+            updateWidgetContent(prefManager.widget2Content.get(), R.id.text, R.id.rest, views)
+            //Size
+            val size = prefManager.widget2Size.get()
+            views.setTextViewTextSize(
+                R.id.text,
+                TypedValue.COMPLEX_UNIT_SP,
+                WidgetSize.getTextSizeMain(size)
+            )
+            views.setTextViewTextSize(
+                R.id.rest,
+                TypedValue.COMPLEX_UNIT_SP,
+                WidgetSize.getTextSizeSub(size)
+            )
+            views.setViewLayoutHeight(
+                R.id.icon,
+                WidgetSize.getImageSize(size).toFloat(),
+                TypedValue.COMPLEX_UNIT_DIP
+            )
+            views.setViewLayoutWidth(
+                R.id.icon,
+                WidgetSize.getImageSize(size).toFloat(),
+                TypedValue.COMPLEX_UNIT_DIP
+            )
+
+            val intent = Intent(context, WidgetReceiver::class.java).apply {
+                action = MANUAL_UPDATE
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            }
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                appWidgetId, // 使用 widgetId 作为 requestCode 确保唯一性
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            views.setOnClickPendingIntent(R.id.layout, pendingIntent)
+
+//        val intent = Intent(context, WidgetReceiver::class.java).apply {
+//            action = "com.yourpackage.ACTION_WIDGET_CLICK"
+//            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, REQUEST_CODE)
 //        }
-//        onClickPendingIntent =
-//            PendingIntent.getActivity(context, 0, onClickIntent, pendingIntentFlags)
-//        views.setOnClickPendingIntent(R.id.layout, onClickPendingIntent)
+//        val pendingIntent = PendingIntent.getBroadcast(
+//            context,
+//            REQUEST_CODE, // 使用 widgetId 作为 requestCode 确保唯一性
+//            intent,
+//            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+//        )
+//        views.setOnClickPendingIntent(R.id.layout, pendingIntent)
 
-//layout
-        views.setImageViewResource(R.id.widget_bg, prefManager.widgetBg.get())
-        views.setInt(R.id.widget_bg, "setAlpha", prefManager.widgetAlpha.get())
-
-        //textColor
-        val textColor = WidgetTextColor.getColorInt(prefManager.widgetTextColor.get())
-        views.setInt(R.id.text, "setTextColor", textColor)
-        views.setInt(R.id.rest, "setTextColor", textColor)
-
-        val drawable = WidgetContent.getDrawableIcon(prefManager.widget2Content.get())
-        views.setImageViewResource(R.id.icon, drawable)
-        views.setInt(R.id.icon, "setColorFilter", textColor)
-
-        //content
-        updateWidgetContent(prefManager.widget2Content.get(), R.id.text, R.id.rest, views)
-        //Size
-        val size = prefManager.widget2Size.get()
-        views.setTextViewTextSize(
-            R.id.text,
-            TypedValue.COMPLEX_UNIT_SP,
-            WidgetSize.getTextSizeMain(size)
-        )
-        views.setTextViewTextSize(
-            R.id.rest,
-            TypedValue.COMPLEX_UNIT_SP,
-            WidgetSize.getTextSizeSub(size)
-        )
-        views.setViewLayoutHeight(
-            R.id.icon,
-            WidgetSize.getImageSize(size).toFloat(),
-            TypedValue.COMPLEX_UNIT_DIP
-        )
-        views.setViewLayoutWidth(
-            R.id.icon,
-            WidgetSize.getImageSize(size).toFloat(),
-            TypedValue.COMPLEX_UNIT_DIP
-        )
-        appWidgetManager.updateAppWidget(appWidgetIds, views)
+            appWidgetManager.updateAppWidget(appWidgetId, views)
+        }
     }
 
     override fun onEnabled(context: Context?) {

@@ -3,8 +3,8 @@
     android:description="@null"
     android:initialKeyguardLayout="@layout/widget_2x3"
     android:initialLayout="@layout/widget_2x3"
-    android:minWidth="100dp"
-    android:minHeight="40dp"
+    android:minWidth="150dp"
+    android:minHeight="90dp"
     android:previewImage="@drawable/ic_rosm_trans"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="0" />

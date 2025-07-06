@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.widget
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
@@ -9,15 +10,21 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.preference.PrefManager
+import com.blueskybone.arkscreen.receiver.WidgetReceiver
+import com.blueskybone.arkscreen.receiver.WidgetReceiver.Companion.MANUAL_UPDATE
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetTextColor
 import com.blueskybone.arkscreen.util.TimeUtils
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
+import com.blueskybone.arkscreen.widget.Widget3.Companion
 import org.koin.java.KoinJavaComponent
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 /**
  *   Created by blueskybone
@@ -29,6 +36,7 @@ class Widget4 : AppWidgetProvider() {
     companion object {
         const val WORKER_NAME = "AttendanceWorker"
         const val ACTION_ANIMATE = "com.blueskybone.arkscreen.ACTION_ANIMATE"
+        const val REQUEST_CODE = 1112
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -37,7 +45,6 @@ class Widget4 : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-
         appWidgetIds.forEach { appWidgetId ->
             super.onUpdate(context, appWidgetManager, appWidgetIds)
             val views = RemoteViews(context.packageName, R.layout.widget_2x3)
@@ -231,35 +238,34 @@ class Widget4 : AppWidgetProvider() {
                 }
             }
 
+            val intent = Intent(context, WidgetReceiver::class.java).apply {
+                action = MANUAL_UPDATE
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            }
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                appWidgetId, // 使用 widgetId 作为 requestCode 确保唯一性
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            views.setOnClickPendingIntent(R.id.layout, pendingIntent)
 
-            // 设置点击意图
-//            val clickIntent = Intent(context, Widget4::class.java).apply {
-//                action = ACTION_ANIMATE
-//                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-//            }
-//            val pendingIntent = PendingIntent.getBroadcast(
-//                context,
-//                0,
-//                clickIntent,
-//                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-//            )
-//            views.setOnClickPendingIntent(R.id.loading, pendingIntent)
 
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }
 
     override fun onEnabled(context: Context?) {
-//        val workRequest: PeriodicWorkRequest = PeriodicWorkRequest.Builder(
-//            AttendanceWorker::class.java,
-//            PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS * 2, TimeUnit.MILLISECONDS
-//        ).build()
-//        WorkManager.getInstance(context!!)
-//            .enqueueUniquePeriodicWork(
-//                WORKER_NAME,
-//                ExistingPeriodicWorkPolicy.KEEP,
-//                workRequest
-//            )
+        val workRequest: PeriodicWorkRequest = PeriodicWorkRequest.Builder(
+            SklandWorker::class.java,
+            PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS * 2, TimeUnit.MILLISECONDS
+        ).build()
+        WorkManager.getInstance(context!!)
+            .enqueueUniquePeriodicWork(
+                WORKER_NAME,
+                ExistingPeriodicWorkPolicy.KEEP,
+                workRequest
+            )
         super.onEnabled(context)
     }
 

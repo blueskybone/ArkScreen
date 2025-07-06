@@ -23,7 +23,7 @@ import timber.log.Timber
 class AtdAlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        println("Received intent: $intent")
+        Timber.i("Received intent: $intent")
         if (intent.action == "android.intent.action.BOOT_COMPLETED") { //Intent.ACTION_BOOT_COMPLETED
             val prefManager: PrefManager by getKoin().inject()
             if (!prefManager.backAutoAtd.get()) return
