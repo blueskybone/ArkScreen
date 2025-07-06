@@ -37,7 +37,7 @@ class WidgetThemeActivity : AppCompatActivity() {
 
     private val bgList =
         listOf(
-            R.drawable.widget_bg_white,
+            R.drawable.widget_bg_black,
             R.drawable.widget_bg_white,
             R.drawable.bg_1,
             R.drawable.bg_2,

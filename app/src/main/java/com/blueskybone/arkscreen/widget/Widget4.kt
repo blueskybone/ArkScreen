@@ -89,7 +89,6 @@ class Widget4 : AppWidgetProvider() {
                     setTextViewTextSize(R.id.refresh, spType, subSize)
                 }
 
-                //TODO: 修改数据
                 val recruitCache = prefManager.recruitCache.get()
                 val refreshCache = prefManager.refreshCache.get()
                 //recruit
@@ -274,51 +273,51 @@ class Widget4 : AppWidgetProvider() {
         if (intent.action == ACTION_ANIMATE) {
             val appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
             if (appWidgetId != -1) {
-                playFadeOutAnimation(context, appWidgetId)
+//                playFadeOutAnimation(context, appWidgetId)
             }
         }
     }
 
-    private fun playFadeOutAnimation(context: Context, appWidgetId: Int) {
-
-
-//        val views = RemoteViews(context.packageName, R.layout.widget_attendance).apply {
-//            setImageViewResource(R.id.loading, R.drawable.click_anim)
-//        }
+//    private fun playFadeOutAnimation(context: Context, appWidgetId: Int) {
 //
-//        AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, views)
 //
-//        // 启动动画
-//        views.setImageViewResource(R.id.loading, R.drawable.click_anim)
-//        AppWidgetManager.getInstance(context).partiallyUpdateAppWidget(appWidgetId, views)
-
-
-//        val appWidgetManager = AppWidgetManager.getInstance(context)
+////        val views = RemoteViews(context.packageName, R.layout.widget_attendance).apply {
+////            setImageViewResource(R.id.loading, R.drawable.click_anim)
+////        }
+////
+////        AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, views)
+////
+////        // 启动动画
+////        views.setImageViewResource(R.id.loading, R.drawable.click_anim)
+////        AppWidgetManager.getInstance(context).partiallyUpdateAppWidget(appWidgetId, views)
 //
-//        // 1. 显示视图 (初始alpha=0.8)
-//        val showViews = RemoteViews(context.packageName, R.layout.widget_attendance).apply {
-//            setViewVisibility(R.id.loading, View.VISIBLE)
-//            setFloat(R.id.loading, "setAlpha", 0.8f)
-//        }
-//        appWidgetManager.partiallyUpdateAppWidget(appWidgetId, showViews)
 //
-//        // 2. 渐隐动画 (分5步)
-//        for (i in 1..5) {
-//            Handler(Looper.getMainLooper()).postDelayed({
-//                val animatedViews =
-//                    RemoteViews(context.packageName, R.layout.widget_attendance).apply {
-//                        // 计算当前alpha (从0.8线性递减到0)
-//                        val alpha = 0.8f - (0.8f * i / 5f)
-//                        setFloat(R.id.loading, "setAlpha", alpha)
-//
-//                        // 最后一步隐藏视图
-//                        if (i == 5) {
-//                            setViewVisibility(R.id.loading, View.GONE)
-//                        }
-//                    }
-//                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, animatedViews)
-//            }, (i * 80).toLong()) // 每80毫秒一帧，总共400毫秒动画
-//        }
-    }
+////        val appWidgetManager = AppWidgetManager.getInstance(context)
+////
+////        // 1. 显示视图 (初始alpha=0.8)
+////        val showViews = RemoteViews(context.packageName, R.layout.widget_attendance).apply {
+////            setViewVisibility(R.id.loading, View.VISIBLE)
+////            setFloat(R.id.loading, "setAlpha", 0.8f)
+////        }
+////        appWidgetManager.partiallyUpdateAppWidget(appWidgetId, showViews)
+////
+////        // 2. 渐隐动画 (分5步)
+////        for (i in 1..5) {
+////            Handler(Looper.getMainLooper()).postDelayed({
+////                val animatedViews =
+////                    RemoteViews(context.packageName, R.layout.widget_attendance).apply {
+////                        // 计算当前alpha (从0.8线性递减到0)
+////                        val alpha = 0.8f - (0.8f * i / 5f)
+////                        setFloat(R.id.loading, "setAlpha", alpha)
+////
+////                        // 最后一步隐藏视图
+////                        if (i == 5) {
+////                            setViewVisibility(R.id.loading, View.GONE)
+////                        }
+////                    }
+////                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, animatedViews)
+////            }, (i * 80).toLong()) // 每80毫秒一帧，总共400毫秒动画
+////        }
+//    }
 
 }
