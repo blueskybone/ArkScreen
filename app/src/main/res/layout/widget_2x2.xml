@@ -5,11 +5,12 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/widget_skland_bg"
+        android:id="@+id/widget_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@null"
-        tools:background="@drawable/widget_background" />
+        android:scaleType="centerCrop"
+        tools:background="@drawable/widget_bg_black" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -21,21 +22,21 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="start"
             android:orientation="horizontal"
             tools:ignore="UseCompoundDrawables">
 
-            <RelativeLayout
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp">
 
                 <TextView
-                    android:id="@+id/widget_text_ap"
+                    android:id="@+id/text_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:clickable="true"
+                    android:layout_gravity="start"
                     android:text="- / -"
                     android:textAppearance="?attr/textAppearanceHeadline5"
                     android:textColor="@color/white"
@@ -43,73 +44,66 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/widget_text_ap_rest"
+                    android:id="@+id/rest_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/widget_text_ap"
-                    android:layout_gravity="center"
-                    android:clickable="true"
-                    android:text="3h5m"
+                    android:layout_gravity="start"
+                    android:text="-"
                     android:textAppearance="?attr/textAppearanceHeadline5"
                     android:textColor="@color/white"
                     android:textSize="12sp"
                     android:textStyle="bold" />
-            </RelativeLayout>
+            </LinearLayout>
 
             <ImageView
-                android:id="@+id/ic_bolt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/icon_1"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_gravity="center"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_bolt" />
+                android:contentDescription="@null" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="start"
             android:orientation="horizontal"
             tools:ignore="UseCompoundDrawables">
 
-            <RelativeLayout
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp">
 
                 <TextView
-                    android:id="@+id/widget_text_labor"
+                    android:id="@+id/text_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:clickable="true"
+                    android:layout_gravity="start"
                     android:text="- / -"
                     android:textAppearance="?attr/textAppearanceHeadline5"
                     android:textColor="@color/white"
                     android:textSize="24sp"
                     android:textStyle="bold" />
-
                 <TextView
-                    android:id="@+id/widget_text_labor_rest"
+                    android:id="@+id/rest_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/widget_text_labor"
-                    android:layout_gravity="center"
-                    android:clickable="true"
-                    android:text="3h5m"
+                    android:layout_gravity="start"
+                    android:text="-"
                     android:textAppearance="?attr/textAppearanceHeadline5"
                     android:textColor="@color/white"
                     android:textSize="12sp"
                     android:textStyle="bold" />
-            </RelativeLayout>
+            </LinearLayout>
 
             <ImageView
-                android:id="@+id/ic_drone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/icon_2"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_gravity="center"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_drone" />
+                android:contentDescription="@null" />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

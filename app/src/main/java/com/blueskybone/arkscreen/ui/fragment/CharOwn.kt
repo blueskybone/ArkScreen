@@ -1,8 +1,6 @@
 package com.blueskybone.arkscreen.ui.fragment
 
-import android.content.Intent
 import android.graphics.Rect
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,12 +14,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.common.FlowRadioGroup
-import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.common.getFlowRadioGroup
 import com.blueskybone.arkscreen.common.profImageButton
 import com.blueskybone.arkscreen.common.tagButton
 import com.blueskybone.arkscreen.databinding.DialogCharBinding
-import com.blueskybone.arkscreen.databinding.DialogInputBinding
 import com.blueskybone.arkscreen.databinding.FragmentCharBinding
 import com.blueskybone.arkscreen.playerinfo.bindAvatarView
 import com.blueskybone.arkscreen.playerinfo.bindEquipView
@@ -31,16 +27,13 @@ import com.blueskybone.arkscreen.playerinfo.potentialIconMap
 import com.blueskybone.arkscreen.playerinfo.profIconMap
 import com.blueskybone.arkscreen.playerinfo.rarityColorMap
 import com.blueskybone.arkscreen.preference.PrefManager
-import com.blueskybone.arkscreen.room.Link
 import com.blueskybone.arkscreen.task.recruit.I18nManager
-import com.blueskybone.arkscreen.ui.activity.WebViewActivity
 import com.blueskybone.arkscreen.ui.recyclerview.CharAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
 import com.blueskybone.arkscreen.util.TimeUtils.getTimeStrYMD
 import com.blueskybone.arkscreen.util.openLink
 import com.blueskybone.arkscreen.viewmodel.CharModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.hjq.toast.Toaster
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

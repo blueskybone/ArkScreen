@@ -1,27 +1,26 @@
 package com.blueskybone.arkscreen.widget
 
-import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.util.TypedValue
 import android.widget.RemoteViews
+import androidx.annotation.RequiresApi
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.receiver.WidgetReceiver.Companion.WORKER_NAME
-import com.blueskybone.arkscreen.ui.activity.RealTimeActivity
-import com.blueskybone.arkscreen.ui.bindinginfo.WidgetAppearance
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetContent
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetTextColor
 import com.blueskybone.arkscreen.util.TimeUtils
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
 import org.koin.java.KoinJavaComponent
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 /**
@@ -34,108 +33,61 @@ class Widget2 : AppWidgetProvider() {
 
     private val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray?
     ) {
-        val views = RemoteViews(context.packageName, R.layout.widget_2)
+        val views = RemoteViews(context.packageName, R.layout.widget_1x2)
         //绑定事件
-        val onClickPendingIntent: PendingIntent
-        val onClickIntent = Intent(context, RealTimeActivity::class.java)
-        val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_MUTABLE
-        } else {
-            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
-        }
-        onClickPendingIntent =
-            PendingIntent.getActivity(context, 0, onClickIntent, pendingIntentFlags)
-        views.setOnClickPendingIntent(R.id.layout, onClickPendingIntent)
+//        val onClickPendingIntent: PendingIntent
+//        val onClickIntent = Intent(context, RealTimeActivity::class.java)
+//        val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+//            PendingIntent.FLAG_MUTABLE
+//        } else {
+//            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+//        }
+//        onClickPendingIntent =
+//            PendingIntent.getActivity(context, 0, onClickIntent, pendingIntentFlags)
+//        views.setOnClickPendingIntent(R.id.layout, onClickPendingIntent)
 
-        //layout
-        views.setImageViewResource(R.id.widget_skland_bg, R.drawable.widget_background)
-        views.setInt(R.id.widget_skland_bg, "setAlpha", prefManager.widgetAlpha.get())
+//layout
+        views.setImageViewResource(R.id.widget_bg, prefManager.widgetBg.get())
+        views.setInt(R.id.widget_bg, "setAlpha", prefManager.widgetAlpha.get())
 
-        val backgroundColor: Int
-        val textColor: Int
-        val boltIcon: Int
-        val droneIcon: Int
+        //textColor
+        val textColor = WidgetTextColor.getColorInt(prefManager.widgetTextColor.get())
+        views.setInt(R.id.text, "setTextColor", textColor)
+        views.setInt(R.id.rest, "setTextColor", textColor)
 
-        when (prefManager.widgetAppearance.get()) {
-            WidgetAppearance.whiteOnBlack -> {
-                backgroundColor = Color.BLACK
-                textColor = Color.WHITE
-                boltIcon = R.drawable.ic_bolt
-                droneIcon = R.drawable.ic_drone
-            }
+        val drawable = WidgetContent.getDrawableIcon(prefManager.widget2Content.get())
+        views.setImageViewResource(R.id.icon, drawable)
+        views.setInt(R.id.icon, "setColorFilter", textColor)
 
-            else -> {
-                backgroundColor = Color.WHITE
-                textColor = Color.BLACK
-                boltIcon = R.drawable.ic_bolt_black
-                droneIcon = R.drawable.ic_drone_black
-            }
-        }
-
-        views.setInt(R.id.widget_skland_bg, "setColorFilter", backgroundColor)
-        views.setInt(R.id.widget_text_ap, "setTextColor", textColor)
-        views.setInt(R.id.widget_text_labor, "setTextColor", textColor)
-        views.setInt(R.id.widget_text_ap_rest, "setTextColor", textColor)
-        views.setInt(R.id.widget_text_labor_rest, "setTextColor", textColor)
-
-        views.setImageViewResource(R.id.ic_bolt, boltIcon)
-        views.setImageViewResource(R.id.ic_drone, droneIcon)
-
-        val size = prefManager.widgetContentSize.get()
-
-        fun setTextViewSize(viewId: Int, size: String, isPrimary: Boolean) {
-            val textSize = if (isPrimary) {
-                WidgetSize.getTextSize(size)
-            } else {
-                WidgetSize.getTextSize3(size)
-            }
-            views.setTextViewTextSize(viewId, TypedValue.COMPLEX_UNIT_SP, textSize)
-        }
-        setTextViewSize(R.id.widget_text_ap, size, true)
-        setTextViewSize(R.id.widget_text_labor, size, true)
-        setTextViewSize(R.id.widget_text_ap_rest, size, false)
-        setTextViewSize(R.id.widget_text_labor_rest, size, false)
-
-        val now = getCurrentTs()
-        val apCache = prefManager.apCache.get()
-        val laborCache = prefManager.laborCache.get()
-
-
-        val apMax = apCache.max
-        val current = if (apCache.current >= apMax) {
-            apCache.current
-        } else if (now > apCache.recoverTime) {
-            apMax
-        } else {
-            apMax - (apCache.recoverTime - now).toInt() / (60 * 6) - 1
-        }
-        views.setTextViewText(R.id.widget_text_ap, "$current / $apMax")
-        views.setTextViewText(
-            R.id.widget_text_ap_rest,
-            TimeUtils.getRemainTimeMinStr(apCache.recoverTime - now)
+        //content
+        updateWidgetContent(prefManager.widget2Content.get(), R.id.text, R.id.rest, views)
+        //Size
+        val size = prefManager.widget2Size.get()
+        views.setTextViewTextSize(
+            R.id.text,
+            TypedValue.COMPLEX_UNIT_SP,
+            WidgetSize.getTextSizeMain(size)
         )
-
-        val currentLabor = run {
-            if (laborCache.remainSec == 0L) {
-                laborCache.max
-            } else {
-                val progress = (now - laborCache.lastSyncTs) * (laborCache.max - laborCache.current)
-                val calculated = ((progress / laborCache.remainSec) + laborCache.current).toInt()
-                calculated.coerceAtMost(laborCache.max)
-            }
-        }
-        views.setTextViewText(
-            R.id.widget_text_labor,
-            "$currentLabor / ${laborCache.max}"
+        views.setTextViewTextSize(
+            R.id.rest,
+            TypedValue.COMPLEX_UNIT_SP,
+            WidgetSize.getTextSizeSub(size)
         )
-        views.setTextViewText(
-            R.id.widget_text_labor_rest,
-            TimeUtils.getRemainTimeMinStr(laborCache.remainSec - now + laborCache.lastSyncTs)
+        views.setViewLayoutHeight(
+            R.id.icon,
+            WidgetSize.getImageSize(size).toFloat(),
+            TypedValue.COMPLEX_UNIT_DIP
+        )
+        views.setViewLayoutWidth(
+            R.id.icon,
+            WidgetSize.getImageSize(size).toFloat(),
+            TypedValue.COMPLEX_UNIT_DIP
         )
         appWidgetManager.updateAppWidget(appWidgetIds, views)
     }
@@ -173,6 +125,99 @@ class Widget2 : AppWidgetProvider() {
             )
         ) {
             WorkManager.getInstance(context).cancelUniqueWork(WORKER_NAME)
+        }
+    }
+
+    private fun updateWidgetContent(
+        contentPref: String,
+        textViewId: Int,
+        restViewId: Int,
+        views: RemoteViews
+    ) {
+        when (contentPref) {
+            "ap" -> {
+                fun Long.toMinutes() = this / 60
+
+                val now = getCurrentTs()
+                val apCache = prefManager.apCache.get()
+                val apMax = apCache.max
+
+                val current = when {
+                    apCache.current >= apMax -> apCache.current
+                    now > apCache.recoverTime -> apMax
+                    else -> apMax - (apCache.recoverTime - now).toMinutes() / 6 - 1
+                }
+                views.apply {
+                    setTextViewText(textViewId, "$current / $apMax")
+                    setTextViewText(
+                        restViewId,
+                        TimeUtils.getRemainTimeMinStr(apCache.recoverTime - now)
+                    )
+                }
+            }
+
+            "labor" -> {
+                val now = getCurrentTs()
+                val laborCache = prefManager.laborCache.get()
+                val max = laborCache.max
+                val curr = run {
+                    if (laborCache.remainSec == 0L) {
+                        laborCache.max
+                    } else {
+                        val progress =
+                            (now - laborCache.lastSyncTs) * (laborCache.max - laborCache.current)
+                        val calculated =
+                            ((progress / laborCache.remainSec) + laborCache.current).toInt()
+                        calculated.coerceAtMost(laborCache.max)
+                    }
+                }
+                views.setTextViewText(textViewId, "$curr / $max")
+                views.setTextViewText(
+                    restViewId,
+                    TimeUtils.getRemainTimeMinStr(laborCache.remainSec - now + laborCache.lastSyncTs)
+                )
+            }
+
+            "train" -> {
+                val now = getCurrentTs()
+                val trainCache = prefManager.trainCache.get()
+                if (trainCache.isnull) {
+                    views.setTextViewText(textViewId, "暂无数据")
+                } else {
+                    when (trainCache.status) {
+                        -1L -> {
+                            views.setTextViewText(textViewId, "空闲中")
+                            views.setTextViewText(restViewId, "idle")
+                        }
+
+                        0L -> {
+                            views.setTextViewText(textViewId, trainCache.trainee)
+                            views.setTextViewText(restViewId, "completed")
+                        }
+
+                        1L -> {
+                            views.setTextViewText(textViewId, trainCache.trainee)
+                            if (now > trainCache.completeTime) {
+                                views.setTextViewText(restViewId, "completed")
+                            } else {
+                                views.setTextViewText(
+                                    restViewId,
+                                    TimeUtils.getRemainTimeMinStr(now - trainCache.completeTime)
+                                )
+                            }
+                        }
+
+                        else -> {
+                            views.setTextViewText(textViewId, "status错误")
+                            Timber.e("trainCache.status ${trainCache.status}")
+                        }
+                    }
+                }
+            }
+
+            else -> {
+                Timber.e("Unknown contentPref: $contentPref")
+            }
         }
     }
 }

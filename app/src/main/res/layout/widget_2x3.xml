@@ -1,29 +1,3 @@
-<!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent">-->
-
-<!--    <ImageView-->
-<!--        android:id="@+id/widget_bg"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:contentDescription="@null"-->
-<!--        tools:background="@drawable/widget_background" />-->
-
-<!--    <LinearLayout-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="center"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:padding="8dp">-->
-
-<!--        <ImageView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:src="@drawable/ic_rosm_trans"-->
-<!--            android:contentDescription="@string/text_default" />-->
-<!--    </LinearLayout>-->
-<!--</FrameLayout>-->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout"
@@ -31,12 +5,12 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/widget_skland_bg"
+        android:id="@+id/widget_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@null"
         android:scaleType="centerCrop"
-        tools:background="@drawable/widget_background" />
+        tools:background="@drawable/widget_bg_black" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -56,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:padding="5dp"
-                android:text="公开招募 3/4"
+                android:text="公开招募 -/-"
                 android:textAppearance="?attr/textAppearanceHeadline5"
                 android:textColor="@color/white"
                 android:textSize="12sp"
@@ -68,13 +42,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:padding="5dp"
-                android:text="公招刷新 1/3"
+                android:text="公招刷新 -/-"
                 android:textAppearance="?attr/textAppearanceHeadline5"
                 android:textColor="@color/white"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
             <LinearLayout
+                android:id="@+id/ap_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -93,7 +68,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:clickable="true"
-                        android:text="120"
+                        android:text="-"
                         android:textAppearance="?attr/textAppearanceHeadline5"
                         android:textColor="@color/white"
                         android:textSize="24sp"
@@ -105,7 +80,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
                         android:clickable="true"
-                        android:text="/180"
+                        android:text="/-"
                         android:textAppearance="?attr/textAppearanceHeadline5"
                         android:textColor="@color/white"
                         android:textSize="12sp"
@@ -123,20 +98,20 @@
                         android:layout_width="12dp"
                         android:layout_height="12dp"
                         android:layout_gravity="center"
-                        android:contentDescription="@null"
-                        />
+                        android:contentDescription="@null" />
 
                     <TextView
                         android:id="@+id/ap_resc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1h23m"
+                        android:text="-"
                         android:textColor="@color/white"
                         android:textSize="12sp" />
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/labor_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -155,7 +130,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:clickable="true"
-                        android:text="235"
+                        android:text="-"
                         android:textAppearance="?attr/textAppearanceHeadline5"
                         android:textColor="@color/white"
                         android:textSize="24sp"
@@ -167,7 +142,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
                         android:clickable="true"
-                        android:text="/235"
+                        android:text="/-"
                         android:textAppearance="?attr/textAppearanceHeadline5"
                         android:textColor="@color/white"
                         android:textSize="12sp"
@@ -191,14 +166,15 @@
                         android:id="@+id/labor_resc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="restored"
+                        android:text="-"
                         android:textColor="@color/white"
                         android:textSize="12sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/train_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_columnSpan="2"
@@ -231,7 +207,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
                         android:clickable="true"
-                        android:text="空闲中"
+                        android:text="-"
                         android:textAppearance="?attr/textAppearanceHeadline5"
                         android:textColor="@color/white"
                         android:textSize="24sp"
@@ -255,10 +231,10 @@
                         android:id="@+id/train_resc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="3h27m"
+                        android:text="-"
                         android:textColor="@color/white"
                         android:textSize="12sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 

@@ -1,4 +1,4 @@
-package com.blueskybone.arkscreen.playerinfo
+package com.blueskybone.arkscreen.playerinfo.cache
 
 /**
  *   Created by blueskybone

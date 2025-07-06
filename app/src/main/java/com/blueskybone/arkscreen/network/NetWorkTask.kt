@@ -11,7 +11,6 @@ import com.blueskybone.arkscreen.network.model.PlayerInfoResp
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Gacha
-import okhttp3.ResponseBody
 import retrofit2.Response
 
 /**
@@ -37,19 +36,9 @@ class NetWorkTask {
         }
 
         @Throws(Exception::class)
-        suspend fun getGameInfoConnectionTask(accountSk: AccountSk): Response<ResponseBody> {
+        suspend fun getGameInfoConnectionTask(accountSk: AccountSk): Response<PlayerInfoResp> {
             val credAndToken = getCredCode(accountSk)
             return RetrofitUtils.getGameInfoConnection(
-                credAndToken,
-                accountSk.uid
-            )
-        }
-
-
-        @Throws(Exception::class)
-        suspend fun getGameInfoConnectionTaskTest(accountSk: AccountSk): Response<PlayerInfoResp> {
-            val credAndToken = getCredCode(accountSk)
-            return RetrofitUtils.getGameInfoConnectionTest(
                 credAndToken,
                 accountSk.uid
             )

@@ -2,7 +2,6 @@ package com.blueskybone.arkscreen.common
 
 import android.content.Context
 import android.graphics.Color
-import android.view.ContentInfo
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -14,7 +13,6 @@ import android.widget.RadioButton
 import android.widget.Space
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginBottom
-import androidx.core.view.setPadding
 import androidx.core.view.updateMargins
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.util.dpToPx

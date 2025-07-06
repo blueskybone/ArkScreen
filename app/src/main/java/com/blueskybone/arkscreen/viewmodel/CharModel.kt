@@ -9,7 +9,7 @@ import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.CharAllMap
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.Progress
-import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTaskTest
+import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTask
 import com.blueskybone.arkscreen.playerinfo.Operator
 import com.blueskybone.arkscreen.playerinfo.compareOperators
 import com.blueskybone.arkscreen.playerinfo.getOperatorData
@@ -38,15 +38,6 @@ class CharModel : ViewModel() {
 
     private val _uiState = MutableLiveData<DataUiState>()
     val uiState: LiveData<DataUiState> get() = _uiState
-
-//    private val _filterProf = MutableLiveData<String>()
-//    val filterProf: LiveData<String> get() = _filterProf
-//
-//    private val _filterRarity = MutableLiveData<String>()
-//    val filterRarity: LiveData<String> get() = _filterRarity
-//
-//    private val _filterLevel = MutableLiveData<String>()
-//    val filterLevel: LiveData<String> get() = _filterLevel
 
     private val _charsList = MutableLiveData<List<Operator>>()
     val charsList: LiveData<List<Operator>> get() = _charsList
@@ -210,7 +201,7 @@ class CharModel : ViewModel() {
 
 
     private suspend fun getCharsData(account: AccountSk): List<Operator> {
-        val response = getGameInfoConnectionTaskTest(account)
+        val response = getGameInfoConnectionTask(account)
         if (!response.isSuccessful) throw Exception("!response.isSuccessful")
         response.body() ?: throw Exception("response empty")
         return getOperatorData(response.body()!!)

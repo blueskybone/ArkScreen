@@ -29,18 +29,6 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
 
-        <receiver
-            android:name=".widget.Widget3"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_3_info" />
-        </receiver>
-
 
         <receiver
             android:name=".widget.Widget1"
@@ -68,7 +56,19 @@
 
 
         <receiver
-            android:name=".widget.AttendanceWidget"
+            android:name=".widget.Widget3"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_3_info" />
+        </receiver>
+
+        <receiver
+            android:name=".widget.Widget4"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -76,7 +76,7 @@
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/widget_attendance_info" />
+                android:resource="@xml/widget_4_info" />
         </receiver>
 
         <receiver

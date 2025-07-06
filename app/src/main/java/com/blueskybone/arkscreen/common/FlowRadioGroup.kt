@@ -5,8 +5,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import com.blueskybone.arkscreen.R
 
 @SuppressLint("CustomViewStyleable")

@@ -1,8 +1,11 @@
 package com.blueskybone.arkscreen.preference
 
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.playerinfo.ApCache
-import com.blueskybone.arkscreen.playerinfo.LaborCache
+import com.blueskybone.arkscreen.playerinfo.cache.ApCache
+import com.blueskybone.arkscreen.playerinfo.cache.LaborCache
+import com.blueskybone.arkscreen.playerinfo.cache.RecruitCache
+import com.blueskybone.arkscreen.playerinfo.cache.RefreshCache
+import com.blueskybone.arkscreen.playerinfo.cache.TrainCache
 import com.blueskybone.arkscreen.preference.preference.Preference
 import com.blueskybone.arkscreen.preference.preference.PreferenceStore
 import com.blueskybone.arkscreen.room.AccountGc
@@ -12,7 +15,6 @@ import com.blueskybone.arkscreen.ui.bindinginfo.FloatWindowAppearance
 import com.blueskybone.arkscreen.ui.bindinginfo.RecruitMode
 import com.blueskybone.arkscreen.ui.bindinginfo.ScreenshotDelay
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetAlpha
-import com.blueskybone.arkscreen.ui.bindinginfo.WidgetAppearance
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetContent
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetTextColor
@@ -59,6 +61,19 @@ class PrefManager() {
             "labor_cache",
             LaborCache.default(), serializerLabor(), deserializerLabor()
         )
+        trainCache = preferenceStore.getObject(
+            "train_cache",
+            TrainCache.default(), serializerTrain(), deserializerTrain()
+        )
+        recruitCache = preferenceStore.getObject(
+            "recruit_cache",
+            RecruitCache.default(), serializerRecruit(), deserializerRecruit()
+        )
+        refreshCache = preferenceStore.getObject(
+            "refresh_cache",
+            RefreshCache.default(), serializerRefresh(), deserializerRefresh()
+        )
+
         insertLink = preferenceStore.getBoolean("insert_link", false)
         backAutoAtd = preferenceStore.getBoolean("back_auto_attendance", false)
         alarmAtdHour = preferenceStore.getInt("alarm_attendance_hour", 0)
@@ -66,17 +81,14 @@ class PrefManager() {
         useInnerWeb = preferenceStore.getBoolean("use_inner_web", true)
         appTheme = preferenceStore.getString("app_theme", AppTheme.defaultValue)
 
-        widgetAppearance =
-            preferenceStore.getString(WidgetAppearance.key, WidgetAppearance.defaultValue)
         widgetAlpha = preferenceStore.getInt(WidgetAlpha.key, WidgetAlpha.defaultValue)
-        widgetContentSize = preferenceStore.getString(WidgetSize.key, WidgetSize.defaultValue)
         widgetUpdateFreq = preferenceStore.getString(
             WidgetUpdateFreq.key,
             WidgetUpdateFreq.defaultValue
         )  //更新频率：15min 30min 1h
         widgetTextColor =
             preferenceStore.getString(WidgetTextColor.key, WidgetTextColor.defaultValue)
-        widgetBg = preferenceStore.getInt("widget_bg", R.drawable.widget_background)
+        widgetBg = preferenceStore.getInt("widget_bg", R.drawable.widget_bg_black)
 // Widget 1 初始化
         widget1Size = preferenceStore.getString(WidgetSize.key + "_1", WidgetSize.defaultValue)
         widget1Content = preferenceStore.getString(
@@ -134,6 +146,9 @@ class PrefManager() {
     lateinit var baseAccountGc: Preference<AccountGc>
     lateinit var apCache: Preference<ApCache>
     lateinit var laborCache: Preference<LaborCache>
+    lateinit var trainCache: Preference<TrainCache>
+    lateinit var recruitCache: Preference<RecruitCache>
+    lateinit var refreshCache: Preference<RefreshCache>
     lateinit var backAutoAtd: Preference<Boolean>
     lateinit var alarmAtdHour: Preference<Int>
     lateinit var alarmAtdMin: Preference<Int>
@@ -148,17 +163,16 @@ class PrefManager() {
     * 目前有4个widget
     *
     * */
-    lateinit var widgetAppearance: Preference<String>
+//    lateinit var widgetAppearance: Preference<String>
     lateinit var widgetAlpha: Preference<Int>
-    lateinit var widgetContentSize: Preference<String>
+
+    //    lateinit var widgetContentSize: Preference<String>
     lateinit var widgetUpdateFreq: Preference<String>  //更新频率：15min 30min 1h
 
     //统一配置：文字颜色，背景不透明度，背景图片，
     //单独配置：文字大小，显示内容。
     lateinit var widgetTextColor: Preference<String>
     lateinit var widgetBg: Preference<Int>
-
-
     lateinit var widget1Size: Preference<String>
     lateinit var widget1Content: Preference<String>   //3选一
 
@@ -267,6 +281,86 @@ class PrefManager() {
             }
         }
     }
+
+
+    private fun serializerTrain(): (TrainCache) -> String {
+        return { cache ->
+            "${cache.lastSyncTs}@${cache.trainee}@${cache.status}@${cache.completeTime}@${cache.isnull}"
+        }
+    }
+
+    private fun deserializerTrain(): Function<String, TrainCache> {
+        return Function { string: String ->
+            try {
+                val list =
+                    string.split("@".toRegex()).dropLastWhile { it.isEmpty() }
+                        .toTypedArray()
+                return@Function TrainCache(
+                    list[0].toLong(),
+                    list[1],
+                    list[2].toLong(),
+                    list[3].toLong(),
+                    list[4].toBoolean()
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@Function TrainCache.default()
+            }
+        }
+    }
+
+    private fun serializerRecruit(): (RecruitCache) -> String {
+        return { cache ->
+            "${cache.lastSyncTs}@${cache.max}@${cache.complete}@${cache.completeTime}@${cache.isNull}"
+        }
+    }
+
+    private fun deserializerRecruit(): Function<String, RecruitCache> {
+        return Function { string: String ->
+            try {
+                val list =
+                    string.split("@".toRegex()).dropLastWhile { it.isEmpty() }
+                        .toTypedArray()
+                return@Function RecruitCache(
+                    list[0].toLong(),
+                    list[1].toInt(),
+                    list[2].toInt(),
+                    list[3].toLong(),
+                    list[4].toBoolean()
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@Function RecruitCache.default()
+            }
+        }
+    }
+
+    private fun serializerRefresh(): (RefreshCache) -> String {
+        return { cache ->
+            "${cache.lastSyncTs}@${cache.max}@${cache.count}@${cache.completeTime}@${cache.isNull}"
+        }
+    }
+
+    private fun deserializerRefresh(): Function<String, RefreshCache> {
+        return Function { string: String ->
+            try {
+                val list =
+                    string.split("@".toRegex()).dropLastWhile { it.isEmpty() }
+                        .toTypedArray()
+                return@Function RefreshCache(
+                    list[0].toLong(),
+                    list[1].toInt(),
+                    list[2].toInt(),
+                    list[3].toLong(),
+                    list[4].toBoolean()
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@Function RefreshCache.default()
+            }
+        }
+    }
+
 
     private fun serializerGc(): Function<AccountGc, String> {
         return Function<AccountGc, String> { account: AccountGc ->

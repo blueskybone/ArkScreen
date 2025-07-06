@@ -2,11 +2,9 @@ package com.blueskybone.arkscreen.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.provider.MediaStore.Audio.Radio
 import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageButton
-import android.widget.RadioButton
 import androidx.appcompat.app.AppCompatActivity
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.R
@@ -14,7 +12,6 @@ import com.blueskybone.arkscreen.common.CustomRadioGroup
 import com.blueskybone.arkscreen.common.CustomRadioGroup.OnCheckedChangeListener
 import com.blueskybone.arkscreen.common.bgImageButton
 import com.blueskybone.arkscreen.common.getCustomRadioGroup
-import com.blueskybone.arkscreen.common.getFlowRadioGroup
 import com.blueskybone.arkscreen.common.getRadioButton
 import com.blueskybone.arkscreen.databinding.ActivityWidgetSettingBinding
 import com.blueskybone.arkscreen.databinding.PreferenceBinding
@@ -30,7 +27,6 @@ import com.blueskybone.arkscreen.ui.bindinginfo.WidgetContent
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetTextColor
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.hjq.toast.Toaster
 import org.koin.android.ext.android.getKoin
 
 class WidgetThemeActivity : AppCompatActivity() {
@@ -41,16 +37,15 @@ class WidgetThemeActivity : AppCompatActivity() {
 
     private val bgList =
         listOf(
-            R.drawable.widget_background,
             R.drawable.widget_bg_white,
-            R.drawable.activity,
-            R.drawable.act_2,
-            R.drawable.act_6,
-            R.drawable.act_7,
-//            R.drawable.act_12,
-            R.drawable.act_9,
-            R.drawable.act_11,
-//            R.drawable.act_prts,
+            R.drawable.widget_bg_white,
+            R.drawable.bg_1,
+            R.drawable.bg_2,
+            R.drawable.bg_3,
+            R.drawable.bg_4,
+            R.drawable.bg_5,
+            R.drawable.bg_6,
+            R.drawable.bg_7,
         )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,7 +118,7 @@ class WidgetThemeActivity : AppCompatActivity() {
             override fun onCheckedChanged(group: CustomRadioGroup, checkedId: Int) {
                 val selectedButton = group.findViewById<ImageButton>(checkedId)
                 if (selectedButton != null) {
-                    val bg = selectedButton.tag as? Int ?: R.drawable.widget_background
+                    val bg = selectedButton.tag as? Int ?: R.drawable.widget_bg_black
                     prefManager.widgetBg.set(bg)
                 }
             }

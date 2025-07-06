@@ -22,7 +22,6 @@
             android:layout_gravity="start"
             android:contentDescription="@string/text_default"
             android:padding="5dp"
-
             android:src="@drawable/ic_filter" />
 
 

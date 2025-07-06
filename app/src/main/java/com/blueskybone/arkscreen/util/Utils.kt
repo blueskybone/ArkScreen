@@ -23,7 +23,6 @@ import com.blueskybone.arkscreen.ui.activity.WebViewActivity
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.hjq.toast.Toaster
-import org.koin.mp.KoinPlatform.getKoin
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream

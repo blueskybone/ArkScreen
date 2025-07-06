@@ -17,7 +17,6 @@ import com.blueskybone.arkscreen.playerinfo.potentialIconMap
 import com.blueskybone.arkscreen.playerinfo.profIconMap
 import com.blueskybone.arkscreen.playerinfo.rarityColorMap
 import com.blueskybone.arkscreen.ui.recyclerview.paging.PagingAdapter
-import java.net.URLEncoder
 
 
 /**

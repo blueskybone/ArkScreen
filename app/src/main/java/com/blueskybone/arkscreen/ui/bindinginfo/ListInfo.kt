@@ -4,11 +4,6 @@ import android.content.Context
 import android.graphics.Color
 import androidx.core.content.ContextCompat.getString
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.ui.bindinginfo.WidgetContent.ap
-import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize.large
-import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize.medium
-import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize.small
-import kotlin.math.min
 
 /**
  *   Created by blueskybone
@@ -105,14 +100,14 @@ data object RecruitMode : ListInfo {
 
 
 data object WidgetSize : ListInfo {
-    private const val small = "small"
-    private const val medium = "medium"
-    private const val large = "large"
+    private const val SMALL = "small"
+    private const val MEDIUM = "medium"
+    private const val LARGE = "large"
     override val title: Int = R.string.widget_size
     override val key: String = "widget_size"
-    override val defaultValue: String = medium
+    override val defaultValue: String = MEDIUM
 
-    override fun getEntryValues() = arrayOf(small, medium, large)
+    override fun getEntryValues() = arrayOf(SMALL, MEDIUM, LARGE)
 
     override fun getEntries(context: Context): Array<String> {
         val small = getString(context, R.string.small)
@@ -121,51 +116,42 @@ data object WidgetSize : ListInfo {
         return arrayOf(small, medium, large)
     }
 
-    fun getTextSize(size: String): Float {
+    //remember spToPx
+    fun getTextSizeMain(size: String): Float {
         return when (size) {
-            small -> 20f
-            medium -> 24f
-            large -> 32f
+            SMALL -> 20f
+            MEDIUM -> 24f
+            LARGE -> 28f
             else -> throw IllegalArgumentException("Invalid : $size")
         }
     }
 
-    fun getTextSize1(size: String): Float {
+    fun getTextSizeSub(size: String): Float {
         return when (size) {
-            small -> 24f
-            medium -> 30f
-            large -> 36f
+            SMALL -> 10f
+            MEDIUM -> 12f
+            LARGE -> 14f
+            else -> throw IllegalArgumentException("Invalid : $size")
+        }
+    }
+    //remember dpToPx
+    fun getImageSize(size: String): Int {
+        return when (size) {
+            SMALL -> 20
+            MEDIUM -> 24
+            LARGE -> 28
             else -> throw IllegalArgumentException("Invalid : $size")
         }
     }
 
-    fun getTextSize2(size: String): Float {
+    fun getIconSize(size: String): Int {
         return when (size) {
-            small -> 16f
-            medium -> 24f
-            large -> 30f
+            SMALL -> 10
+            MEDIUM -> 12
+            LARGE -> 14
             else -> throw IllegalArgumentException("Invalid : $size")
         }
     }
-
-    fun getTextSize3(size: String): Float {
-        return when (size) {
-            small -> 12f
-            medium -> 16f
-            large -> 20f
-            else -> throw IllegalArgumentException("Invalid : $size")
-        }
-    }
-
-
-//    fun getImageSize(size: String):Int {
-//        return when (size) {
-//            small -> 30
-//            medium -> 35
-//            large -> 42
-//            else -> throw IllegalArgumentException("Invalid : $size")
-//        }
-//    }
 }
 
 data object WidgetTextColor : ListInfo {
@@ -191,14 +177,14 @@ data object WidgetTextColor : ListInfo {
 }
 
 data object WidgetContent : ListInfo {
-    private const val ap = "ap"
-    private const val labor = "labor"
-    private const val train = "train"
+    private const val AP = "ap"
+    private const val LABOR = "labor"
+    private const val TRAIN = "train"
     override val title: Int = R.string.widget_content
     override val key: String = "widget_content"
-    override val defaultValue: String = ap
-    const val defaultValue2: String = labor
-    override fun getEntryValues() = arrayOf(ap, labor, train)
+    override val defaultValue: String = AP
+    const val defaultValue2: String = LABOR
+    override fun getEntryValues() = arrayOf(AP, LABOR, TRAIN)
 
     override fun getEntries(context: Context): Array<String> {
         val ap = getString(context, R.string.ap)
@@ -206,29 +192,38 @@ data object WidgetContent : ListInfo {
         val train = getString(context, R.string.train)
         return arrayOf(ap, labor, train)
     }
+
+    fun getDrawableIcon(icon: String): Int {
+        return when (icon) {
+            AP -> R.drawable.ic_bolt
+            LABOR -> R.drawable.ic_drone
+            TRAIN -> R.drawable.ic_train
+            else -> throw IllegalArgumentException("Invalid : $icon")
+        }
+    }
 }
 
 data object WidgetUpdateFreq : ListInfo {
-    private const val min_15 = "min_15"
-    private const val min_30 = "min_30"
-    private const val hour_1 = "hour_1"
+    private const val MIN_15 = "min_15"
+    private const val MIN_30 = "min_30"
+    private const val HOUR_1 = "hour_1"
     override val title: Int = R.string.widget_update_freq
     override val key: String = "widget_update_freq"
-    override val defaultValue: String = min_15
-    override fun getEntryValues() = arrayOf(min_15, min_30, hour_1)
+    override val defaultValue: String = MIN_15
+    override fun getEntryValues() = arrayOf(MIN_15, MIN_30, HOUR_1)
 
     override fun getEntries(context: Context): Array<String> {
-        val min_15 = getString(context, R.string.min_15)
-        val min_30 = getString(context, R.string.min_30)
-        val hour_1 = getString(context, R.string.hour_1)
-        return arrayOf(min_15, min_30, hour_1)
+        val min15 = getString(context, R.string.min_15)
+        val min30 = getString(context, R.string.min_30)
+        val hour1 = getString(context, R.string.hour_1)
+        return arrayOf(min15, min30, hour1)
     }
 
     fun getValue(str: String): Int {
         return when (str) {
-            min_15 -> 900
-            min_30 -> 1800
-            hour_1 -> 3600
+            MIN_15 -> 900
+            MIN_30 -> 1800
+            HOUR_1 -> 3600
             else -> 1800
         }
     }

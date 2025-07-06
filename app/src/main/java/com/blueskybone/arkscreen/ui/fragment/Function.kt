@@ -28,7 +28,6 @@ import com.blueskybone.arkscreen.databinding.PreferenceSeekbarBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSwitchBinding
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.preference.preference.Preference
-import com.blueskybone.arkscreen.receiver.WidgetReceiver
 import com.blueskybone.arkscreen.room.Account
 import com.blueskybone.arkscreen.ui.activity.LoginWeb
 import com.blueskybone.arkscreen.ui.activity.MainActivity
@@ -46,10 +45,6 @@ import com.blueskybone.arkscreen.ui.bindinginfo.SeekBarInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.SetAtdTime
 import com.blueskybone.arkscreen.ui.bindinginfo.TextInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.TurnOffBatteryOptimization
-import com.blueskybone.arkscreen.ui.bindinginfo.WidgetAlpha
-import com.blueskybone.arkscreen.ui.bindinginfo.WidgetAppearance
-import com.blueskybone.arkscreen.ui.bindinginfo.WidgetRefresh
-import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq
 import com.blueskybone.arkscreen.ui.recyclerview.AccountAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.ItemListener

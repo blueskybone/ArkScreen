@@ -12,7 +12,7 @@ import com.blueskybone.arkscreen.network.NetWorkTask.Companion.createAccountList
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.createGachaAccount
 import com.blueskybone.arkscreen.network.announceUrl
 import com.blueskybone.arkscreen.network.getVideoList
-import com.blueskybone.arkscreen.playerinfo.ApCache
+import com.blueskybone.arkscreen.playerinfo.cache.ApCache
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk

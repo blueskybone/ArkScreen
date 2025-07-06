@@ -7,17 +7,14 @@ import android.content.Intent
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.blueskybone.arkscreen.APP
-import com.blueskybone.arkscreen.network.NetWorkTask
-import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTaskTest
-import com.blueskybone.arkscreen.playerinfo.ApCache
-import com.blueskybone.arkscreen.playerinfo.LaborCache
+import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTask
 import com.blueskybone.arkscreen.playerinfo.RealTimeData
 import com.blueskybone.arkscreen.playerinfo.geneRealTimeData
+import com.blueskybone.arkscreen.playerinfo.setCaches
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountSk
-import com.blueskybone.arkscreen.room.ArkDatabase
-import com.blueskybone.arkscreen.util.TimeUtils
 import org.koin.java.KoinJavaComponent.getKoin
+import timber.log.Timber
 
 /**
  *   Created by blueskybone
@@ -31,79 +28,34 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
     private val prefManager: PrefManager by getKoin().inject()
     override suspend fun doWork(): Result {
         //签到
-        try {
-            if (prefManager.autoAttendance.get()) {
-                val lastAttendanceTs = prefManager.lastAttendanceTs.get()
-                val currentTs = TimeUtils.getCurrentTs()
-                if (TimeUtils.getDayNum(currentTs) > TimeUtils.getDayNum(lastAttendanceTs)) {
-                    val database = ArkDatabase.getDatabase(APP)
-                    val accountSkDao = database.getAccountSkDao()
-                    val accountList = accountSkDao.getAll()
-                    for (account in accountList) {
-                        NetWorkTask.sklandAttendance(account)
-                    }
-                    prefManager.lastAttendanceTs.set(currentTs)
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+//        try {
+//            if (prefManager.autoAttendance.get()) {
+//                val lastAttendanceTs = prefManager.lastAttendanceTs.get()
+//                val currentTs = TimeUtils.getCurrentTs()
+//                if (TimeUtils.getDayNum(currentTs) > TimeUtils.getDayNum(lastAttendanceTs)) {
+//                    val database = ArkDatabase.getDatabase(APP)
+//                    val accountSkDao = database.getAccountSkDao()
+//                    val accountList = accountSkDao.getAll()
+//                    for (account in accountList) {
+//                        NetWorkTask.sklandAttendance(account)
+//                    }
+//                    prefManager.lastAttendanceTs.set(currentTs)
+//                }
+//            }
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
 
         val account = prefManager.baseAccountSk.get()
         if (account.uid == "") {
             return Result.success()
         }
-        if (prefManager.powerSavingMode.get()) {
-            val now = TimeUtils.getCurrentTs()
-            //ap
-            // TODO: 删掉这部分。而且写错了
-//            val apCache = prefManager.apCache.get()
-//            val passTimeAp = now - apCache.lastUpdateTs
-//            if (apCache.current >= apCache.max || apCache.remainSec < passTimeAp) {
-//                apCache.remainSec = 0L
-//            } else {
-//                apCache.current += passTimeAp.toInt() / (60 * 6)
-//                apCache.remainSec -= passTimeAp
-//            }
-//            apCache.lastUpdateTs = now
-//            prefManager.apCache.set(apCache)
-
-            //labor TODO: labor的代码也是错的。你紫菜吧
-            val laborCache = prefManager.laborCache.get()
-            val passTimeLabor = now - laborCache.lastSyncTs
-            if (laborCache.current >= laborCache.max || laborCache.remainSec < passTimeLabor) {
-                laborCache.remainSec = 0L
-            } else {
-                laborCache.current =
-                    (passTimeLabor * (laborCache.max - laborCache.current)
-                            / laborCache.remainSec + laborCache.current).toInt()
-                laborCache.remainSec -= passTimeLabor
-            }
-            laborCache.lastSyncTs = now
-            prefManager.laborCache.set(laborCache)
-
-        } else {
+        if (!prefManager.powerSavingMode.get()) {
             try {
-                val playerData = getPlayerData(account)
-                val apCache = ApCache(
-                    playerData.currentTs,
-                    playerData.apInfo.remainSecs,
-                    playerData.apInfo.recoverTime,
-                    playerData.apInfo.max,
-                    playerData.apInfo.current,
-                    false
-                )
-                val laborCache = LaborCache(
-                    playerData.currentTs,
-                    playerData.labor.remainSecs,
-                    playerData.labor.max,
-                    playerData.labor.current,
-                    false
-                )
-                prefManager.apCache.set(apCache)
-                prefManager.laborCache.set(laborCache)
+                val realTimeData = getPlayerData(account)
+                setCaches(prefManager, realTimeData)
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.e(e.message)
                 return Result.failure()
             }
         }
@@ -139,9 +91,9 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
         }
 
         val widget4Ids =
-            appWidgetManager.getAppWidgetIds(ComponentName(applicationContext, AttendanceWidget::class.java))
+            appWidgetManager.getAppWidgetIds(ComponentName(applicationContext, Widget4::class.java))
         widget4Ids.forEach { id ->
-            val intent = Intent(applicationContext, AttendanceWidget::class.java)
+            val intent = Intent(applicationContext, Widget4::class.java)
             intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, intArrayOf(id))
             applicationContext.sendBroadcast(intent)
@@ -150,7 +102,7 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
     }
 
     private suspend fun getPlayerData(account: AccountSk): RealTimeData {
-        val response = getGameInfoConnectionTaskTest(account)
+        val response = getGameInfoConnectionTask(account)
         if (!response.isSuccessful) throw Exception("!response.isSuccessful")
         response.body() ?: throw Exception("response empty")
         return geneRealTimeData(response.body()!!)

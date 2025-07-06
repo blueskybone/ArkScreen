@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import coil.load
-import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.IconEquipBinding
 import com.blueskybone.arkscreen.databinding.IconSkillBinding

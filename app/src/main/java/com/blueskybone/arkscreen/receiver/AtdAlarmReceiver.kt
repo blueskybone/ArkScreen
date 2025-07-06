@@ -1,13 +1,9 @@
 package com.blueskybone.arkscreen.receiver
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.core.app.NotificationCompat
 import com.blueskybone.arkscreen.APP
-import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.network.NetWorkTask
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.ArkDatabase

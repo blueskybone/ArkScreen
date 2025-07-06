@@ -5,8 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import androidx.core.view.setPadding
-import com.blueskybone.arkscreen.util.dpToPx
 import com.google.android.material.R
 
 class CustomRadioGroup @JvmOverloads constructor(

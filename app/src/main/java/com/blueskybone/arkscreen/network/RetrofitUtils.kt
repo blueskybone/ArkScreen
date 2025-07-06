@@ -13,7 +13,6 @@ import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
 import com.blueskybone.arkscreen.util.getJsonContent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.ResponseBody
 import retrofit2.Response
 import timber.log.Timber
 import java.net.URLEncoder
@@ -162,25 +161,7 @@ class RetrofitUtils {
             }
         }
 
-
         suspend fun getGameInfoConnection(
-            credAndToken: CredAndToken,
-            uid: String
-        ): Response<ResponseBody> {
-            val timeStamp = getCurrentTs().toString()
-            val sign = generateSign(
-                "/api/v1/game/player/info",
-                "uid=$uid",
-                credAndToken.token,
-                timeStamp
-            )
-            val headers = createSignHeaders(credAndToken.cred, sign, timeStamp)
-            return RetrofitClient.apiService.getPlayerInfo(
-                uid, headers
-            )
-        }
-
-        suspend fun getGameInfoConnectionTest(
             credAndToken: CredAndToken,
             uid: String
         ): Response<PlayerInfoResp> {
@@ -196,7 +177,6 @@ class RetrofitUtils {
                 uid, headers
             )
         }
-
 
         suspend fun getBasicInfo(channelMasterId: Int, token: String): AccountGc? {
             val requestBody: BasicInfoRequest = if (channelMasterId == 1) {

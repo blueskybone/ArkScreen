@@ -14,6 +14,12 @@ import com.blueskybone.arkscreen.network.model.PlayerInfoResp
 import com.blueskybone.arkscreen.network.model.Recruit
 import com.blueskybone.arkscreen.network.model.Tradings
 import com.blueskybone.arkscreen.network.model.Training
+import com.blueskybone.arkscreen.playerinfo.cache.ApCache
+import com.blueskybone.arkscreen.playerinfo.cache.LaborCache
+import com.blueskybone.arkscreen.playerinfo.cache.RecruitCache
+import com.blueskybone.arkscreen.playerinfo.cache.RefreshCache
+import com.blueskybone.arkscreen.playerinfo.cache.TrainCache
+import com.blueskybone.arkscreen.preference.PrefManager
 
 
 fun geneRealTimeData(playerInfoResp: PlayerInfoResp): RealTimeData {
@@ -160,16 +166,19 @@ private fun calculateTrainInfo(
 
             when (remainSecs) {
                 0L -> { // 专精完成
+                    status = 0L
                     totalPoint = 1L
                     this.remainPoint = 0L
                 }
 
                 -1L -> { // 空闲中
+                    status = -1L
                     totalPoint = 1L
                     this.remainPoint = 1L
                 }
 
                 else -> {
+                    status = 1L
                     train.speed?.let { speed ->
                         this.remainPoint = (remainSecs.toDouble() * speed).toLong()
                         val totalPointCalc =
@@ -235,13 +244,13 @@ private fun calculateHireInfo(hireNode: Hire, currentTs: Long): RealTimeData.Hir
         val remainSecs = hireNode.completeWorkTime - currentTs
 
         if (remainSecs < 0) {
-            completeTime = -1L
+            this.completeTime = -1L
             this.remainSecs = -1L
-            count = (hireNode.refreshCount + 1).coerceAtMost(3)
+            this.count = (hireNode.refreshCount + 1).coerceAtMost(3)
         } else {
-            completeTime = hireNode.completeWorkTime
+            this.completeTime = hireNode.completeWorkTime
             this.remainSecs = remainSecs
-            count = hireNode.refreshCount
+            this.count = hireNode.refreshCount
         }
     }
 }
@@ -462,5 +471,50 @@ private fun getTotalPoint(computePoint: Long): Long {
         computePoint > 28800L -> 43200L
         else -> 28800L
     }
+}
+
+fun setCaches(prefManager: PrefManager, realTimeData: RealTimeData) {
+    val apCache = ApCache(
+        realTimeData.currentTs,
+        realTimeData.apInfo.remainSecs,
+        realTimeData.apInfo.recoverTime,
+        realTimeData.apInfo.max,
+        realTimeData.apInfo.current,
+        false
+    )
+    val laborCache = LaborCache(
+        realTimeData.currentTs,
+        realTimeData.labor.remainSecs,
+        realTimeData.labor.max,
+        realTimeData.labor.current,
+        false
+    )
+    val trainCache = TrainCache(
+        realTimeData.currentTs,
+        realTimeData.train.trainee,
+        realTimeData.train.status,
+        realTimeData.train.completeTime,
+        realTimeData.train.isNull
+    )
+    val recruitCache = RecruitCache(
+        realTimeData.currentTs,
+        realTimeData.recruits.max,
+        realTimeData.recruits.complete,
+        realTimeData.recruits.completeTime,
+        realTimeData.recruits.isNull
+    )
+    val refreshCache = RefreshCache(
+        realTimeData.currentTs,
+        realTimeData.hire.max,
+        realTimeData.hire.count,
+        realTimeData.hire.completeTime,
+        realTimeData.hire.isNull,
+    )
+
+    prefManager.apCache.set(apCache)
+    prefManager.laborCache.set(laborCache)
+    prefManager.trainCache.set(trainCache)
+    prefManager.recruitCache.set(recruitCache)
+    prefManager.refreshCache.set(refreshCache)
 }
 

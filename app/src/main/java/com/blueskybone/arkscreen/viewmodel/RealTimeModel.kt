@@ -5,13 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.DataUiState
-import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTaskTest
+import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTask
 import com.blueskybone.arkscreen.network.avatarUrl
-import com.blueskybone.arkscreen.playerinfo.ApCache
-import com.blueskybone.arkscreen.playerinfo.LaborCache
 import com.blueskybone.arkscreen.playerinfo.RealTimeData
 import com.blueskybone.arkscreen.playerinfo.RealTimeUi
 import com.blueskybone.arkscreen.playerinfo.geneRealTimeData
+import com.blueskybone.arkscreen.playerinfo.setCaches
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
@@ -50,33 +49,13 @@ class RealTimeModel : ViewModel() {
 
     private suspend fun loadRealTimeData() {
         val accountSk = prefManager.baseAccountSk.get()
-        //not a good practice. for null/empty situation, use a simple flag,
-        //add 'isnull' to AccountSk
         if (accountSk.uid == "") {
             _uiState.postValue(DataUiState.Error("未登录"))
             return
         }
         try {
             val realTimeData = getRealTimeData(accountSk) ?: return
-            //store ap to cache
-            val apCache = ApCache(
-                realTimeData.currentTs,
-                realTimeData.apInfo.remainSecs,
-                realTimeData.apInfo.recoverTime,
-                realTimeData.apInfo.max,
-                realTimeData.apInfo.current,
-                false
-            )
-            val laborCache = LaborCache(
-                realTimeData.currentTs,
-                realTimeData.labor.remainSecs,
-                realTimeData.labor.max,
-                realTimeData.labor.current,
-                false
-            )
-            prefManager.apCache.set(apCache)
-            prefManager.laborCache.set(laborCache)
-
+            setCaches(prefManager, realTimeData)
             realTimeUi = processData(realTimeData, accountSk.official)
             _uiState.postValue(DataUiState.Success(""))
         } catch (e: Exception) {
@@ -193,7 +172,7 @@ class RealTimeModel : ViewModel() {
     private suspend fun getRealTimeData(account: AccountSk): RealTimeData? {
 
         try {
-            val response = getGameInfoConnectionTaskTest(account)
+            val response = getGameInfoConnectionTask(account)
             if (!response.isSuccessful) throw Exception("!response.isSuccessful")
             response.body() ?: throw Exception("response empty")
             return geneRealTimeData(response.body()!!)

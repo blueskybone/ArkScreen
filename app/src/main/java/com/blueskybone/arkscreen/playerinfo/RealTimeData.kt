@@ -57,7 +57,7 @@ data class RealTimeData(
 //        var targetLevel: Int = 0,             //算不出来，只有专精三可以判断(12h,24h)，专精一二由于艾丽妮的技能导致无法区分。
         var totalPoint: Long = 0L,
         var remainPoint: Long = 0L,
-        var status: Int = 0,
+        var status: Long = -1L,
         var remainSecs: Long = 0L,
         var completeTime: Long = 0L,
         var changeRemainSecsIrene: Long = -1L,       //计算换班时间
@@ -73,11 +73,12 @@ data class RealTimeData(
         var max: Int = -1,
         var complete: Int = -1,
         var remainSecs: Long = 0L,
-        var completeTime: Long = 0L
+        var completeTime: Long = -1L
     )
 
     data class Hire(
         var isNull: Boolean = true,
+        var max: Int = 3,
         var count: Int = 0,
         var completeTime: Long = 0L,
         var remainSecs: Long = 0L
