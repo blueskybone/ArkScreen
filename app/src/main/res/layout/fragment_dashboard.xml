@@ -132,15 +132,6 @@
 
                 <include
                     android:visibility="gone"
-                    android:id="@+id/WidgetContentSize"
-                    layout="@layout/preference" />
-
-                <include
-                    android:visibility="gone"
-                    android:id="@+id/WidgetAlpha"
-                    layout="@layout/preference_seekbar" />
-
-                <include
                     android:id="@+id/WidgetRefresh"
                     layout="@layout/preference" />
 

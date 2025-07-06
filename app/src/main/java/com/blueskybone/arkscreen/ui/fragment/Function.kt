@@ -132,8 +132,6 @@ class Function : Fragment(), ItemListener {
         binding.WidgetAppearance.setOnClickListener {
             startActivity(Intent(requireContext(), WidgetThemeActivity::class.java))
         }
-//        binding.WidgetAlpha.setUp(WidgetAlpha, prefManager.widgetAlpha)
-//        binding.WidgetContentSize.setUp(WidgetSize, prefManager.widgetContentSize, null)
         binding.WidgetRefresh.setUp(WidgetUpdateFreq, prefManager.widgetUpdateFreq, null)
 
         binding.OverlayPermission.setUp(OverlayPermission)
@@ -156,12 +154,7 @@ class Function : Fragment(), ItemListener {
         binding.TurnOffBatteryOptimization.Layout.setOnClickListener {
             (activity as MainActivity?)?.requestIgnoreBatteryOptimizations()
         }
-//        binding.WidgetRefresh.Layout.setOnClickListener {
-//            val intent = Intent(APP, WidgetReceiver::class.java)
-//            intent.action = WidgetReceiver.MANUAL_UPDATE
-//            intent.putExtra("msg", "组件刷新中...")
-//            APP.sendBroadcast(intent)
-//        }
+
         binding.BackAutoAtd.setUp(
             BackAutoAtd,
             prefManager.backAutoAtd,
