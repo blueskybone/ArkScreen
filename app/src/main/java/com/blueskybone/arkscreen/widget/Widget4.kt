@@ -39,10 +39,8 @@ class Widget4 : AppWidgetProvider() {
     companion object {
         const val WORKER_NAME = "AttendanceWorker"
         const val ACTION_ANIMATE = "com.blueskybone.arkscreen.ACTION_ANIMATE"
-        const val REQUEST_CODE = 1112
     }
 
-    //    @RequiresApi(Build.VERSION_CODES.S)
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,

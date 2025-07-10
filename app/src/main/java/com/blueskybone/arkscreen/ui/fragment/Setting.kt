@@ -35,7 +35,6 @@ import com.blueskybone.arkscreen.ui.bindinginfo.TextInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.TimeCorrection
 import com.blueskybone.arkscreen.ui.bindinginfo.UseInnerWeb
 import com.blueskybone.arkscreen.util.copyToClipboard
-import com.blueskybone.arkscreen.util.getAppVersionName
 import com.blueskybone.arkscreen.util.saveDrawableToGallery
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
@@ -98,7 +97,7 @@ class Setting : Fragment() {
         binding.CheckUpdate.Layout.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 val info = AppUpdateInfo.remoteInfo()
-                getAppVersionName(APP).let {
+                BuildConfig.VERSION_NAME.let {
                     if (it < info.version.toString())
                         Handler(Looper.getMainLooper()).post {
                             MaterialAlertDialogBuilder(APP)

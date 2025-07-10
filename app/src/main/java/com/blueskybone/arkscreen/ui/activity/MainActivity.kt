@@ -21,13 +21,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.blueskybone.arkscreen.BuildConfig
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.ActivityMainBinding
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.ui.fragment.Function
 import com.blueskybone.arkscreen.ui.fragment.Home
 import com.blueskybone.arkscreen.ui.fragment.Setting
-import com.blueskybone.arkscreen.util.getAppVersionName
 import com.blueskybone.arkscreen.viewmodel.BaseModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkAppUpdate(context: Context) {
         model.appUpdateInfo.observe(this) { info ->
-            getAppVersionName(context).let {
+            BuildConfig.VERSION_NAME.let {
                 if (it < info.version.toString())
                     Handler(Looper.getMainLooper()).post {
                         MaterialAlertDialogBuilder(context)

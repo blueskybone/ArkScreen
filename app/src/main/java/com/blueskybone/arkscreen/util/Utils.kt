@@ -48,20 +48,6 @@ fun getRealScreenSize(context: Context): Point {
     }
 }
 
-
-fun getAppVersionName(context: Context): String {
-//    var versionname: String? = null
-//    val pm = context.packageManager
-//    try {
-//        val packageInfo = pm.getPackageInfo(context.packageName, 0)
-//        versionname = packageInfo.versionName
-//    } catch (e: PackageManager.NameNotFoundException) {
-//        e.printStackTrace()
-//    }
-//    return versionname
-    return BuildConfig.VERSION_NAME
-}
-
 fun getJsonContent(jsonStr: String?, key: String): String {
     try {
         val om = ObjectMapper()
@@ -198,7 +184,7 @@ fun copyToClipboard(context: Context, text: String) {
         context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val clipData = ClipData.newPlainText("label", text)
     clipboardManager.setPrimaryClip(clipData)
-    Toaster.show(getString(context, com.blueskybone.arkscreen.R.string.copied))
+    Toaster.show(getString(context, R.string.copied))
 }
 
 fun updateNotification(
@@ -232,15 +218,6 @@ fun openLink(context: Context, url: String, prefManager: PrefManager) {
         context.startActivity(intent)
     } else {
         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-    }
-}
-
-fun getBlackDrawableId(drawable: Int): Int {
-    return when (drawable) {
-        R.drawable.ic_drone -> R.drawable.ic_drone_black
-        R.drawable.ic_bolt -> R.drawable.ic_bolt_black
-        R.drawable.ic_train -> R.drawable.ic_train_black
-        else -> R.drawable.ic_default
     }
 }
 
