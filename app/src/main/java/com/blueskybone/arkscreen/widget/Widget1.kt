@@ -6,10 +6,12 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Build
 import android.util.TypedValue
 import android.widget.RemoteViews
-import androidx.annotation.RequiresApi
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
@@ -23,6 +25,8 @@ import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetTextColor
 import com.blueskybone.arkscreen.util.TimeUtils
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
+import com.blueskybone.arkscreen.util.dpToPx
+import com.blueskybone.arkscreen.util.getTargetDrawableId
 import org.koin.java.KoinJavaComponent
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -42,7 +46,7 @@ class Widget1 : AppWidgetProvider() {
         const val REQUEST_CODE = 1097
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
+
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -142,17 +146,27 @@ class Widget1 : AppWidgetProvider() {
             }
 
             //Size
-            val size = prefManager.widget1Size.get()
-            views.setTextViewTextSize(
-                R.id.value,
-                TypedValue.COMPLEX_UNIT_SP,
-                WidgetSize.getTextSizeMain(size)
-            )
-            views.setTextViewTextSize(
-                R.id.max,
-                TypedValue.COMPLEX_UNIT_SP,
-                WidgetSize.getTextSizeSub(size)
-            )
+            val mainSize = WidgetSize.getTextSizeMain(prefManager.widget2Size.get())
+            val subSize = WidgetSize.getTextSizeSub(prefManager.widget2Size.get())
+            val iconSize = WidgetSize.getIconSize(prefManager.widget2Size.get())
+            val spType = TypedValue.COMPLEX_UNIT_SP
+            val dpType = TypedValue.COMPLEX_UNIT_DIP
+
+            views.setTextViewTextSize(R.id.value, spType, mainSize)
+            views.setTextViewTextSize(R.id.max, spType, subSize)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                views.setViewLayoutHeight(R.id.icon, iconSize.toFloat(), dpType)
+                views.setViewLayoutWidth(R.id.icon, iconSize.toFloat(), dpType)
+            } else {
+                val size = dpToPx(iconSize)
+                val bitmap = ResourcesCompat.getDrawable(
+                    context.resources,
+                    getTargetDrawableId(drawable, prefManager.widgetTextColor),
+                    null
+                )?.toBitmap()!!
+                val scaledBitmap = Bitmap.createScaledBitmap(bitmap, size, size, true)
+                views.setImageViewBitmap(R.id.icon, scaledBitmap)
+            }
 
             // 创建 PendingIntent 发送广播
             val intent = Intent(context, WidgetReceiver::class.java).apply {

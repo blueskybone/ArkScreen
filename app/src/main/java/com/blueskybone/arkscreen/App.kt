@@ -167,16 +167,16 @@ class App : Application() {
     private fun setAppTheme() {
         val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
         when (prefManager.appTheme.get()) {
-            AppTheme.light -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            AppTheme.dark -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            AppTheme.system -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            AppTheme.LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            AppTheme.DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            AppTheme.SYSTEM -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
     }
     private fun setToaster(){
         val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
         when(prefManager.appTheme.get()){
-            AppTheme.light -> Toaster.setStyle(BlackToastStyle())
-            AppTheme.dark, AppTheme.system-> Toaster.setStyle(WhiteToastStyle())
+            AppTheme.LIGHT -> Toaster.setStyle(BlackToastStyle())
+            AppTheme.DARK, AppTheme.SYSTEM-> Toaster.setStyle(WhiteToastStyle())
         }
         Toaster.setGravity(Gravity.TOP, 0, 60 * screenDpi.toInt())
     }

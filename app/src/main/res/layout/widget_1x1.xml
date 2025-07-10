@@ -31,24 +31,26 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/max"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="-"
-            android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_gravity="center"
+                android:contentDescription="@null" />
+            <TextView
+                android:id="@+id/max"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="-"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </LinearLayout>
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_gravity="center"
-        android:alpha="0.5"
-        android:contentDescription="@null"
-        android:src="@drawable/ic_bolt" />
 </FrameLayout>
 
 

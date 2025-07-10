@@ -62,11 +62,6 @@ data object UseInnerWeb : TextInfo {
     override val subTitle = R.string.use_inner_web_detail
 }
 
-data object WidgetRefresh : TextInfo {
-    override val title = R.string.widget_refresh
-    override val subTitle = R.string.widget_refresh_detail
-}
-
 data object TimeCorrection : TextInfo {
     override val title = R.string.time_correction
     override val subTitle = R.string.time_correction_detail

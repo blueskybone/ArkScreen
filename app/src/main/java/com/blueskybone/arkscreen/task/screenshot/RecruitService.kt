@@ -186,15 +186,15 @@ class RecruitService : Service() {
         finalList: List<RecruitManager.RecruitResult>
     ) {
         when (prefManager.recruitMode.get()) {
-            RecruitMode.floatWindow -> {
+            RecruitMode.FLOATWINDOW -> {
                 floatWindow!!.openAndUpdateWindow(this, tags, finalList)
             }
 
-            RecruitMode.toast -> {
+            RecruitMode.TOAST -> {
                 showToastResult(finalList)
             }
 
-            RecruitMode.auto -> {
+            RecruitMode.AUTO -> {
                 if (finalList.isNotEmpty()) {
                     when (finalList[0].rare) {
                         1, 5, 6 -> {

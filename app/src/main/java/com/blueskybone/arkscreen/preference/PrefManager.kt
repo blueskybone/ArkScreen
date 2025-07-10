@@ -27,9 +27,9 @@ import java.util.function.Function
  */
 class PrefManager() {
     constructor(preferenceStore: PreferenceStore) : this() {
-        recruitMode = preferenceStore.getString(RecruitMode.key, RecruitMode.floatWindow)
+        recruitMode = preferenceStore.getString(RecruitMode.key, RecruitMode.FLOATWINDOW)
         floatWindowAppearance =
-            preferenceStore.getString(FloatWindowAppearance.key, FloatWindowAppearance.colorful)
+            preferenceStore.getString(FloatWindowAppearance.key, FloatWindowAppearance.COLORFUL)
         screenShotDelay = preferenceStore.getInt(ScreenshotDelay.key, ScreenshotDelay.defaultValue)
         powerSavingMode = preferenceStore.getBoolean("power_saving_mode", false)
 
@@ -190,7 +190,7 @@ class PrefManager() {
 
 
     //new
-    lateinit var recruitPageShowMode: Preference<String> // simple or complex , default is complex
+    //lateinit var recruitPageShowMode: Preference<String> // simple or complex , default is complex
 
 
     //用于预输入数据标识，一次有效

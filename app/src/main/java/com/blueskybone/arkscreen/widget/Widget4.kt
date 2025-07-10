@@ -5,11 +5,13 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Build
 import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
-import androidx.annotation.RequiresApi
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
@@ -21,7 +23,8 @@ import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetTextColor
 import com.blueskybone.arkscreen.util.TimeUtils
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
-import com.blueskybone.arkscreen.widget.Widget3.Companion
+import com.blueskybone.arkscreen.util.dpToPx
+import com.blueskybone.arkscreen.util.getTargetDrawableId
 import org.koin.java.KoinJavaComponent
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -39,7 +42,7 @@ class Widget4 : AppWidgetProvider() {
         const val REQUEST_CODE = 1112
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
+    //    @RequiresApi(Build.VERSION_CODES.S)
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -49,7 +52,7 @@ class Widget4 : AppWidgetProvider() {
             super.onUpdate(context, appWidgetManager, appWidgetIds)
             val views = RemoteViews(context.packageName, R.layout.widget_2x3)
             //设置color
-            views.apply{
+            views.apply {
                 setImageViewResource(R.id.widget_bg, prefManager.widgetBg.get())
                 setInt(R.id.widget_bg, "setAlpha", prefManager.widgetAlpha.get())
             }
@@ -58,23 +61,23 @@ class Widget4 : AppWidgetProvider() {
                 setInt(R.id.recruit, "setTextColor", textColor)
                 setInt(R.id.refresh, "setTextColor", textColor)
             }
-          views.apply {
-              setInt(R.id.ap_current, "setTextColor", textColor)
-              setInt(R.id.ap_max, "setTextColor", textColor)
-              setInt(R.id.ap_resc, "setTextColor", textColor)
-              setImageViewResource(R.id.ic_bolt, R.drawable.ic_bolt)
-              setInt(R.id.ic_bolt, "setColorFilter", textColor)
-              setInt(R.id.labor_current, "setTextColor", textColor)
-              setInt(R.id.labor_max, "setTextColor", textColor)
-              setInt(R.id.labor_resc, "setTextColor", textColor)
-              setImageViewResource(R.id.ic_labor, R.drawable.ic_drone)
-              setInt(R.id.ic_labor, "setColorFilter", textColor)
-              setInt(R.id.train, "setTextColor", textColor)
-              setInt(R.id.train_name, "setTextColor", textColor)
-              setInt(R.id.train_resc, "setTextColor", textColor)
-              setImageViewResource(R.id.ic_train, R.drawable.ic_train)
-              setInt(R.id.ic_train, "setColorFilter", textColor)
-          }
+            views.apply {
+                setInt(R.id.ap_current, "setTextColor", textColor)
+                setInt(R.id.ap_max, "setTextColor", textColor)
+                setInt(R.id.ap_resc, "setTextColor", textColor)
+                setImageViewResource(R.id.ic_bolt, R.drawable.ic_bolt)
+                setInt(R.id.ic_bolt, "setColorFilter", textColor)
+                setInt(R.id.labor_current, "setTextColor", textColor)
+                setInt(R.id.labor_max, "setTextColor", textColor)
+                setInt(R.id.labor_resc, "setTextColor", textColor)
+                setImageViewResource(R.id.ic_labor, R.drawable.ic_drone)
+                setInt(R.id.ic_labor, "setColorFilter", textColor)
+                setInt(R.id.train, "setTextColor", textColor)
+                setInt(R.id.train_name, "setTextColor", textColor)
+                setInt(R.id.train_resc, "setTextColor", textColor)
+                setImageViewResource(R.id.ic_train, R.drawable.ic_train)
+                setInt(R.id.ic_train, "setColorFilter", textColor)
+            }
 
             //设置size
             val mainSize = WidgetSize.getTextSizeMain(prefManager.widget4Size.get())
@@ -84,12 +87,12 @@ class Widget4 : AppWidgetProvider() {
             val dpType = TypedValue.COMPLEX_UNIT_DIP
 
             if (!prefManager.widget4ShowRecruit.get()) {
-                views.apply{
+                views.apply {
                     setViewVisibility(R.id.recruit, View.GONE)
                     setViewVisibility(R.id.refresh, View.GONE)
                 }
             } else {
-                views.apply{
+                views.apply {
                     setViewVisibility(R.id.recruit, View.VISIBLE)
                     setViewVisibility(R.id.refresh, View.VISIBLE)
                     setTextViewTextSize(R.id.recruit, spType, subSize)
@@ -142,11 +145,49 @@ class Widget4 : AppWidgetProvider() {
                     setTextViewTextSize(R.id.labor_max, spType, subSize)
                     setTextViewTextSize(R.id.labor_resc, spType, subSize)
                     setTextViewTextSize(R.id.labor_current, spType, mainSize)
-                    setViewLayoutHeight(R.id.ic_bolt, iconSize.toFloat(), dpType)
-                    setViewLayoutWidth(R.id.ic_bolt, iconSize.toFloat(), dpType)
-                    setViewLayoutHeight(R.id.ic_labor, iconSize.toFloat(), dpType)
-                    setViewLayoutWidth(R.id.ic_labor, iconSize.toFloat(), dpType)
                 }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    views.apply {
+                        setViewLayoutHeight(R.id.ic_bolt, iconSize.toFloat(), dpType)
+                        setViewLayoutWidth(R.id.ic_bolt, iconSize.toFloat(), dpType)
+                        setViewLayoutHeight(R.id.ic_labor, iconSize.toFloat(), dpType)
+                        setViewLayoutWidth(R.id.ic_labor, iconSize.toFloat(), dpType)
+                    }
+                } else {
+                    val size = dpToPx(iconSize)
+//                    var icBolt = R.drawable.ic_bolt
+//                    var icLabor = R.drawable.ic_drone
+//                    when (prefManager.widgetTextColor.get()) {
+//                        WidgetTextColor.BLACK -> {
+//                            icBolt = R.drawable.ic_bolt_black
+//                            icLabor = R.drawable.ic_drone_black
+//                        }
+//
+//                        WidgetTextColor.WHITE -> {
+//                            icBolt = R.drawable.ic_bolt
+//                            icLabor = R.drawable.ic_drone
+//                        }
+//                    }
+
+                    val bitmap1 =
+                        ResourcesCompat.getDrawable(
+                            context.resources,
+                            getTargetDrawableId(R.drawable.ic_bolt, prefManager.widgetTextColor),
+                            null
+                        )?.toBitmap()!!
+                    val scaledBitmap1 = Bitmap.createScaledBitmap(bitmap1, size, size, true)
+                    views.setImageViewBitmap(R.id.ic_bolt, scaledBitmap1)
+
+                    val bitmap2 =
+                        ResourcesCompat.getDrawable(
+                            context.resources,
+                            getTargetDrawableId(R.drawable.ic_drone, prefManager.widgetTextColor),
+                            null
+                        )?.toBitmap()!!
+                    val scaledBitmap2 = Bitmap.createScaledBitmap(bitmap2, size, size, true)
+                    views.setImageViewBitmap(R.id.ic_labor, scaledBitmap2)
+                }
+
                 //apply data
                 fun Long.toMinutes() = this / (60)
                 val now = getCurrentTs()
@@ -198,8 +239,22 @@ class Widget4 : AppWidgetProvider() {
                     setTextViewTextSize(R.id.train, spType, subSize)
                     setTextViewTextSize(R.id.train_resc, spType, subSize)
                     setTextViewTextSize(R.id.train_name, spType, mainSize)
-                    setViewLayoutHeight(R.id.ic_train, iconSize.toFloat(), dpType)
-                    setViewLayoutWidth(R.id.ic_train, iconSize.toFloat(), dpType)
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    views.apply {
+                        setViewLayoutHeight(R.id.ic_train, iconSize.toFloat(), dpType)
+                        setViewLayoutWidth(R.id.ic_train, iconSize.toFloat(), dpType)
+                    }
+                } else {
+                    val size = dpToPx(iconSize)
+                    val bitmap =
+                        ResourcesCompat.getDrawable(
+                            context.resources,
+                            getTargetDrawableId(R.drawable.ic_train, prefManager.widgetTextColor),
+                            null
+                        )?.toBitmap()!!
+                    val scaledBitmap = Bitmap.createScaledBitmap(bitmap, size, size, true)
+                    views.setImageViewBitmap(R.id.ic_train, scaledBitmap)
                 }
 
                 val now = getCurrentTs()

@@ -6,10 +6,12 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Build
 import android.util.TypedValue
 import android.widget.RemoteViews
-import androidx.annotation.RequiresApi
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
@@ -18,13 +20,13 @@ import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.receiver.WidgetReceiver
 import com.blueskybone.arkscreen.receiver.WidgetReceiver.Companion.MANUAL_UPDATE
 import com.blueskybone.arkscreen.receiver.WidgetReceiver.Companion.WORKER_NAME
-import com.blueskybone.arkscreen.ui.activity.RealTimeActivity
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetContent
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetTextColor
 import com.blueskybone.arkscreen.util.TimeUtils
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
-import com.blueskybone.arkscreen.widget.Widget1.Companion.REQUEST_CODE
+import com.blueskybone.arkscreen.util.dpToPx
+import com.blueskybone.arkscreen.util.getTargetDrawableId
 import org.koin.java.KoinJavaComponent
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -41,7 +43,7 @@ class Widget3 : AppWidgetProvider() {
         const val REQUEST_CODE = 1101
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
+    //    @RequiresApi(Build.VERSION_CODES.S)
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -60,13 +62,15 @@ class Widget3 : AppWidgetProvider() {
             val textColor = WidgetTextColor.getColorInt(prefManager.widgetTextColor.get())
             views.setInt(R.id.text_1, "setTextColor", textColor)
             views.setInt(R.id.rest_1, "setTextColor", textColor)
-            val icon1 = WidgetContent.getDrawableIcon(prefManager.widget3Content1.get())
+            val draw1 = prefManager.widget3Content1.get()
+            val icon1 = WidgetContent.getDrawableIcon(draw1)
             views.setImageViewResource(R.id.icon_1, icon1)
             views.setInt(R.id.icon_1, "setColorFilter", textColor)
             //content2
             views.setInt(R.id.text_2, "setTextColor", textColor)
             views.setInt(R.id.rest_2, "setTextColor", textColor)
-            val icon2 = WidgetContent.getDrawableIcon(prefManager.widget3Content2.get())
+            val draw2 = prefManager.widget3Content2.get()
+            val icon2 = WidgetContent.getDrawableIcon(draw2)
             views.setImageViewResource(R.id.icon_2, icon2)
             views.setInt(R.id.icon_2, "setColorFilter", textColor)
 
@@ -82,11 +86,35 @@ class Widget3 : AppWidgetProvider() {
                 setTextViewTextSize(R.id.rest_1, spType, subSize)
                 setTextViewTextSize(R.id.text_2, spType, mainSize)
                 setTextViewTextSize(R.id.rest_2, spType, subSize)
-                setViewLayoutHeight(R.id.icon_1, imageSize.toFloat(), dpType)
-                setViewLayoutWidth(R.id.icon_1, imageSize.toFloat(), dpType)
-                setViewLayoutHeight(R.id.icon_2, imageSize.toFloat(), dpType)
-                setViewLayoutWidth(R.id.icon_2, imageSize.toFloat(), dpType)
             }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                views.apply {
+                    setViewLayoutHeight(R.id.icon_1, imageSize.toFloat(), dpType)
+                    setViewLayoutWidth(R.id.icon_1, imageSize.toFloat(), dpType)
+                    setViewLayoutHeight(R.id.icon_2, imageSize.toFloat(), dpType)
+                    setViewLayoutWidth(R.id.icon_2, imageSize.toFloat(), dpType)
+                }
+            } else {
+                val size = dpToPx(imageSize)
+                val bitmap1 = ResourcesCompat.getDrawable(
+                    context.resources,
+                    getTargetDrawableId(icon1, prefManager.widgetTextColor),
+                    null
+                )
+                    ?.toBitmap()!!
+                val scaledBitmap1 = Bitmap.createScaledBitmap(bitmap1, size, size, true)
+                views.setImageViewBitmap(R.id.icon_1, scaledBitmap1)
+
+                val bitmap2 = ResourcesCompat.getDrawable(
+                    context.resources,
+                    getTargetDrawableId(icon2, prefManager.widgetTextColor),
+                    null
+                )
+                    ?.toBitmap()!!
+                val scaledBitmap2 = Bitmap.createScaledBitmap(bitmap2, size, size, true)
+                views.setImageViewBitmap(R.id.icon_2, scaledBitmap2)
+            }
+
             updateWidgetContent(
                 prefManager.widget3Content1.get(),
                 R.id.text_1,
@@ -99,19 +127,6 @@ class Widget3 : AppWidgetProvider() {
                 R.id.rest_2,  // 注意：原代码中第二个restView应该是R.id.rest_2而不是R.id.text_2
                 views
             )
-
-            //设置点击意图
-//        val onClickPendingIntent: PendingIntent
-//        val onClickIntent = Intent(context, RealTimeActivity::class.java)
-//        val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//            PendingIntent.FLAG_MUTABLE
-//        } else {
-//            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
-//        }
-//        onClickPendingIntent =
-//            PendingIntent.getActivity(context, 0, onClickIntent, pendingIntentFlags)
-//        views.setOnClickPendingIntent(R.id.layout, onClickPendingIntent)
-
             val intent = Intent(context, WidgetReceiver::class.java).apply {
                 action = MANUAL_UPDATE
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)

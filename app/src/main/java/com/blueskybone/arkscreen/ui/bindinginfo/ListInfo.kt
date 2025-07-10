@@ -19,33 +19,16 @@ sealed interface ListInfo {
 }
 
 
-data object WidgetAppearance : ListInfo {
-    const val blackOnWhite = "blackOnWhite"
-    const val whiteOnBlack = "whiteOnBlack" //替代enum
-
-    override val key = "widget_appearance"
-    override val title = R.string.widget_appearance
-    override val defaultValue = whiteOnBlack
-
-    override fun getEntryValues() = arrayOf(blackOnWhite, whiteOnBlack)
-
-    override fun getEntries(context: Context): Array<String> {
-        val wob = getString(context, R.string.white_on_black)
-        val bow = getString(context, R.string.black_on_white)
-        return arrayOf(wob, bow)
-    }
-}
-
 data object FloatWindowAppearance : ListInfo {
-    const val simple = "simple"
-    const val colorful = "colorful"
+    const val SIMPLE = "simple"
+    const val COLORFUL = "colorful"
 
     override val key = "float_window_appearance"
     override val title = R.string.float_window_appearance
-    override val defaultValue = colorful
+    override val defaultValue = COLORFUL
 
     override fun getEntryValues() = arrayOf(
-        simple, colorful
+        SIMPLE, COLORFUL
     )
 
     override fun getEntries(context: Context): Array<String> {
@@ -56,16 +39,16 @@ data object FloatWindowAppearance : ListInfo {
 }
 
 data object AppTheme : ListInfo {
-    const val light = "light"
-    const val dark = "dark"
-    const val system = "system"
+    const val LIGHT = "light"
+    const val DARK = "dark"
+    const val SYSTEM = "system"
 
     override val key = "app_theme"
     override val title = R.string.app_theme
-    override val defaultValue = system
+    override val defaultValue = SYSTEM
 
     override fun getEntryValues() = arrayOf(
-        light, dark, system
+        LIGHT, DARK, SYSTEM
     )
 
     override fun getEntries(context: Context): Array<String> {
@@ -78,16 +61,16 @@ data object AppTheme : ListInfo {
 
 
 data object RecruitMode : ListInfo {
-    const val floatWindow = "floatWindow"
-    const val toast = "toast"
-    const val auto = "Auto"
+    const val FLOATWINDOW = "floatWindow"
+    const val TOAST = "toast"
+    const val AUTO = "Auto"
 
     override val key = "recruit_mode"
     override val title = R.string.recruit_show_mode
-    override val defaultValue = floatWindow
+    override val defaultValue = FLOATWINDOW
 
     override fun getEntryValues() = arrayOf(
-        floatWindow, toast, auto
+        FLOATWINDOW, TOAST, AUTO
     )
 
     override fun getEntries(context: Context): Array<String> {
@@ -155,8 +138,8 @@ data object WidgetSize : ListInfo {
 }
 
 data object WidgetTextColor : ListInfo {
-    private const val WHITE = "white"
-    private const val BLACK = "black"
+    const val WHITE = "white"
+    const val BLACK = "black"
     override val title: Int = R.string.text_color
     override val key: String = "widget_text_color"
     override val defaultValue: String = WHITE

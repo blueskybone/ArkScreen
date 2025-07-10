@@ -6,10 +6,12 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Build
 import android.util.TypedValue
 import android.widget.RemoteViews
-import androidx.annotation.RequiresApi
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
@@ -23,6 +25,8 @@ import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetTextColor
 import com.blueskybone.arkscreen.util.TimeUtils
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
+import com.blueskybone.arkscreen.util.dpToPx
+import com.blueskybone.arkscreen.util.getTargetDrawableId
 import org.koin.java.KoinJavaComponent
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -38,7 +42,6 @@ class Widget2 : AppWidgetProvider() {
     private val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
 
 
-    @RequiresApi(Build.VERSION_CODES.S)
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -67,27 +70,28 @@ class Widget2 : AppWidgetProvider() {
             //content
             updateWidgetContent(prefManager.widget2Content.get(), R.id.text, R.id.rest, views)
             //Size
-            val size = prefManager.widget2Size.get()
-            views.setTextViewTextSize(
-                R.id.text,
-                TypedValue.COMPLEX_UNIT_SP,
-                WidgetSize.getTextSizeMain(size)
-            )
-            views.setTextViewTextSize(
-                R.id.rest,
-                TypedValue.COMPLEX_UNIT_SP,
-                WidgetSize.getTextSizeSub(size)
-            )
-            views.setViewLayoutHeight(
-                R.id.icon,
-                WidgetSize.getImageSize(size).toFloat(),
-                TypedValue.COMPLEX_UNIT_DIP
-            )
-            views.setViewLayoutWidth(
-                R.id.icon,
-                WidgetSize.getImageSize(size).toFloat(),
-                TypedValue.COMPLEX_UNIT_DIP
-            )
+            val mainSize = WidgetSize.getTextSizeMain(prefManager.widget2Size.get())
+            val subSize = WidgetSize.getTextSizeSub(prefManager.widget2Size.get())
+            val iconSize = WidgetSize.getIconSize(prefManager.widget2Size.get())
+            val spType = TypedValue.COMPLEX_UNIT_SP
+            val dpType = TypedValue.COMPLEX_UNIT_DIP
+
+            views.setTextViewTextSize(R.id.text, spType, mainSize)
+            views.setTextViewTextSize(R.id.rest, spType, subSize)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                views.setViewLayoutHeight(R.id.icon, iconSize.toFloat(), dpType)
+                views.setViewLayoutWidth(R.id.icon, iconSize.toFloat(), dpType)
+            } else {
+                val size = dpToPx(iconSize)
+                val bitmap = ResourcesCompat.getDrawable(
+                    context.resources,
+                    getTargetDrawableId(drawable, prefManager.widgetTextColor),
+                    null
+                )?.toBitmap()!!
+                val scaledBitmap = Bitmap.createScaledBitmap(bitmap, size, size, true)
+                views.setImageViewBitmap(R.id.icon, scaledBitmap)
+            }
 
             val intent = Intent(context, WidgetReceiver::class.java).apply {
                 action = MANUAL_UPDATE

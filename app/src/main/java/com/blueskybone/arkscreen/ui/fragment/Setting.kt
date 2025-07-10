@@ -13,6 +13,7 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.AppUpdateInfo
+import com.blueskybone.arkscreen.BuildConfig
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.databinding.FragmentSettingBinding
@@ -89,6 +90,9 @@ class Setting : Fragment() {
 
 
         binding.CheckUpdate.setUp(CheckUpdate)
+        binding.CheckUpdate.apply {
+            this.Value.text = BuildConfig.VERSION_NAME
+        }
         binding.GroupChat.setUp(GroupChat)
 
         binding.CheckUpdate.Layout.setOnClickListener {
