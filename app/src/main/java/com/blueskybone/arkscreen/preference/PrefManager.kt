@@ -127,6 +127,10 @@ class PrefManager() {
             "widget_4_show_train",
             true // 默认显示
         )
+        widget4ShowStarter  =preferenceStore.getBoolean(
+            "widget_4_show_starter",
+            true
+        )
     }
 
     lateinit var warnOverlayPermission: Preference<Boolean>
@@ -187,6 +191,7 @@ class PrefManager() {
     lateinit var widget4ShowRecruit: Preference<Boolean>
     lateinit var widget4ShowDatabase: Preference<Boolean>
     lateinit var widget4ShowTrain: Preference<Boolean>
+    lateinit var widget4ShowStarter: Preference<Boolean>
 
 
     //new

@@ -91,6 +91,7 @@
     <string name="medium">中</string>
     <string name="large">大</string>
     <string name="widget_content">显示内容</string>
+    <string name="widget_show_starter">显示启动按钮</string>
     <string name="widget_update_freq">更新频率</string>
     <string name="widget_setting_info">说明：由于文字大小适配困难，请根据实机效果，自行修改文字大小。更改完成后，需要点击右下角浮动按钮立即更新外观。\nAPI版本较高的机型可以尝试缩放组件。</string>
 

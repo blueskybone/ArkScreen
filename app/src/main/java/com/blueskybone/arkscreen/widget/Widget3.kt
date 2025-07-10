@@ -253,7 +253,7 @@ class Widget3 : AppWidgetProvider() {
                             } else {
                                 views.setTextViewText(
                                     restViewId,
-                                    TimeUtils.getRemainTimeMinStr(now - trainCache.completeTime)
+                                    TimeUtils.getRemainTimeMinStr(trainCache.completeTime - now)
                                 )
                             }
                         }

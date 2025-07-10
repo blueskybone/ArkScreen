@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.widget
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
@@ -10,11 +11,13 @@ import android.os.Build
 import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
+import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.receiver.WidgetReceiver
@@ -25,6 +28,7 @@ import com.blueskybone.arkscreen.util.TimeUtils
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
 import com.blueskybone.arkscreen.util.dpToPx
 import com.blueskybone.arkscreen.util.getTargetDrawableId
+import com.hjq.toast.Toaster
 import org.koin.java.KoinJavaComponent
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -38,7 +42,7 @@ class Widget4 : AppWidgetProvider() {
 
     companion object {
         const val WORKER_NAME = "AttendanceWorker"
-        const val ACTION_ANIMATE = "com.blueskybone.arkscreen.ACTION_ANIMATE"
+        const val START_GAME = "com.blueskybone.arkscreen.START_GAME"
     }
 
     override fun onUpdate(
@@ -153,20 +157,6 @@ class Widget4 : AppWidgetProvider() {
                     }
                 } else {
                     val size = dpToPx(iconSize)
-//                    var icBolt = R.drawable.ic_bolt
-//                    var icLabor = R.drawable.ic_drone
-//                    when (prefManager.widgetTextColor.get()) {
-//                        WidgetTextColor.BLACK -> {
-//                            icBolt = R.drawable.ic_bolt_black
-//                            icLabor = R.drawable.ic_drone_black
-//                        }
-//
-//                        WidgetTextColor.WHITE -> {
-//                            icBolt = R.drawable.ic_bolt
-//                            icLabor = R.drawable.ic_drone
-//                        }
-//                    }
-
                     val bitmap1 =
                         ResourcesCompat.getDrawable(
                             context.resources,
@@ -257,6 +247,10 @@ class Widget4 : AppWidgetProvider() {
 
                 val now = getCurrentTs()
                 val trainCache = prefManager.trainCache.get()
+
+                println(trainCache)
+
+
                 if (trainCache.isnull) {
                     views.setTextViewText(R.id.train_name, "暂无数据")
                 } else {
@@ -278,7 +272,7 @@ class Widget4 : AppWidgetProvider() {
                             } else {
                                 views.setTextViewText(
                                     R.id.train_resc,
-                                    TimeUtils.getRemainTimeMinStr(now - trainCache.completeTime)
+                                    TimeUtils.getRemainTimeMinStr(trainCache.completeTime - now)
                                 )
                             }
                         }
@@ -291,19 +285,35 @@ class Widget4 : AppWidgetProvider() {
                 }
             }
 
-            val intent = Intent(context, WidgetReceiver::class.java).apply {
+            val updateIntent = Intent(context, WidgetReceiver::class.java).apply {
                 action = MANUAL_UPDATE
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             }
-            val pendingIntent = PendingIntent.getBroadcast(
+            val pendingIntentUpdate = PendingIntent.getBroadcast(
                 context,
                 appWidgetId, // 使用 widgetId 作为 requestCode 确保唯一性
-                intent,
+                updateIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
-            views.setOnClickPendingIntent(R.id.layout, pendingIntent)
+            views.setOnClickPendingIntent(R.id.grid_layout, pendingIntentUpdate)
 
 
+            if (!prefManager.widget4ShowStarter.get()) {
+                views.setViewVisibility(R.id.starter, View.GONE)
+            } else {
+                views.setViewVisibility(R.id.starter, View.VISIBLE)
+                val startIntent = Intent(context, Widget4::class.java).apply {
+                    action = START_GAME
+                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                }
+                val pendingIntentStart = PendingIntent.getBroadcast(
+                    context,
+                    appWidgetId, // 使用 widgetId 作为 requestCode 确保唯一性
+                    startIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+                views.setOnClickPendingIntent(R.id.starter, pendingIntentStart)
+            }
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }
@@ -329,11 +339,26 @@ class Widget4 : AppWidgetProvider() {
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-        if (intent.action == ACTION_ANIMATE) {
+        if (intent.action == START_GAME) {
             val appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
             if (appWidgetId != -1) {
 //                playFadeOutAnimation(context, appWidgetId)
+                if (prefManager.baseAccountSk.get().official)
+                    openAnotherApp("com.hypergryph.arknights")
+                else
+                    openAnotherApp("com.hypergryph.arknights.bilibili")
             }
+        }
+    }
+
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun openAnotherApp(packageName: String) {
+        val packageManager = APP.packageManager
+        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
+        if (launchIntent != null) {
+            APP.startActivity(launchIntent)
+        } else {
+            Toaster.show("未检测到游戏安装")
         }
     }
 

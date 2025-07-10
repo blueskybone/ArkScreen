@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.common.CustomRadioGroup
@@ -46,6 +47,7 @@ class WidgetThemeActivity : AppCompatActivity() {
             R.drawable.bg_5,
             R.drawable.bg_6,
             R.drawable.bg_7,
+            R.drawable.bg_8,
         )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,6 +80,7 @@ class WidgetThemeActivity : AppCompatActivity() {
         binding.RecruitCheckBox.setup(prefManager.widget4ShowRecruit)
         binding.ApLaborCheckBox.setup(prefManager.widget4ShowDatabase)
         binding.TrainCheckBox.setup(prefManager.widget4ShowTrain)
+        bindSwitchView(binding.ShowStarter,prefManager.widget4ShowStarter)
 
         binding.Apply.setOnClickListener{
             val intent = Intent(APP, WidgetReceiver::class.java)
@@ -184,5 +187,9 @@ class WidgetThemeActivity : AppCompatActivity() {
                 pref.set(false)
             }
         }
+    }
+    private fun bindSwitchView(switch: SwitchCompat, pref: Preference<Boolean>) {
+        switch.isChecked = pref.get()
+        switch.setOnCheckedChangeListener { _, isChecked -> pref.set(isChecked) }
     }
 }

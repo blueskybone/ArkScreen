@@ -127,7 +127,7 @@ class Widget1 : AppWidgetProvider() {
                                 } else {
                                     views.setTextViewText(
                                         R.id.max,
-                                        TimeUtils.getRemainTimeMinStr(now - trainCache.completeTime)
+                                        TimeUtils.getRemainTimeMinStr( trainCache.completeTime - now)
                                     )
                                 }
                             }
@@ -146,9 +146,9 @@ class Widget1 : AppWidgetProvider() {
             }
 
             //Size
-            val mainSize = WidgetSize.getTextSizeMain(prefManager.widget2Size.get())
-            val subSize = WidgetSize.getTextSizeSub(prefManager.widget2Size.get())
-            val iconSize = WidgetSize.getIconSize(prefManager.widget2Size.get())
+            val mainSize = WidgetSize.getTextSizeMain(prefManager.widget1Size.get())
+            val subSize = WidgetSize.getTextSizeSub(prefManager.widget1Size.get())
+            val iconSize = WidgetSize.getIconSize(prefManager.widget1Size.get())
             val spType = TypedValue.COMPLEX_UNIT_SP
             val dpType = TypedValue.COMPLEX_UNIT_DIP
 

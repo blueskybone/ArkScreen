@@ -72,7 +72,7 @@
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.blueskybone.arkscreen.ACTION_ANIMATE" />
+                <action android:name="com.blueskybone.arkscreen.START_GAME" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"

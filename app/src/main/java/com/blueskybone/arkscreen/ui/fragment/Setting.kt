@@ -241,22 +241,6 @@ class Setting : Fragment() {
         switch.setOnCheckedChangeListener { _, isChecked -> pref.set(isChecked) }
     }
 
-
-    private fun PreferenceSeekbarBinding.setUp(
-        seekBarInfo: SeekBarInfo, pref: Preference<Int>
-    ) {
-        Title.setText(seekBarInfo.title)
-
-        Slider.valueTo = seekBarInfo.max.toFloat()
-        Slider.valueFrom = seekBarInfo.min.toFloat()
-
-        Slider.value = pref.get().toFloat()
-        Slider.stepSize = seekBarInfo.step.toFloat()
-        Slider.addOnChangeListener { _, value, _ ->
-            pref.set(value.toInt())
-        }
-    }
-
     private fun PreferenceSwitchBinding.setUp(
         textInfo: TextInfo,
         pref: Preference<Boolean>,

@@ -19,6 +19,7 @@
         android:orientation="horizontal">
 
         <GridLayout
+            android:id="@+id/grid_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:columnCount="2"
@@ -240,8 +241,7 @@
         </GridLayout>
 
         <ImageView
-            android:visibility="gone"
-            android:id="@+id/loading"
+            android:id="@+id/starter"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_gravity="center"
