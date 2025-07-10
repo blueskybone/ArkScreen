@@ -14,7 +14,7 @@ data class ApCache(
 ) {
     companion object {
         fun default(): ApCache {
-            return ApCache(-1L, -1L, -1, -1, -1, true)
+            return ApCache(0L, 0L, 0, 0, 0, true)
         }
     }
 }

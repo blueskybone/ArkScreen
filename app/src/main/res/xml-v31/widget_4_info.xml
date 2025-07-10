@@ -5,7 +5,7 @@
     android:initialLayout="@layout/widget_2x3"
     android:minWidth="100dp"
     android:minHeight="40dp"
-    android:previewImage="@drawable/ic_rosm_trans"
+    android:previewImage="@drawable/preview_4"
     android:previewLayout="@layout/widget_2x3"
     android:resizeMode="horizontal|vertical"
     android:targetCellWidth="3"

@@ -1,5 +1,5 @@
 {
-	"update": {"version": "7","date": "2025-6-6"},
+	"update": {"version": "8","date": "2025-7-6"},
 	"new_ope": {"name":["嵯峨","乌有","CONFESS-47"]},
 	"operator_list": [
 		{"name": "安比尔","star": 4,"tag": ["远程位","输出","减速","狙击干员"],"skin":"char_302_glaze"},

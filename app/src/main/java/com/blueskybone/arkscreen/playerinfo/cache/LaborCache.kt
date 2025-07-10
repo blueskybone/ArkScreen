@@ -13,7 +13,7 @@ data class LaborCache(
 ) {
     companion object {
         fun default(): LaborCache {
-            return LaborCache(-1L, -1L, -1, -1, true)
+            return LaborCache(0L, 0L, 0, 0, true)
         }
     }
 }

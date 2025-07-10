@@ -11,7 +11,7 @@ data class RefreshCache(
 ) {
     companion object{
         fun default(): RefreshCache {
-            return RefreshCache(-1L, 3, -1, -1L, true)
+            return RefreshCache(0L, 3, 0, 0L, true)
         }
     }
 

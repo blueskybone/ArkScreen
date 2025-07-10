@@ -5,6 +5,6 @@
     android:initialLayout="@layout/widget_2x3"
     android:minWidth="150dp"
     android:minHeight="90dp"
-    android:previewImage="@drawable/ic_rosm_trans"
+    android:previewImage="@drawable/preview_4"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="0" />

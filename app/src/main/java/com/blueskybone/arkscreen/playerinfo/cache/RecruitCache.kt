@@ -11,7 +11,7 @@ data class RecruitCache(
 ) {
     companion object{
         fun default(): RecruitCache {
-            return RecruitCache(-1L, -1, -1, -1L, true)
+            return RecruitCache(0L, 0, 0, 0L, true)
         }
     }
 

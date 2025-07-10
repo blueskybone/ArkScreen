@@ -14,7 +14,7 @@ data class TrainCache(
 ) {
     companion object {
         fun default(): TrainCache {
-            return TrainCache(-1L,"-",-1L,-1L, true)
+            return TrainCache(0L,"-",0L,0L, true)
         }
     }
 }
