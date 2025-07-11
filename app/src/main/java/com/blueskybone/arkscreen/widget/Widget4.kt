@@ -247,10 +247,6 @@ class Widget4 : AppWidgetProvider() {
 
                 val now = getCurrentTs()
                 val trainCache = prefManager.trainCache.get()
-
-                println(trainCache)
-
-
                 if (trainCache.isnull) {
                     views.setTextViewText(R.id.train_name, "暂无数据")
                 } else {

@@ -174,15 +174,6 @@
                 android:id="@+id/TextSize2x3"
                 layout="@layout/preference" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:padding="8dp"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:text="显示内容"
-                android:textAppearance="@style/PreferenceTitle" />
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/ShowStarter"
                 style="@style/SwitchPreference"
