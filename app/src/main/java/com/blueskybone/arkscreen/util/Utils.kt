@@ -16,7 +16,6 @@ import android.webkit.CookieManager
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getString
 import com.blueskybone.arkscreen.APP
-import com.blueskybone.arkscreen.BuildConfig
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.preference.preference.Preference
