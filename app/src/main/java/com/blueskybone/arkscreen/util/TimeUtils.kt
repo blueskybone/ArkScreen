@@ -5,13 +5,9 @@ import com.blueskybone.arkscreen.preference.PrefManager
 import org.koin.java.KoinJavaComponent.getKoin
 import java.text.SimpleDateFormat
 import java.time.Instant
-import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoField
-import java.time.temporal.WeekFields
 import java.util.Date
-import java.util.Locale
 import java.util.TimeZone
 
 
@@ -41,7 +37,6 @@ object TimeUtils {
         if (wdhms.day > 0) stringBuilder.append("${wdhms.day}天")
         if (wdhms.hour > 0) stringBuilder.append("${wdhms.hour}时")
         if (wdhms.min > 0) stringBuilder.append("${wdhms.min}分")
-
         return stringBuilder.toString()
     }
 
@@ -51,8 +46,7 @@ object TimeUtils {
         if (wdhms.day > 0) stringBuilder.append("${wdhms.day}天")
         if (wdhms.hour > 0) stringBuilder.append("${wdhms.hour}小时")
         if (wdhms.min > 0) stringBuilder.append("${wdhms.min}分钟")
-        if (stringBuilder.isEmpty()) return "刚刚"
-        return stringBuilder.toString() + "前"
+        return stringBuilder.toString()
     }
 
     private fun getWDHMSToStr3(wdhms: WDHMS): String {
@@ -61,6 +55,7 @@ object TimeUtils {
         if (wdhms.day > 0) stringBuilder.append("${wdhms.day}d")
         if (wdhms.hour > 0) stringBuilder.append("${wdhms.hour}h")
         if (wdhms.min > 0) stringBuilder.append("${wdhms.min}m")
+        //TODO: should handle in calling func
         if (stringBuilder.isEmpty()) return "restored"
         return stringBuilder.toString()
     }

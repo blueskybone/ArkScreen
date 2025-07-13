@@ -28,6 +28,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="31">
+
+
         <receiver
             android:name=".widget.Widget1"
             android:exported="false">
@@ -51,6 +53,8 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_2_info" />
         </receiver>
+
+
         <receiver
             android:name=".widget.Widget3"
             android:exported="false">
@@ -64,17 +68,19 @@
         </receiver>
 
         <receiver
-            android:name=".widget.AttendanceWidget"
+            android:name=".widget.Widget4"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.blueskybone.arkscreen.START_GAME" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/widget_attendance_info" />
+                android:resource="@xml/widget_4_info" />
         </receiver>
 
-        <receiver android:name=".receiver.AtdAlarmReceiver"
+        <receiver
+            android:name=".receiver.AtdAlarmReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -82,7 +88,8 @@
         </receiver>
 
 
-        <receiver android:name=".receiver.WidgetReceiver"
+        <receiver
+            android:name=".receiver.WidgetReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.blueskybone.arkscreen.MANUAL_UPDATE" />
@@ -90,7 +97,7 @@
         </receiver>
 
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:launchMode="singleTask">
@@ -101,52 +108,42 @@
         </activity>
 
         <activity
-            android:name=".activity.AboutActivity"
+            android:name=".ui.activity.RealTimeActivity"
             android:exported="true"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".activity.RealTimeActivity"
+            android:name=".ui.activity.LoginWeb"
             android:exported="true"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".activity.LoginWeb"
+            android:name=".ui.activity.LogActivity"
             android:exported="true"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".activity.AccountSk"
+            android:name=".ui.activity.CharAssets"
             android:exported="true"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".activity.AccountGc"
+            android:name=".ui.activity.GachaActivity"
             android:exported="true"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".activity.CharAssets"
+            android:name=".ui.activity.RecruitActivity"
             android:exported="true"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".activity.GachaActivity"
+            android:name=".ui.activity.WidgetThemeActivity"
             android:exported="true"
-            android:parentActivityName=".activity.MainActivity"
-            android:windowSoftInputMode="adjustNothing" />
-        <activity
-            android:name=".activity.RecruitActivity"
-            android:exported="true"
-            android:parentActivityName=".activity.MainActivity"
-            android:windowSoftInputMode="adjustNothing" />
-        <activity
-            android:name=".activity.LinkMng"
-            android:exported="true"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
 
-        <activity android:name=".activity.WebViewActivity" />
+        <activity android:name=".ui.activity.WebViewActivity" />
 
         <activity
             android:name=".task.screenshot.AcquireCapturePermission"

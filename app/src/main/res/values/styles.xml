@@ -69,12 +69,8 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">16dp</item>
-        <item name="android:textAppearance">?attr/textAppearanceBody1</item>
+        <item name="android:textAppearance">@style/PreferenceTitle</item>
     </style>
-
-<!--    <style name="CollapsingToolbar" parent="ThemeOverlay.AppCompat.Dark">-->
-<!--        <item name="android:background">@null</item>-->
-<!--    </style>-->
 
     <style name="TextView.Clickable.Dialog">
         <item name="android:paddingStart">24dp</item>
@@ -89,12 +85,15 @@
     </style>
 
     <style name="TextAppearance.Body1" parent="TextAppearance.MaterialComponents.Body1">
-        <!--        <item name="android:spacing"></item>-->
     </style>
 
     <style name="TextAppearance.Body2" parent="TextAppearance.MaterialComponents.Body2">
-
     </style>
+
+    <style name="PreferenceTitle" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textSize">14sp</item>
+    </style>
+
 
     <style name="GachaProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:indeterminateOnly">false</item>
@@ -113,7 +112,7 @@
 
     <style name="Preference" parent="TextView.Clickable">
         <item name="android:padding">16dp</item>
-        <item name="android:textAppearance">?attr/textAppearanceBody1</item>
+        <item name="android:textAppearance">@style/PreferenceTitle</item>
     </style>
 
     <style name="TextHeadToolBar" parent="TextAppearance.MaterialComponents.Headline3">
@@ -142,10 +141,10 @@
         <item name="cornerSize">5dp</item>
     </style>
 
-<!--    <style name="RoundedIconView">-->
-<!--        <item name="cornerFamily">rounded</item>-->
-<!--        <item name="cornerSize">5dp</item>-->
-<!--    </style>-->
+    <style name="CircularImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 
     <style name="TranslucentTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>

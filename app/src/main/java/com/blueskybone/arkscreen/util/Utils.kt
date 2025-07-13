@@ -1,17 +1,26 @@
 package com.blueskybone.arkscreen.util
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.pm.PackageManager
+import android.content.Intent
 import android.graphics.Point
+import android.net.Uri
 import android.os.Build
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.WindowManager
 import android.webkit.CookieManager
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getString
 import com.blueskybone.arkscreen.APP
+import com.blueskybone.arkscreen.R
+import com.blueskybone.arkscreen.preference.PrefManager
+import com.blueskybone.arkscreen.preference.preference.Preference
+import com.blueskybone.arkscreen.ui.activity.WebViewActivity
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetTextColor
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.hjq.toast.Toaster
@@ -38,32 +47,16 @@ fun getRealScreenSize(context: Context): Point {
     }
 }
 
-
-fun getAppVersionName(context: Context): String? {
-    var versionname: String? = null
-    val pm = context.packageManager
+fun getJsonContent(jsonStr: String?, key: String): String {
     try {
-        val packageInfo = pm.getPackageInfo(context.packageName, 0)
-        versionname = packageInfo.versionName
-    } catch (e: PackageManager.NameNotFoundException) {
-        e.printStackTrace()
+        val om = ObjectMapper()
+        val tree = om.readTree(jsonStr)
+        val keys = tree.findValues(key)
+        return keys[0].asText()
+    } catch (e: Exception) {
+        throw Exception("try get json content failed: content: $jsonStr , key: $key")
     }
-    return versionname
 }
-
-//fun isInternetAvailable(context: Context): Boolean {
-//    val connectivityManager =
-//        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//    val networkCapabilities = connectivityManager.activeNetwork ?: return false
-//    val actNw =
-//        connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
-//    return when {
-//        actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-//        actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-//        actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-//        else -> false
-//    }
-//}
 
 fun readFileAsJsonNode(path: String): JsonNode {
     val inputStream = FileInputStream(path)
@@ -77,6 +70,10 @@ fun dpToPx(context: Context, dp: Float): Float {
         dp,
         context.resources.displayMetrics
     )
+}
+
+fun dpToPx(dp: Int): Int {
+    return (dp * APP.resources.displayMetrics.density).toInt()
 }
 
 fun spToPx(context: Context, sp: Float): Float {
@@ -110,6 +107,7 @@ fun getDensityDpi(context: Context): Int {
 }
 
 
+//TODO: 改一下逻辑，给ConfigRes复用
 fun getAssetsFilepath(filename: String): String {
     val context = APP
     val filePath = "${context.externalCacheDir.toString()}/${filename}"
@@ -185,5 +183,51 @@ fun copyToClipboard(context: Context, text: String) {
         context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val clipData = ClipData.newPlainText("label", text)
     clipboardManager.setPrimaryClip(clipData)
-    Toaster.show(getString(context, com.blueskybone.arkscreen.R.string.copied))
+    Toaster.show(getString(context, R.string.copied))
+}
+
+fun updateNotification(
+    context: Context,
+    title: String,
+    message: String,
+    channelId: String,
+    channelName: String
+) {
+    // 创建通知渠道（适用于 Android 8.0 及以上）
+    val notificationManager =
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    val notificationId = 1
+    val channel =
+        NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
+    notificationManager.createNotificationChannel(channel)
+    val notificationBuilder = NotificationCompat.Builder(context, channelId)
+        .setContentTitle(title)
+        .setContentText(message)
+        .setSmallIcon(R.drawable.ic_notification)
+        .setAutoCancel(true)
+        .setOnlyAlertOnce(true)
+    notificationManager.notify(notificationId, notificationBuilder.build())
+}
+
+
+fun openLink(context: Context, url: String, prefManager: PrefManager) {
+    if (prefManager.useInnerWeb.get()) {
+        val intent = Intent(context, WebViewActivity::class.java)
+        intent.putExtra("url", url)
+        context.startActivity(intent)
+    } else {
+        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    }
+}
+
+fun getTargetDrawableId(drawable: Int, pref: Preference<String>): Int {
+    return if (pref.get() == WidgetTextColor.BLACK) {
+        when (drawable) {
+            R.drawable.ic_drone -> R.drawable.ic_drone_black
+            R.drawable.ic_bolt -> R.drawable.ic_bolt_black
+            R.drawable.ic_train -> R.drawable.ic_train_black
+            else -> R.drawable.ic_default
+        }
+    } else drawable
+
 }

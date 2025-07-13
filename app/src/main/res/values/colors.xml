@@ -23,10 +23,13 @@
     <color name="yellow">#D6BF29</color>
     <color name="purple">#8959C8</color>
 
-    <color name="purple_50">#E9EDF7</color>
+    <color name="purple_50">#E9EDFF</color>
     <color name="purple_bg">#F5F7FD</color>
 
     <color name="LightBlue500">#79B8EA</color>
+    <color name="LightBlue200">#65C9DDED</color>
+
+    <color name="trans_grey">#77494F55</color>
 
     <color name="transparent">#00000000</color>
     <color name="chip_background">#7592B5D1</color>

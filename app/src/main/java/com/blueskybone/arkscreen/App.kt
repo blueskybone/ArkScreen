@@ -12,24 +12,27 @@ import coil.Coil
 import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.request.CachePolicy
-import com.blueskybone.arkscreen.bindinginfo.AppTheme
+import coil.util.DebugLogger
+import com.blueskybone.arkscreen.logger.FileLoggingTree
 import com.blueskybone.arkscreen.network.equipCachePath
 import com.blueskybone.arkscreen.network.skillCachePath
 import com.blueskybone.arkscreen.network.skinCachePath
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.preference.preference.shared.SharedPreferenceStore
 import com.blueskybone.arkscreen.receiver.AtdAlarmReceiver
+import com.blueskybone.arkscreen.ui.bindinginfo.AppTheme
 import com.blueskybone.arkscreen.util.getDensityDpi
 import com.hjq.toast.Toaster
 import com.hjq.toast.style.BlackToastStyle
+import com.hjq.toast.style.WhiteToastStyle
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent
+import timber.log.Timber
 import java.io.File
 import java.util.Calendar
-import java.util.Date
 
 /**
  *   Created by blueskybone
@@ -47,7 +50,6 @@ class App : Application() {
     init {
         APP = this
         Toaster.init(this)
-
     }
 
     private fun setCoilDiskCache() {
@@ -69,12 +71,20 @@ class App : Application() {
         val screenDensityDpi = getDensityDpi(this)
         setScreenDpi(screenDensityDpi)
 
-        Toaster.setStyle(BlackToastStyle())
-        Toaster.setGravity(Gravity.TOP, 0, 60 * screenDpi.toInt())
+        //Initialize Logger
+        Timber.plant(FileLoggingTree())
+
         val preferenceModule = module {
             single { SharedPreferenceStore(this@App) }
             single { PrefManager(get<SharedPreferenceStore>()) }
         }
+
+        Coil.setImageLoader(
+            ImageLoader.Builder(this)
+                .logger(DebugLogger()) // 开启日志
+                .build()
+        )
+
         startKoin {
             androidLogger()
             modules(preferenceModule)
@@ -86,6 +96,8 @@ class App : Application() {
         setCoilDiskCache()
         setAppTheme()
         setDailyAlarm()
+        setToaster()
+        //cancelDailyAlarm()
     }
 
     private fun createFolder(path: String) {
@@ -108,8 +120,9 @@ class App : Application() {
     }
 
     fun setDailyAlarm() {
+        println("setDailyAlarm")
         val prefManager: PrefManager by getKoin().inject()
-        if (!prefManager.backAutoAtd.get()) return
+//        if (!prefManager.backAutoAtd.get()) return
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, AtdAlarmReceiver::class.java)
         val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -139,6 +152,7 @@ class App : Application() {
     }
 
     fun cancelDailyAlarm() {
+        println("cancelDailyAlarm")
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, AtdAlarmReceiver::class.java)
         val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -146,15 +160,24 @@ class App : Application() {
         } else {
             PendingIntent.FLAG_UPDATE_CURRENT
         }
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, flags)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, flags)
         alarmManager.cancel(pendingIntent)
     }
+
     private fun setAppTheme() {
         val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
         when (prefManager.appTheme.get()) {
-            AppTheme.light -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            AppTheme.dark -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            AppTheme.system -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            AppTheme.LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            AppTheme.DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            AppTheme.SYSTEM -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
+    }
+    private fun setToaster(){
+        val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
+        when(prefManager.appTheme.get()){
+            AppTheme.LIGHT -> Toaster.setStyle(BlackToastStyle())
+            AppTheme.DARK, AppTheme.SYSTEM-> Toaster.setStyle(WhiteToastStyle())
+        }
+        Toaster.setGravity(Gravity.TOP, 0, 60 * screenDpi.toInt())
     }
 }

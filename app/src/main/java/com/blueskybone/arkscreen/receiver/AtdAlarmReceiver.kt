@@ -1,26 +1,19 @@
 package com.blueskybone.arkscreen.receiver
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import androidx.core.app.NotificationCompat
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
 import com.blueskybone.arkscreen.APP
-import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.network.NetWorkTask
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.ArkDatabase
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
-import com.blueskybone.arkscreen.widget.AttendanceWorker
+import com.blueskybone.arkscreen.util.updateNotification
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent
-import java.util.concurrent.TimeUnit
+import org.koin.java.KoinJavaComponent.getKoin
+import timber.log.Timber
 
 /**
  *   Created by blueskybone
@@ -30,44 +23,49 @@ import java.util.concurrent.TimeUnit
 class AtdAlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action != "android.intent.action.BOOT_COMPLETED") {
+        Timber.i("Received intent: $intent")
+        if (intent.action == "android.intent.action.BOOT_COMPLETED") { //Intent.ACTION_BOOT_COMPLETED
+            val prefManager: PrefManager by getKoin().inject()
+            if (!prefManager.backAutoAtd.get()) return
+            APP.setDailyAlarm()
             return
+        } else {
+            val prefManager: PrefManager by getKoin().inject()
+            val database = ArkDatabase.getDatabase(APP)
+            val accountSkDao = database.getAccountSkDao()
+            CoroutineScope(Dispatchers.IO).launch {
+                val accountList = accountSkDao.getAll()
+                val channelId = "atd_notify_channel"
+                val channelName = "签到通知"
+                for ((idx, account) in accountList.withIndex()) {
+                    updateNotification(
+                        context,
+                        "正在签到中 (${idx + 1}/${accountList.size})",
+                        account.nickName,
+                        channelId,
+                        channelName
+                    )
+                    val msg = NetWorkTask.sklandAttendance(account)
+                    Timber.i(account.nickName + " : " + msg)
+                    updateNotification(
+                        context,
+                        "正在签到中 (${idx + 1}/${accountList.size})",
+                        account.nickName + " : " + msg,
+                        channelId,
+                        channelName
+                    )
+                    Thread.sleep(500)
+                }
+                updateNotification(
+                    context,
+                    "签到完成 (${accountList.size}/${accountList.size})",
+                    "",
+                    channelId,
+                    channelName
+                )
+            }
+            prefManager.lastAttendanceTs.set(getCurrentTs())
         }
-        CoroutineScope(Dispatchers.IO).launch {
-            attendance()
-        }
-        showNotification(context,"自动签到","已签到")
-    }
-
-    private suspend fun attendance() {
-        val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
-        val database = ArkDatabase.getDatabase(APP)
-        val accountSkDao = database.getAccountSkDao()
-        val accountList = accountSkDao.getAll()
-        for (account in accountList) {
-            NetWorkTask.sklandAttendance(account)
-        }
-        prefManager.lastAttendanceTs.set(getCurrentTs())
-    }
-
-    private fun showNotification(context: Context, title: String, message: String) {
-        // 创建通知渠道（适用于 Android 8.0 及以上）
-        val notificationManager =
-            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val notificationId = 1
-        val channelId = "sign_in_channel"
-
-        val channel =
-            NotificationChannel(channelId, "签到通知", NotificationManager.IMPORTANCE_DEFAULT)
-        notificationManager.createNotificationChannel(channel)
-
-        val notificationBuilder = NotificationCompat.Builder(context, channelId)
-            .setContentTitle(title)
-            .setContentText(message)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setAutoCancel(true)
-
-        notificationManager.notify(notificationId, notificationBuilder.build())
     }
 }
 

@@ -35,8 +35,8 @@ class RecruitModel : ViewModel() {
             _uiState.value = DataUiState.Loading("LOADING...")
             withContext(Dispatchers.IO) {
                 try{
-                    RecruitDb.update()
-                    _update.postValue(RecruitDb.getLocalUpdate())
+                    RecruitDb.updateFile()
+                    _update.postValue(RecruitDb.updateTime())
                     recruitManager = RecruitManager.instance
                     _uiState.postValue(DataUiState.Success(""))
                 }catch (e: Exception) {

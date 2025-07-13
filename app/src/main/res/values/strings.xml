@@ -42,6 +42,7 @@
     <string name="delete">删除</string>
     <string name="edit">编辑</string>
     <string name="reset">重置</string>
+    <string name="refresh">刷新</string>
 
     <!-- Home Page -->
     <string name="announcement">公告</string>
@@ -63,20 +64,40 @@
     <string name="screenshot_delay">截图延迟秒数</string>
     <string name="screenshot_delay_detail">部分情况出现“未获取有效信息”可能是截图前摇过短截取了错误画面引起的</string>
 
-    <string name="jump_to_overlay_permission">获取悬浮窗权限</string>
-    <string name="jump_to_overlay_permission_detail">快速公招显示结果需要悬浮窗权限</string>
+    <string name="overlay_permission">获取悬浮窗权限</string>
+    <string name="overlay_permission_detail">快速公招功能需要悬浮窗权限</string>
+
+    <string name="notify_permission">通知权限</string>
+    <string name="notify_permission_detail">部分机型需要通知权限</string>
 
     <string name="widget">桌面组件</string>
+    <string name="min_15">15分钟</string>
+    <string name="min_30">30分钟</string>
+    <string name="hour_1">1小时</string>
     <string name="widget_appearance">桌面组件外观</string>
+    <string name="base_setting">基础设置</string>
+    <string name="setting_1x1">1×1组件</string>
+    <string name="setting_1x2">1×2组件</string>
+    <string name="setting_2x2">2×2组件</string>
+    <string name="setting_2x3">2×3组件</string>
+    <string name="text_color">文字颜色</string>
+    <string name="background">背景</string>
     <string name="black_on_white">黑底白字</string>
     <string name="white_on_black">白底黑字</string>
-    <string name="widget_size">桌面组件大小</string>
+    <string name="white">白</string>
+    <string name="black">黑</string>
+    <string name="widget_size">文字大小</string>
     <string name="small">小</string>
     <string name="medium">中</string>
     <string name="large">大</string>
-    <string name="widget_alpha">桌面组件不透明度</string>
+    <string name="widget_content">显示内容</string>
+    <string name="widget_show_starter">显示启动按钮</string>
+    <string name="widget_update_freq">更新频率</string>
+    <string name="widget_setting_info">说明：由于文字大小适配困难，请根据实机效果，自行修改文字大小。更改完成后，需要点击右下角浮动按钮立即更新外观。\nAPI版本较高的机型可以尝试缩放组件。</string>
+
+    <string name="widget_alpha">不透明度</string>
     <string name="widget_refresh">刷新桌面组件</string>
-    <string name="widget_refresh_detail">组件外观将在下次刷新时改变，可点击此处立即刷新</string>
+    <string name="widget_refresh_detail">更改外观后点此刷新组件</string>
 
     <string name="app_theme">主题</string>
     <string name="theme_light">浅色</string>
@@ -88,16 +109,16 @@
     <string name="back_auto_attendance_detail">提示：此方法签到可能不稳定</string>
     <string name="open_auto_start_settings">允许应用自启动</string>
     <string name="open_auto_start_settings_detail">后台签到需要自启动权限</string>
-    <string name="set_auto_attendance_time">自动签到时间</string>
+    <string name="set_auto_attendance_time">签到时间</string>
     <string name="auto_attendance_time">当前设置为%1$s</string>
 
     <string name="skland_auto_attendance">森空岛自动签到</string>
     <string name="skland_auto_attendance_detail">桌面组件更新时触发，具体规则见使用手册</string>
 
     <string name="turn_off_battery_optimization">关闭电池优化</string>
-    <string name="turn_off_battery_optimization_detail">桌面组件自动刷新需在系统设置关闭电池优化</string>
+    <string name="turn_off_battery_optimization_detail">自动刷新需关闭电池优化</string>
     <string name="power_saving_mode">省流模式</string>
-    <string name="power_saving_mode_detail">使用缓存推算当前数据，通过实时数据页手动同步远端</string>
+    <string name="power_saving_mode_detail">使用缓存推算理智/无人机数据</string>
 
     <string name="mess_option">杂项</string>
     <string name="advanced">高级</string>
@@ -109,11 +130,12 @@
     <string name="about">关于</string>
 
     <string name="time_correction">时间校准</string>
-    <!--    <string name="debug_log">调试信息</string>-->
+    <string name="debug_log">调试信息</string>
+    <string name="debug_log_clean">清除日志</string>
     <!--    <string name="debug_mode">调试模式</string>-->
     <!--    <string name="debug_mode_detail">可能拖慢性能</string>-->
     <string name="click_correction">点击校准</string>
-    <string name="time_correction_detail">适用于修改过本地时间的root设备</string>
+    <string name="time_correction_detail">适用于修改过本地时间的设备</string>
     <!--    <string name="click_to_correct">点击校准</string>-->
     <!--    <string name="real_time_attendance">实时数据页触发签到</string>-->
     <!--    <string name="real_time_attendance_detail">打开实时数据详情页同时触发签到</string>-->
@@ -127,6 +149,7 @@
     <string name="gacha_account_manage">卡池账号管理</string>
     <string name="home_3rd_link_manage">首页链接管理</string>
     <string name="recruit_cal">公招计算器</string>
+    <string name="recruit_calc">公招计算</string>
     <string name="real_time_data">实时数据</string>
     <string name="operator_assets">干员资产</string>
     <string name="attendance_click">一键签到</string>
@@ -157,6 +180,7 @@
     <string name="trading">贸易站</string>
     <string name="manufactures">制造站</string>
     <string name="labor">无人机</string>
+    <string name="ap">理智</string>
     <string name="campaign">剿灭</string>
     <string name="routine_day">日常</string>
     <string name="routine_week">周常</string>
@@ -169,6 +193,8 @@
     <string name="newest_update">当前是最新版本</string>
     <string name="send_feedback">发送反馈</string>
     <string name="open_license">开源许可</string>
+    <string name="check_logs">查看日志</string>
+    <string name="clean_logs">清除日志</string>
     <string name="open_license_content">[Markwon](https://github.com/noties/Markwon)\n\n
 [AndroidX](https://github.com/androidx/androidx)\n\n
 [Material Components for Android](https://github.com/material-components/material-components-android)\n\n
@@ -187,6 +213,7 @@
     <string name="donate_msg">如果软件有帮助到你的话，请开发者喝杯冰阔落吧:D</string>
 
     <string name="text_init">初始化</string>
+    <string name="recruit_video">演示视频</string>
     <!--    <string name="permission_detail">权限说明</string>-->
     <!--    <string name="auto_detail">自动：可锁5★,6★时启动悬浮窗，否则弹出Toast</string>-->
     <!--    <string name="data_details">数据说明</string>-->

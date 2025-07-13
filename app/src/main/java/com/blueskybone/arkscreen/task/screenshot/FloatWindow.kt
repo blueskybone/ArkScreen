@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.PixelFormat
 import android.graphics.drawable.GradientDrawable
-import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -136,13 +135,13 @@ class FloatWindow(private val context: Context) {
         rareText.text = "可锁$rare★"
 
         for (result in resultList) {
-            val tagGroup = TagViewGroup(context, null)
+            val tagGroup = FlowLayout(context, null)
             for (tag in result.tags) {
                 val tagView = TextView(context)
                 tagView.setTagLayout(tag)
                 tagGroup.addView(tagView)
             }
-            val opeGroup = TagViewGroup(context, null)
+            val opeGroup = FlowLayout(context, null)
             for (ope in result.operators) {
                 val opeView = TextView(context)
                 opeView.setOpeLayout(ope.name, ope.rare)

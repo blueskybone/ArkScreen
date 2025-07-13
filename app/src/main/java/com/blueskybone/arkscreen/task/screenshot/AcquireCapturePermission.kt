@@ -36,13 +36,12 @@ class AcquireCapturePermission : AppCompatActivity() {
             ActivityResultContracts.StartActivityForResult()
         ) { result: ActivityResult ->
             if (result.resultCode == RESULT_OK) {
-                println("测试-1")
                 val data = result.data
                 CapturePermission.intent = data
                 val intent = Intent(this, RecruitService::class.java)
                 intent.putExtra("setPermission", true)
+                intent.putExtra("start_from",getIntent().getStringExtra("start_from"))
                 startForegroundService(intent)
-                println("测试0")
                 finish()
             }
         }

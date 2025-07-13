@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "fdc3de8c3fc2c9c7e122461d66685cc5",
+    "identityHash": "d4f99c1dc8f4468b447a6e22441003d9",
     "entities": [
       {
         "tableName": "AccountSk",
@@ -112,7 +112,7 @@
       },
       {
         "tableName": "Link",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `url` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `url` TEXT NOT NULL, `icon` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -129,6 +129,12 @@
           {
             "fieldPath": "url",
             "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "icon",
+            "columnName": "icon",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -200,7 +206,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fdc3de8c3fc2c9c7e122461d66685cc5')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd4f99c1dc8f4468b447a6e22441003d9')"
     ]
   }
 }

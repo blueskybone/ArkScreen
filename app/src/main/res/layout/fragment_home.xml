@@ -43,22 +43,57 @@
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:layout_gravity="center"
-                android:scaleType="centerCrop" />
+                android:contentDescription="@string/text_default"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+
+
+            <com.blueskybone.arkscreen.common.NestedScrollableHost
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/TitleBanner"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp" />
+            </com.blueskybone.arkscreen.common.NestedScrollableHost>
+
+            <LinearLayout
+                android:id="@+id/BannerIdc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|bottom"
+                android:gravity="center"
+                android:orientation="horizontal" />
 
         </com.google.android.material.card.MaterialCardView>
 
 
-        <TextView
-            style="@style/PreferenceHeader"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|start"
-            android:text="@string/real_time_data" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/PreferenceHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/real_time_data" />
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/RefreshGame"
+                style="@style/PreferenceHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@string/refresh" />
+        </FrameLayout>
+
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/RealTimeData"
             style="@style/CardViewContent"
-            android:layout_marginTop="0dp"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground">
@@ -92,11 +127,57 @@
             android:layout_height="wrap_content"
             android:text="@string/tools" />
 
+
         <com.google.android.material.card.MaterialCardView
             style="@style/CardViewContent"
-            android:layout_marginTop="0dp"
             android:clickable="false"
             android:focusable="false">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:weightSum="4">
+
+                <include
+                    android:id="@+id/RecruitCalc"
+                    layout="@layout/chip_round"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <include
+                    android:id="@+id/OpeAssets"
+                    layout="@layout/chip_round"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <include
+                    android:id="@+id/GachaStat"
+                    layout="@layout/chip_round"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <include
+                    android:id="@+id/Attendance"
+                    layout="@layout/chip_round"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/CardViewContent"
+            android:clickable="false"
+            android:focusable="false"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/Recruit"
@@ -104,21 +185,34 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:text="@string/recruit_cal"
-                android:textAppearance="?attr/textAppearanceBody2"/>
-
+                android:textAppearance="?attr/textAppearanceBody2" />
         </com.google.android.material.card.MaterialCardView>
 
 
-        <TextView
-            android:id="@+id/LinkPreference"
-            style="@style/PreferenceHeader"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/tools_3rd" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/LinkPreference"
+                style="@style/PreferenceHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/tools_3rd" />
+
+            <TextView
+                android:id="@+id/AddLink"
+                style="@style/PreferenceHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@string/add" />
+        </FrameLayout>
+
 
         <com.google.android.material.card.MaterialCardView
             style="@style/CardViewContent"
-            android:layout_marginTop="0dp"
             android:clickable="false"
             android:focusable="false">
 
@@ -128,45 +222,69 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:visibility="visible"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            <!--            <GridLayout-->
+            <!--                android:id="@+id/LinkGridLayout"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_gravity="center"-->
+            <!--                android:columnCount="4"-->
+            <!--                android:alignmentMode="alignBounds"-->
+            <!--                android:paddingTop="16dp"-->
+            <!--                android:paddingBottom="16dp"-->
+            <!--                android:visibility="visible">-->
+
+            <!--                <include-->
+            <!--                    layout="@layout/chip_round"-->
+            <!--                    android:layout_column="1"-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content" />-->
+            <!--                <include-->
+            <!--                    layout="@layout/chip_round"-->
+            <!--                    android:layout_columnWeight="1"-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content" />-->
+            <!--            </GridLayout>-->
         </com.google.android.material.card.MaterialCardView>
 
 
-        <TextView
-            style="@style/PreferenceHeader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/mess_option" />
+        <!--        <TextView-->
+        <!--            style="@style/PreferenceHeader"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="@string/mess_option" />-->
 
-        <com.google.android.material.card.MaterialCardView
-            style="@style/CardViewContent"
-            android:layout_marginTop="0dp"
-            android:clickable="false"
-            android:focusable="false">
+        <!--        <com.google.android.material.card.MaterialCardView-->
+        <!--            style="@style/CardViewContent"-->
+        <!--            android:clickable="false"-->
+        <!--            android:focusable="false">-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+        <!--            <LinearLayout-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:orientation="vertical">-->
 
-                <TextView
-                    android:id="@+id/Manual"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:text="@string/manual"
-                    android:textAppearance="?attr/textAppearanceBody2" />
+        <!--                <TextView-->
+        <!--                    android:id="@+id/Manual"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:padding="16dp"-->
+        <!--                    android:text="@string/manual"-->
+        <!--                    android:textAppearance="?attr/textAppearanceBody2" />-->
 
-                <TextView
-                    android:id="@+id/Donate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:text="@string/donate"
-                    android:textAppearance="?attr/textAppearanceBody2" />
-            </LinearLayout>
+        <!--                <TextView-->
+        <!--                    android:id="@+id/Donate"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:padding="16dp"-->
+        <!--                    android:text="@string/donate"-->
+        <!--                    android:textAppearance="?attr/textAppearanceBody2" />-->
+        <!--            </LinearLayout>-->
 
-        </com.google.android.material.card.MaterialCardView>
+        <!--        </com.google.android.material.card.MaterialCardView>-->
 
         <TextView
             android:id="@+id/AnnounceTitle"
@@ -177,8 +295,7 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/AnnounceCard"
-            style="@style/CardViewContent"
-            android:layout_marginTop="0dp">
+            style="@style/CardViewContent">
 
             <TextView
                 android:id="@+id/Announce"

@@ -20,6 +20,6 @@ interface LinkDao {
     @Query("DELETE FROM Link WHERE id = :id")
     suspend fun delete(id: Long)
 
-    @Query("UPDATE Link SET title = :title, url = :url WHERE id = :id")
-    suspend fun update(id: Long, title: String, url: String)
+    @Query("UPDATE Link SET title = :title, url = :url, icon = :icon WHERE id = :id")
+    suspend fun update(id: Long, title: String, url: String, icon: String)
 }

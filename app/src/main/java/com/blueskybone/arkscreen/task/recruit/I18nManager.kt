@@ -28,7 +28,7 @@ class I18nManager private constructor(){
     private var node: JsonNode
 
     init {
-        val inputStream = FileInputStream(I18n.getResourceFilepath())
+        val inputStream = FileInputStream(I18n.getFilePath())
         val om = ObjectMapper()
         node = om.readTree(inputStream)
     }
