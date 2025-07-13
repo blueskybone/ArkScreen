@@ -4,30 +4,32 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
-    android:background="?attr/colorSurface">
+    android:background="?attr/colorSurface"
+    android:visibility="gone">
 
     <ImageView
         android:id="@+id/Icon"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:background="@color/grey_700"
-        android:src="@drawable/skill_icon_default" />
+        android:contentDescription="@null" />
 
     <ImageView
-        android:visibility="gone"
         android:id="@+id/Special"
-        android:layout_width="12dp"
-        android:layout_height="12dp"
-        android:background="@color/grey_900" />
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:background="@color/grey_900"
+        android:contentDescription="@null"
+        android:visibility="gone" />
 
     <TextView
-        android:visibility="gone"
         android:id="@+id/MainRank"
-        android:layout_width="10dp"
+        android:layout_width="8dp"
         android:layout_height="match_parent"
         android:background="@color/grey_700"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="11sp" />
+        android:textSize="11sp"
+        android:visibility="gone" />
 
 </FrameLayout>

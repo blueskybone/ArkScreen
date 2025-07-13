@@ -25,9 +25,11 @@ class QuickTileService : TileService() {
         if (CapturePermission.intent == null) {
             val acquireIntent = Intent(this, AcquireCapturePermission::class.java)
             acquireIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            acquireIntent.putExtra("start_from","QuickTileService")
             startActivity(acquireIntent)
         } else {
             val intent = Intent(this, RecruitService::class.java)
+            intent.putExtra("start_from","QuickTileService")
             startService(intent)
         }
     }

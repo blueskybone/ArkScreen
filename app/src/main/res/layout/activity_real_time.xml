@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal">
@@ -25,88 +24,121 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:baselineAligned="false"
-                android:orientation="horizontal"
-                android:padding="10dp">
+            <com.google.android.material.card.MaterialCardView
+                style="@style/CardViewContent"
+                android:visibility="visible">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp">
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
 
-                    <TextView
-                        android:id="@+id/NickName"
-                        android:layout_width="wrap_content"
+
+                    <FrameLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.Body1"
-                        android:textColor="?attr/colorPrimary"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/LastLogin"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1">
-
-                    <LinearLayout
-                        android:id="@+id/ApLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
+                        android:layout_gravity="start|center"
+                        android:layout_weight="1"
                         android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/Ap"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:letterSpacing="0"
-                            android:textAppearance="@style/TextAppearance.Body1"
-                            android:textColor="?attr/colorPrimary"
-                            android:textSize="50sp"
-                            android:textStyle="bold" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/Avatar"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginStart="10dp"
+                                android:background="@color/LightBlue200"
+                                android:padding="2dp"
+                                android:src="@drawable/char_ex_blaze"
+                                app:shapeAppearanceOverlay="@style/CircularImageView"
+                                app:strokeColor="@color/LightBlue200"
+                                app:strokeWidth="2dp" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="5dp">
+
+                                <TextView
+                                    android:id="@+id/NickName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="?attr/colorPrimary"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/LastLogin"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+                        </LinearLayout>
 
                         <TextView
-                            android:id="@+id/ApMax"
+                            android:id="@+id/Level"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:letterSpacing="0"
-                            android:textAppearance="@style/TextAppearance.Body1"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
+                            android:layout_margin="0dp"
+                            android:background="@drawable/stroke"
+                            android:padding="2dp"
+                            android:text="Lv120"
+                            android:textColor="@color/white"
+                            android:textSize="10sp" />
+                    </FrameLayout>
 
-                    <View
-                        android:id="@+id/Line"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_below="@id/ApLayout"
-                        android:background="?android:attr/listDivider" />
-
-                    <TextView
-                        android:id="@+id/ApResTime"
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/Line"
-                        android:gravity="center"
-                        android:paddingBottom="10dp" />
-                </RelativeLayout>
+                        android:orientation="vertical">
 
-            </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:orientation="horizontal">
 
+                            <TextView
+                                android:id="@+id/Ap"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="-"
+                                android:textAppearance="?attr/textAppearanceHeadline3"
+                                android:textColor="?attr/colorPrimary"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/ApMax"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="end|bottom"
+                                android:text="/-"
+                                android:textAppearance="?attr/textAppearanceBody1"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/Line"
+                            android:layout_width="80dp"
+                            android:layout_height="1dp"
+                            android:layout_gravity="center"
+                            android:background="?android:attr/listDivider" />
+
+                        <TextView
+                            android:id="@+id/ApResTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
 
@@ -228,17 +260,40 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView
-                style="@style/CardViewContent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="8dp">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="?android:attr/listDivider" />
+
                 <ImageView
                     android:id="@+id/Starter"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_gravity="center"
                     android:layout_margin="12dp"
                     android:contentDescription="@string/text_default"
                     android:src="@drawable/ic_starter" />
-            </com.google.android.material.card.MaterialCardView>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+
+                    android:background="?android:attr/listDivider" />
+            </LinearLayout>
+
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
@@ -258,5 +313,4 @@
             android:gravity="center"
             app:drawableTopCompat="@mipmap/ic_rosm" />
     </FrameLayout>
-
 </RelativeLayout>

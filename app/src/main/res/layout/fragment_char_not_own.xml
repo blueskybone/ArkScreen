@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="?attr/actionBarSize">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/RecyclerView"
+    <com.nex3z.flowlayout.FlowLayout
+        android:id="@+id/FlowLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbarSize="5dp"
-        android:scrollbarThumbVertical="@color/grey_500"
-        android:scrollbars="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-</RelativeLayout>
+        android:layout_height="wrap_content" />
+</ScrollView>

@@ -44,7 +44,7 @@
                             android:layout_height="wrap_content"
                             android:padding="5dp"
                             android:text="Godot#1064"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
                         <ImageView
                             android:id="@+id/Icon"

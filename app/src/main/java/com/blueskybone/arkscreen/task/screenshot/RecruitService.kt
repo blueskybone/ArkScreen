@@ -22,20 +22,17 @@ import android.view.Surface
 import androidx.core.app.NotificationCompat
 import com.blueskybone.arkscreen.App
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.RecruitDb
-import com.blueskybone.arkscreen.bindinginfo.RecruitMode
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.task.CapturePermission
 import com.blueskybone.arkscreen.task.recruit.RecruitManager
+import com.blueskybone.arkscreen.ui.bindinginfo.RecruitMode
 import com.blueskybone.arkscreen.util.convertImageToBitmap
 import com.blueskybone.arkscreen.util.getDensityDpi
 import com.blueskybone.arkscreen.util.getEleCombination
 import com.blueskybone.arkscreen.util.getRealScreenSize
 import com.hjq.toast.Toaster
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.getKoin
+import timber.log.Timber
 
 /**
  *   Created by blueskybone
@@ -48,7 +45,7 @@ class RecruitService : Service() {
     private val prefManager: PrefManager by getKoin().inject()
     private val handler = Handler(Looper.getMainLooper())
     private var inactivityRunnable: Runnable? = null
-    private val inactivityTimeout: Long = 1 * 60 * 1000 //service kill self timer
+    private val inactivityTimeout: Long = 5 * 60 * 1000 //service kill self timer
 
     companion object {
         private const val FOREGROUND_SERVICE_ID = 2375
@@ -81,27 +78,34 @@ class RecruitService : Service() {
         screenHeight = point.y
     }
 
+    private var sleepScreenshot = false
+
 
     override fun onCreate() {
         super.onCreate()
         setScreenSize()
         createNotification()
         startInactivityTimer()
+
         recruitManager = RecruitManager.instance
         imageProcessor = ImageProcessor.instance
         floatWindow = FloatWindow(this)
         floatWindow!!.initialize()
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                RecruitDb.update()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+
     }
+
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         println("测试6 onStartCommand")
+
+        try {
+            val start = intent?.getStringExtra("start_from")
+            if (start == "QuickTileService") sleepScreenshot = true
+        } catch (e: Exception) {
+            Timber.e(e.message)
+        }
+
+
         if (mutex) {
             return START_NOT_STICKY
         }
@@ -136,7 +140,10 @@ class RecruitService : Service() {
 //        startActivity(emptyIntent)
         try {
             println("测试3 try screenshot")
-            Thread.sleep(prefManager.screenShotDelay.get() * 1000L)
+            if (sleepScreenshot) {
+                Thread.sleep(1000L)
+            }
+//            Thread.sleep(prefManager.screenShotDelay.get() * 1000L)
             imageReader!!.acquireLatestImage().use { image ->
                 println("测试4 image get")
                 // TransActivity.finishActivity()
@@ -179,15 +186,15 @@ class RecruitService : Service() {
         finalList: List<RecruitManager.RecruitResult>
     ) {
         when (prefManager.recruitMode.get()) {
-            RecruitMode.floatWindow -> {
+            RecruitMode.FLOATWINDOW -> {
                 floatWindow!!.openAndUpdateWindow(this, tags, finalList)
             }
 
-            RecruitMode.toast -> {
+            RecruitMode.TOAST -> {
                 showToastResult(finalList)
             }
 
-            RecruitMode.auto -> {
+            RecruitMode.AUTO -> {
                 if (finalList.isNotEmpty()) {
                     when (finalList[0].rare) {
                         1, 5, 6 -> {
@@ -265,7 +272,6 @@ class RecruitService : Service() {
         )
     }
 
-    //in fact, the notification never appear as expected.
     private fun createNotification() {
         val channelFore = NotificationChannel(
             CHANNEL_FORE_ID,
@@ -298,9 +304,9 @@ class RecruitService : Service() {
         startForeground(FOREGROUND_SERVICE_ID, notification)
     }
 
-    private fun background() {
-        stopForeground(STOP_FOREGROUND_DETACH)
-    }
+//    private fun background() {
+//        stopForeground(STOP_FOREGROUND_DETACH)
+//    }
 
     override fun onDestroy() {
         super.onDestroy()

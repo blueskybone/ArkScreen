@@ -12,5 +12,6 @@ import androidx.room.PrimaryKey
 data class Link(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     var title: String,
-    var url: String
+    var url: String,
+    var icon: String = ""
 )

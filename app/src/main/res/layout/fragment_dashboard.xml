@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="?attr/actionBarSize">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/TextView.Headline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/function" />
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/PreferenceHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/account_manage" />
+
+            <TextView
+                android:id="@+id/AddAccount"
+                style="@style/PreferenceHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@string/add_account" />
+        </FrameLayout>
+
+        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/RecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/PreferenceHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/quick_recruit" />
+
+            <TextView
+                android:id="@+id/RecruitVideo"
+                style="@style/PreferenceHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@string/recruit_video" />
+
+        </FrameLayout>
+
+        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/RecruitMode"
+                    layout="@layout/preference" />
+
+                <include
+                    android:id="@+id/FloatWindowAppearance"
+                    layout="@layout/preference"
+                    android:visibility="gone" />
+
+                <include
+                    android:id="@+id/ScreenShotDelay"
+                    layout="@layout/preference_seekbar"
+                    android:visibility="gone"/>
+
+                <include
+                    android:id="@+id/OverlayPermission"
+                    layout="@layout/preference" />
+
+                <include
+                    android:id="@+id/NotifyPermission"
+                    layout="@layout/preference" />
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            style="@style/PreferenceHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/widget" />
+
+        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/AutoAttendance"
+                    style="@style/SwitchPreference"
+                    android:visibility="gone"
+                    android:text="@string/skland_auto_attendance" />
+
+                <include
+                    android:id="@+id/PowerSavingMode"
+                    layout="@layout/preference_switch" />
+
+
+                <TextView
+                    android:id="@+id/WidgetAppearance"
+                    style="@style/Preference"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/widget_appearance" />
+
+                <include
+                    android:visibility="gone"
+                    android:id="@+id/WidgetRefresh"
+                    layout="@layout/preference" />
+
+                <include
+                    android:id="@+id/TurnOffBatteryOptimization"
+                    layout="@layout/preference" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            style="@style/PreferenceHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/auto_attendance" />
+
+        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/BackAutoAtd"
+                    layout="@layout/preference_switch" />
+
+                <include
+                    android:id="@+id/SetAtdTime"
+                    layout="@layout/preference" />
+
+                <include
+                    android:id="@+id/OpenAutoStartSettings"
+                    layout="@layout/preference" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

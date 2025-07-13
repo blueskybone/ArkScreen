@@ -20,7 +20,10 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class com.blueskybone.arkscreen.task.screenshot.** { *; }
+-keep class com.blueskybone.arkscreen.task.** { *; }
+-keep class com.blueskybone.arkscreen.common.** { *; }
+-keep class com.blueskybone.arkscreen.playerinfo.** { *; }
+-keep class com.blueskybone.arkscreen.network.** { *; }
 
 -keep class android.hardware.display.** { *; }
 -keep class android.media.projection.** { *; }

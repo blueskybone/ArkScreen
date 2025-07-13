@@ -71,7 +71,6 @@ class FlowLayout(context: Context, attrs: AttributeSet?) : ViewGroup(context, at
         } else {
             height
         }
-
         setMeasuredDimension(measuredWidth, measuredHeight)
     }
 }

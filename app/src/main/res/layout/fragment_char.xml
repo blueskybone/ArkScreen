@@ -3,98 +3,173 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
     android:paddingTop="?attr/actionBarSize">
 
-    <LinearLayout
-        android:id="@+id/FilterBar"
+
+    <FrameLayout
+        android:id="@+id/Section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="start"
-        android:orientation="horizontal"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:baselineAligned="false">
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
 
-        <include
-            android:id="@+id/Profession"
-            layout="@layout/chip_card"
-            android:layout_width="0dp"
+        <ImageView
+            android:id="@+id/Filter"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1" />
+            android:layout_gravity="start"
+            android:contentDescription="@string/text_default"
+            android:padding="5dp"
+            android:src="@drawable/ic_filter" />
 
-        <include
-            android:id="@+id/Rarity"
-            layout="@layout/chip_card"
-            android:layout_width="0dp"
+
+        <ImageView
+            android:id="@+id/Grid"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1" />
+            android:layout_gravity="end"
+            android:contentDescription="@string/text_default"
+            android:padding="5dp"
+            android:visibility="gone"
+            android:src="@drawable/ic_grid" />
 
-        <include
-            android:id="@+id/Level"
-            layout="@layout/chip_card"
-            android:layout_width="0dp"
+        <ImageView
+            android:id="@+id/List"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1" />
-        <!--        <include-->
-        <!--            android:id="@+id/Profession"-->
-        <!--            layout="@layout/preference_chip"-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_margin="4dp"-->
-        <!--            android:layout_weight="1" />-->
+            android:layout_gravity="end"
+            android:contentDescription="@string/text_default"
+            android:padding="5dp"
+            android:src="@drawable/ic_list"
+            android:visibility="gone" />
 
-        <!--        <include-->
-        <!--            android:id="@+id/Rarity"-->
-        <!--            layout="@layout/preference_chip"-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_margin="4dp"-->
-        <!--            android:layout_weight="1" />-->
 
-        <!--        <include-->
-        <!--            android:id="@+id/Level"-->
-        <!--            layout="@layout/preference_chip"-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_margin="4dp"-->
-        <!--            android:layout_weight="1" />-->
-
-    </LinearLayout>
-
-    <!--    <androidx.core.widget.NestedScrollView-->
-    <!--        android:id="@+id/NestedScrollView"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:layout_below="@id/FilterBar">-->
-
-    <!--        <LinearLayout-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:orientation="vertical">-->
-
-    <!--            <com.google.android.material.card.MaterialCardView-->
-    <!--                android:id="@+id/CardView"-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:layout_margin="10dp"-->
-    <!--                app:cardCornerRadius="10dp"-->
-    <!--                app:cardElevation="0dp">-->
-
-    <!--            </com.google.android.material.card.MaterialCardView>-->
+    </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/RecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/FilterBar"
+        android:layout_below="@id/Section"
         android:scrollbarSize="5dp"
         android:scrollbarThumbVertical="@color/grey_500"
         android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-    <!--        </LinearLayout>-->
 
-    <!--    </androidx.core.widget.NestedScrollView>-->
+    <FrameLayout
+        android:id="@+id/FrameDialog"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/Section"
+        android:background="@color/trans_grey"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/ButtonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Section"
+        android:background="?attr/android:colorBackground"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:visibility="gone" />
+
+<!--    <com.blueskybone.arkscreen.common.FlowRadioGroup-->
+<!--        android:id="@+id/radioGroup1"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@id/Section"-->
+<!--        android:background="?attr/android:colorBackground"-->
+<!--        android:focusable="true"-->
+<!--        android:orientation="vertical"-->
+<!--        android:padding="8dp"-->
+<!--        app:horizontalSpacing="5dp"-->
+<!--        app:verticalSpacing="5dp">-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_caster" />-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_sniper" />-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_pioneer" />-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_warrior" />-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_medic" />-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_support" />-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_special" />-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_tank" />-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_special" />-->
+
+<!--        <ImageButton-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/button_tag"-->
+<!--            android:padding="2dp"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:src="@drawable/icon_tank" />-->
+
+
+<!--    </com.blueskybone.arkscreen.common.FlowRadioGroup>-->
+
 </RelativeLayout>

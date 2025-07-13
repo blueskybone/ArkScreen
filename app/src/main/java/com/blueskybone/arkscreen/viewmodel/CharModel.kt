@@ -1,6 +1,5 @@
 package com.blueskybone.arkscreen.viewmodel
 
-import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,14 +9,13 @@ import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.CharAllMap
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.Progress
-import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.network.NetWorkTask
+import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTask
+import com.blueskybone.arkscreen.playerinfo.Operator
+import com.blueskybone.arkscreen.playerinfo.compareOperators
+import com.blueskybone.arkscreen.playerinfo.getOperatorData
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountSk
-import com.blueskybone.arkscreen.room.Operator
 import com.blueskybone.arkscreen.util.readFileAsJsonNode
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.Dispatchers
@@ -25,8 +23,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.getKoin
 import java.io.IOException
-import java.text.Collator
-import java.util.zip.GZIPInputStream
 
 
 /**
@@ -42,15 +38,6 @@ class CharModel : ViewModel() {
 
     private val _uiState = MutableLiveData<DataUiState>()
     val uiState: LiveData<DataUiState> get() = _uiState
-
-    private val _filterProf = MutableLiveData<String>()
-    val filterProf: LiveData<String> get() = _filterProf
-
-    private val _filterRarity = MutableLiveData<String>()
-    val filterRarity: LiveData<String> get() = _filterRarity
-
-    private val _filterLevel = MutableLiveData<String>()
-    val filterLevel: LiveData<String> get() = _filterLevel
 
     private val _charsList = MutableLiveData<List<Operator>>()
     val charsList: LiveData<List<Operator>> get() = _charsList
@@ -112,9 +99,9 @@ class CharModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            _filterProf.value = ProfFilter.defaultValue
-            _filterRarity.value = RarityFilter.defaultValue
-            _filterLevel.value = LevelFilter.defaultValue
+//            _filterProf.value = ProfFilter.defaultValue
+//            _filterRarity.value = RarityFilter.defaultValue
+//            _filterLevel.value = LevelFilter.defaultValue
             _uiState.value = DataUiState.Loading("LOADING...")
             withContext(Dispatchers.IO) {
                 loadCharAssets()
@@ -184,12 +171,15 @@ class CharModel : ViewModel() {
     private fun getCharsNotOwn(): List<Operator> {
         executeAsync {
             try {
-                CharAllMap.update()
+                CharAllMap.updateFile()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
-        val charsAllNode = readFileAsJsonNode(CharAllMap.getResourceFilepath())["charInfoMap"]
+        val charsAllNode = readFileAsJsonNode(CharAllMap.getFilePath())["charInfoMap"]
+        if (charsAllNode == null) {
+            println("charsAllNode == null")
+        }
         for (item in charList) {
             (charsAllNode as ObjectNode).remove(item.charId)
         }
@@ -205,253 +195,38 @@ class CharModel : ViewModel() {
             operator.profession = charInfo["profession"].asText()
             list.add(operator)
         }
-        return list.sortedWith(customComparator).toMutableList() as ArrayList<Operator>
+        println("list.size ${list.size}")
+        return list.sortedWith(compareOperators).toMutableList() as ArrayList<Operator>
     }
+
 
     private suspend fun getCharsData(account: AccountSk): List<Operator> {
-        val cn = NetWorkTask.getGameInfoInputConnection(account)
-        val inputStream = cn.inputStream
-        val gzip = withContext(Dispatchers.IO) {
-            GZIPInputStream(inputStream)
-        }
-        val om = ObjectMapper()
-        val result = getOpeData(om.readTree(gzip))
-        withContext(Dispatchers.IO) {
-            gzip.close()
-            inputStream.close()
-        }
-        cn.disconnect()
-        return result
+        val response = getGameInfoConnectionTask(account)
+        if (!response.isSuccessful) throw Exception("!response.isSuccessful")
+        response.body() ?: throw Exception("response empty")
+        return getOperatorData(response.body()!!)
     }
 
-    private fun getOpeData(tree: JsonNode): List<Operator> {
-        var charList = ArrayList<Operator>()
-        val charsNode = tree.at("/data/chars")
-        val charInfoMap = tree.at("/data/charInfoMap")
-        val equipInfoMap = tree.at("/data/equipmentInfoMap")
-        for (char in charsNode) {
-            val operator = Operator()
-
-            operator.charId = char["charId"].asText()
-            val skin = char["skinId"].asText()
-//            val skinId = if ('@' in skin) {
-//                skin.replace('@', '_')
-//            } else if ("#1" in skin) {
-//                skin.replace("#1", "")
-//            } else {
-//                skin.replace('#', '_')
-//            }
-            operator.skinId = skin
-            operator.level = char["level"].asInt()
-            operator.evolvePhase = char["evolvePhase"].asInt()
-            operator.potentialRank = char["potentialRank"].asInt()
-            operator.mainSkillLvl = char["mainSkillLvl"].asInt()
-            operator.favorPercent = char["favorPercent"].asInt()
-            operator.defaultSkillId = char["defaultSkillId"].asText()
-            operator.gainTime = char["gainTime"].asLong()
-            operator.defaultEquipId = char["defaultEquipId"].asText()
-
-            for ((idx, skill) in char["skills"].withIndex()) {
-                operator.skills.add(
-                    Operator.Skill(
-                        idx,
-                        skill["id"].asText(),
-                        skill["specializeLevel"].asInt()
-                    )
-                )
-            }
-
-            //还得改
-            var index = 0
-            for (equip in char["equip"]) {
-                val equipId = equip["id"].asText()
-                val equipInfo = equipInfoMap[equipId]
-                if (equipInfo.has("typeName2")) {
-                    operator.equips.add(
-                        Operator.Equip(
-                            index,
-                            equipId,
-                            equip["locked"].asBoolean(),
-                            equipInfo["typeIcon"].asText(),
-                            equipInfo["typeName2"].asText(),
-                            equip["level"].asInt()
-                        )
-                    )
-                    index++
-                }
-            }
-
-            val charInfo = charInfoMap.get(operator.charId)
-            operator.name = charInfo["name"].asText()
-            operator.nationId = charInfo["nationId"].asText()
-            operator.groupId = charInfo["groupId"].asText()
-            operator.displayNumber = charInfo["displayNumber"].asText()
-            operator.rarity = charInfo["rarity"].asInt()
-            operator.profession = charInfo["profession"].asText()
-            operator.subProfessionId = charInfo["subProfessionId"].asText()
-//            operator.professionName = i18n.convert(operator.profession, I18n.ConvertType.Profession)
-//            operator.subProfessionName =
-//                i18n.convert(operator.subProfessionId, I18n.ConvertType.SubProfession)
-
-            val stringBuilder = StringBuilder()
-            for (equip in operator.equips) {
-                stringBuilder.append(equip.typeName2).append("-").append(equip.stage)
-                    .append(" ")
-            }
-            operator.equipString = stringBuilder.toString()
-            charList.add(operator)
-        }
-        //排序：稀有度
-
-        charList = charList
-            .sortedWith(compareBy(collator) { it.name })
-            .sortedBy { customOrder.indexOf(it.profession) }
-            .sortedWith(customComparator).toMutableList() as ArrayList<Operator>
-        return charList
-    }
-
-    companion object {
-        val customComparator = Comparator<Operator> { u1, u2 ->
-            if (u1.rarity != u2.rarity) {
-                u2.rarity - u1.rarity
-            } else {
-                if (u1.evolvePhase != u2.evolvePhase) {
-                    u2.evolvePhase - u1.evolvePhase
-                } else {
-                    u2.level - u1.level
-                }
-            }
-        }
-
-        //排序：职业
-        val customOrder = listOf(
-            "PIONEER", "WARRIOR", "TANK", "SNIPER",
-            "CASTER", "MEDIC", "SUPPORT", "SPECIAL"
-        )
-        val collator: Collator = Collator.getInstance(java.util.Locale.CHINA)
-    }
-
-
-    private fun applyFilter(): List<Operator> {
-        val prof = filterProf.value
-        val rarity = filterRarity.value
-        val level = filterLevel.value
-
-        val list1 = when (prof) {
-            ProfFilter.ALL -> charList
-            else -> charList.filter { chars -> chars.profession == prof }
-        }
-        val list2 = when (rarity) {
-            RarityFilter.RARITY_1_3 -> list1.filter { chars -> chars.rarity == 0 || chars.rarity == 1 || chars.rarity == 2 }
-            RarityFilter.RARITY_4 -> list1.filter { chars -> chars.rarity == 3 }
-            RarityFilter.RARITY_5 -> list1.filter { chars -> chars.rarity == 4 }
-            RarityFilter.RARITY_6 -> list1.filter { chars -> chars.rarity == 5 }
-            else -> list1
-        }
-        val list3 = when (level) {
-            LevelFilter.EVOLVE_0 -> list2.filter { chars -> chars.evolvePhase == 0 }
-            LevelFilter.EVOLVE_1 -> list2.filter { chars -> chars.evolvePhase == 1 }
-            LevelFilter.EVOLVE_2 -> list2.filter { chars -> chars.evolvePhase == 2 }
-            else -> list2
-        }
-        return list3
-    }
-
-    fun setFilter(filter: Filter, item: String, context: Context) {
-        when (filter) {
-            is ProfFilter -> {
-                _filterProf.value = ProfFilter.getValue(item, context)
-            }
-
-            is RarityFilter -> {
-                _filterRarity.value = RarityFilter.getValue(item, context)
-            }
-
-            is LevelFilter -> {
-                _filterLevel.value = LevelFilter.getValue(item, context)
-            }
-        }
+    fun applyFilter(prof: String, level: String, rarity: String) {
         executeAsync {
-            _charsList.postValue(applyFilter())
-        }
-    }
-
-    sealed interface Filter {
-        val defaultValue: String
-        fun getEntryValues(): Array<String>
-        fun getEntries(context: Context): Array<String>
-    }
-
-    data object ProfFilter : Filter {
-        const val ALL = "ALL"
-        private const val PIONEER = "PIONEER"
-        private const val WARRIOR = "WARRIOR"
-        private const val TANK = "TANK"
-        private const val SNIPER = "SNIPER"
-        private const val CASTER = "CASTER"
-        private const val MEDIC = "MEDIC"
-        private const val SUPPORT = "SUPPORT"
-        private const val SPECIAL = "SPECIAL"
-
-        override val defaultValue = ALL
-
-        override fun getEntryValues() = arrayOf(
-            ALL, PIONEER, WARRIOR, TANK, SNIPER, CASTER, MEDIC, SUPPORT, SPECIAL
-        )
-
-        override fun getEntries(context: Context): Array<String> {
-            return context.resources.getStringArray(R.array.profession)
-        }
-
-        fun getValue(item: String, context: Context): String {
-            val index = this.getEntries(context).indexOf(item)
-            return this.getEntryValues()[index]
-        }
-    }
-
-    data object RarityFilter : Filter {
-        private const val ALL = "ALL"
-        const val RARITY_1_3 = "RARITY_1_3"
-        const val RARITY_4 = "RARITY_4"
-        const val RARITY_5 = "RARITY_5"
-        const val RARITY_6 = "RARITY_6"
-
-        override val defaultValue = ALL
-
-        override fun getEntryValues() = arrayOf(
-            ALL, RARITY_1_3, RARITY_4, RARITY_5, RARITY_6
-        )
-
-        override fun getEntries(context: Context): Array<String> {
-            return context.resources.getStringArray(R.array.rarity)
-        }
-
-        fun getValue(item: String, context: Context): String {
-            val index = this.getEntries(context).indexOf(item)
-            return this.getEntryValues()[index]
-        }
-
-    }
-
-    data object LevelFilter : Filter {
-        private const val ALL = "ALL"
-        const val EVOLVE_0 = "EVOLVE_0"
-        const val EVOLVE_1 = "EVOLVE_1"
-        const val EVOLVE_2 = "EVOLVE_2"
-
-        override val defaultValue = ALL
-
-        override fun getEntryValues() = arrayOf(
-            ALL, EVOLVE_0, EVOLVE_1, EVOLVE_2
-        )
-
-        override fun getEntries(context: Context): Array<String> {
-            return context.resources.getStringArray(R.array.level)
-        }
-
-        fun getValue(item: String, context: Context): String {
-            val index = this.getEntries(context).indexOf(item)
-            return this.getEntryValues()[index]
+            val list1 = when (prof) {
+                "ALL" -> charList
+                else -> charList.filter { chars -> chars.profession == prof }
+            }
+            val list2 = when (rarity) {
+                "1~3★" -> list1.filter { chars -> chars.rarity == 0 || chars.rarity == 1 || chars.rarity == 2 }
+                "4★" -> list1.filter { chars -> chars.rarity == 3 }
+                "5★" -> list1.filter { chars -> chars.rarity == 4 }
+                "6★" -> list1.filter { chars -> chars.rarity == 5 }
+                else -> list1
+            }
+            val list3 = when (level) {
+                "精零" -> list2.filter { chars -> chars.evolvePhase == 0 }
+                "精一" -> list2.filter { chars -> chars.evolvePhase == 1 }
+                "精二" -> list2.filter { chars -> chars.evolvePhase == 2 }
+                else -> list2
+            }
+            _charsList.postValue(list3)
         }
 
     }
@@ -495,6 +270,4 @@ class CharModel : ViewModel() {
             Toaster.show("导出完成")
         }
     }
-
-    //JSON
 }
