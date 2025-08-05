@@ -235,14 +235,18 @@ class BaseModel : ViewModel() {
         }
     }
 
-    fun accountGcLogin(token: String, channelMasterId: Int) {
+    fun accountGcLogin(token: String, channelMasterId: Int, akUserCenter: String, xrToken: String) {
         executeAsync {
             try {
-                val account = createGachaAccount(channelMasterId, token) ?: return@executeAsync
+                val account = createGachaAccount(channelMasterId, token, akUserCenter, xrToken)
+                    ?: return@executeAsync
+                account.akUserCenter = akUserCenter
+                account.xrToken = xrToken
                 accountGcDao.insert(account)
                 _accountGcList.postValue(accountGcDao.getAll())
                 if (prefManager.baseAccountGc.get().uid == "")
                     prefManager.baseAccountGc.set(account)
+                Toaster.show("获取成功：" + account.nickName)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

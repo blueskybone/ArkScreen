@@ -66,11 +66,11 @@ interface ApiService {
 
 
     // 获取基础信息
-    @POST("/u8/user/info/v1/basic")
-    suspend fun getBasicInfo(
-        @Body request: BasicInfoRequest,
-        @HeaderMap headers: Map<String, String>
-    ): Response<BasicInfoResponse>
+//    @POST("/u8/user/info/v1/basic")
+//    suspend fun getBasicInfo(
+//        @Body request: BasicInfoRequest,
+//        @HeaderMap headers: Map<String, String>
+//    ): Response<BasicInfoResponse>
 
     // 获取抽卡记录
     @GET("/user/api/inquiry/gacha")
@@ -81,6 +81,13 @@ interface ApiService {
         @HeaderMap headers: Map<String, String>
     ): Response<GachaResponse>
 
+    @GET("/user/api/role/info")
+    suspend fun getBasicInfo(
+        @Query("source_from") source: String,
+        @Query("share_type") type: String,
+        @Query("share_by") by: String,
+        @HeaderMap headers: Map<String, String>
+    ): Response<BasicInfoResponse>
 //    // 登出
 //    @POST("/user/info/v1/logout")
 //    suspend fun logout(

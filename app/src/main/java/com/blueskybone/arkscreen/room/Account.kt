@@ -38,11 +38,13 @@ data class AccountGc(
     val channelMasterId: Int,
     override val nickName: String,
     override val token: String,
-    override val official: Boolean
+    override val official: Boolean,
+    var akUserCenter: String,
+    var xrToken: String
 ) : Account(uid, nickName, token, official) {
     companion object {
         fun default(): AccountGc {
-            return AccountGc(-1L, "", -1, "", "", true)
+            return AccountGc(-1L, "", -1, "", "", true, "", "")
         }
     }
 }

@@ -65,7 +65,8 @@ class Function : Fragment(), ItemListener {
     private var _binding: FragmentDashboardBinding? = null
     private val prefManager: PrefManager by getKoin().inject()
     private var adapter: AccountAdapter? = null
-    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var activityResultLauncherSk: ActivityResultLauncher<Intent>
+    private lateinit var activityResultLauncherGc: ActivityResultLauncher<Intent>
 
     private val binding get() = _binding!!
     override fun onCreateView(
@@ -86,18 +87,40 @@ class Function : Fragment(), ItemListener {
         model.accountSkList.observe(viewLifecycleOwner) { value ->
             adapter?.submitList(value as List<Account>?)
         }
-        activityResultLauncher = registerForActivityResult(
+        activityResultLauncherSk = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             // 处理返回结果
             if (result.resultCode == Activity.RESULT_OK) {
                 val data: Intent? = result.data
                 // 解析返回的数据
+                //TODO:添加try catch
                 val token = data?.getStringExtra("token")
                 val dId = data?.getStringExtra("dId")
                 if (token != null && dId != null) {
                     Toaster.show(getString(R.string.getting_info))
                     model.accountSkLogin(token, dId)
+                } else {
+                    Toaster.show("null")
+                }
+            }
+        }
+
+        activityResultLauncherGc = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            // 处理返回结果
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                // 解析返回的数据
+                //TODO:添加try catch
+                val token = data?.getStringExtra("token")
+                val xrToken = data?.getStringExtra("xrToken")
+                val userCenter = data?.getStringExtra("userCenter")
+                val channelMasterId = data?.getIntExtra("channelMasterId", 1)
+                if (token != null && xrToken != null && userCenter != null) {
+                    Toaster.show(getString(R.string.getting_info))
+                    model.accountGcLogin(token, channelMasterId!!, userCenter, xrToken)
                 } else {
                     Toaster.show("null")
                 }
@@ -115,10 +138,25 @@ class Function : Fragment(), ItemListener {
                 .add(R.string.web_login) {
                     val intent =
                         LoginWeb.startIntent(requireContext(), LoginWeb.Companion.LoginType.SKLAND)
-                    activityResultLauncher.launch(intent)
+                    activityResultLauncherSk.launch(intent)
                 }
                 .show()
         }
+
+        binding.AddAccountGc.setOnClickListener {
+            MenuDialog(requireContext())
+                .add(getString(R.string.import_cookie)) {
+                    displayLoginDialog()
+                }
+                .add(R.string.web_login) {
+                    val intent =
+                        LoginWeb.startIntent(requireContext(), LoginWeb.Companion.LoginType.GACHA_OFFICIAL)
+                    activityResultLauncherGc.launch(intent)
+                }
+                .show()
+        }
+
+
 
         bindSwitchView(binding.AutoAttendance, prefManager.autoAttendance)
         binding.RecruitMode.setUp(RecruitMode, prefManager.recruitMode, null)

@@ -31,8 +31,13 @@ class NetWorkTask {
             )
         }
 
-        suspend fun createGachaAccount(channelMasterId: Int, token: String): AccountGc? {
-            return getBasicInfo(channelMasterId, token)
+        suspend fun createGachaAccount(
+            channelMasterId: Int,
+            token: String,
+            akUserCenter: String,
+            xrToken: String
+        ): AccountGc? {
+            return getBasicInfo(channelMasterId, token, akUserCenter, xrToken)
         }
 
         @Throws(Exception::class)

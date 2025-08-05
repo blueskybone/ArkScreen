@@ -178,24 +178,26 @@ class RetrofitUtils {
             )
         }
 
-        suspend fun getBasicInfo(channelMasterId: Int, token: String): AccountGc? {
-            val requestBody: BasicInfoRequest = if (channelMasterId == 1) {
-                BasicInfoRequest.OfficialRequest(1, channelMasterId, token)
-            } else {
-                BasicInfoRequest.BiliRequest(token)
-            }
-            val response = RetrofitClient.hypergryphService.getBasicInfo(
-                requestBody,
-                createLoginHeaders()
+        suspend fun getBasicInfo(
+            channelMasterId: Int,
+            token: String,
+            akUserCenter: String,
+            xrToken: String
+        ): AccountGc? {
+            val response = RetrofitClient.akHypergryphService.getBasicInfo(
+                "", "", "",
+                createAkHeader(akUserCenter, token, xrToken)
             )
             return if (response.isSuccessful) {
                 response.body()?.data?.let { item ->
                     AccountGc(
                         uid = item.uid,
-                        nickName = item.nickName,
-                        channelMasterId = item.channelMasterId,
+                        nickName = item.name,
+                        channelMasterId = item.channelId,
                         token = token,
-                        official = channelMasterId == 1
+                        official = channelMasterId == 1,
+                        akUserCenter = akUserCenter,
+                        xrToken = xrToken
                     )
                 }
             } else {
@@ -205,17 +207,33 @@ class RetrofitUtils {
 
         private fun createNormalHeaders(): Map<String, String> {
             return mapOf(
-//                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
+                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
                 "Connection" to "close"
             )
         }
 
         private fun createLoginHeaders(): Map<String, String> {
             return mapOf(
-//                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
+                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
                 "Accept-Encoding" to "gzip",
                 "Connection" to "close",
                 "Content-Type" to "application/json"
+            )
+        }
+
+        private fun createAkHeader(
+            cookie: String,
+            token: String,
+            xrToken: String
+        ): Map<String, String> {
+            return mapOf(
+                "accept" to "application/json, text/plain, */*",
+                "accept-language" to "zh-CN,zh;q=0.9,en;q=0.8,en-US;q=0.7,zh-TW;q=0.6",
+                "cookie" to "ak-user-center=$cookie",
+                "referer" to "https://ak.hypergryph.com/user/headhunting",
+                "user-agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+                "x-account-token" to token,
+                "x-role-token" to xrToken
             )
         }
 
@@ -226,7 +244,7 @@ class RetrofitUtils {
         ): Map<String, String> {
             return mapOf(
                 "cred" to cred,
-//                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
+                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
 //                "Accept-Encoding" to "gzip",
                 "Connection" to "close",
                 "Content-Type" to "application/json",

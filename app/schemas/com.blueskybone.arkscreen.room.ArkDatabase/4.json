@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "d4f99c1dc8f4468b447a6e22441003d9",
+    "identityHash": "f67027b1473f1ba5d11bfd838dc31621",
     "entities": [
       {
         "tableName": "AccountSk",
@@ -62,7 +62,7 @@
       },
       {
         "tableName": "AccountGc",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uid` TEXT NOT NULL, `channelMasterId` INTEGER NOT NULL, `nickName` TEXT NOT NULL, `token` TEXT NOT NULL, `official` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uid` TEXT NOT NULL, `channelMasterId` INTEGER NOT NULL, `nickName` TEXT NOT NULL, `token` TEXT NOT NULL, `official` INTEGER NOT NULL, `akUserCenter` TEXT NOT NULL, `xrToken` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -98,6 +98,18 @@
             "fieldPath": "official",
             "columnName": "official",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "akUserCenter",
+            "columnName": "akUserCenter",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "xrToken",
+            "columnName": "xrToken",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -206,7 +218,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd4f99c1dc8f4468b447a6e22441003d9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f67027b1473f1ba5d11bfd838dc31621')"
     ]
   }
 }

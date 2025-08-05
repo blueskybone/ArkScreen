@@ -35,7 +35,8 @@ abstract class ArkDatabase : RoomDatabase() {
                     context.applicationContext,
                     ArkDatabase::class.java,
                     DatabaseName
-                ).addMigrations(Migration2).addMigrations(Migration3).addMigrations(Migration4).build()
+                ).addMigrations(Migration2).addMigrations(Migration3).addMigrations(Migration4)
+                    .addMigrations(Migration5).build()
                 INSTANCE = instance
                 instance
             }
@@ -56,16 +57,24 @@ abstract class ArkDatabase : RoomDatabase() {
 
             }
         }
-        object Migration3: Migration(2,3){
+
+        object Migration3 : Migration(2, 3) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("CREATE TABLE Gacha (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, uid TEXT NOT NULL, ts INTEGER NOT NULL, pool TEXT NOT NULL, record TEXT NOT NULL)")
                 db.execSQL("CREATE INDEX index_Gacha_uid ON Gacha(uid)")
             }
         }
 
-        object Migration4: Migration(3,4){
+        object Migration4 : Migration(3, 4) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE Link ADD COLUMN icon TEXT NOT NULL DEFAULT ''")
+            }
+        }
+
+        object Migration5 : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE AccountGc ADD COLUMN akUserCenter TEXT NOT NULL DEFAULT ''")
+                db.execSQL("ALTER TABLE AccountGc ADD COLUMN xrToken TEXT NOT NULL DEFAULT ''")
             }
         }
     }

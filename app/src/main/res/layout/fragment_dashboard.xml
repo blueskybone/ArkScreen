@@ -52,6 +52,37 @@
 
             <TextView
                 style="@style/PreferenceHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/account_manage" />
+
+            <TextView
+                android:id="@+id/AddAccountGc"
+                style="@style/PreferenceHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@string/add_account" />
+        </FrameLayout>
+
+        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/RecyclerViewGc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        </com.google.android.material.card.MaterialCardView>
+
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/PreferenceHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
