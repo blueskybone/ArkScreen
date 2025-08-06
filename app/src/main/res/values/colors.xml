@@ -18,12 +18,14 @@
     <color name="grey_500">#BFBFBF</color>
     <color name="grey_600">#787878</color>
     <color name="grey_700">#424242</color>
-    <color name="grey_900">#202020</color>
+<!--    <color name="grey_900">#202020</color>-->
+    <color name="grey_900">#1E1F25</color>
     <color name="red">#FF0000</color>
     <color name="yellow">#D6BF29</color>
     <color name="purple">#8959C8</color>
 
-    <color name="purple_50">#E9EDFF</color>
+<!--    <color name="purple_50">#E9EDFF</color>-->
+    <color name="purple_50">#E3E4ED</color>
     <color name="purple_bg">#F5F7FD</color>
 
     <color name="LightBlue500">#79B8EA</color>
@@ -33,8 +35,10 @@
 
     <color name="transparent">#00000000</color>
     <color name="chip_background">#7592B5D1</color>
-    <color name="day_background">#FFFFFF</color>
-    <color name="night_background">#15191A</color>
+<!--    <color name="day_background">#FFFFFF</color>-->
+    <color name="day_background">#F5FAFD</color>
+<!--    <color name="night_background">#15191A</color>-->
+    <color name="night_background">#121318</color>
 
     <color name="rare_6">#FF2600</color>
     <color name="rare_5">#FF9800</color>

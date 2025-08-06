@@ -2,20 +2,16 @@ package com.blueskybone.arkscreen.network
 
 import com.blueskybone.arkscreen.network.auth.generateSign
 import com.blueskybone.arkscreen.network.model.AttendanceRequest
-import com.blueskybone.arkscreen.network.model.BasicInfoRequest
 import com.blueskybone.arkscreen.network.model.CredRequest
+import com.blueskybone.arkscreen.network.model.GachaResponse
 import com.blueskybone.arkscreen.network.model.GrantRequest
 import com.blueskybone.arkscreen.network.model.PlayerInfoResp
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
-import com.blueskybone.arkscreen.room.Gacha
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
 import com.blueskybone.arkscreen.util.getJsonContent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import retrofit2.Response
 import timber.log.Timber
-import java.net.URLEncoder
 
 /**
  *   Created by blueskybone
@@ -88,36 +84,89 @@ class RetrofitUtils {
             }
         }
 
-        suspend fun getGachaRecords(
-            page: Int,
-            token: String,
-            channelMasterId: Int,
-            uid: String
-        ): List<Gacha>? {
-            val encodedToken = withContext(Dispatchers.IO) {
-                URLEncoder.encode(token, "UTF-8")
-            }
-            val response = RetrofitClient.akHypergryphService.getGachaRecords(
-                page = page,
-                token = encodedToken,
-                channelId = channelMasterId,
-                headers = createNormalHeaders()
+
+        suspend fun getGachaCate(
+            accountGc: AccountGc
+        ): List<String> {
+            val response = RetrofitClient.akHypergryphService.getGachaCate(
+                accountGc.uid,
+                createAkHeader(accountGc.akUserCenter, accountGc.token, accountGc.xrToken)
             )
             return if (response.isSuccessful) {
-                response.body()?.data?.recordList?.map { item ->
-                    Gacha(
-                        uid = uid,
-                        ts = item.ts,
-                        pool = item.pool,
-                        record = item.charsList.joinToString("@") { char ->
-                            "${char.name}-${char.rarity}-${char.isNew}"
-                        }
-                    )
-                }
+                response.body()?.data?.map { it.id } ?: emptyList()
             } else {
                 throw Exception("API error: ${response.errorBody()?.string()}")
             }
         }
+
+        suspend fun getFirstPageRecords(
+            accountGc: AccountGc,
+            cate: String
+        ): GachaResponse {
+            val response = RetrofitClient.akHypergryphService.getGachaRecords(
+                uid = accountGc.uid,
+                category = cate,
+                size = 10,
+                createAkHeader(accountGc.akUserCenter, accountGc.token, accountGc.xrToken)
+            )
+            return if (response.isSuccessful) {
+                response.body() ?: throw Exception("API error: ${response.errorBody()?.string()}")
+            } else {
+                throw Exception("API error: ${response.errorBody()?.string()}")
+            }
+        }
+
+        suspend fun getMorePageRecords(
+            accountGc: AccountGc,
+            cate: String,
+            pos: Int,
+            ts: Long,
+        ): GachaResponse {
+            val response = RetrofitClient.akHypergryphService.getGachaRecordsMore(
+                uid = accountGc.uid,
+                category = cate,
+                pos = pos,
+                gachaTs = ts,
+                size = 10,
+                createAkHeader(accountGc.akUserCenter, accountGc.token, accountGc.xrToken)
+            )
+            return if (response.isSuccessful) {
+                response.body() ?: throw Exception("API error: ${response.errorBody()?.string()}")
+            } else {
+                throw Exception("API error: ${response.errorBody()?.string()}")
+            }
+        }
+
+//        suspend fun getGachaRecords(
+//            page: Int,
+//            token: String,
+//            channelMasterId: Int,
+//            uid: String
+//        ): List<Gacha>? {
+//            val encodedToken = withContext(Dispatchers.IO) {
+//                URLEncoder.encode(token, "UTF-8")
+//            }
+//            val response = RetrofitClient.akHypergryphService.getGachaRecords(
+//                page = page,
+//                token = encodedToken,
+//                channelId = channelMasterId,
+//                headers = createNormalHeaders()
+//            )
+//            return if (response.isSuccessful) {
+//                response.body()?.data?.recordList?.map { item ->
+//                    Gacha(
+//                        uid = uid,
+//                        ts = item.ts,
+//                        pool = item.pool,
+//                        record = item.charsList.joinToString("@") { char ->
+//                            "${char.name}-${char.rarity}-${char.isNew}"
+//                        }
+//                    )
+//                }
+//            } else {
+//                throw Exception("API error: ${response.errorBody()?.string()}")
+//            }
+//        }
 
         suspend fun doAttendance(
             cred: String,

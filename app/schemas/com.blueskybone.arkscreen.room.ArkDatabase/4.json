@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "f67027b1473f1ba5d11bfd838dc31621",
+    "identityHash": "0fa33f7311ea094c168d0f6019fd9d6c",
     "entities": [
       {
         "tableName": "AccountSk",
@@ -162,12 +162,24 @@
       },
       {
         "tableName": "Gacha",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uid` TEXT NOT NULL, `ts` INTEGER NOT NULL, `pool` TEXT NOT NULL, `record` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `poolId` TEXT NOT NULL, `poolCate` TEXT NOT NULL, `uid` TEXT NOT NULL, `ts` INTEGER NOT NULL, `pool` TEXT NOT NULL, `charName` TEXT NOT NULL, `charId` TEXT NOT NULL, `rarity` INTEGER NOT NULL, `isNew` INTEGER NOT NULL, `pos` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "poolId",
+            "columnName": "poolId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "poolCate",
+            "columnName": "poolCate",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -189,9 +201,33 @@
             "notNull": true
           },
           {
-            "fieldPath": "record",
-            "columnName": "record",
+            "fieldPath": "charName",
+            "columnName": "charName",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "charId",
+            "columnName": "charId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rarity",
+            "columnName": "rarity",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isNew",
+            "columnName": "isNew",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pos",
+            "columnName": "pos",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -203,13 +239,15 @@
         },
         "indices": [
           {
-            "name": "index_Gacha_uid",
-            "unique": false,
+            "name": "index_Gacha_uid_ts_pos",
+            "unique": true,
             "columnNames": [
-              "uid"
+              "uid",
+              "ts",
+              "pos"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_Gacha_uid` ON `${TABLE_NAME}` (`uid`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Gacha_uid_ts_pos` ON `${TABLE_NAME}` (`uid`, `ts`, `pos`)"
           }
         ],
         "foreignKeys": []
@@ -218,7 +256,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f67027b1473f1ba5d11bfd838dc31621')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0fa33f7311ea094c168d0f6019fd9d6c')"
     ]
   }
 }

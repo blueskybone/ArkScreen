@@ -148,17 +148,21 @@ class GachaActivity : AppCompatActivity() {
     private fun registerLauncher() {
         launcherForTxt =
             registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
-                uri?.let { model.exportTxt(uri) }
+                uri?.let {
+//                    model.exportTxt(uri)
+                }
             }
         launcherForJson =
             registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
-                uri?.let { model.exportJson(uri) }
-            }
-        launcherForImport =
-            registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
                 uri?.let {
-                    model.importData(uri)
+//                    model.exportJson(uri)
                 }
             }
+//        launcherForImport =
+//            registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+//                uri?.let {
+//                    model.importData(uri)
+//                }
+//            }
     }
 }

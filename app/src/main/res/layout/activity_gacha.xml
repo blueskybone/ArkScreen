@@ -24,6 +24,7 @@
             android:orientation="vertical">
 
             <FrameLayout
+                android:paddingEnd="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <LinearLayout
@@ -47,7 +48,6 @@
                         android:layout_height="wrap_content"
                         android:clickable="true"
                         android:drawablePadding="10dp"
-                        android:maxWidth="200dp"
                         android:padding="10dp"
                         android:text="Godot#1064"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
@@ -71,7 +71,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
-                        android:text="数据统计自  2025.1.10 - 2025.2.4" />
+                        android:text="数据统计自  xxx - xxx" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -127,93 +127,96 @@
                             android:textColor="?attr/colorPrimary" />
                     </LinearLayout>
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="限定已垫"
+                                android:textAppearance="@style/TextAppearance.Body1" />
+
+                            <TextView
+                                android:id="@+id/FesCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="35抽"
+                                android:textColor="?attr/colorPrimary" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="常驻已垫"
+                                android:textAppearance="@style/TextAppearance.Body1" />
+
+                            <TextView
+                                android:id="@+id/NormalCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="35抽"
+                                android:textColor="?attr/colorPrimary" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="中坚已垫"
+                                android:textAppearance="@style/TextAppearance.Body1" />
+
+                            <TextView
+                                android:id="@+id/CoreCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="35抽"
+                                android:textColor="?attr/colorPrimary" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
 
-            <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+<!--            <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">-->
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="10dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="限定已垫"
-                            android:textAppearance="@style/TextAppearance.Body1" />
-
-                        <TextView
-                            android:id="@+id/FesCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="35抽"
-                            android:textColor="?attr/colorPrimary" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="10dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="常驻已垫"
-                            android:textAppearance="@style/TextAppearance.Body1" />
-
-                        <TextView
-                            android:id="@+id/NormalCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="35抽"
-                            android:textColor="?attr/colorPrimary" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="10dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="中坚已垫"
-                            android:textAppearance="@style/TextAppearance.Body1" />
-
-                        <TextView
-                            android:id="@+id/CoreCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="35抽"
-                            android:textColor="?attr/colorPrimary" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-
-                <!--统计信息-->
-                <!--水位信息-->
-            </com.google.android.material.card.MaterialCardView>
+<!--               -->
+<!--                -->
+<!--            </com.google.android.material.card.MaterialCardView>-->
 
 
             <androidx.recyclerview.widget.RecyclerView

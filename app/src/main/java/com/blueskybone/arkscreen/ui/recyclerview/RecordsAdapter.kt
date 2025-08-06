@@ -11,7 +11,8 @@ import coil.load
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.ItemGachaRecordsBinding
 import com.blueskybone.arkscreen.network.avatarUrl
-import com.blueskybone.arkscreen.room.Records
+import com.blueskybone.arkscreen.playerinfo.Records
+import com.blueskybone.arkscreen.util.TimeUtils.getTimeStr
 import java.net.URLEncoder
 
 
@@ -48,6 +49,7 @@ class RecordsAdapter(private val context: Context) :
         fun bind(item: Records) {
             binding.GachaCount.text = context.getString(R.string.gacha_count, item.count)
             binding.ProgressBar.progress = item.count
+            binding.GainDate.text = getTimeStr(item.ts, "MM-dd")
             if (item.isNew) {
                 binding.IsNew.visibility = View.VISIBLE
             } else {

@@ -3,32 +3,48 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
     android:orientation="horizontal">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="15dp"
-        android:paddingEnd="5dp"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp">
+        android:orientation="vertical">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/Avatar"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:background="@color/grey_700"
-            app:shapeAppearanceOverlay="@style/RoundedImageView" />
-
-        <TextView
-            android:id="@+id/IsNew"
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/red"
-            android:contentDescription="@string/text_default"
-            android:text="New"
-            android:textColor="@color/white" />
-    </FrameLayout>
+            android:paddingStart="5dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="5dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/Avatar"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:background="@color/grey_700"
+                app:shapeAppearanceOverlay="@style/RoundedImageView" />
+
+            <TextView
+                android:id="@+id/IsNew"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/red"
+                android:contentDescription="@string/text_default"
+                android:text="New"
+                android:textColor="@color/white" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/GainDate"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12-12" />
+    </LinearLayout>
+
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -46,14 +62,14 @@
             android:progress="20" />
 
         <TextView
-            android:textColor="?attr/colorPrimary"
             android:id="@+id/GachaCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|start"
             android:padding="5dp"
             android:text="56抽"
-            android:textAppearance="?attr/textAppearanceBody1" />
+            android:textAppearance="?attr/textAppearanceBody1"
+            android:textColor="?attr/colorPrimary" />
     </FrameLayout>
 
 

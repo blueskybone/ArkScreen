@@ -50,6 +50,7 @@ import com.blueskybone.arkscreen.ui.recyclerview.AccountAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
 import com.blueskybone.arkscreen.util.TimeUtils
 import com.blueskybone.arkscreen.util.copyToClipboard
+import com.blueskybone.arkscreen.util.openLink
 import com.blueskybone.arkscreen.viewmodel.BaseModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
@@ -60,11 +61,12 @@ import java.util.Locale
  *   Created by blueskybone
  *   Date: 2024/12/31
  */
-class Function : Fragment(), ItemListener {
+class Function : Fragment() {
     private val model: BaseModel by activityViewModels()
     private var _binding: FragmentDashboardBinding? = null
     private val prefManager: PrefManager by getKoin().inject()
     private var adapter: AccountAdapter? = null
+    private var adapterGc: AccountAdapter? = null
     private lateinit var activityResultLauncherSk: ActivityResultLauncher<Intent>
     private lateinit var activityResultLauncherGc: ActivityResultLauncher<Intent>
 
@@ -81,12 +83,64 @@ class Function : Fragment(), ItemListener {
         return binding.root
     }
 
+
+    private val adapterSkListener = object : ItemListener {
+        @SuppressLint("NotifyDataSetChanged")
+        override fun onClick(position: Int) {
+            adapter?.currentList?.get(position)?.let { value ->
+                model.setDefaultAccountSk(value as com.blueskybone.arkscreen.room.AccountSk)
+                Toaster.show(getString(R.string.set_default_account, value.nickName))
+                adapter?.notifyDataSetChanged()
+            }
+        }
+        override fun onLongClick(position: Int) {
+            adapter?.currentList?.get(position)?.let { value ->
+                MenuDialog(requireContext())
+                    .add(getString(R.string.export_cookie)) {
+                        displayExportDialog("${value.token}@${(value as com.blueskybone.arkscreen.room.AccountSk).dId}")
+                    }
+                    .add(R.string.delete) { confirmDeletion(value as com.blueskybone.arkscreen.room.AccountSk) }
+                    .show()
+            }
+        }
+    }
+
+    private val adapterGcListener = object : ItemListener {
+        @SuppressLint("NotifyDataSetChanged")
+        override fun onClick(position: Int) {
+            adapterGc?.currentList?.get(position)?.let { value ->
+                model.setDefaultAccountGc(value as com.blueskybone.arkscreen.room.AccountGc)
+                Toaster.show(getString(R.string.set_default_account, value.nickName))
+                adapterGc?.notifyDataSetChanged()
+            }
+        }
+        override fun onLongClick(position: Int) {
+            adapterGc?.currentList?.get(position)?.let { value ->
+                MenuDialog(requireContext())
+                    .add(getString(R.string.export_cookie)) {
+//                        displayExportDialog("${value.token}@${(value as com.blueskybone.arkscreen.room.AccountGc).dId}")
+                    }
+                    .add(R.string.delete) {  }
+                    .show()
+                //confirmDeletion(value as com.blueskybone.arkscreen.room.AccountSk)
+            }
+        }
+    }
+
+
     private fun initialize() {
-        adapter = AccountAdapter(requireContext(), this)
+        adapter = AccountAdapter(requireContext(), adapterSkListener)
         binding.RecyclerView.adapter = adapter
         model.accountSkList.observe(viewLifecycleOwner) { value ->
             adapter?.submitList(value as List<Account>?)
         }
+
+        adapterGc = AccountAdapter(requireContext(), adapterGcListener)
+        binding.RecyclerViewGc.adapter = adapterGc
+        model.accountGcList.observe(viewLifecycleOwner) { value ->
+            adapterGc?.submitList(value as List<Account>?)
+        }
+
         activityResultLauncherSk = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
@@ -150,7 +204,10 @@ class Function : Fragment(), ItemListener {
                 }
                 .add(R.string.web_login) {
                     val intent =
-                        LoginWeb.startIntent(requireContext(), LoginWeb.Companion.LoginType.GACHA_OFFICIAL)
+                        LoginWeb.startIntent(
+                            requireContext(),
+                            LoginWeb.Companion.LoginType.GACHA_OFFICIAL
+                        )
                     activityResultLauncherGc.launch(intent)
                 }
                 .show()
@@ -339,26 +396,26 @@ class Function : Fragment(), ItemListener {
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    //TODO: 强制刷新影响性能，看能不能改数据结构，用Observe的方法改变视图
-    override fun onClick(position: Int) {
-        adapter?.currentList?.get(position)?.let { value ->
-            model.setDefaultAccountSk(value as com.blueskybone.arkscreen.room.AccountSk)
-            Toaster.show(getString(R.string.set_default_account, value.nickName))
-            adapter?.notifyDataSetChanged()
-        }
-    }
-
-    override fun onLongClick(position: Int) {
-        adapter?.currentList?.get(position)?.let { value ->
-            MenuDialog(requireContext())
-                .add(getString(R.string.export_cookie)) {
-                    displayExportDialog("${value.token}@${(value as com.blueskybone.arkscreen.room.AccountSk).dId}")
-                }
-                .add(R.string.delete) { confirmDeletion(value as com.blueskybone.arkscreen.room.AccountSk) }
-                .show()
-        }
-    }
+//    @SuppressLint("NotifyDataSetChanged")
+//    //TODO: 强制刷新影响性能，看能不能改数据结构，用Observe的方法改变视图
+//    override fun onClick(position: Int) {
+//        adapter?.currentList?.get(position)?.let { value ->
+//            model.setDefaultAccountSk(value as com.blueskybone.arkscreen.room.AccountSk)
+//            Toaster.show(getString(R.string.set_default_account, value.nickName))
+//            adapter?.notifyDataSetChanged()
+//        }
+//    }
+//
+//    override fun onLongClick(position: Int) {
+//        adapter?.currentList?.get(position)?.let { value ->
+//            MenuDialog(requireContext())
+//                .add(getString(R.string.export_cookie)) {
+//                    displayExportDialog("${value.token}@${(value as com.blueskybone.arkscreen.room.AccountSk).dId}")
+//                }
+//                .add(R.string.delete) { confirmDeletion(value as com.blueskybone.arkscreen.room.AccountSk) }
+//                .show()
+//        }
+//    }
 
     private fun displayExportDialog(key: String) {
         val dialogBinding = DialogInputBinding.inflate(layoutInflater)

@@ -30,6 +30,7 @@ import com.blueskybone.arkscreen.playerinfo.cache.ApCache
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.Link
 import com.blueskybone.arkscreen.ui.activity.CharAssets
+import com.blueskybone.arkscreen.ui.activity.GachaActivity
 import com.blueskybone.arkscreen.ui.activity.LoginWeb
 import com.blueskybone.arkscreen.ui.activity.RealTimeActivity
 import com.blueskybone.arkscreen.ui.activity.RecruitActivity
@@ -228,7 +229,8 @@ class Home : Fragment() {
             startActivity(Intent(requireContext(), CharAssets::class.java))
         }
         binding.GachaStat.Layout.setOnClickListener {
-            Toaster.show("施工中...")
+//            Toaster.show("施工中...")
+            startActivity(Intent(requireContext(), GachaActivity::class.java))
         }
         binding.AddLink.setOnClickListener {
             onAddButtonClick()
