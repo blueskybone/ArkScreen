@@ -6,6 +6,7 @@
         <item name="colorPrimaryDark">@color/blue_600</item>
         <item name="colorSecondary">?attr/colorPrimary</item>
         <item name="colorSurface">@color/purple_50</item>
+        <item name="colorOnSurface">@color/dark_blue</item>
         <item name="android:colorBackground">@color/purple_bg</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/transparent</item>

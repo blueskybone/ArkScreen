@@ -14,6 +14,7 @@ import com.blueskybone.arkscreen.network.announceUrl
 import com.blueskybone.arkscreen.network.getVideoList
 import com.blueskybone.arkscreen.playerinfo.cache.ApCache
 import com.blueskybone.arkscreen.preference.PrefManager
+import com.blueskybone.arkscreen.room.Account
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.ArkDatabase
@@ -226,24 +227,43 @@ class BaseModel : ViewModel() {
                 _accountGcList.postValue(accountGcDao.getAll())
                 if (prefManager.baseAccountGc.get().uid == "")
                     prefManager.baseAccountGc.set(account)
-                Toaster.show("获取成功：" + account.nickName)
+                Toaster.show("登录成功：" + account.nickName)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
-    fun deleteAccountSk(account: AccountSk) {
-        executeAsync {
-            accountSkDao.delete(account.id)
-            _accountSkList.postValue(accountSkDao.getAll())
-        }
-    }
+//    fun deleteAccountSk(account: AccountSk) {
+//        executeAsync {
+//            accountSkDao.delete(account.id)
+//            _accountSkList.postValue(accountSkDao.getAll())
+//        }
+//    }
+//
+//    fun deleteAccountGc(account: AccountGc) {
+//        executeAsync {
+//            accountGcDao.delete(account.id)
+//            _accountGcList.postValue(accountGcDao.getAll())
+//        }
+//    }
 
-    fun deleteAccountGc(account: AccountGc) {
+    fun deleteAccount(account: Account){
         executeAsync {
-            accountGcDao.delete(account.id)
-            _accountGcList.postValue(accountGcDao.getAll())
+            when(account){
+                is AccountSk-> {
+                    accountSkDao.delete(account.id)
+                    _accountSkList.postValue(accountSkDao.getAll())
+                }
+                is AccountGc->{
+                    accountGcDao.delete(account.id)
+                    _accountGcList.postValue(accountGcDao.getAll())
+                }
+                else ->{
+                    Toaster.show("Account's data type unknown.")
+                    Timber.e("deleteAccount() error : Account's data type unknown.")
+                }
+            }
         }
     }
 

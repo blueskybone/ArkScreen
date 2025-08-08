@@ -310,6 +310,15 @@ class Widget4 : AppWidgetProvider() {
                 )
                 views.setOnClickPendingIntent(R.id.starter, pendingIntentStart)
             }
+
+            val pendingIntentRefresh = PendingIntent.getBroadcast(
+                context,
+                appWidgetId, // 使用 widgetId 作为 requestCode 确保唯一性
+                updateIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            views.setOnClickPendingIntent(R.id.refresh_data, pendingIntentRefresh)
+
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }

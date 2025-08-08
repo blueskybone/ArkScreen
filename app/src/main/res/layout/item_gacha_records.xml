@@ -17,8 +17,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="5dp"
             android:paddingTop="5dp"
-            android:paddingEnd="5dp"
-            android:paddingBottom="5dp">
+            android:paddingEnd="5dp">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/Avatar"
@@ -42,6 +41,7 @@
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="12sp"
             android:text="12-12" />
     </LinearLayout>
 

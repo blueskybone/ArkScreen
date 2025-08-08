@@ -23,40 +23,39 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <FrameLayout
-                android:paddingEnd="16dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center"
+                android:layout_marginStart="18dp"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/Icon"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/NickName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_gravity="end|center"
-                    tools:ignore="UseCompoundDrawables">
-                    <ImageView
-                        android:id="@+id/Icon"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_gravity="center"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                    android:clickable="true"
+                    android:drawablePadding="10dp"
+                    android:padding="10dp"
+                    android:text="Godot#1064"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:textColor="?attr/colorPrimary" />
 
-                    <TextView
-                        android:id="@+id/NickName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:drawablePadding="10dp"
-                        android:padding="10dp"
-                        android:text="Godot#1064"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                        android:textColor="?attr/colorPrimary"
-                        app:drawableRightCompat="@drawable/ic_exchange"
-                        app:drawableTint="?attr/colorOnBackground" />
+                <!--                    app:drawableRightCompat="@drawable/ic_exchange"-->
+                <!--                    app:drawableTint="?attr/colorOnBackground"-->
 
-                </LinearLayout>
-            </FrameLayout>
+            </LinearLayout>
 
             <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
 
@@ -131,6 +130,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="?android:attr/listDivider" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -202,22 +202,10 @@
                                 android:layout_height="wrap_content"
                                 android:text="35抽"
                                 android:textColor="?attr/colorPrimary" />
-
                         </LinearLayout>
-
                     </LinearLayout>
-
                 </LinearLayout>
-
             </com.google.android.material.card.MaterialCardView>
-
-
-<!--            <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">-->
-
-<!--               -->
-<!--                -->
-<!--            </com.google.android.material.card.MaterialCardView>-->
-
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/RecyclerView"
@@ -226,15 +214,11 @@
                 android:nestedScrollingEnabled="false"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
-
-
     <FrameLayout
         android:id="@+id/Page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/Toolbar"
         android:visibility="visible">
 
         <TextView

@@ -21,20 +21,41 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                style="@style/PreferenceHeader"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:text="@string/account_manage" />
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/PreferenceHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="@string/skland_account_manage" />
+                <ImageView
+                    android:id="@+id/SkInfo"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_info" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/AddAccount"
+                android:id="@+id/AddAccountSk"
                 style="@style/PreferenceHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:text="@string/add_account" />
+                android:text="@string/add" />
+            <!--            <ImageView-->
+            <!--                android:id="@+id/AddAccount"-->
+            <!--                android:layout_width="14dp"-->
+            <!--                android:layout_height="14dp"-->
+            <!--                android:layout_marginEnd="20dp"-->
+            <!--                android:layout_gravity="center|end"-->
+            <!--                android:contentDescription="@null"-->
+            <!--                android:src="@drawable/ic_plus" />-->
         </FrameLayout>
 
         <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
@@ -50,12 +71,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                style="@style/PreferenceHeader"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:text="@string/account_manage" />
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/PreferenceHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="@string/gacha_account_manage" />
+
+                <ImageView
+                    android:id="@+id/GcInfo"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_info" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/AddAccountGc"
@@ -63,7 +98,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:text="@string/add_account" />
+                android:text="@string/add" />
+            <!--            <ImageView-->
+            <!--                android:id="@+id/AddAccountGc"-->
+            <!--                android:layout_width="14dp"-->
+            <!--                android:layout_height="14dp"-->
+            <!--                android:layout_marginEnd="20dp"-->
+            <!--                android:layout_gravity="center|end"-->
+            <!--                android:contentDescription="@null"-->
+            <!--                android:src="@drawable/ic_plus" />-->
         </FrameLayout>
 
         <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
@@ -74,7 +117,6 @@
                 android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         </com.google.android.material.card.MaterialCardView>
-
 
 
         <FrameLayout
@@ -117,7 +159,7 @@
                 <include
                     android:id="@+id/ScreenShotDelay"
                     layout="@layout/preference_seekbar"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <include
                     android:id="@+id/OverlayPermission"
@@ -146,8 +188,8 @@
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/AutoAttendance"
                     style="@style/SwitchPreference"
-                    android:visibility="gone"
-                    android:text="@string/skland_auto_attendance" />
+                    android:text="@string/skland_auto_attendance"
+                    android:visibility="gone" />
 
                 <include
                     android:id="@+id/PowerSavingMode"
@@ -162,9 +204,9 @@
                     android:text="@string/widget_appearance" />
 
                 <include
-                    android:visibility="gone"
                     android:id="@+id/WidgetRefresh"
-                    layout="@layout/preference" />
+                    layout="@layout/preference"
+                    android:visibility="gone" />
 
                 <include
                     android:id="@+id/TurnOffBatteryOptimization"
