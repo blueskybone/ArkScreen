@@ -25,6 +25,7 @@ class WidgetReceiver : BroadcastReceiver() {
             intent.getStringExtra("msg")?.let { msg ->
                 Toaster.show(msg)
             }
+            Toaster.show("更新中...")
             Timber.i("WidgetReceiver onReceive")
             WorkManager.getInstance(context!!)
                 .enqueue(OneTimeWorkRequest.from(SklandWorker::class.java))

@@ -132,9 +132,7 @@ class GachaModel : ViewModel() {
         val data = recordsDb.sortedByDescending { it.ts }
         if (data.isEmpty()) return listOf()
         dateRange =
-            getTimeStrYMD(data.first().ts / 1000) + "-" + getTimeStrYMD(data.last().ts / 1000)
-        //
-        val groupByPool = data.groupBy { it.pool }
+            getTimeStrYMD(data.last().ts / 1000) + "-" + getTimeStrYMD(data.first().ts / 1000)
 
 
         //test
