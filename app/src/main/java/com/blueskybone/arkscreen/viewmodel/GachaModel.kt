@@ -29,6 +29,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.java.KoinJavaComponent.getKoin
+import timber.log.Timber
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -75,34 +76,25 @@ class GachaModel : ViewModel() {
 
     private fun initialize() {
         viewModelScope.launch {
-            _uiState.value = DataUiState.Loading("LOADING...")
+            _uiState.value = DataUiState.Loading("加载中...")
             curAccount = prefManager.baseAccountGc.get()
             if (curAccount.uid == "") {
                 _uiState.value = DataUiState.Error("请在 卡池账号管理 添加账号")
                 return@launch
             }
             withContext(Dispatchers.IO) {
-//                try {
-//                    CharAllMap.updateFile()
-//                } catch (e: Exception) {
-//                    e.printStackTrace()
-//                }
                 try {
-//                    charsNode = readFileAsJsonNode(CharAllMap.getFilePath())["charInfoMap"]
-//                    loadGachaRecords(curAccount)
-//                    fesPool = getPoolType()
-//                    _gachaData.postValue(processGachaData(curAccount))
                     val listLocal = loadLocalRecords(curAccount)
                     val lastTs =
                         if (listLocal.isEmpty()) 0L else listLocal.last().ts   //获取最后一条历史时间避免每次pull全部数据
                     val listNewPull = pullRecords(curAccount, lastTs)
-                    gachaDao.insert(listNewPull)     //自动去重
+                    gachaDao.insert(listNewPull)
                     val records = loadLocalRecords(curAccount)
                     _gachaData.postValue((convertRecordsToList(records)))
                     _uiState.postValue(DataUiState.Success(""))
                 } catch (e: Exception) {
-                    e.printStackTrace()
-                    _uiState.postValue(DataUiState.Error(e.message ?: "error message null"))
+                    Timber.e("加载失败：${e.message}")
+                    _uiState.postValue(DataUiState.Error("加载失败：${e.message}"))
                 }
             }
         }

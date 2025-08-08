@@ -62,7 +62,7 @@
     <string name="simple">简洁</string>
 
     <string name="screenshot_delay">截图延迟秒数</string>
-    <string name="screenshot_delay_detail">部分情况出现“未获取有效信息”可能是截图前摇过短截取了错误画面引起的</string>
+<!--    <string name="screenshot_delay_detail">部分情况出现“未获取有效信息”可能是截图前摇过短截取了错误画面引起的</string>-->
 
     <string name="overlay_permission">获取悬浮窗权限</string>
     <string name="overlay_permission_detail">快速公招功能需要悬浮窗权限</string>
@@ -120,8 +120,7 @@
     <string name="power_saving_mode">省流模式</string>
     <string name="power_saving_mode_detail">使用缓存推算理智/无人机数据</string>
 
-    <string name="mess_option">杂项</string>
-    <string name="advanced">高级</string>
+    <string name="mess_option">杂项</string>=
     <string name="show_home_announce">显示首页公告</string>
     <string name="use_inner_web">使用内置浏览器</string>
     <string name="use_inner_web_detail">所有链接页面使用内置浏览器打开</string>
@@ -130,25 +129,14 @@
     <string name="about">关于</string>
 
     <string name="time_correction">时间校准</string>
-    <string name="debug_log">调试信息</string>
-    <string name="debug_log_clean">清除日志</string>
-    <!--    <string name="debug_mode">调试模式</string>-->
-    <!--    <string name="debug_mode_detail">可能拖慢性能</string>-->
-    <string name="click_correction">点击校准</string>
     <string name="time_correction_detail">适用于修改过本地时间的设备</string>
-    <!--    <string name="click_to_correct">点击校准</string>-->
-    <!--    <string name="real_time_attendance">实时数据页触发签到</string>-->
-    <!--    <string name="real_time_attendance_detail">打开实时数据详情页同时触发签到</string>-->
     <string name="others">其他</string>
 
     <!-- Function Page -->
     <string name="quick_recruit">快速公招</string>
     <string name="float_recruit">悬浮球公招</string>
-    <string name="account_manage">账号管理</string>
-    <string name="skland_account_manage">游戏账号管理</string>
-    <string name="gacha_account_manage">卡池账号管理</string>
-    <string name="home_3rd_link_manage">首页链接管理</string>
-    <string name="recruit_cal">公招计算器</string>
+    <string name="skland_account_manage">游戏账号</string>
+    <string name="gacha_account_manage">卡池账号</string>
     <string name="recruit_calc">公招计算</string>
     <string name="real_time_data">实时数据</string>
     <string name="operator_assets">干员资产</string>
@@ -159,9 +147,11 @@
     <string name="text_web_skland">划到最右端点击“发图文”，登录后点击此处</string>
     <string name="text_web_ark">登录后点击此处</string>
     <string name="getting_info">获取信息中</string>
-    <string name="list_content_sk">提示：登录后需要点击账号以设置默认账号。\n游戏账号用于查询游戏数据、森空岛签到。\n可能会导致森空岛app登录状态失效。\n可长按操作。</string>
-    <string name="list_content_gc">提示：登录后需要点击账号以设置默认账号。\n卡池账号仅用于寻访统计。\n可长按操作。</string>
+    <string name="sk_account_info">游戏账号用于查询游戏数据、森空岛签到。\n可能会导致森空岛app登录状态失效。\n可长按操作。</string>
+    <string name="gc_account_info">卡池账号仅用于寻访统计。\n可长按操作。</string>
+    <string name="account_info">说明</string>
     <string name="add_account">添加账号</string>
+    <string name="add_icon">+</string>
     <string name="add_site">添加网址</string>
     <string name="edit_site">编辑网址</string>
     <string name="prefix">https://</string>
@@ -193,6 +183,7 @@
     <string name="newest_update">当前是最新版本</string>
     <string name="send_feedback">发送反馈</string>
     <string name="open_license">开源许可</string>
+    <string name="logs_option">日志</string>
     <string name="check_logs">查看日志</string>
     <string name="clean_logs">清除日志</string>
     <string name="open_license_content">[Markwon](https://github.com/noties/Markwon)\n\n

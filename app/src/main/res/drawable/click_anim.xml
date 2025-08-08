@@ -1,8 +1,0 @@
-<animated-vector
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/ic_starter">
-
-    <target
-        android:name="circle"
-        android:animation="@animator/fade_out_scale"/>
-</animated-vector>

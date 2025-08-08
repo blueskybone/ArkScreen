@@ -2,24 +2,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:id="@+id/Layout"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/Title"
+<!--    <ImageView-->
+<!--        android:id="@+id/Icon"-->
+<!--        android:layout_width="20dp"-->
+<!--        android:layout_height="20dp"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:contentDescription="@string/text_default"-->
+<!--        android:layout_marginEnd="10dp"-->
+<!--        android:src="@drawable/ic_tags"-->
+<!--        app:tint="?attr/colorOnSurface"/>-->
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/PreferenceTitle" />
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/PreferenceTitle" />
 
-    <TextView
-        android:id="@+id/Value"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?attr/textAppearanceBody2"
-        android:textColor="?attr/colorControlNormal" />
+        <TextView
+            android:id="@+id/Value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:textColor="?attr/colorControlNormal" />
+    </LinearLayout>
+
 
 </LinearLayout>

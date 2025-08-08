@@ -51,10 +51,12 @@ import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
 import com.blueskybone.arkscreen.util.TimeUtils
 import com.blueskybone.arkscreen.util.copyToClipboard
 import com.blueskybone.arkscreen.util.openLink
+import com.blueskybone.arkscreen.util.saveDrawableToGallery
 import com.blueskybone.arkscreen.viewmodel.BaseModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
 import org.koin.android.ext.android.getKoin
+import timber.log.Timber
 import java.util.Locale
 
 /**
@@ -93,13 +95,14 @@ class Function : Fragment() {
                 adapter?.notifyDataSetChanged()
             }
         }
+
         override fun onLongClick(position: Int) {
             adapter?.currentList?.get(position)?.let { value ->
                 MenuDialog(requireContext())
                     .add(getString(R.string.export_cookie)) {
                         displayExportDialog("${value.token}@${(value as com.blueskybone.arkscreen.room.AccountSk).dId}")
                     }
-                    .add(R.string.delete) { confirmDeletion(value as com.blueskybone.arkscreen.room.AccountSk) }
+                    .add(R.string.delete) { confirmDeletion(value) }
                     .show()
             }
         }
@@ -114,15 +117,17 @@ class Function : Fragment() {
                 adapterGc?.notifyDataSetChanged()
             }
         }
+
         override fun onLongClick(position: Int) {
             adapterGc?.currentList?.get(position)?.let { value ->
                 MenuDialog(requireContext())
                     .add(getString(R.string.export_cookie)) {
-//                        displayExportDialog("${value.token}@${(value as com.blueskybone.arkscreen.room.AccountGc).dId}")
+                        val account = value as com.blueskybone.arkscreen.room.AccountGc
+                        displayExportDialog("${account.token}@${account.akUserCenter}@${account.xrToken}")
                     }
-                    .add(R.string.delete) {  }
+                    .add(R.string.delete) { confirmDeletion(value) }
                     .show()
-                //confirmDeletion(value as com.blueskybone.arkscreen.room.AccountSk)
+                //
             }
         }
     }
@@ -184,10 +189,10 @@ class Function : Fragment() {
 
     private fun setUpBinding() {
 
-        binding.AddAccount.setOnClickListener {
+        binding.AddAccountSk.setOnClickListener {
             MenuDialog(requireContext())
                 .add(getString(R.string.import_cookie)) {
-                    displayLoginDialog()
+                    displayLoginDialog(1)
                 }
                 .add(R.string.web_login) {
                     val intent =
@@ -200,7 +205,7 @@ class Function : Fragment() {
         binding.AddAccountGc.setOnClickListener {
             MenuDialog(requireContext())
                 .add(getString(R.string.import_cookie)) {
-                    displayLoginDialog()
+                    displayLoginDialog(2)
                 }
                 .add(R.string.web_login) {
                     val intent =
@@ -213,6 +218,21 @@ class Function : Fragment() {
                 .show()
         }
 
+        binding.GcInfo.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.account_info)
+                .setMessage(R.string.gc_account_info)
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+        }
+
+        binding.SkInfo.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.account_info)
+                .setMessage(R.string.sk_account_info)
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+        }
 
 
         bindSwitchView(binding.AutoAttendance, prefManager.autoAttendance)
@@ -268,7 +288,8 @@ class Function : Fragment() {
         timePickerBinding()
     }
 
-    private fun displayLoginDialog() {
+    //type: 1 for sk, 2 for gc
+    private fun displayLoginDialog(type: Int) {
         val dialogBinding = DialogInputBinding.inflate(layoutInflater)
         dialogBinding.EditText2.visibility = View.GONE
         dialogBinding.EditText1.hint = getString(R.string.import_cookie)
@@ -279,16 +300,32 @@ class Function : Fragment() {
             .setPositiveButton(R.string.import_cookie) { _, _ ->
                 val str = dialogBinding.EditText1.text.toString()
                 val list = str.split("@")
-                if (list.size == 2) {
-                    try {
-                        Toaster.show(getString(R.string.getting_info))
-                        model.accountSkLogin(list[0], list[1])
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                if (type == 1) {
+                    if (list.size == 2) {
+                        try {
+                            Toaster.show(getString(R.string.getting_info))
+                            model.accountSkLogin(list[0], list[1])
+                        } catch (e: Exception) {
+                            Toaster.show("cookie登录失败：${e.message}")
+                            Timber.e("cookie登录失败：${e.message}")
+                        }
+                    } else {
+                        Toaster.show(getString(R.string.wrong_format))
                     }
-                } else {
-                    Toaster.show(getString(R.string.wrong_format))
+                } else if (type == 2) {
+                    if (list.size == 3) {
+                        try {
+                            Toaster.show(getString(R.string.getting_info))
+                            model.accountGcLogin(list[0], 1, list[1], list[2])
+                        } catch (e: Exception) {
+                            Toaster.show("cookie登录失败：${e.message}")
+                            Timber.e("cookie登录失败：${e.message}")
+                        }
+                    } else {
+                        Toaster.show(getString(R.string.wrong_format) + list.size)
+                    }
                 }
+
             }.show()
     }
 
@@ -396,27 +433,6 @@ class Function : Fragment() {
         }
     }
 
-//    @SuppressLint("NotifyDataSetChanged")
-//    //TODO: 强制刷新影响性能，看能不能改数据结构，用Observe的方法改变视图
-//    override fun onClick(position: Int) {
-//        adapter?.currentList?.get(position)?.let { value ->
-//            model.setDefaultAccountSk(value as com.blueskybone.arkscreen.room.AccountSk)
-//            Toaster.show(getString(R.string.set_default_account, value.nickName))
-//            adapter?.notifyDataSetChanged()
-//        }
-//    }
-//
-//    override fun onLongClick(position: Int) {
-//        adapter?.currentList?.get(position)?.let { value ->
-//            MenuDialog(requireContext())
-//                .add(getString(R.string.export_cookie)) {
-//                    displayExportDialog("${value.token}@${(value as com.blueskybone.arkscreen.room.AccountSk).dId}")
-//                }
-//                .add(R.string.delete) { confirmDeletion(value as com.blueskybone.arkscreen.room.AccountSk) }
-//                .show()
-//        }
-//    }
-
     private fun displayExportDialog(key: String) {
         val dialogBinding = DialogInputBinding.inflate(layoutInflater)
         dialogBinding.EditText2.visibility = View.GONE
@@ -430,10 +446,10 @@ class Function : Fragment() {
             }.show()
     }
 
-    private fun confirmDeletion(value: com.blueskybone.arkscreen.room.AccountSk) {
+    private fun confirmDeletion(value: Account) {
         MaterialAlertDialogBuilder(requireContext())
             .setMessage(R.string.confirm_delete)
-            .setPositiveButton(R.string.delete) { _, _ -> model.deleteAccountSk(value) }
+            .setPositiveButton(R.string.delete) { _, _ -> model.deleteAccount(value) }
             .setNegativeButton(R.string.cancel, null)
             .show()
     }
