@@ -75,6 +75,7 @@ abstract class ArkDatabase : RoomDatabase() {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE AccountGc ADD COLUMN akUserCenter TEXT NOT NULL DEFAULT ''")
                 db.execSQL("ALTER TABLE AccountGc ADD COLUMN xrToken TEXT NOT NULL DEFAULT ''")
+
                 db.execSQL("DROP TABLE Gacha")
                 db.execSQL("""
             CREATE TABLE Gacha (
@@ -91,7 +92,7 @@ abstract class ArkDatabase : RoomDatabase() {
                 pos INTEGER NOT NULL DEFAULT 0
             )
         """)
-                db.execSQL("CREATE INDEX index_Gacha_uid_ts_pos ON Gacha(uid, ts, pos)")
+                db.execSQL("CREATE UNIQUE INDEX index_Gacha_uid_ts_pos ON Gacha(uid, ts, pos)")
             }
         }
         object Migration6 : Migration(5, 6) {
@@ -112,7 +113,7 @@ abstract class ArkDatabase : RoomDatabase() {
                 pos INTEGER NOT NULL DEFAULT 0
             )
         """)
-                db.execSQL("CREATE INDEX index_Gacha_uid_ts_pos ON Gacha(uid, ts, pos)")
+                db.execSQL("CREATE UNIQUE INDEX index_Gacha_uid_ts_pos ON Gacha(uid, ts, pos)")
             }
         }
     }

@@ -174,7 +174,7 @@ class GachaModel : ViewModel() {
             val gachaIdx = gacha.withIndex()
                 .filter { it.value.rarity == 5 }
                 .map { it.index }
-            rarity6Count += normalIdx.size
+            rarity6Count += gachaIdx.size
             processCateGachaRecords(gacha, gachaIdx, mapLimited)
             if (pool == limited.first().pool) {
                 poolCountFes = gachaIdx.firstOrNull() ?: gacha.size
