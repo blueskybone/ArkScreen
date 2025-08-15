@@ -15,7 +15,7 @@ import com.blueskybone.arkscreen.room.dao.LinkDao
  *   Created by blueskybone
  *   Date: 2025/1/8
  */
-@Database(entities = [AccountSk::class, AccountGc::class, Link::class, Gacha::class], version = 4)
+@Database(entities = [AccountSk::class, AccountGc::class, Link::class, Gacha::class], version = 5)
 abstract class ArkDatabase : RoomDatabase() {
     abstract fun getAccountSkDao(): AccountSkDao
     abstract fun getAccountGcDao(): AccountGcDao
@@ -35,7 +35,8 @@ abstract class ArkDatabase : RoomDatabase() {
                     context.applicationContext,
                     ArkDatabase::class.java,
                     DatabaseName
-                ).addMigrations(Migration2).addMigrations(Migration3).addMigrations(Migration4).build()
+                ).addMigrations(Migration2).addMigrations(Migration3).addMigrations(Migration4)
+                    .addMigrations(Migration5).build()
                 INSTANCE = instance
                 instance
             }
@@ -56,16 +57,63 @@ abstract class ArkDatabase : RoomDatabase() {
 
             }
         }
-        object Migration3: Migration(2,3){
+
+        object Migration3 : Migration(2, 3) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("CREATE TABLE Gacha (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, uid TEXT NOT NULL, ts INTEGER NOT NULL, pool TEXT NOT NULL, record TEXT NOT NULL)")
                 db.execSQL("CREATE INDEX index_Gacha_uid ON Gacha(uid)")
             }
         }
 
-        object Migration4: Migration(3,4){
+        object Migration4 : Migration(3, 4) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE Link ADD COLUMN icon TEXT NOT NULL DEFAULT ''")
+            }
+        }
+
+        object Migration5 : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE AccountGc ADD COLUMN akUserCenter TEXT NOT NULL DEFAULT ''")
+                db.execSQL("ALTER TABLE AccountGc ADD COLUMN xrToken TEXT NOT NULL DEFAULT ''")
+
+                db.execSQL("DROP TABLE Gacha")
+                db.execSQL("""
+            CREATE TABLE Gacha (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                poolId TEXT NOT NULL DEFAULT 'UN',
+                poolCate TEXT NOT NULL DEFAULT 'UN',
+                uid TEXT NOT NULL,
+                ts INTEGER NOT NULL,
+                pool TEXT NOT NULL,
+                charName TEXT NOT NULL,
+                charId TEXT NOT NULL,
+                rarity INTEGER NOT NULL,
+                isNew INTEGER NOT NULL,
+                pos INTEGER NOT NULL DEFAULT 0
+            )
+        """)
+                db.execSQL("CREATE UNIQUE INDEX index_Gacha_uid_ts_pos ON Gacha(uid, ts, pos)")
+            }
+        }
+        object Migration6 : Migration(5, 6) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("DROP TABLE Gacha")
+                db.execSQL("""
+            CREATE TABLE Gacha (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                poolId TEXT NOT NULL DEFAULT 'UN',
+                poolCate TEXT NOT NULL DEFAULT 'UN',
+                uid TEXT NOT NULL,
+                ts INTEGER NOT NULL,
+                pool TEXT NOT NULL,
+                charName TEXT NOT NULL,
+                charId TEXT NOT NULL,
+                rarity INTEGER NOT NULL,
+                isNew INTEGER NOT NULL,
+                pos INTEGER NOT NULL DEFAULT 0
+            )
+        """)
+                db.execSQL("CREATE UNIQUE INDEX index_Gacha_uid_ts_pos ON Gacha(uid, ts, pos)")
             }
         }
     }

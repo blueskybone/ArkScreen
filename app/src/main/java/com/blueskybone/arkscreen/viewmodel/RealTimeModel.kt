@@ -40,7 +40,7 @@ class RealTimeModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            _uiState.value = DataUiState.Loading("LOADING...")
+            _uiState.value = DataUiState.Loading("加载中...")
             withContext(Dispatchers.IO) {
                 loadRealTimeData()
             }
@@ -50,7 +50,7 @@ class RealTimeModel : ViewModel() {
     private suspend fun loadRealTimeData() {
         val accountSk = prefManager.baseAccountSk.get()
         if (accountSk.uid == "") {
-            _uiState.postValue(DataUiState.Error("未登录"))
+            _uiState.postValue(DataUiState.Error("请先添加账号"))
             return
         }
         try {
@@ -59,7 +59,7 @@ class RealTimeModel : ViewModel() {
             realTimeUi = processData(realTimeData, accountSk.official)
             _uiState.postValue(DataUiState.Success(""))
         } catch (e: Exception) {
-            _uiState.postValue(DataUiState.Error(e.message ?: "LOADING FAILED"))
+            _uiState.postValue(DataUiState.Error("加载失败: ${e.message }"))
         }
     }
 

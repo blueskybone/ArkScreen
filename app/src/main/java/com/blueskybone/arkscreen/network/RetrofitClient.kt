@@ -34,10 +34,6 @@ object RetrofitClient {
         .addInterceptor { chain ->
             val original = chain.request()
             val request = original.newBuilder()
-                .header(
-                    "User-Agent",
-                    "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0"
-                )
                 .method(original.method, original.body)
                 .build()
             chain.proceed(request)

@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@string/recruit_cal" />
+        app:title="@string/recruit_calc" />
 
     <ScrollView
         android:id="@+id/ScrollView"

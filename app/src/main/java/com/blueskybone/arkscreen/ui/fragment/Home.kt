@@ -14,8 +14,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -30,6 +32,7 @@ import com.blueskybone.arkscreen.playerinfo.cache.ApCache
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.Link
 import com.blueskybone.arkscreen.ui.activity.CharAssets
+import com.blueskybone.arkscreen.ui.activity.GachaActivity
 import com.blueskybone.arkscreen.ui.activity.LoginWeb
 import com.blueskybone.arkscreen.ui.activity.RealTimeActivity
 import com.blueskybone.arkscreen.ui.activity.RecruitActivity
@@ -48,7 +51,14 @@ import com.blueskybone.arkscreen.util.openLink
 import com.blueskybone.arkscreen.viewmodel.BaseModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.getKoin
+import kotlin.math.abs
+import kotlin.math.max
 
 
 /**
@@ -64,6 +74,9 @@ class Home : Fragment() {
 
     private var adapter: LinkGridAdapter? = null
     private var adapterBanner: ImagePagerAdapter? = null
+    private var autoScrollJob: Job? = null
+    private val scrollDelay = 5000L
+
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
     private val adapterListener = object : ItemListener {
@@ -162,10 +175,24 @@ class Home : Fragment() {
             adapterBanner = ImagePagerAdapter(bannerListener, value)
             binding.TitleBanner.adapter = adapterBanner
             setupIndicators(value)
+            startAutoScroll()
             binding.TitleBanner.isUserInputEnabled = true
         }
     }
 
+    private fun startAutoScroll() {
+        autoScrollJob = lifecycleScope.launch {
+            while (true) {
+                delay(scrollDelay)
+                withContext(Dispatchers.Main) {
+                    val nextItem =
+                        (binding.TitleBanner.currentItem + 1) % (binding.TitleBanner.adapter?.itemCount
+                            ?: 1)
+                    binding.TitleBanner.setCurrentItem(nextItem, true)
+                }
+            }
+        }
+    }
 
     private fun setupBinding() {
         binding.RealTimeData.setOnClickListener {
@@ -206,15 +233,12 @@ class Home : Fragment() {
             }
         }
 
-        binding.Recruit.setOnClickListener {
-            startActivity(Intent(requireContext(), RecruitActivity::class.java))
-        }
-        binding.TitleImage.setOnClickListener {
-            if (prefManager.baseAccountSk.get().official)
-                openAnotherApp("com.hypergryph.arknights")
-            else
-                openAnotherApp("com.hypergryph.arknights.bilibili")
-        }
+//        binding.TitleImage.setOnClickListener {
+//            if (prefManager.baseAccountSk.get().official)
+//                openAnotherApp("com.hypergryph.arknights")
+//            else
+//                openAnotherApp("com.hypergryph.arknights.bilibili")
+//        }
 
         binding.RecruitCalc.setup(RecruitCal)
         binding.OpeAssets.setup(OpeAssets)
@@ -228,7 +252,7 @@ class Home : Fragment() {
             startActivity(Intent(requireContext(), CharAssets::class.java))
         }
         binding.GachaStat.Layout.setOnClickListener {
-            Toaster.show("施工中...")
+            startActivity(Intent(requireContext(), GachaActivity::class.java))
         }
         binding.AddLink.setOnClickListener {
             onAddButtonClick()
@@ -236,7 +260,6 @@ class Home : Fragment() {
         binding.Attendance.Layout.setOnClickListener {
             Toaster.show("签到开始，可在通知栏查看进度")
             model.startAttendance(requireContext())
-            //displayAttendanceDialog()
         }
 
         binding.ExLinks.layoutManager = GridLayoutManager(requireContext(), 4)

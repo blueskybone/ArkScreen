@@ -14,6 +14,7 @@ import com.blueskybone.arkscreen.network.announceUrl
 import com.blueskybone.arkscreen.network.getVideoList
 import com.blueskybone.arkscreen.playerinfo.cache.ApCache
 import com.blueskybone.arkscreen.preference.PrefManager
+import com.blueskybone.arkscreen.room.Account
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.ArkDatabase
@@ -56,23 +57,20 @@ class BaseModel : ViewModel() {
     private val _accountGcList = MutableLiveData<List<AccountGc>>()
     val accountGcList: LiveData<List<AccountGc>> get() = _accountGcList
 
+    private val _currentAccountGc = MutableLiveData<AccountGc?>()
+    val currentAccountGc: LiveData<AccountGc?> get() = _currentAccountGc
+
     private val _appUpdateInfo = MutableLiveData<AppUpdateInfo.UpdateInfo>()
     val appUpdateInfo: LiveData<AppUpdateInfo.UpdateInfo> get() = _appUpdateInfo
 
     private val _apCache = MutableLiveData<ApCache>()
     val apCache: LiveData<ApCache> get() = _apCache
 
-//    private val _attendanceLog = MutableLiveData<String>()
-//    val attendanceLog: LiveData<String> get() = _attendanceLog
-
     private val _announce = MutableLiveData<String>()
     val announce: LiveData<String> get() = _announce
 
     private val _biliVideo = MutableLiveData<List<BiliVideo>>()
     val biliVideo: LiveData<List<BiliVideo>> get() = _biliVideo
-
-
-//    private val biliwbi: WbiParams
 
     init {
         initialize()
@@ -88,26 +86,6 @@ class BaseModel : ViewModel() {
         }
     }
 
-//    fun runAttendance() {
-//        job?.cancel()
-//        job = viewModelScope.launch(Dispatchers.IO) {
-//            val builder = StringBuilder()
-//            accountSkList.value?.let { list ->
-//                builder.append("开始任务：\n")
-//                for (account in list) {
-//                    if (account.uid != "") {
-//                        builder.append(account.nickName).append(" 签到中...\n")
-//                        _attendanceLog.postValue(builder.toString())
-//                        builder.append(attendance(account)).append("\n")
-//                        _attendanceLog.postValue(builder.toString())
-//                    }
-//                }
-//                builder.append("签到完成。\n")
-//                _attendanceLog.postValue(builder.toString())
-//            }
-//        }
-//    }
-
     private var job: Job? = null
     fun startAttendance(context: Context) {
         job?.cancel()
@@ -122,14 +100,6 @@ class BaseModel : ViewModel() {
             }
         }
     }
-
-//    private suspend fun attendance(account: AccountSk): String {
-//        return try {
-//            "签到结果：" + sklandAttendance(account)
-//        } catch (e: Exception) {
-//            e.message ?: "什么都没有发生喵"
-//        }
-//    }
 
     private fun insertLinkData() {
         executeAsync {
@@ -189,6 +159,7 @@ class BaseModel : ViewModel() {
             _accountGcList.value = accountGcDao.getAll()
             _links.value = linkDao.getAll().map { it.copy() }
             getDefaultAccountSk()
+            getDefaultAccountGc()
             loadApCache()
         }
     }
@@ -218,6 +189,18 @@ class BaseModel : ViewModel() {
     fun setDefaultAccountGc(account: AccountGc) {
         executeAsync {
             prefManager.baseAccountGc.set(account)
+            _currentAccountGc.postValue(account)
+        }
+    }
+
+    private fun getDefaultAccountGc() {
+        executeAsync {
+            val accountGc = prefManager.baseAccountGc.get()
+            if (accountGc.uid == "") {
+                _currentAccountGc.postValue(null)
+            } else {
+                _currentAccountGc.postValue(accountGc)
+            }
         }
     }
 
@@ -235,39 +218,52 @@ class BaseModel : ViewModel() {
         }
     }
 
-    fun accountGcLogin(token: String, channelMasterId: Int) {
+    fun accountGcLogin(token: String, channelMasterId: Int, akUserCenter: String, xrToken: String) {
         executeAsync {
             try {
-                val account = createGachaAccount(channelMasterId, token) ?: return@executeAsync
+                val account = createGachaAccount(channelMasterId, token, akUserCenter, xrToken)
+                    ?: return@executeAsync
                 accountGcDao.insert(account)
                 _accountGcList.postValue(accountGcDao.getAll())
                 if (prefManager.baseAccountGc.get().uid == "")
                     prefManager.baseAccountGc.set(account)
+                Toaster.show("登录成功：" + account.nickName)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
-    fun deleteAccountSk(account: AccountSk) {
-        executeAsync {
-//            val list = _accountSkList.value?.toMutableList()
-//            list?.remove(account)
-//            val _list = list ?: ArrayList()
-//            _accountSkList.postValue(_list)
-            accountSkDao.delete(account.id)
-            _accountSkList.postValue(accountSkDao.getAll())
-        }
-    }
+//    fun deleteAccountSk(account: AccountSk) {
+//        executeAsync {
+//            accountSkDao.delete(account.id)
+//            _accountSkList.postValue(accountSkDao.getAll())
+//        }
+//    }
+//
+//    fun deleteAccountGc(account: AccountGc) {
+//        executeAsync {
+//            accountGcDao.delete(account.id)
+//            _accountGcList.postValue(accountGcDao.getAll())
+//        }
+//    }
 
-    fun deleteAccountGc(account: AccountGc) {
+    fun deleteAccount(account: Account){
         executeAsync {
-//            val list = _accountSkList.value?.toMutableList()
-//            list?.remove(account)
-//            val _list = list ?: ArrayList()
-//            _accountSkList.postValue(_list)
-            accountGcDao.delete(account.id)
-            _accountGcList.postValue(accountGcDao.getAll())
+            when(account){
+                is AccountSk-> {
+                    accountSkDao.delete(account.id)
+                    _accountSkList.postValue(accountSkDao.getAll())
+                }
+                is AccountGc->{
+                    accountGcDao.delete(account.id)
+                    _accountGcList.postValue(accountGcDao.getAll())
+                }
+                else ->{
+                    Toaster.show("Account's data type unknown.")
+                    Timber.e("deleteAccount() error : Account's data type unknown.")
+                }
+            }
         }
     }
 

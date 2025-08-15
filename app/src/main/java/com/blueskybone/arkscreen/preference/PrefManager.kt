@@ -127,7 +127,7 @@ class PrefManager() {
             "widget_4_show_train",
             true // 默认显示
         )
-        widget4ShowStarter  =preferenceStore.getBoolean(
+        widget4ShowStarter = preferenceStore.getBoolean(
             "widget_4_show_starter",
             true
         )
@@ -373,7 +373,9 @@ class PrefManager() {
                     "@" + account.channelMasterId +
                     "@" + account.nickName +
                     "@" + account.token +
-                    "@" + account.official
+                    "@" + account.official +
+                    "@" + account.akUserCenter +
+                    "@" + account.xrToken
         }
     }
 
@@ -389,7 +391,9 @@ class PrefManager() {
                     list[1].toInt(),
                     list[2],
                     list[3],
-                    list[4].toBoolean()
+                    list[4].toBoolean(),
+                    list[5],
+                    list[6]
                 )
             } catch (e: Exception) {
                 e.printStackTrace()

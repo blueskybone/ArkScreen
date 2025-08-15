@@ -5,8 +5,10 @@ import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.createAccountSk
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.doAttendance
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getBasicInfo
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getCredByGrant
-import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getGachaRecords
+import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getFirstPageRecords
+import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getGachaCate
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getGrantByToken
+import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getMorePageRecords
 import com.blueskybone.arkscreen.network.model.PlayerInfoResp
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
@@ -31,8 +33,13 @@ class NetWorkTask {
             )
         }
 
-        suspend fun createGachaAccount(channelMasterId: Int, token: String): AccountGc? {
-            return getBasicInfo(channelMasterId, token)
+        suspend fun createGachaAccount(
+            channelMasterId: Int,
+            token: String,
+            akUserCenter: String,
+            xrToken: String
+        ): AccountGc? {
+            return getBasicInfo(channelMasterId, token, akUserCenter, xrToken)
         }
 
         @Throws(Exception::class)
@@ -67,22 +74,64 @@ class NetWorkTask {
             return getCredByGrant(grant, dId)
         }
 
-        suspend fun getNewRecords(
-            token: String,
-            channelMasterId: Int,
-            uid: String,
-            lastTs: Long?
+//        suspend fun getNewRecords(
+//            token: String,
+//            channelMasterId: Int,
+//            uid: String,
+//            lastTs: Long?
+//        ): List<Gacha> {
+//            val newRecords = mutableListOf<Gacha>()
+//            for (page in 1..100) {
+//                val records =
+//                    getGachaRecords(page, token, channelMasterId, uid) ?: return newRecords
+//                for (record in records) {
+//                    if (record.ts == lastTs) return newRecords
+//                    else newRecords.add(record)
+//                }
+//            }
+//            return newRecords
+//        }
+
+
+        suspend fun pullNewRecords(
+            accountGc: AccountGc,
+            lastTs: Long
         ): List<Gacha> {
-            val newRecords = mutableListOf<Gacha>()
-            for (page in 1..100) {
-                val records =
-                    getGachaRecords(page, token, channelMasterId, uid) ?: return newRecords
-                for (record in records) {
-                    if (record.ts == lastTs) return newRecords
-                    else newRecords.add(record)
+            val cateList = getGachaCate(accountGc)
+            val records = mutableListOf<Gacha>()
+            cateList.forEach { cate ->
+                var resp = getFirstPageRecords(accountGc, cate)
+                while (true) {
+                    val list = resp.data.list.map {
+                        Gacha(
+                            poolId = it.poolId,
+                            poolCate = it.poolId.toCate(),
+                            uid = accountGc.uid,
+                            ts = it.gachaTs,
+                            pool = it.poolName,
+                            charName = it.charName,
+                            charId = it.charId,
+                            rarity = it.rarity,
+                            isNew = it.isNew,
+                            pos = it.pos
+                        )
+                    }
+                    records.addAll(list)
+                    if (list.isEmpty()) break
+                    if (list.last().ts < lastTs) break
+                    if (!resp.data.hasMore) break
+                    resp = getMorePageRecords(accountGc, cate, list.last().pos, list.last().ts)
                 }
             }
-            return newRecords
+            return records.toList()
+        }
+
+        private fun String.toCate(): String {
+            if (this.startsWith("LIMITED")) return "LIMITED"
+            if (this.startsWith("CLASSIC")) return "CLASSIC"
+            if (this.startsWith("SINGLE") || this.startsWith("DOUBLE") || this.startsWith("SPECIAL")) return "NORMAL"
+            return "UN"
         }
     }
+
 }

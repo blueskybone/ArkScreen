@@ -38,14 +38,14 @@
 
         <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
 
-            <ImageView
-                android:id="@+id/TitleImage"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:contentDescription="@string/text_default"
-                android:scaleType="centerCrop"
-                android:visibility="gone" />
+<!--            <ImageView-->
+<!--                android:id="@+id/TitleImage"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="120dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:contentDescription="@string/text_default"-->
+<!--                android:scaleType="centerCrop"-->
+<!--                android:visibility="gone" />-->
 
 
             <com.blueskybone.arkscreen.common.NestedScrollableHost
@@ -172,23 +172,6 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-
-        <com.google.android.material.card.MaterialCardView
-            style="@style/CardViewContent"
-            android:clickable="false"
-            android:focusable="false"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/Recruit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="@string/recruit_cal"
-                android:textAppearance="?attr/textAppearanceBody2" />
-        </com.google.android.material.card.MaterialCardView>
-
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -226,65 +209,8 @@
                 android:paddingBottom="5dp"
                 android:visibility="visible"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-            <!--            <GridLayout-->
-            <!--                android:id="@+id/LinkGridLayout"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_gravity="center"-->
-            <!--                android:columnCount="4"-->
-            <!--                android:alignmentMode="alignBounds"-->
-            <!--                android:paddingTop="16dp"-->
-            <!--                android:paddingBottom="16dp"-->
-            <!--                android:visibility="visible">-->
-
-            <!--                <include-->
-            <!--                    layout="@layout/chip_round"-->
-            <!--                    android:layout_column="1"-->
-            <!--                    android:layout_width="wrap_content"-->
-            <!--                    android:layout_height="wrap_content" />-->
-            <!--                <include-->
-            <!--                    layout="@layout/chip_round"-->
-            <!--                    android:layout_columnWeight="1"-->
-            <!--                    android:layout_width="wrap_content"-->
-            <!--                    android:layout_height="wrap_content" />-->
-            <!--            </GridLayout>-->
         </com.google.android.material.card.MaterialCardView>
 
-
-        <!--        <TextView-->
-        <!--            style="@style/PreferenceHeader"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="@string/mess_option" />-->
-
-        <!--        <com.google.android.material.card.MaterialCardView-->
-        <!--            style="@style/CardViewContent"-->
-        <!--            android:clickable="false"-->
-        <!--            android:focusable="false">-->
-
-        <!--            <LinearLayout-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:orientation="vertical">-->
-
-        <!--                <TextView-->
-        <!--                    android:id="@+id/Manual"-->
-        <!--                    android:layout_width="match_parent"-->
-        <!--                    android:layout_height="wrap_content"-->
-        <!--                    android:padding="16dp"-->
-        <!--                    android:text="@string/manual"-->
-        <!--                    android:textAppearance="?attr/textAppearanceBody2" />-->
-
-        <!--                <TextView-->
-        <!--                    android:id="@+id/Donate"-->
-        <!--                    android:layout_width="match_parent"-->
-        <!--                    android:layout_height="wrap_content"-->
-        <!--                    android:padding="16dp"-->
-        <!--                    android:text="@string/donate"-->
-        <!--                    android:textAppearance="?attr/textAppearanceBody2" />-->
-        <!--            </LinearLayout>-->
-
-        <!--        </com.google.android.material.card.MaterialCardView>-->
 
         <TextView
             android:id="@+id/AnnounceTitle"

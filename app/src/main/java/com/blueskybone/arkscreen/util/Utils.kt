@@ -24,6 +24,7 @@ import com.blueskybone.arkscreen.ui.bindinginfo.WidgetTextColor
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.hjq.toast.Toaster
+import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -167,15 +168,22 @@ fun getOneCombination(list: List<String>, range: Int): List<List<String>> {
     return comList
 }
 
-fun getCookie(url: String, name: String): String {
+fun getCookie(url: String, name: String): String? {
     val cookieManager = CookieManager.getInstance()
-    val cookieStr = cookieManager.getCookie(url)
-    val head = "$name="
-    val tail = ";"
-    val idx1 = cookieStr.indexOf(head)
-    val idx2 = cookieStr.indexOf(tail, idx1)
-    val tokenEncoded = cookieStr.substring(idx1 + head.length, idx2)
-    return URLDecoder.decode(tokenEncoded, "UTF-8")
+    val cookieStr = cookieManager.getCookie(url) ?: return null
+    Timber.tag("Cookie").d("Raw cookies: $cookieStr")
+    return cookieStr.split(";")
+        .map { it.trim() }
+        .firstOrNull { it.startsWith("$name=") }
+        ?.substringAfter("=")
+        ?.let {
+            try {
+                URLDecoder.decode(it, "UTF-8")
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to decode cookie value")
+                it // 返回未解码的原始值
+            }
+        }
 }
 
 fun copyToClipboard(context: Context, text: String) {
