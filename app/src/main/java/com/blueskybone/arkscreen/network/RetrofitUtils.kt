@@ -2,20 +2,16 @@ package com.blueskybone.arkscreen.network
 
 import com.blueskybone.arkscreen.network.auth.generateSign
 import com.blueskybone.arkscreen.network.model.AttendanceRequest
-import com.blueskybone.arkscreen.network.model.BasicInfoRequest
 import com.blueskybone.arkscreen.network.model.CredRequest
+import com.blueskybone.arkscreen.network.model.GachaResponse
 import com.blueskybone.arkscreen.network.model.GrantRequest
 import com.blueskybone.arkscreen.network.model.PlayerInfoResp
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
-import com.blueskybone.arkscreen.room.Gacha
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
 import com.blueskybone.arkscreen.util.getJsonContent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import retrofit2.Response
 import timber.log.Timber
-import java.net.URLEncoder
 
 /**
  *   Created by blueskybone
@@ -88,36 +84,89 @@ class RetrofitUtils {
             }
         }
 
-        suspend fun getGachaRecords(
-            page: Int,
-            token: String,
-            channelMasterId: Int,
-            uid: String
-        ): List<Gacha>? {
-            val encodedToken = withContext(Dispatchers.IO) {
-                URLEncoder.encode(token, "UTF-8")
-            }
-            val response = RetrofitClient.akHypergryphService.getGachaRecords(
-                page = page,
-                token = encodedToken,
-                channelId = channelMasterId,
-                headers = createNormalHeaders()
+
+        suspend fun getGachaCate(
+            accountGc: AccountGc
+        ): List<String> {
+            val response = RetrofitClient.akHypergryphService.getGachaCate(
+                accountGc.uid,
+                createAkHeader(accountGc.akUserCenter, accountGc.token, accountGc.xrToken)
             )
             return if (response.isSuccessful) {
-                response.body()?.data?.recordList?.map { item ->
-                    Gacha(
-                        uid = uid,
-                        ts = item.ts,
-                        pool = item.pool,
-                        record = item.charsList.joinToString("@") { char ->
-                            "${char.name}-${char.rarity}-${char.isNew}"
-                        }
-                    )
-                }
+                response.body()?.data?.map { it.id } ?: emptyList()
             } else {
                 throw Exception("API error: ${response.errorBody()?.string()}")
             }
         }
+
+        suspend fun getFirstPageRecords(
+            accountGc: AccountGc,
+            cate: String
+        ): GachaResponse {
+            val response = RetrofitClient.akHypergryphService.getGachaRecords(
+                uid = accountGc.uid,
+                category = cate,
+                size = 10,
+                createAkHeader(accountGc.akUserCenter, accountGc.token, accountGc.xrToken)
+            )
+            return if (response.isSuccessful) {
+                response.body() ?: throw Exception("API error: ${response.errorBody()?.string()}")
+            } else {
+                throw Exception("API error: ${response.errorBody()?.string()}")
+            }
+        }
+
+        suspend fun getMorePageRecords(
+            accountGc: AccountGc,
+            cate: String,
+            pos: Int,
+            ts: Long,
+        ): GachaResponse {
+            val response = RetrofitClient.akHypergryphService.getGachaRecordsMore(
+                uid = accountGc.uid,
+                category = cate,
+                pos = pos,
+                gachaTs = ts,
+                size = 10,
+                createAkHeader(accountGc.akUserCenter, accountGc.token, accountGc.xrToken)
+            )
+            return if (response.isSuccessful) {
+                response.body() ?: throw Exception("API error: ${response.errorBody()?.string()}")
+            } else {
+                throw Exception("API error: ${response.errorBody()?.string()}")
+            }
+        }
+
+//        suspend fun getGachaRecords(
+//            page: Int,
+//            token: String,
+//            channelMasterId: Int,
+//            uid: String
+//        ): List<Gacha>? {
+//            val encodedToken = withContext(Dispatchers.IO) {
+//                URLEncoder.encode(token, "UTF-8")
+//            }
+//            val response = RetrofitClient.akHypergryphService.getGachaRecords(
+//                page = page,
+//                token = encodedToken,
+//                channelId = channelMasterId,
+//                headers = createNormalHeaders()
+//            )
+//            return if (response.isSuccessful) {
+//                response.body()?.data?.recordList?.map { item ->
+//                    Gacha(
+//                        uid = uid,
+//                        ts = item.ts,
+//                        pool = item.pool,
+//                        record = item.charsList.joinToString("@") { char ->
+//                            "${char.name}-${char.rarity}-${char.isNew}"
+//                        }
+//                    )
+//                }
+//            } else {
+//                throw Exception("API error: ${response.errorBody()?.string()}")
+//            }
+//        }
 
         suspend fun doAttendance(
             cred: String,
@@ -178,24 +227,26 @@ class RetrofitUtils {
             )
         }
 
-        suspend fun getBasicInfo(channelMasterId: Int, token: String): AccountGc? {
-            val requestBody: BasicInfoRequest = if (channelMasterId == 1) {
-                BasicInfoRequest.OfficialRequest(1, channelMasterId, token)
-            } else {
-                BasicInfoRequest.BiliRequest(token)
-            }
-            val response = RetrofitClient.hypergryphService.getBasicInfo(
-                requestBody,
-                createLoginHeaders()
+        suspend fun getBasicInfo(
+            channelMasterId: Int,
+            token: String,
+            akUserCenter: String,
+            xrToken: String
+        ): AccountGc? {
+            val response = RetrofitClient.akHypergryphService.getBasicInfo(
+                "", "", "",
+                createAkHeader(akUserCenter, token, xrToken)
             )
             return if (response.isSuccessful) {
                 response.body()?.data?.let { item ->
                     AccountGc(
                         uid = item.uid,
-                        nickName = item.nickName,
-                        channelMasterId = item.channelMasterId,
+                        nickName = item.name,
+                        channelMasterId = item.channelId,
                         token = token,
-                        official = channelMasterId == 1
+                        official = channelMasterId == 1,
+                        akUserCenter = akUserCenter,
+                        xrToken = xrToken
                     )
                 }
             } else {
@@ -205,17 +256,33 @@ class RetrofitUtils {
 
         private fun createNormalHeaders(): Map<String, String> {
             return mapOf(
-//                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
+                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
                 "Connection" to "close"
             )
         }
 
         private fun createLoginHeaders(): Map<String, String> {
             return mapOf(
-//                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
+                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
                 "Accept-Encoding" to "gzip",
                 "Connection" to "close",
                 "Content-Type" to "application/json"
+            )
+        }
+
+        private fun createAkHeader(
+            cookie: String,
+            token: String,
+            xrToken: String
+        ): Map<String, String> {
+            return mapOf(
+                "accept" to "application/json, text/plain, */*",
+                "accept-language" to "zh-CN,zh;q=0.9,en;q=0.8,en-US;q=0.7,zh-TW;q=0.6",
+                "cookie" to "ak-user-center=$cookie",
+                "referer" to "https://ak.hypergryph.com/user/headhunting",
+                "user-agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+                "x-account-token" to token,
+                "x-role-token" to xrToken
             )
         }
 
@@ -226,7 +293,7 @@ class RetrofitUtils {
         ): Map<String, String> {
             return mapOf(
                 "cred" to cred,
-//                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
+                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
 //                "Accept-Encoding" to "gzip",
                 "Connection" to "close",
                 "Content-Type" to "application/json",

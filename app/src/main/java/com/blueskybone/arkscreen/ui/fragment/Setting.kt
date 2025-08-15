@@ -16,6 +16,8 @@ import com.blueskybone.arkscreen.AppUpdateInfo
 import com.blueskybone.arkscreen.BuildConfig
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.common.MenuDialog
+import com.blueskybone.arkscreen.databinding.DialogDonateBinding
+import com.blueskybone.arkscreen.databinding.DialogInputBinding
 import com.blueskybone.arkscreen.databinding.FragmentSettingBinding
 import com.blueskybone.arkscreen.databinding.PreferenceBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSeekbarBinding
@@ -224,17 +226,23 @@ class Setting : Fragment() {
         binding.Donate.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.donate)
-                .setMessage(R.string.donate_msg)
+                .setView(DialogDonateBinding.inflate(layoutInflater).root)
                 .setNegativeButton(R.string.cancel, null)
                 .setNeutralButton(R.string.donated) { _, _ -> Toaster.show(getString(R.string.thank_for_donate)) }
                 .setPositiveButton(R.string.save_code) { _, _ ->
-                    saveDrawableToGallery(requireContext(), R.drawable.wechat)
-                    saveDrawableToGallery(requireContext(), R.drawable.zfb)
-                    Toaster.show("已保存到本地")
+                    CoroutineScope(Dispatchers.IO).launch{
+                        saveDrawableToGallery(requireContext(), R.drawable.wechat)
+                        saveDrawableToGallery(requireContext(), R.drawable.zfb)
+                        Toaster.show("已保存到本地")
+                    }
                 }.show()
         }
     }
 
+
+    private fun displayDonateDialog() {
+
+    }
 
     private fun bindSwitchView(switch: SwitchCompat, pref: Preference<Boolean>) {
         switch.isChecked = pref.get()

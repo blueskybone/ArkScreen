@@ -240,14 +240,29 @@
             </LinearLayout>
         </GridLayout>
 
-        <ImageView
-            android:id="@+id/starter"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+        <LinearLayout
             android:layout_gravity="center"
-            android:layout_marginStart="5dp"
-            android:contentDescription="@null"
-            android:src="@drawable/ic_starter" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/starter"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_starter" />
+            <ImageView
+                android:id="@+id/refresh_data"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_refresh" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </FrameLayout>

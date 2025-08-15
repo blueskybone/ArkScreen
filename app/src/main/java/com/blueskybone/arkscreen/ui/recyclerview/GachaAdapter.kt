@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.ItemGachaCardBinding
-import com.blueskybone.arkscreen.room.Gachas
+import com.blueskybone.arkscreen.playerinfo.Gachas
 
 /**
  *   Created by blueskybone
@@ -53,7 +53,7 @@ class GachaAdapter(private val context: Context) : ListAdapter<Gachas, GachaAdap
 
         fun bind(item: Gachas) {
             adapter.submitList(item.data)
-            binding.RecordsCount.text = context.getString(R.string.gacha_count,item.count)
+            binding.RecordsCount.text = item.count.toString()
             binding.PoolName.text = item.pool
             binding.Fes.visibility = if (item.isFes) View.VISIBLE else View.GONE
         }

@@ -17,6 +17,7 @@ import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.ui.recyclerview.GachaAdapter
 import com.blueskybone.arkscreen.viewmodel.GachaModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.hjq.toast.Toaster
 import org.koin.android.ext.android.getKoin
 
 /**
@@ -60,25 +61,27 @@ class GachaActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_export -> {
-                MenuDialog(this)
-                    .add(getString(R.string.file_txt)) {
-                        launcherForTxt?.launch(prefManager.baseAccountGc.get().uid + "_gacha_records")
-                    }.add(getString(R.string.file_json)) {
-                        launcherForJson?.launch(prefManager.baseAccountGc.get().uid + "_gacha_records")
-                    }.show()
+                Toaster.show("施工中...")
+//                MenuDialog(this)
+//                    .add(getString(R.string.file_txt)) {
+//                        launcherForTxt?.launch(prefManager.baseAccountGc.get().uid + "_gacha_records")
+//                    }.add(getString(R.string.file_json)) {
+//                        launcherForJson?.launch(prefManager.baseAccountGc.get().uid + "_gacha_records")
+//                    }.show()
                 true
             }
 
             R.id.menu_import -> {
-                MaterialAlertDialogBuilder(this)
-                    .setTitle(getString(R.string.import_data))
-                    .setMessage(R.string.import_data_detail)
-                    .setPositiveButton(R.string.import_data) { _, _ ->
-                        val mimeTypes = arrayOf("text/plain", "application/json")
-                        launcherForImport?.launch(mimeTypes)
-                    }
-                    .setNegativeButton(R.string.cancel, null)
-                    .show()
+                Toaster.show("施工中...")
+//                MaterialAlertDialogBuilder(this)
+//                    .setTitle(getString(R.string.import_data))
+//                    .setMessage(R.string.import_data_detail)
+//                    .setPositiveButton(R.string.import_data) { _, _ ->
+//                        val mimeTypes = arrayOf("text/plain", "application/json")
+//                        launcherForImport?.launch(mimeTypes)
+//                    }
+//                    .setNegativeButton(R.string.cancel, null)
+//                    .show()
                 true
             }
 
@@ -148,16 +151,23 @@ class GachaActivity : AppCompatActivity() {
     private fun registerLauncher() {
         launcherForTxt =
             registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
-                uri?.let { model.exportTxt(uri) }
+                uri?.let {
+                    Toaster.show("施工中...")
+//                    model.exportTxt(uri)
+                }
             }
         launcherForJson =
             registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
-                uri?.let { model.exportJson(uri) }
+                uri?.let {
+                    Toaster.show("施工中...")
+//                    model.exportJson(uri)
+                }
             }
         launcherForImport =
             registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
                 uri?.let {
-                    model.importData(uri)
+                    Toaster.show("施工中...")
+//                    model.importData(uri)
                 }
             }
     }

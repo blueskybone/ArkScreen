@@ -22,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.getKoin
+import timber.log.Timber
 import java.io.IOException
 
 
@@ -99,10 +100,7 @@ class CharModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-//            _filterProf.value = ProfFilter.defaultValue
-//            _filterRarity.value = RarityFilter.defaultValue
-//            _filterLevel.value = LevelFilter.defaultValue
-            _uiState.value = DataUiState.Loading("LOADING...")
+            _uiState.value = DataUiState.Loading("加载中...")
             withContext(Dispatchers.IO) {
                 loadCharAssets()
             }
@@ -110,7 +108,7 @@ class CharModel : ViewModel() {
     }
 
     private suspend fun loadCharAssets() {
-        _uiState.postValue(DataUiState.Loading("LOADING..."))
+        _uiState.postValue(DataUiState.Loading("加载中..."))
         val accountSk = prefManager.baseAccountSk.get()
 
         //TODO: bad practice.
@@ -119,16 +117,18 @@ class CharModel : ViewModel() {
             return
         }
         try {
-            charList = getCharsData(accountSk)
-            _charsList.postValue(charList)
-            charNotOwnList = getCharsNotOwn()
-            _charsNotOwnList.postValue(charNotOwnList)
+            postCharsAssets(accountSk)
+            postCharsNotOwn()
+//            charList = getCharsData(accountSk)
+//            _charsList.postValue(charList)
+//            charNotOwnList = getCharsNotOwn()
+//            _charsNotOwnList.postValue(charNotOwnList)
             statistic()
             _uiState.postValue(DataUiState.Success(""))
 
         } catch (e: Exception) {
-            e.printStackTrace()
-            _uiState.postValue(DataUiState.Error(e.message ?: "LOADING FAILED"))
+            Timber.e("CharModel: loadCharAssets() failed: ${e.message ?: "e.msg is null"}")
+            _uiState.postValue(DataUiState.Error("加载失败：${e.message ?: "e.msg is null"}"))
         }
     }
 
@@ -168,43 +168,37 @@ class CharModel : ViewModel() {
         }
     }
 
-    private fun getCharsNotOwn(): List<Operator> {
-        executeAsync {
-            try {
-                CharAllMap.updateFile()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+    private suspend fun postCharsNotOwn() {
+        try {
+            CharAllMap.updateFile()
+        } catch (e: Exception) {
+            Timber.e("CharAllMap update failed:{${e.message}}")
         }
         val charsAllNode = readFileAsJsonNode(CharAllMap.getFilePath())["charInfoMap"]
-        if (charsAllNode == null) {
-            println("charsAllNode == null")
-        }
-        for (item in charList) {
-            (charsAllNode as ObjectNode).remove(item.charId)
-        }
-        val list = ArrayList<Operator>()
-        val charNotOwnIds = charsAllNode.fieldNames()
-        for (charId in charNotOwnIds) {
-            val charInfo = charsAllNode[charId]
-            val operator = Operator()
-            operator.charId = charId
-            operator.skinId = "$charId#1"
-            operator.name = charInfo["name"].asText()
-            operator.rarity = charInfo["rarity"].asInt()
-            operator.profession = charInfo["profession"].asText()
-            list.add(operator)
-        }
-        println("list.size ${list.size}")
-        return list.sortedWith(compareOperators).toMutableList() as ArrayList<Operator>
+            ?: throw Exception("char info map get null")
+        val processedList = charsAllNode.fields().asSequence()
+            .filterNot { (charId, _) -> charList.any { it.charId == charId } }
+            .map { (charId, charInfo) ->
+                Operator().apply {
+                    this.charId = charId
+                    skinId = "$charId#1"
+                    name = charInfo["name"].asText()
+                    rarity = charInfo["rarity"].asInt()
+                    profession = charInfo["profession"].asText()
+                }
+            }
+            .sortedWith(compareOperators)
+            .toMutableList()
+        charNotOwnList = ArrayList(processedList)
+        _charsNotOwnList.postValue(charNotOwnList)
     }
 
-
-    private suspend fun getCharsData(account: AccountSk): List<Operator> {
+    private suspend fun postCharsAssets(account: AccountSk) {
         val response = getGameInfoConnectionTask(account)
         if (!response.isSuccessful) throw Exception("!response.isSuccessful")
         response.body() ?: throw Exception("response empty")
-        return getOperatorData(response.body()!!)
+        charList = getOperatorData(response.body()!!)
+        _charsList.postValue(charList)
     }
 
     fun applyFilter(prof: String, level: String, rarity: String) {

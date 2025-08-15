@@ -2,6 +2,7 @@ package com.blueskybone.arkscreen
 
 import com.blueskybone.arkscreen.util.TimeUtils.getRemainTimeMinStr
 import com.blueskybone.arkscreen.util.TimeUtils.getRemainTimeStr
+import com.blueskybone.arkscreen.util.TimeUtils.getTimeStr
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -26,6 +27,7 @@ class ExampleUnitTest {
         println("getRemainTimeStr(-10)")
         println(getRemainTimeStr(200))
         println(getRemainTimeMinStr(-200))
+        println(getTimeStr(1747183889000, "MM-dd"))
     }
 
     @Test
@@ -65,5 +67,6 @@ class ExampleUnitTest {
     private fun bytesToHex(bytes: ByteArray): String {
         return bytes.joinToString(" ") { "%02X".format(it) }
     }
+
 
 }

@@ -72,7 +72,7 @@ class Widget2 : AppWidgetProvider() {
             //Size
             val mainSize = WidgetSize.getTextSizeMain(prefManager.widget2Size.get())
             val subSize = WidgetSize.getTextSizeSub(prefManager.widget2Size.get())
-            val iconSize = WidgetSize.getIconSize(prefManager.widget2Size.get())
+            val iconSize = WidgetSize.getImageSize(prefManager.widget2Size.get())
             val spType = TypedValue.COMPLEX_UNIT_SP
             val dpType = TypedValue.COMPLEX_UNIT_DIP
 

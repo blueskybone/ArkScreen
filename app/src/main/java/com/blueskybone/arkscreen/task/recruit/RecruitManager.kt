@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.io.FileInputStream
 
 /**
@@ -31,7 +32,7 @@ class RecruitManager {
             try {
                 RecruitDb.updateFile()
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.e("RecruitDb update failed: ${e.message}")
             }
             val om = ObjectMapper()
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -42,7 +43,6 @@ class RecruitManager {
                 )
             }
         }
-
     }
 
     fun getRecruitResult(tags: List<String>, filter: Boolean = false): RecruitResult {

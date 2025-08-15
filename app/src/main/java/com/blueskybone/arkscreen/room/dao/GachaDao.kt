@@ -16,7 +16,7 @@ interface GachaDao {
     suspend fun insert(gacha: Gacha)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(accounts: List<Gacha>)
+    suspend fun insert(records: List<Gacha>)
 
     @Query("SELECT * FROM Gacha")
     suspend fun getAll(): List<Gacha>

@@ -11,6 +11,8 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.ItemAccountBinding
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.Account
+import com.blueskybone.arkscreen.room.AccountGc
+import com.blueskybone.arkscreen.room.AccountSk
 import org.koin.java.KoinJavaComponent.getKoin
 
 /**
@@ -58,8 +60,14 @@ class AccountAdapter(private val context: Context, private val listener: ItemLis
             binding.Value.text = context.getString(R.string.uid_info, item.uid)
             if (item.official) binding.Icon.setImageResource(R.drawable.hg_icon_80x80)
             else binding.Icon.setImageResource(R.drawable.bili_icon_75x71)
-            binding.Checked.visibility =
-                if (item.uid == prefManager.baseAccountSk.get().uid) View.VISIBLE else View.GONE
+
+            when (item) {
+                is AccountSk -> binding.Checked.visibility =
+                    if (item.uid == prefManager.baseAccountSk.get().uid) View.VISIBLE else View.GONE
+                is AccountGc -> binding.Checked.visibility =
+                    if (item.uid == prefManager.baseAccountGc.get().uid) View.VISIBLE else View.GONE
+            }
+
         }
     }
 }

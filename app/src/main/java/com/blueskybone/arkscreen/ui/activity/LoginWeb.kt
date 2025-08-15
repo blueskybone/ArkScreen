@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
@@ -20,7 +21,9 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.ActivityLoginWebBinding
 import com.blueskybone.arkscreen.util.getCookie
 import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.hjq.toast.Toaster
+import timber.log.Timber
 
 /**
  *   Created by blueskybone
@@ -62,6 +65,7 @@ class LoginWeb : AppCompatActivity() {
                 else -> LoginType.GACHA_BILI
             }
         }
+
         private const val userAgent =
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0"
 
@@ -169,7 +173,7 @@ class LoginWeb : AppCompatActivity() {
                     setResult(RESULT_OK, returnIntent)
                     finish()
                 } catch (e: Exception) {
-                    Toaster.show(e.message)
+                    Timber.tag("exception").w(e)
                 }
             }
         }
@@ -194,20 +198,42 @@ class LoginWeb : AppCompatActivity() {
     private fun setArkOfficialWebView() {
         textButton.text = getString(R.string.text_web_ark)
         textButton.visibility = View.VISIBLE
-        webView.webViewClient = object : WebViewClient() {
-            override fun onPageFinished(view: WebView, url: String) {
-                super.onPageFinished(view, url)
-                toolbar.title = view.title
-                textButton.setOnClickListener {
-                    try {
-                        val token = getCookie(arkApiOfficial, "ACCOUNT")
-                        val returnIntent = Intent()
-                        returnIntent.putExtra("token", token)
-                        returnIntent.putExtra("channelMasterId", 1)
-                        setResult(RESULT_OK, returnIntent)
-                        finish()
-                    } catch (e: Exception) {
-                        Toaster.show(e.message)
+        class JsObject {
+            @JavascriptInterface
+            @Throws(JsonProcessingException::class)
+            fun submitMetaJson(metaJson: String) {
+                try {
+                    val jsonNode = jacksonObjectMapper() .readTree(metaJson)
+                    val xrToken = jsonNode.get("token")?.asText()
+                    val token = getCookie(arkApiOfficial, "ACCOUNT")
+                    val userCenter = getCookie(arkHomeOfficialUrl, "ak-user-center")
+
+                    val returnIntent = Intent()
+
+                    returnIntent.putExtra("token", token)
+                    returnIntent.putExtra("userCenter", userCenter)
+                    returnIntent.putExtra("xrToken", xrToken)
+                    returnIntent.putExtra("channelMasterId", 1)
+                    setResult(RESULT_OK, returnIntent)
+                    finish()
+                } catch (e: Exception) {
+                    Timber.tag("exception").w(e)
+                }
+            }
+        }
+        webView.apply {
+            // 1. 先配置 WebViewClient
+            val script =
+                "(function() {const metaJson = localStorage.ONE_ACCOUNT_ROLE_META; Android.submitMetaJson(metaJson);})();".trim { it <= ' ' }
+            this.addJavascriptInterface(JsObject(), "Android")
+            webViewClient = object : WebViewClient() {
+                override fun onPageFinished(view: WebView, url: String) {
+                    super.onPageFinished(view, url)
+                    toolbar.title = view.title
+                    // 3. 页面加载完成后执行JS
+                    textButton.setOnClickListener {
+                        Toaster.show("onclick")
+                        view.evaluateJavascript(script, null)
                     }
                 }
             }

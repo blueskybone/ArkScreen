@@ -32,12 +32,11 @@ class RecruitModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            _uiState.value = DataUiState.Loading("LOADING...")
+            _uiState.value = DataUiState.Loading("加载中...")
             withContext(Dispatchers.IO) {
                 try{
-                    RecruitDb.updateFile()
-                    _update.postValue(RecruitDb.updateTime())
                     recruitManager = RecruitManager.instance
+                    _update.postValue(RecruitDb.updateTime())
                     _uiState.postValue(DataUiState.Success(""))
                 }catch (e: Exception) {
                     e.printStackTrace()
