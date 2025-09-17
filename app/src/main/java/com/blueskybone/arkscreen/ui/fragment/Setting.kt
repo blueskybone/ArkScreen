@@ -99,8 +99,8 @@ class Setting : Fragment() {
         binding.CheckUpdate.Layout.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 val info = AppUpdateInfo.remoteInfo()
-                BuildConfig.VERSION_NAME.let {
-                    if (it < info.version.toString())
+                BuildConfig.VERSION_CODE.let {
+                    if (it < info.versionCode)
                         Handler(Looper.getMainLooper()).post {
                             MaterialAlertDialogBuilder(APP)
                                 .setTitle(info.version.toString())
