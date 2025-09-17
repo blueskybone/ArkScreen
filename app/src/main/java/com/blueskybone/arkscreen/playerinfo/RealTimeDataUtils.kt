@@ -185,16 +185,24 @@ private fun calculateTrainInfo(
                             ((currentTs - train.lastUpdateTime!!).toDouble() * speed).toLong() + this.remainPoint
                         totalPoint = getTotalPoint(totalPointCalc)
 
-                        val targetPoint = when (profession) {
+
+                        val targetPointIrene = when (profession) {
                             "SNIPER", "WARRIOR" -> 24300L
+                            else -> 18900L
+                        }
+                        val targetPointLogos = when (profession) {
                             "CASTER", "SUPPORT" -> 24300L
                             else -> 18900L
                         }
-
-                        if (this.remainPoint > targetPoint) {
-                            val secs = (this.remainPoint - targetPoint) / speed
+                        if (this.remainPoint > targetPointIrene) {
+                            val secs = (this.remainPoint - targetPointIrene) / speed
                             changeRemainSecsIrene = secs.toLong()
                             changeTimeIrene = currentTs + secs.toLong()
+                        }
+                        if (this.remainPoint > targetPointLogos) {
+                            val secs = (this.remainPoint - targetPointLogos) / speed
+                            changeRemainSecsLogos = secs.toLong()
+                            changeTimeLogos = currentTs + secs.toLong()
                         }
                     }
                 }

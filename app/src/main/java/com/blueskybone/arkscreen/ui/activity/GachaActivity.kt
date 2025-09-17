@@ -95,6 +95,16 @@ class GachaActivity : AppCompatActivity() {
                 true
             }
 
+            R.id.gacha_correct -> {
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(getString(R.string.gacha_correct))
+                    .setMessage(R.string.gacha_correct_detail)
+                    .setPositiveButton(R.string.confirm) { _, _ -> model.correctUnCateRecord() }
+                    .setNegativeButton(R.string.cancel, null)
+                    .show()
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

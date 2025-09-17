@@ -20,6 +20,7 @@
     <!-- Dialogs Message-->
     <string name="confirm_delete">确定删除吗</string>
     <string name="confirm_clear_data">将清除当前账号的本地寻访记录</string>
+    <string name="gacha_correct_detail">该操作将尝试对数据库中标注为类别UN的记录进行修正，也许有效（？</string>
     <string name="thank_for_donate">感谢支持！</string>
 
     <!-- Fragment Title -->
@@ -230,6 +231,7 @@
     <string name="export_data">导出数据</string>
     <string name="update_data">更新数据</string>
     <string name="clear_data">清除数据</string>
+    <string name="gacha_correct">卡池修正（实验）</string>
 
     <string name="file_txt">.txt文件</string>
     <string name="file_json">.json文件</string>

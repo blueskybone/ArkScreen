@@ -127,9 +127,9 @@ class NetWorkTask {
         }
 
         private fun String.toCate(): String {
-            if (this.startsWith("LIMITED")) return "LIMITED"
+            if (this.startsWith("LIMITED") || this.startsWith("LINKAGE")) return "LIMITED"
             if (this.startsWith("CLASSIC")) return "CLASSIC"
-            if (this.startsWith("SINGLE") || this.startsWith("DOUBLE") || this.startsWith("SPECIAL")) return "NORMAL"
+            if (this.startsWith("SINGLE") || this.startsWith("DOUBLE") || this.startsWith("SPECIAL") || this.startsWith("NORM")) return "NORMAL"
             return "UN"
         }
     }
