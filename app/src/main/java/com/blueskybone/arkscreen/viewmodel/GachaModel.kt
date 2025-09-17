@@ -225,105 +225,6 @@ class GachaModel : ViewModel() {
         }
     }
 
-    //写的什么垃圾
-//    private suspend fun processGachaData(account: AccountGc): List<Gachas> {
-//        val dataDb = gachaDao.getByUid(account.uid)
-//        val data = dataDb.sortedBy { it.ts }
-//        if (data.isEmpty()) return listOf()
-//        dateRange = getTimeStrYMD(data.first().ts) + "-" + getTimeStrYMD(data.last().ts)
-//
-//        poolCountNormal = 0
-//        poolCountFes = 0
-//        poolCountCore = 0
-//
-//        finalCountSum = 0
-//        rarity6Count = 0
-//
-//        var id = 0
-//        val finalGachas = mutableListOf<Gachas>()
-//        val normalPoolList = mutableListOf<Gacha>()
-//        val corePoolList = mutableListOf<Gacha>()
-//        val groupByPool = data.groupBy { it.pool }
-//        for (group in groupByPool) {
-//            if (fesPool?.contains(group.key) == true) {
-//                poolCountFes = 0
-//                var count = 0
-//                val gachas = Gachas(pool = group.key)
-//                for (item in group.value) {
-//                    gachas.ts = item.ts
-//                    val charList = deserialize(item.record)
-//                    for (char in charList) {
-//                        count++
-//                        poolCountFes++
-//                        finalCountSum++
-//                        if (char.rarity == 5) {
-//                            rarity6Count++
-//                            val charId = findCharId(char.name)
-//                            gachas.data
-//                                .add(Records(id, char.name, charId, char.isNew, poolCountFes))
-//                            poolCountFes = 0
-//                            id++
-//                        }
-//                    }
-//                }
-//                gachas.count = count
-//                gachas.isFes = true
-//                finalGachas.add(gachas)
-//            } else if (group.key == "中坚寻访" || group.key == "中坚甄选") {
-//                corePoolList.addAll(group.value)
-//            } else {
-//                normalPoolList.addAll(group.value)
-//            }
-//        }
-//        val mapNormal = mutableMapOf<String, Gachas>()   //poolName, record
-//        for (item in normalPoolList) {
-//            if (!mapNormal.containsKey(item.pool)) {
-//                mapNormal[item.pool] = Gachas(pool = item.pool)
-//            }
-//            val charList = deserialize(item.record)
-//            mapNormal[item.pool]!!.ts = item.ts
-//            for (char in charList) {
-//                finalCountSum++
-//                mapNormal[item.pool]!!.count++ //池子抽数
-//                poolCountNormal++  //计算水位
-//                if (char.rarity == 5) {
-//                    rarity6Count++
-//                    val charId = findCharId(char.name)
-//                    mapNormal[item.pool]!!.data
-//                        .add(Records(id, char.name, charId, char.isNew, poolCountNormal))
-//                    poolCountNormal = 0
-//                    id++
-//                }
-//            }
-//        }
-//        val mapCore = mutableMapOf<String, Gachas>()   //poolName, record
-//        for (item in corePoolList) {
-//            if (!mapCore.containsKey(item.pool)) {
-//                mapCore[item.pool] = Gachas(pool = item.pool)
-//            }
-//            val charList = deserialize(item.record)
-//            mapCore[item.pool]!!.ts = item.ts
-//            for (char in charList) {
-//                finalCountSum++
-//                mapCore[item.pool]!!.count++ //池子抽数
-//                poolCountCore++  //计算水位
-//                if (char.rarity == 5) {
-//                    rarity6Count++
-//                    val charId = findCharId(char.name)
-//                    mapCore[item.pool]!!.data
-//                        .add(Records(id, char.name, charId, char.isNew, poolCountCore))
-//                    poolCountCore = 0
-//                    id++
-//                }
-//            }
-//        }
-//        finalGachas.addAll(mapNormal.values.toList())
-//        finalGachas.addAll(mapCore.values.toList())
-//
-//        return finalGachas
-//            .sortedByDescending { it.ts }
-//            .map { item -> item.copy(data = item.data.asReversed()) }
-//    }
 
     private fun findCharId(name: String): String {
         for (char in charsNode.fields()) {
@@ -380,8 +281,37 @@ class GachaModel : ViewModel() {
     private fun executeAsync(function: suspend () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) { function() }
     }
-    //数据修正（对未知卡池）
 
+
+    //修正未知卡池（实验性）：用于版本更新后修复旧的被标注为UN的数据
+    fun correctUnCateRecord() {
+        //把数据库所有数据全部拿出来，对UN的数据进行如下的处理，然后保存回数据库，重新跑一遍初始化。
+        viewModelScope.launch {
+            _uiState.value = DataUiState.Loading("尝试卡池修正...")
+            withContext(Dispatchers.IO){
+                val gachaList = gachaDao.getByCate("UN")
+                val updatedRecords = gachaList.map { gachaEntity ->
+                    // 这里根据你的业务需求更新字段
+                    gachaEntity.copy(
+                        poolCate = gachaEntity.poolId.toCate(),  // 尝试修复卡池
+                    )
+                }
+                gachaDao.updateGachas(updatedRecords)
+            }
+        }
+        initialize()
+    }
+
+    private fun String.toCate(): String {
+        if (this.startsWith("LIMITED") || this.startsWith("LINKAGE")) return "LIMITED"
+        if (this.startsWith("CLASSIC")) return "CLASSIC"
+        if (this.startsWith("SINGLE") ||
+            this.startsWith("DOUBLE") ||
+            this.startsWith("SPECIAL") ||
+            this.startsWith("NORM")
+        ) return "NORMAL"
+        return "UN"
+    }
 
 //    fun exportTxt(uri: Uri) {
 //        viewModelScope.launch {

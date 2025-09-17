@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.blueskybone.arkscreen.room.Gacha
 
 /**
@@ -27,5 +28,12 @@ interface GachaDao {
     @Query("SELECT * FROM Gacha WHERE uid = :uid")
     suspend fun getByUid(uid: String): List<Gacha>
 
+    @Query("SELECT * FROM Gacha WHERE poolCate = :cate")
+    suspend fun getByCate(cate: String): List<Gacha>
 
+    @Update
+    suspend fun updateGacha(gacha: Gacha)
+
+    @Update
+    suspend fun updateGachas(gachas: List<Gacha>)
 }
