@@ -57,6 +57,9 @@ class GachaModel : ViewModel() {
     private val _gachaData = MutableLiveData<List<Gachas>>()
     val gachaData: LiveData<List<Gachas>> get() = _gachaData
 
+    private val _gachaRecords = MutableLiveData<List<Gacha>>()
+    val gachaRecords: LiveData<List<Gacha>> get() = _gachaRecords
+
     private var fesPool: List<String>? = null
 
     private lateinit var charsNode: JsonNode
@@ -90,6 +93,7 @@ class GachaModel : ViewModel() {
                     val listNewPull = pullRecords(curAccount, lastTs)
                     gachaDao.insert(listNewPull)
                     val records = loadLocalRecords(curAccount)
+                    _gachaRecords.postValue(records.sortByTsAndPosDescending())
                     _gachaData.postValue((convertRecordsToList(records)))
                     _uiState.postValue(DataUiState.Success(""))
                 } catch (e: Exception) {
@@ -98,6 +102,12 @@ class GachaModel : ViewModel() {
                 }
             }
         }
+    }
+    private fun List<Gacha>.sortByTsAndPosDescending(): List<Gacha> {
+        return sortedWith(
+            compareByDescending<Gacha> { it.ts }
+                .thenByDescending { it.pos }
+        )
     }
 
     //数据库偷数据。

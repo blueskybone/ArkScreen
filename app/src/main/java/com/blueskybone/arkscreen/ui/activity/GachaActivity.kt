@@ -15,6 +15,7 @@ import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.databinding.ActivityGachaBinding
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.ui.recyclerview.GachaAdapter
+import com.blueskybone.arkscreen.ui.recyclerview.GachaTextAdapter
 import com.blueskybone.arkscreen.viewmodel.GachaModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
@@ -29,6 +30,8 @@ class GachaActivity : AppCompatActivity() {
     private val prefManager: PrefManager by getKoin().inject()
     private val model: GachaModel by viewModels()
     private var adapter: GachaAdapter? = null
+    private var adapterText: GachaTextAdapter? = null
+    private var isGridView = true
 
     private var _binding: ActivityGachaBinding? = null
     private val binding get() = _binding!!
@@ -47,7 +50,9 @@ class GachaActivity : AppCompatActivity() {
 
     private fun setUpBinding() {
         adapter = GachaAdapter(this)
+        adapterText = GachaTextAdapter(this)
         binding.RecyclerView.adapter = adapter
+        binding.GachaTextRecycler.adapter = adapterText
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -57,6 +62,7 @@ class GachaActivity : AppCompatActivity() {
         inflater.inflate(R.menu.toolbar_gacha_menu, menu)
         return true
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
@@ -105,9 +111,23 @@ class GachaActivity : AppCompatActivity() {
                 true
             }
 
+            R.id.action_view_toggle -> {
+                isGridView = !isGridView
+                if (isGridView) {
+                    binding.GachaTextFrame.visibility = View.GONE
+                    binding.NestedScrollView.visibility = View.VISIBLE
+                }
+                else {
+                    binding.GachaTextFrame.visibility =View.VISIBLE
+                    binding.NestedScrollView.visibility = View.GONE
+                }
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
+
     private fun setupObserver() {
         model.uiState.observe(this) { value ->
             when (value) {
@@ -120,6 +140,10 @@ class GachaActivity : AppCompatActivity() {
 
         model.gachaData.observe(this) { value ->
             adapter?.submitList(value)
+        }
+
+        model.gachaRecords.observe(this) { value ->
+            adapterText?.submitList(value)
         }
     }
 

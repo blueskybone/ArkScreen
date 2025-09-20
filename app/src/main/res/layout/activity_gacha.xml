@@ -215,6 +215,7 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
     <FrameLayout
         android:id="@+id/Page"
         android:layout_width="match_parent"
@@ -228,5 +229,21 @@
             android:layout_gravity="center"
             android:gravity="center"
             app:drawableTopCompat="@mipmap/ic_rosm" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:visibility="gone"
+        android:layout_below="@id/Toolbar"
+        android:id="@+id/GachaTextFrame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/GachaTextRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:nestedScrollingEnabled="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
     </FrameLayout>
 </RelativeLayout>
