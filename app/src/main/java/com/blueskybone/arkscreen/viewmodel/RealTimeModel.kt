@@ -123,9 +123,11 @@ class RealTimeModel : ViewModel() {
             realTimeUi.meeting.value = "暂无数据"
         } else {
             realTimeUi.meeting.value = "${data.meeting.current}/7"
-            realTimeUi.meeting.time = if (data.meeting.remainSecs == -1L) {
-                "收集完成"
-            } else {
+            realTimeUi.meeting.time = if (data.meeting.status == 0){
+                "空闲中"
+            } else if(data.meeting.remainSecs == -1L){
+                "交流完成"
+            }else{
                 getRemainTimeStr(data.meeting.remainSecs)
             }
         }

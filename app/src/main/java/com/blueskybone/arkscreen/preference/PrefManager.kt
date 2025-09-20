@@ -3,6 +3,7 @@ package com.blueskybone.arkscreen.preference
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.playerinfo.cache.ApCache
 import com.blueskybone.arkscreen.playerinfo.cache.LaborCache
+import com.blueskybone.arkscreen.playerinfo.cache.MeetCache
 import com.blueskybone.arkscreen.playerinfo.cache.RecruitCache
 import com.blueskybone.arkscreen.playerinfo.cache.RefreshCache
 import com.blueskybone.arkscreen.playerinfo.cache.TrainCache
@@ -72,6 +73,10 @@ class PrefManager() {
         refreshCache = preferenceStore.getObject(
             "refresh_cache",
             RefreshCache.default(), serializerRefresh(), deserializerRefresh()
+        )
+        meetCache = preferenceStore.getObject(
+            "meet_cache",
+            MeetCache.default(), serializerMeet(), deserializerMeet()
         )
 
         insertLink = preferenceStore.getBoolean("insert_link", false)
@@ -153,6 +158,7 @@ class PrefManager() {
     lateinit var trainCache: Preference<TrainCache>
     lateinit var recruitCache: Preference<RecruitCache>
     lateinit var refreshCache: Preference<RefreshCache>
+    lateinit var meetCache: Preference<MeetCache>
     lateinit var backAutoAtd: Preference<Boolean>
     lateinit var alarmAtdHour: Preference<Int>
     lateinit var alarmAtdMin: Preference<Int>
@@ -362,6 +368,31 @@ class PrefManager() {
             } catch (e: Exception) {
                 e.printStackTrace()
                 return@Function RefreshCache.default()
+            }
+        }
+    }
+
+    private fun serializerMeet(): (MeetCache) -> String {
+        return { cache ->
+            "${cache.lastSyncTs}@${cache.completeTime}@${cache.stats}@${cache.isnull}"
+        }
+    }
+
+    private fun deserializerMeet(): Function<String, MeetCache> {
+        return Function { string: String ->
+            try {
+                val list =
+                    string.split("@".toRegex()).dropLastWhile { it.isEmpty() }
+                        .toTypedArray()
+                return@Function MeetCache(
+                    list[0].toLong(),
+                    list[1].toLong(),
+                    list[2].toInt(),
+                    list[3].toBoolean()
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@Function MeetCache.default()
             }
         }
     }
