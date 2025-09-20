@@ -58,6 +58,4 @@ class GachaAdapter(private val context: Context) : ListAdapter<Gachas, GachaAdap
             binding.Fes.visibility = if (item.isFes) View.VISIBLE else View.GONE
         }
     }
-
-
 }
