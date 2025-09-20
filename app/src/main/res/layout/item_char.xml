@@ -11,20 +11,15 @@
         app:cardCornerRadius="5dp"
         app:cardElevation="0dp">
 
-
         <LinearLayout
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
 
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center">
-
-
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/Avatar"
@@ -74,7 +69,6 @@
                 </LinearLayout>
             </FrameLayout>
 
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -96,7 +90,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
 
                     <include
                         android:id="@+id/Skill1"

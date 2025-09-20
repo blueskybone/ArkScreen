@@ -24,6 +24,4 @@
         android:layout_gravity="start|top"
         android:layout_margin="5dp"
         android:contentDescription="@string/text_default" />
-
-
 </FrameLayout>
