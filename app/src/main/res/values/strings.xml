@@ -187,16 +187,6 @@
     <string name="logs_option">日志</string>
     <string name="check_logs">查看日志</string>
     <string name="clean_logs">清除日志</string>
-    <!--    <string name="open_license_content">[Markwon](https://github.com/noties/Markwon)\n\n-->
-    <!--[AndroidX](https://github.com/androidx/androidx)\n\n-->
-    <!--[Material Components for Android](https://github.com/material-components/material-components-android)\n\n-->
-    <!--[Koin](https://github.com/InsertKoinIO/koin)\n\n-->
-    <!--[Coil](https://github.com/coil-kt/coil)\n\n-->
-    <!--[Jackson](https://github.com/FasterXML/jackson)\n\n-->
-    <!--[Flow Layout](https://github.com/nex3z/FlowLayout)\n\n-->
-    <!--[EasyWindow](https://github.com/getActivity/EasyWindow)\n\n-->
-    <!--[Toaster](https://github.com/getActivity/Toaster)\n\n-->
-    <!--[WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)\n</string>-->
     <string name="open_license_content">
         [AndroidX](https://github.com/androidx/androidx)\n\n
         [AndroidX WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)\n

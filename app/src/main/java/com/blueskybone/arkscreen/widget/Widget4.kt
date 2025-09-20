@@ -62,6 +62,8 @@ class Widget4 : AppWidgetProvider() {
             views.apply {
                 setInt(R.id.recruit, "setTextColor", textColor)
                 setInt(R.id.refresh, "setTextColor", textColor)
+                setInt(R.id.meeting, "setTextColor", textColor)
+
             }
             views.apply {
                 setInt(R.id.ap_current, "setTextColor", textColor)
@@ -92,17 +94,21 @@ class Widget4 : AppWidgetProvider() {
                 views.apply {
                     setViewVisibility(R.id.recruit, View.GONE)
                     setViewVisibility(R.id.refresh, View.GONE)
+                    setViewVisibility(R.id.meeting, View.GONE)
                 }
             } else {
                 views.apply {
                     setViewVisibility(R.id.recruit, View.VISIBLE)
                     setViewVisibility(R.id.refresh, View.VISIBLE)
+                    setViewVisibility(R.id.meeting, View.VISIBLE)
                     setTextViewTextSize(R.id.recruit, spType, subSize)
                     setTextViewTextSize(R.id.refresh, spType, subSize)
+                    setTextViewTextSize(R.id.meeting, spType, subSize)
                 }
 
                 val recruitCache = prefManager.recruitCache.get()
                 val refreshCache = prefManager.refreshCache.get()
+                val meetCache = prefManager.meetCache.get()
                 //recruit
                 val now = getCurrentTs()
                 val completeCount = when {
@@ -114,7 +120,7 @@ class Widget4 : AppWidgetProvider() {
                 views.apply {
                     setTextViewText(
                         R.id.recruit,
-                        "公开招募 $completeCount/${recruitCache.max}"
+                        "招募 $completeCount/${recruitCache.max}"
                     )
                 }
                 //refresh
@@ -126,7 +132,23 @@ class Widget4 : AppWidgetProvider() {
                 views.apply {
                     setTextViewText(
                         R.id.refresh,
-                        "公招刷新 $count/${refreshCache.max}"
+                        "刷新 $count/${refreshCache.max}"
+                    )
+                }
+                //meeting
+                val meet = when (meetCache.stats) {
+                    0 -> "idle"
+                    1 -> {
+                        val text = TimeUtils.getRemainTimeMinStr(meetCache.completeTime - now)
+                        if( text == "restored") "comp"
+                        else text
+                    }
+                    else -> "comp"
+                }
+                views.apply {
+                    setTextViewText(
+                        R.id.meeting,
+                        "线索 $meet"
                     )
                 }
             }

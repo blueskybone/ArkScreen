@@ -173,11 +173,11 @@ class Function : Fragment() {
                 val data: Intent? = result.data
                 // 解析返回的数据
                 //TODO:添加try catch
-                val token = data?.getStringExtra("token")
+                val token = data?.getStringExtra("token") ?: "null"
                 val xrToken = data?.getStringExtra("xrToken")
                 val userCenter = data?.getStringExtra("userCenter")
                 val channelMasterId = data?.getIntExtra("channelMasterId", 1)
-                if (token != null && xrToken != null && userCenter != null) {
+                if (xrToken != null && userCenter != null) {
                     Toaster.show(getString(R.string.getting_info))
                     model.accountGcLogin(token, channelMasterId!!, userCenter, xrToken)
                 } else {
@@ -207,11 +207,18 @@ class Function : Fragment() {
                 .add(getString(R.string.import_cookie)) {
                     displayLoginDialog(2)
                 }
-                .add(R.string.web_login) {
+                .add(R.string.web_login_official) {
                     val intent =
                         LoginWeb.startIntent(
                             requireContext(),
                             LoginWeb.Companion.LoginType.GACHA_OFFICIAL
+                        )
+                    activityResultLauncherGc.launch(intent)
+                }.add(R.string.web_login_bili) {
+                    val intent =
+                        LoginWeb.startIntent(
+                            requireContext(),
+                            LoginWeb.Companion.LoginType.GACHA_BILI
                         )
                     activityResultLauncherGc.launch(intent)
                 }

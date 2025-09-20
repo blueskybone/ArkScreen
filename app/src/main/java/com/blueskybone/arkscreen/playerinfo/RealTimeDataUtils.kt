@@ -16,6 +16,7 @@ import com.blueskybone.arkscreen.network.model.Tradings
 import com.blueskybone.arkscreen.network.model.Training
 import com.blueskybone.arkscreen.playerinfo.cache.ApCache
 import com.blueskybone.arkscreen.playerinfo.cache.LaborCache
+import com.blueskybone.arkscreen.playerinfo.cache.MeetCache
 import com.blueskybone.arkscreen.playerinfo.cache.RecruitCache
 import com.blueskybone.arkscreen.playerinfo.cache.RefreshCache
 import com.blueskybone.arkscreen.playerinfo.cache.TrainCache
@@ -519,10 +520,18 @@ fun setCaches(prefManager: PrefManager, realTimeData: RealTimeData) {
         realTimeData.hire.isNull,
     )
 
+    val meetCache = MeetCache(
+        realTimeData.currentTs,
+        realTimeData.meeting.completeTime,
+        realTimeData.meeting.status,
+        realTimeData.meeting.isNull
+    )
+
     prefManager.apCache.set(apCache)
     prefManager.laborCache.set(laborCache)
     prefManager.trainCache.set(trainCache)
     prefManager.recruitCache.set(recruitCache)
     prefManager.refreshCache.set(refreshCache)
+    prefManager.meetCache.set(meetCache)
 }
 
