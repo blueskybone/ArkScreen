@@ -63,9 +63,7 @@ data class RealTimeData(
         var changeRemainSecsIrene: Long = -1L,       //计算换班时间
         var changeTimeIrene: Long = -1L,
         var changeRemainSecsLogos: Long = -1L,  //计算换班时间Logos
-        var changeTimeLogos: Long = -1L,
-        //var changeRemainSecsIrene: Long = -1L,     //计算换班时间
-        //var changeTimeIrene Long = -1L,
+        var changeTimeLogos: Long = -1L
     )
 
     data class Recruits(

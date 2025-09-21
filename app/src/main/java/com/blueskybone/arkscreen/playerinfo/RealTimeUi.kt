@@ -29,7 +29,8 @@ data class RealTimeUi(
 ) {
     data class PairInfo(
         var value: String = "",
-        var time: String = ""
+        var time: String = "",
+        var notify: Boolean = false
     )
 
     data class TrainChange(

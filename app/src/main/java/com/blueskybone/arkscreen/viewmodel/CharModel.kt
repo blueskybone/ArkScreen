@@ -1,6 +1,7 @@
 package com.blueskybone.arkscreen.viewmodel
 
 import android.net.Uri
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,6 +16,7 @@ import com.blueskybone.arkscreen.playerinfo.compareOperators
 import com.blueskybone.arkscreen.playerinfo.getOperatorData
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountSk
+import com.blueskybone.arkscreen.ui.recyclerview.ViewType
 import com.blueskybone.arkscreen.util.readFileAsJsonNode
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.hjq.toast.Toaster
@@ -48,6 +50,31 @@ class CharModel : ViewModel() {
 
     private lateinit var charList: List<Operator>
     private lateinit var charNotOwnList: List<Operator>
+
+    private val _currentViewType = MutableLiveData<ViewType>()
+    val currentViewType: LiveData<ViewType> = _currentViewType
+
+    //切换视图
+    fun toggleViewType() {
+        when (_currentViewType.value) {
+            ViewType.LIST -> {
+                _currentViewType.value = ViewType.GRID
+                prefManager.assetsViewType.set(ViewType.GRID.ordinal)
+            }
+
+            ViewType.GRID -> {
+                _currentViewType.value = ViewType.LIST
+                prefManager.assetsViewType.set(ViewType.LIST.ordinal)
+            }
+
+            null -> _currentViewType.value = ViewType.GRID
+        }
+    }
+
+    fun setViewType(viewType: ViewType) {
+        _currentViewType.value = viewType
+    }
+
 
     private var totalSize = 0
     private var totalMissSize = 0
@@ -104,6 +131,8 @@ class CharModel : ViewModel() {
             withContext(Dispatchers.IO) {
                 loadCharAssets()
             }
+            val type = prefManager.assetsViewType.get()
+            _currentViewType.value = ViewType.entries[type]
         }
     }
 

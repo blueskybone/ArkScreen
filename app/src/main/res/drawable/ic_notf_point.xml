@@ -1,0 +1,17 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- 更细的大镂空菱形（外框线条变细） -->
+    <path
+        android:fillColor="@color/theme_orig"
+        android:pathData="M0.585938 12L12.0002 0.585693L23.4145 12L12.0002 23.4143L0.585938 12ZM2.5 12L12.0002 21.5L21.5004 12L12.0002 2.49976L2.5 12Z" />
+
+    <!-- 更大的实心菱形（内部） -->
+    <path
+        android:fillColor="@color/theme_orig"
+        android:pathData="M5.5 12L12 5.5L18.5 12L12 18.5Z" />
+
+</vector>

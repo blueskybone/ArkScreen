@@ -3,6 +3,7 @@ package com.blueskybone.arkscreen.preference
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.playerinfo.cache.ApCache
 import com.blueskybone.arkscreen.playerinfo.cache.LaborCache
+import com.blueskybone.arkscreen.playerinfo.cache.MeetCache
 import com.blueskybone.arkscreen.playerinfo.cache.RecruitCache
 import com.blueskybone.arkscreen.playerinfo.cache.RefreshCache
 import com.blueskybone.arkscreen.playerinfo.cache.TrainCache
@@ -19,6 +20,7 @@ import com.blueskybone.arkscreen.ui.bindinginfo.WidgetContent
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetTextColor
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq
+import com.blueskybone.arkscreen.ui.recyclerview.ViewType
 import java.util.function.Function
 
 /**
@@ -72,6 +74,10 @@ class PrefManager() {
         refreshCache = preferenceStore.getObject(
             "refresh_cache",
             RefreshCache.default(), serializerRefresh(), deserializerRefresh()
+        )
+        meetCache = preferenceStore.getObject(
+            "meet_cache",
+            MeetCache.default(), serializerMeet(), deserializerMeet()
         )
 
         insertLink = preferenceStore.getBoolean("insert_link", false)
@@ -131,6 +137,7 @@ class PrefManager() {
             "widget_4_show_starter",
             true
         )
+        assetsViewType = preferenceStore.getInt("assets_view_type", ViewType.GRID.ordinal)
     }
 
     lateinit var warnOverlayPermission: Preference<Boolean>
@@ -153,12 +160,15 @@ class PrefManager() {
     lateinit var trainCache: Preference<TrainCache>
     lateinit var recruitCache: Preference<RecruitCache>
     lateinit var refreshCache: Preference<RefreshCache>
+    lateinit var meetCache: Preference<MeetCache>
     lateinit var backAutoAtd: Preference<Boolean>
     lateinit var alarmAtdHour: Preference<Int>
     lateinit var alarmAtdMin: Preference<Int>
     lateinit var useInnerWeb: Preference<Boolean>
     lateinit var appTheme: Preference<String>
     lateinit var showHomeAnnounce: Preference<Boolean>
+
+    lateinit var assetsViewType: Preference<Int>
 
 
     //桌面组件相关设置
@@ -362,6 +372,31 @@ class PrefManager() {
             } catch (e: Exception) {
                 e.printStackTrace()
                 return@Function RefreshCache.default()
+            }
+        }
+    }
+
+    private fun serializerMeet(): (MeetCache) -> String {
+        return { cache ->
+            "${cache.lastSyncTs}@${cache.completeTime}@${cache.stats}@${cache.isnull}"
+        }
+    }
+
+    private fun deserializerMeet(): Function<String, MeetCache> {
+        return Function { string: String ->
+            try {
+                val list =
+                    string.split("@".toRegex()).dropLastWhile { it.isEmpty() }
+                        .toTypedArray()
+                return@Function MeetCache(
+                    list[0].toLong(),
+                    list[1].toLong(),
+                    list[2].toInt(),
+                    list[3].toBoolean()
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@Function MeetCache.default()
             }
         }
     }

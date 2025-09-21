@@ -68,8 +68,8 @@ class RealTimeActivity : AppCompatActivity() {
     private fun InfoCardBinding.setUp(pairInfo: RealTimeUi.PairInfo) {
         Time.text = pairInfo.time
         Value.text = pairInfo.value
+        Notify.visibility = if(pairInfo.notify) View.VISIBLE else View.GONE
     }
-
 
     private fun setupObserver() {
         model.uiState.observe(this) { value ->
@@ -104,7 +104,7 @@ class RealTimeActivity : AppCompatActivity() {
         binding.Ap.text = data.apNow
         binding.ApMax.text = data.apMax
         binding.Avatar.load(data.avatarUrl)
-        binding.Level.text = data.level.toString()
+        binding.Level.text = data.level
         binding.ApResTime.text = data.apResTime
         binding.NickName.text = data.nickName
         binding.LastLogin.text = data.lastLogin

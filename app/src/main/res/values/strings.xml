@@ -20,6 +20,7 @@
     <!-- Dialogs Message-->
     <string name="confirm_delete">确定删除吗</string>
     <string name="confirm_clear_data">将清除当前账号的本地寻访记录</string>
+    <string name="gacha_correct_detail">该操作将尝试对数据库中标注为类别UN的记录进行修正，也许有效（？</string>
     <string name="thank_for_donate">感谢支持！</string>
 
     <!-- Fragment Title -->
@@ -62,7 +63,7 @@
     <string name="simple">简洁</string>
 
     <string name="screenshot_delay">截图延迟秒数</string>
-<!--    <string name="screenshot_delay_detail">部分情况出现“未获取有效信息”可能是截图前摇过短截取了错误画面引起的</string>-->
+    <!--    <string name="screenshot_delay_detail">部分情况出现“未获取有效信息”可能是截图前摇过短截取了错误画面引起的</string>-->
 
     <string name="overlay_permission">获取悬浮窗权限</string>
     <string name="overlay_permission_detail">快速公招功能需要悬浮窗权限</string>
@@ -186,16 +187,22 @@
     <string name="logs_option">日志</string>
     <string name="check_logs">查看日志</string>
     <string name="clean_logs">清除日志</string>
-    <string name="open_license_content">[Markwon](https://github.com/noties/Markwon)\n\n
-[AndroidX](https://github.com/androidx/androidx)\n\n
-[Material Components for Android](https://github.com/material-components/material-components-android)\n\n
-[Koin](https://github.com/InsertKoinIO/koin)\n\n
-[Coil](https://github.com/coil-kt/coil)\n\n
-[Jackson](https://github.com/FasterXML/jackson)\n\n
-[Flow Layout](https://github.com/nex3z/FlowLayout)\n\n
-[EasyWindow](https://github.com/getActivity/EasyWindow)\n\n
-[Toaster](https://github.com/getActivity/Toaster)\n\n
-[WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)\n</string>
+    <string name="open_license_content">
+        [AndroidX](https://github.com/androidx/androidx)\n\n
+        [AndroidX WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)\n
+        [Material Components for Android](https://github.com/material-components/material-components-android)\n\n
+        [JUnit](https://github.com/junit-team/junit4)\n\n
+        [Koin](https://github.com/InsertKoinIO/koin)\n\n
+        [Coil](https://github.com/coil-kt/coil)\n\n
+        [Markwon](https://github.com/noties/Markwon)\n\n
+        [Jackson](https://github.com/FasterXML/jackson)\n\n
+        [Flow Layout](https://github.com/nex3z/FlowLayout)\n\n
+        [Timber](https://github.com/JakeWharton/timber)\n\n
+        [OkHttp](https://github.com/square/okhttp)\n\n
+        [Retrofit](https://github.com/square/retrofit)\n\n
+        [EasyWindow](https://github.com/getActivity/EasyWindow)\n\n
+        [Toaster](https://github.com/getActivity/Toaster)\n\n
+    </string>
     <string name="update_log">更新日志</string>
     <string name="qq_group">QQ群聊</string>
     <string name="qq_group_content">意见反馈，聊天吹水</string>
@@ -230,6 +237,7 @@
     <string name="export_data">导出数据</string>
     <string name="update_data">更新数据</string>
     <string name="clear_data">清除数据</string>
+    <string name="gacha_correct">卡池修正（实验）</string>
 
     <string name="file_txt">.txt文件</string>
     <string name="file_json">.json文件</string>

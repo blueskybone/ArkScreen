@@ -7,18 +7,23 @@ import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.PopupWindow
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.blueskybone.arkscreen.R
@@ -27,9 +32,12 @@ import com.blueskybone.arkscreen.databinding.CardApCacheBinding
 import com.blueskybone.arkscreen.databinding.ChipRoundBinding
 import com.blueskybone.arkscreen.databinding.DialogInputBinding
 import com.blueskybone.arkscreen.databinding.FragmentHomeBinding
+import com.blueskybone.arkscreen.databinding.PopupAccountBinding
 import com.blueskybone.arkscreen.network.BiliVideo
 import com.blueskybone.arkscreen.playerinfo.cache.ApCache
 import com.blueskybone.arkscreen.preference.PrefManager
+import com.blueskybone.arkscreen.room.Account
+import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Link
 import com.blueskybone.arkscreen.ui.activity.CharAssets
 import com.blueskybone.arkscreen.ui.activity.GachaActivity
@@ -41,6 +49,7 @@ import com.blueskybone.arkscreen.ui.bindinginfo.FuncChipInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.GachaStat
 import com.blueskybone.arkscreen.ui.bindinginfo.OpeAssets
 import com.blueskybone.arkscreen.ui.bindinginfo.RecruitCal
+import com.blueskybone.arkscreen.ui.recyclerview.AccountAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
 import com.blueskybone.arkscreen.ui.recyclerview.LinkGridAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.viewpager.ImagePagerAdapter
@@ -74,8 +83,11 @@ class Home : Fragment() {
 
     private var adapter: LinkGridAdapter? = null
     private var adapterBanner: ImagePagerAdapter? = null
+    private var adapterAccount: AccountAdapter? = null
+
     private var autoScrollJob: Job? = null
     private val scrollDelay = 5000L
+    private var accountPopup: PopupWindow? = null
 
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
@@ -129,6 +141,7 @@ class Home : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater)
         adapter = LinkGridAdapter(adapterListener)
+        adapterAccount = AccountAdapter(requireContext(), adapterSkListener)
         initialize()
         setupBinding()
         setupObserver()
@@ -178,6 +191,10 @@ class Home : Fragment() {
             startAutoScroll()
             binding.TitleBanner.isUserInputEnabled = true
         }
+
+        model.accountSkList.observe(viewLifecycleOwner) { value ->
+            adapterAccount?.submitList(value)
+        }
     }
 
     private fun startAutoScroll() {
@@ -203,10 +220,11 @@ class Home : Fragment() {
             //
         }
 
-        binding.CurrentAccount.setOnClickListener {
+        binding.CurrentAccount.setOnClickListener { view ->
             model.checkAnnounce()
             model.accountSkList.value!!.let {
                 if (it.isEmpty()) {
+                    //登入
                     MenuDialog(requireContext())
                         .add(getString(R.string.import_cookie)) {
                             displayLoginDialog()
@@ -222,24 +240,18 @@ class Home : Fragment() {
                         .show()
 
                 } else {
-                    val menuDialog = MenuDialog(requireContext())
-                    for (account in model.accountSkList.value!!) {
-                        menuDialog.add(account.nickName) {
-                            model.setDefaultAccountSk(account)
-                        }
-                    }
-                    menuDialog.show()
+                    //切换账号
+//                    val menuDialog = MenuDialog(requireContext())
+//                    for (account in model.accountSkList.value!!) {
+//                        menuDialog.add(account.nickName) {
+//                            model.setDefaultAccountSk(account)
+//                        }
+//                    }
+//                    menuDialog.show()
+                    showAccountPopup(view)
                 }
             }
         }
-
-//        binding.TitleImage.setOnClickListener {
-//            if (prefManager.baseAccountSk.get().official)
-//                openAnotherApp("com.hypergryph.arknights")
-//            else
-//                openAnotherApp("com.hypergryph.arknights.bilibili")
-//        }
-
         binding.RecruitCalc.setup(RecruitCal)
         binding.OpeAssets.setup(OpeAssets)
         binding.GachaStat.setup(GachaStat)
@@ -290,6 +302,63 @@ class Home : Fragment() {
         }
     }
 
+    private val adapterSkListener = object : ItemListener {
+        @SuppressLint("NotifyDataSetChanged")
+        override fun onClick(position: Int) {
+            adapterAccount?.currentList?.get(position)?.let { value ->
+                model.setDefaultAccountSk(value as AccountSk)
+//                Toaster.show(getString(R.string.set_default_account, value.nickName))
+                adapterAccount?.notifyDataSetChanged()
+                accountPopup?.dismiss()
+            }
+        }
+
+        override fun onLongClick(position: Int) {
+        }
+    }
+
+    private fun showAccountPopup(anchor: View) {
+        if (accountPopup?.isShowing == true) return
+        val activity = requireActivity()
+        // 初始化弹窗
+        val binding = PopupAccountBinding.inflate(LayoutInflater.from(requireContext()))
+        val popupView = binding.root  // 获取根布局
+        binding.lvAccount.adapter = adapterAccount
+
+        accountPopup = PopupWindow(
+            popupView,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            true
+        ).apply {
+            setBackgroundDrawable(
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    android.R.color.transparent
+                )
+            )
+            isOutsideTouchable = true
+            animationStyle = R.style.PopupDownAnim
+            setOnDismissListener {
+                activity.window?.attributes =  activity.window?.attributes?.apply {
+                    this.alpha = 1.0f
+                }
+            }
+        }
+        // 显示弹窗前调整背景透明度
+        activity.window?.attributes = activity.window?.attributes?.apply {
+            alpha = 0.7f
+        }
+        // 计算弹窗位置，显示在锚点下方
+        val location = IntArray(2)
+        anchor.getLocationOnScreen(location)
+        val x = location[0]
+        val y = location[1] + anchor.height
+
+        // 显示弹窗，可根据需要调整x和y的偏移量
+        accountPopup?.showAtLocation(anchor, Gravity.NO_GRAVITY, x, y)
+    }
+
     private fun displayLoginDialog() {
         val dialogBinding = DialogInputBinding.inflate(layoutInflater)
         dialogBinding.EditText2.visibility = View.GONE
@@ -314,16 +383,16 @@ class Home : Fragment() {
             }.show()
     }
 
-    @SuppressLint("QueryPermissionsNeeded")
-    private fun openAnotherApp(packageName: String) {
-        val packageManager = requireActivity().packageManager
-        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
-        if (launchIntent != null) {
-            startActivity(launchIntent)
-        } else {
-            Toaster.show("未检测到游戏安装")
-        }
-    }
+//    @SuppressLint("QueryPermissionsNeeded")
+//    private fun openAnotherApp(packageName: String) {
+//        val packageManager = requireActivity().packageManager
+//        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
+//        if (launchIntent != null) {
+//            startActivity(launchIntent)
+//        } else {
+//            Toaster.show("未检测到游戏安装")
+//        }
+//    }
 
     private fun CardApCacheBinding.bind(value: ApCache) {
         val now = getCurrentTs()

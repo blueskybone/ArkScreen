@@ -234,6 +234,7 @@ fun getTargetDrawableId(drawable: Int, pref: Preference<String>): Int {
             R.drawable.ic_drone -> R.drawable.ic_drone_black
             R.drawable.ic_bolt -> R.drawable.ic_bolt_black
             R.drawable.ic_train -> R.drawable.ic_train_black
+            R.drawable.ic_clue -> R.drawable.ic_clue_black
             else -> R.drawable.ic_default
         }
     } else drawable
