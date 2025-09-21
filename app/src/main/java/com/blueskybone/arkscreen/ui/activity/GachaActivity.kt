@@ -67,13 +67,12 @@ class GachaActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_export -> {
-                Toaster.show("施工中...")
-//                MenuDialog(this)
-//                    .add(getString(R.string.file_txt)) {
-//                        launcherForTxt?.launch(prefManager.baseAccountGc.get().uid + "_gacha_records")
-//                    }.add(getString(R.string.file_json)) {
-//                        launcherForJson?.launch(prefManager.baseAccountGc.get().uid + "_gacha_records")
-//                    }.show()
+                MenuDialog(this)
+                    .add(getString(R.string.file_txt)) {
+                        launcherForTxt?.launch(prefManager.baseAccountGc.get().uid + "_gacha_records")
+                    }.add(getString(R.string.file_json)) {
+                        launcherForJson?.launch(prefManager.baseAccountGc.get().uid + "_gacha_records")
+                    }.show()
                 true
             }
 
@@ -116,9 +115,8 @@ class GachaActivity : AppCompatActivity() {
                 if (isGridView) {
                     binding.GachaTextFrame.visibility = View.GONE
                     binding.NestedScrollView.visibility = View.VISIBLE
-                }
-                else {
-                    binding.GachaTextFrame.visibility =View.VISIBLE
+                } else {
+                    binding.GachaTextFrame.visibility = View.VISIBLE
                     binding.NestedScrollView.visibility = View.GONE
                 }
                 true
@@ -186,15 +184,13 @@ class GachaActivity : AppCompatActivity() {
         launcherForTxt =
             registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
                 uri?.let {
-                    Toaster.show("施工中...")
-//                    model.exportTxt(uri)
+                    model.exportTxt(uri)
                 }
             }
         launcherForJson =
             registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
                 uri?.let {
-                    Toaster.show("施工中...")
-//                    model.exportJson(uri)
+                    model.exportJson(uri)
                 }
             }
         launcherForImport =

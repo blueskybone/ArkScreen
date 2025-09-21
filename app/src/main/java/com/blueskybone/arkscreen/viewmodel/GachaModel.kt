@@ -103,6 +103,7 @@ class GachaModel : ViewModel() {
             }
         }
     }
+
     private fun List<Gacha>.sortByTsAndPosDescending(): List<Gacha> {
         return sortedWith(
             compareByDescending<Gacha> { it.ts }
@@ -298,7 +299,7 @@ class GachaModel : ViewModel() {
         //把数据库所有数据全部拿出来，对UN的数据进行如下的处理，然后保存回数据库，重新跑一遍初始化。
         viewModelScope.launch {
             _uiState.value = DataUiState.Loading("尝试卡池修正...")
-            withContext(Dispatchers.IO){
+            withContext(Dispatchers.IO) {
                 val gachaList = gachaDao.getByCate("UN")
                 val updatedRecords = gachaList.map { gachaEntity ->
                     // 这里根据你的业务需求更新字段
@@ -312,6 +313,7 @@ class GachaModel : ViewModel() {
         initialize()
     }
 
+    //TODO:抽出成utils.func
     private fun String.toCate(): String {
         if (this.startsWith("LIMITED") || this.startsWith("LINKAGE")) return "LIMITED"
         if (this.startsWith("CLASSIC")) return "CLASSIC"
@@ -323,50 +325,49 @@ class GachaModel : ViewModel() {
         return "UN"
     }
 
-//    fun exportTxt(uri: Uri) {
-//        viewModelScope.launch {
-//            exportingBackup.value = Progress(true, 0, 0, true)
-//            withContext(Dispatchers.IO) {
-//                try {
-//
-//                    val dataList = gachaDao.getByUid(curAccount.uid).asReversed()
-//                    val content = StringBuilder()
-//                    content.append(dataList.joinToString("\n") { data ->
-//                        "${data.ts},${data.pool},${data.record}"
-//                    })
-//                    val contentStr = content.toString().replace("true", "1").replace("false", "0")
-//                    APP.contentResolver.openOutputStream(uri)?.use { outputStream ->
-//                        outputStream.write(contentStr.toByteArray())
-//                    }
-//                } catch (e: IOException) {
-//                    e.printStackTrace()
-//                    Toaster.show("导出失败：" + e.message)
-//                }
-//            }
-//            exportingBackup.value = Progress(false, 0, 0, false)
-//            Toaster.show("导出完成")
-//        }
-//    }
-//
-//    fun exportJson(uri: Uri) {
-//        viewModelScope.launch {
-//            exportingBackup.value = Progress(true, 0, 0, true)
-//            withContext(Dispatchers.IO) {
-//                try {
-//                    val dataList = gachaDao.getByUid(curAccount.uid).asReversed()
-//                    val content = generateCustomJson(dataList, curAccount.uid)
-//                    APP.contentResolver.openOutputStream(uri)?.use { outputStream ->
-//                        outputStream.write(content.toByteArray())
-//                    }
-//                } catch (e: IOException) {
-//                    e.printStackTrace()
-//                    Toaster.show("导出失败：" + e.message)
-//                }
-//            }
-//            exportingBackup.value = Progress(false, 0, 0, false)
-//            Toaster.show("导出完成")
-//        }
-//    }
+    fun exportTxt(uri: Uri) {
+        viewModelScope.launch {
+            exportingBackup.value = Progress(true, 0, 0, true)
+            withContext(Dispatchers.IO) {
+                try {
+                    val dataList = gachaDao.getByUid(curAccount.uid).asReversed()
+                    val content = StringBuilder()
+                    content.append(dataList.joinToString("\n") { data ->
+                        "${data.poolId},${data.poolCate},${data.ts},${data.pool},${data.charName},${data.charId},${data.rarity},${data.isNew},${data.pos}"
+                    })
+                    val contentStr = content.toString().replace("true", "1").replace("false", "0")
+                    APP.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                        outputStream.write(contentStr.toByteArray())
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    Toaster.show("导出失败：" + e.message)
+                }
+            }
+            exportingBackup.value = Progress(false, 0, 0, false)
+            Toaster.show("导出完成")
+        }
+    }
+
+    fun exportJson(uri: Uri) {
+        viewModelScope.launch {
+            exportingBackup.value = Progress(true, 0, 0, true)
+            withContext(Dispatchers.IO) {
+                try {
+                    val dataList = gachaDao.getByUid(curAccount.uid).asReversed()
+                    val content = generateCustomJson(dataList, curAccount.uid)
+                    APP.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                        outputStream.write(content.toByteArray())
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    Toaster.show("导出失败：" + e.message)
+                }
+            }
+            exportingBackup.value = Progress(false, 0, 0, false)
+            Toaster.show("导出完成")
+        }
+    }
 
     //读取：完成后合并本地数据，删除重复数据，
 //    fun importData(uri: Uri) {
@@ -453,37 +454,30 @@ class GachaModel : ViewModel() {
 //        return gachaList
 //    }
 
-//    private fun generateCustomJson(dataList: List<Gacha>, uid: String): String {
-//        val mapper = ObjectMapper()
-//        val root = mapper.createObjectNode()
-//        val data = mapper.createObjectNode()
-//        val info = mapper.createObjectNode()
-//        info.put("uid", uid.toInt())
-//        info.put("export_timestamp", System.currentTimeMillis() / 1000)
-//
-//        root.set<ObjectNode>("info", info)
-//
-//        for (gacha in dataList) {
-//            val gachaData = mapper.createObjectNode()
-//            val records = deserialize(gacha.record)
-//
-//            val cArray: ArrayNode = mapper.createArrayNode()
-//            for (record in records) {
-//                val recordArray = mapper.createArrayNode()
-//                recordArray.add(record.name)
-//                recordArray.add(record.rarity)
-//                recordArray.add(if (record.isNew) 1 else 0) // Convert true/false to 1/0
-//                cArray.add(recordArray)
-//            }
-//            gachaData.set<ArrayNode>("c", cArray)
-//            gachaData.put("p", gacha.pool)
-//            data.set<ObjectNode>(gacha.ts.toString(), gachaData)
-//        }
-//
-//        root.set<ObjectNode>("data", data)
-//
-//        return mapper.writeValueAsString(root)
-//    }
+    private fun generateCustomJson(dataList: List<Gacha>, uid: String): String {
+        val mapper = ObjectMapper()
+        val root = mapper.createObjectNode()
+
+        val info = root.putObject("info")
+        info.put("uid", uid)
+        info.put("export_timestamp", System.currentTimeMillis())
+        info.put("export_app", "arkscreen")
+
+        val dataArray = root.putArray("data")
+        dataList.forEach { gacha ->
+            val gachaNode = dataArray.addObject()
+            gachaNode.put("poolId", gacha.poolId)
+            gachaNode.put("poolCate", gacha.poolCate)
+            gachaNode.put("ts", gacha.ts)
+            gachaNode.put("pool", gacha.pool)
+            gachaNode.put("charName", gacha.charName)
+            gachaNode.put("charId", gacha.charId)
+            gachaNode.put("rarity", gacha.rarity)
+            gachaNode.put("isNew", gacha.isNew)
+            gachaNode.put("pos", gacha.pos)
+        }
+        return mapper.writeValueAsString(root)
+    }
 
     private suspend fun getPoolType(): List<String> {
         val client = OkHttpClient()
