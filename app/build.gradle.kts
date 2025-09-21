@@ -1,20 +1,26 @@
+//plugins {
+//    id("com.android.application")
+//    id("org.jetbrains.kotlin.android")
+//    id("com.google.devtools.ksp")
+//    id("kotlin-parcelize")
+//}
+
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp")
-    id("kotlin-parcelize")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.blueskybone.arkscreen"
-    compileSdk = 34
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.blueskybone.arkscreen"
-        minSdk = 26
-        targetSdk = 34
-        versionCode = 9
-        versionName = "2.1.0"
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
+        versionCode = 10
+        versionName = "2.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
@@ -44,8 +50,17 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = libs.versions.jvmTarget.get()
     }
+
+    //compose
+//    buildFeatures {
+//        compose = true
+//    }
+//
+//    composeOptions {
+//        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+//    }
 
     ksp {
         arg("room.generateKotlin", "true")
@@ -62,42 +77,100 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
-    implementation("androidx.paging:paging-runtime:3.3.2")
+//    implementation("androidx.core:core-ktx:1.9.0")
+//    implementation("androidx.appcompat:appcompat:1.7.0")
+//    implementation("com.google.android.material:material:1.12.0")
+//    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
+//    implementation("androidx.paging:paging-runtime:3.3.2")
+//    implementation("com.google.android.material:material:1.6.0")
+//
+//
+//    testImplementation("junit:junit:4.13.2")
+//    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+//    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+//    implementation("androidx.navigation:navigation-fragment-ktx:2.8.5")
+//    implementation("androidx.navigation:navigation-ui-ktx:2.8.5")
+//
+//    implementation("io.insert-koin:koin-core:3.4.0")
+//    implementation("io.insert-koin:koin-android:3.4.0")
+//    implementation("io.insert-koin:koin-android-compat:3.4.0")
+//
+//    ksp("androidx.room:room-compiler:2.6.1")
+//    implementation("androidx.room:room-ktx:2.6.1")
+//    implementation("androidx.room:room-runtime:2.6.1")
+//
+//    implementation("io.coil-kt:coil:2.5.0")
+//    implementation("io.noties.markwon:core:4.2.0")
+//    implementation("com.fasterxml.jackson.core:jackson-core:2.12.1")
+//    implementation("com.fasterxml.jackson.core:jackson-databind:2.12.1")
+//    implementation("androidx.webkit:webkit:1.12.1")
+//    implementation("com.nex3z:flow-layout:1.3.3")
+//    implementation("com.jakewharton.timber:timber:5.0.1")
+//    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+//
+//    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+//    implementation("com.squareup.retrofit2:converter-jackson:2.9.0")
+//    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
+//    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.0")
+//
+//    implementation("com.github.getActivity:EasyWindow:10.62")
+//    implementation("com.github.getActivity:Toaster:12.6")
+//
+//    implementation("androidx.work:work-runtime:2.9.0")
+//    implementation(platform(libs.compose.bom))
+//    androidTestImplementation(platform(libs.compose.bom))
+//
+//    // Compose 相关 (让BOM管理版本)
+//    implementation(libs.androidx.ui)
+//    implementation(libs.androidx.ui.graphics)
+//    implementation(libs.androidx.ui.tooling.preview)
+//    implementation(libs.androidx.material3)
+//    implementation(libs.androidx.activity.compose)
+//    implementation(libs.androidx.lifecycle.viewmodel.compose)
+//    implementation(libs.androidx.runtime.livedata)
+//    implementation(libs.androidx.pager)
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.8.5")
-    implementation("androidx.navigation:navigation-ui-ktx:2.8.5")
+    // AndroidX 核心
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.coordinatorlayout)
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.work.runtime)
 
-    implementation("io.insert-koin:koin-core:3.4.0")
-    implementation("io.insert-koin:koin-android:3.4.0")
-    implementation("io.insert-koin:koin-android-compat:3.4.0")
+    // Material Design
+    implementation(libs.material)
 
-    ksp("androidx.room:room-compiler:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
-    implementation("androidx.room:room-runtime:2.6.1")
+    // 测试
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation("io.coil-kt:coil:2.5.0")
-    implementation("io.noties.markwon:core:4.2.0")
-    implementation("com.fasterxml.jackson.core:jackson-core:2.12.1")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.12.1")
-    implementation("androidx.webkit:webkit:1.12.1")
-    implementation("com.nex3z:flow-layout:1.3.3")
-    implementation("com.jakewharton.timber:timber:5.0.1")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    // Koin DI
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.android.compat)
 
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-jackson:2.9.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.0")
+    // Room 数据库
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.runtime)
 
-    implementation("com.github.getActivity:EasyWindow:10.62")
-    implementation("com.github.getActivity:Toaster:12.6")
+    // 网络
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.jackson)
+    implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.jackson.module.kotlin)
 
-    implementation("androidx.work:work-runtime:2.9.0")
+    // 图片加载
+    implementation(libs.coil)
+
+    // 其他工具库
+    implementation(libs.markwon.core)
+    implementation(libs.flow.layout)
+    implementation(libs.timber)
+    implementation(libs.easy.window)
+    implementation(libs.toaster)
+    implementation(libs.androidx.webkit)
 }

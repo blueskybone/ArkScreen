@@ -275,15 +275,18 @@ class RetrofitUtils {
             token: String,
             xrToken: String
         ): Map<String, String> {
-            return mapOf(
+            val baseHeaders = mutableMapOf(
                 "accept" to "application/json, text/plain, */*",
                 "accept-language" to "zh-CN,zh;q=0.9,en;q=0.8,en-US;q=0.7,zh-TW;q=0.6",
                 "cookie" to "ak-user-center=$cookie",
                 "referer" to "https://ak.hypergryph.com/user/headhunting",
                 "user-agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
-                "x-account-token" to token,
                 "x-role-token" to xrToken
             )
+            if (token != "null") {
+                baseHeaders["x-account-token"] = token
+            }
+            return baseHeaders
         }
 
         private fun createSignHeaders(

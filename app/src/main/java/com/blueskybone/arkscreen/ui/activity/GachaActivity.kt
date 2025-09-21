@@ -15,6 +15,7 @@ import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.databinding.ActivityGachaBinding
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.ui.recyclerview.GachaAdapter
+import com.blueskybone.arkscreen.ui.recyclerview.GachaTextAdapter
 import com.blueskybone.arkscreen.viewmodel.GachaModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
@@ -29,6 +30,8 @@ class GachaActivity : AppCompatActivity() {
     private val prefManager: PrefManager by getKoin().inject()
     private val model: GachaModel by viewModels()
     private var adapter: GachaAdapter? = null
+    private var adapterText: GachaTextAdapter? = null
+    private var isGridView = true
 
     private var _binding: ActivityGachaBinding? = null
     private val binding get() = _binding!!
@@ -47,7 +50,9 @@ class GachaActivity : AppCompatActivity() {
 
     private fun setUpBinding() {
         adapter = GachaAdapter(this)
+        adapterText = GachaTextAdapter(this)
         binding.RecyclerView.adapter = adapter
+        binding.GachaTextRecycler.adapter = adapterText
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -58,16 +63,16 @@ class GachaActivity : AppCompatActivity() {
         return true
     }
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_export -> {
-                Toaster.show("施工中...")
-//                MenuDialog(this)
-//                    .add(getString(R.string.file_txt)) {
-//                        launcherForTxt?.launch(prefManager.baseAccountGc.get().uid + "_gacha_records")
-//                    }.add(getString(R.string.file_json)) {
-//                        launcherForJson?.launch(prefManager.baseAccountGc.get().uid + "_gacha_records")
-//                    }.show()
+                MenuDialog(this)
+                    .add(getString(R.string.file_txt)) {
+                        launcherForTxt?.launch(prefManager.baseAccountGc.get().uid + "_gacha_records")
+                    }.add(getString(R.string.file_json)) {
+                        launcherForJson?.launch(prefManager.baseAccountGc.get().uid + "_gacha_records")
+                    }.show()
                 true
             }
 
@@ -95,9 +100,32 @@ class GachaActivity : AppCompatActivity() {
                 true
             }
 
+            R.id.gacha_correct -> {
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(getString(R.string.gacha_correct))
+                    .setMessage(R.string.gacha_correct_detail)
+                    .setPositiveButton(R.string.confirm) { _, _ -> model.correctUnCateRecord() }
+                    .setNegativeButton(R.string.cancel, null)
+                    .show()
+                true
+            }
+
+            R.id.action_view_toggle -> {
+                isGridView = !isGridView
+                if (isGridView) {
+                    binding.GachaTextFrame.visibility = View.GONE
+                    binding.NestedScrollView.visibility = View.VISIBLE
+                } else {
+                    binding.GachaTextFrame.visibility = View.VISIBLE
+                    binding.NestedScrollView.visibility = View.GONE
+                }
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
+
     private fun setupObserver() {
         model.uiState.observe(this) { value ->
             when (value) {
@@ -111,22 +139,29 @@ class GachaActivity : AppCompatActivity() {
         model.gachaData.observe(this) { value ->
             adapter?.submitList(value)
         }
+
+        model.gachaRecords.observe(this) { value ->
+            adapterText?.submitList(value)
+        }
     }
 
     private fun displayLoadingView(msg: String) {
         binding.Page.visibility = View.VISIBLE
         binding.NestedScrollView.visibility = View.GONE
+        binding.GachaTextFrame.visibility = View.GONE
         binding.Message.text = msg
     }
 
     private fun displayErrorView(msg: String) {
         binding.Page.visibility = View.VISIBLE
         binding.NestedScrollView.visibility = View.GONE
+        binding.GachaTextFrame.visibility = View.GONE
         binding.Message.text = msg
     }
 
     private fun displayView() {
         binding.Page.visibility = View.GONE
+        binding.GachaTextFrame.visibility = View.GONE
         binding.NestedScrollView.visibility = View.VISIBLE
 
         val account = prefManager.baseAccountGc.get()
@@ -152,15 +187,13 @@ class GachaActivity : AppCompatActivity() {
         launcherForTxt =
             registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
                 uri?.let {
-                    Toaster.show("施工中...")
-//                    model.exportTxt(uri)
+                    model.exportTxt(uri)
                 }
             }
         launcherForJson =
             registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
                 uri?.let {
-                    Toaster.show("施工中...")
-//                    model.exportJson(uri)
+                    model.exportJson(uri)
                 }
             }
         launcherForImport =

@@ -70,13 +70,12 @@ class LoginWeb : AppCompatActivity() {
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0"
 
         private const val sklandUrl = "https://www.skland.com"
-        private const val arkHomeOfficialUrl = "https://ak.hypergryph.com/user/home"
-        private const val arkHomeBiliUrl = "https://ak.hypergryph.com/user/bilibili/login"
+        private const val arkUserUrl = "https://ak.hypergryph.com/user/home"
+//        private const val arkHomeBiliUrl = "https://ak.hypergryph.com/user/bilibili/login"
 
         private const val apiOfficial = "https://web-api.skland.com/account/info/hg"
         private const val arkApiOfficial = "https://web-api.hypergryph.com/account/info/hg"
-        private const val arkApiBili = "https://web-api.hypergryph.com/account/info/ak-b"
-
+//        private const val arkApiBili = "https://web-api.hypergryph.com/account/info/ak-b"
 
         fun start(context: Context, type: LoginType) {
             val intent = Intent(context, LoginWeb::class.java).apply {
@@ -206,7 +205,7 @@ class LoginWeb : AppCompatActivity() {
                     val jsonNode = jacksonObjectMapper() .readTree(metaJson)
                     val xrToken = jsonNode.get("token")?.asText()
                     val token = getCookie(arkApiOfficial, "ACCOUNT")
-                    val userCenter = getCookie(arkHomeOfficialUrl, "ak-user-center")
+                    val userCenter = getCookie(arkUserUrl, "ak-user-center")
 
                     val returnIntent = Intent()
 
@@ -217,7 +216,7 @@ class LoginWeb : AppCompatActivity() {
                     setResult(RESULT_OK, returnIntent)
                     finish()
                 } catch (e: Exception) {
-                    Timber.tag("exception").w(e)
+                    Timber.tag("submitMetaJson exception").w(e)
                 }
             }
         }
@@ -232,37 +231,55 @@ class LoginWeb : AppCompatActivity() {
                     toolbar.title = view.title
                     // 3. 页面加载完成后执行JS
                     textButton.setOnClickListener {
-                        Toaster.show("onclick")
                         view.evaluateJavascript(script, null)
                     }
                 }
             }
         }
-        webView.loadUrl(arkHomeOfficialUrl)
+        webView.loadUrl(arkUserUrl)
     }
 
     private fun setArkBilibiliWebView() {
         textButton.text = getString(R.string.text_web_ark)
         textButton.visibility = View.VISIBLE
-        webView.webViewClient = object : WebViewClient() {
-            override fun onPageFinished(view: WebView, url: String) {
-                super.onPageFinished(view, url)
-                toolbar.title = view.title
-                textButton.setOnClickListener {
-                    try {
-                        val token = getCookie(arkApiBili, "ACCOUNT_AK_B")
-                        val returnIntent = Intent()
-                        returnIntent.putExtra("token", token)
-                        returnIntent.putExtra("channelMasterId", 2)
-                        setResult(RESULT_OK, returnIntent)
-                        finish()
-                    } catch (e: Exception) {
-                        Toaster.show(e.message)
+        class JsObject {
+            @JavascriptInterface
+            @Throws(JsonProcessingException::class)
+            fun submitMetaJson(metaJson: String) {
+                try {
+                    val jsonNode = jacksonObjectMapper() .readTree(metaJson)
+                    val xrToken = jsonNode.get("token")?.asText()
+                    val userCenter = getCookie(arkUserUrl, "ak-user-center")
+
+                    val returnIntent = Intent()
+
+                    returnIntent.putExtra("userCenter", userCenter)
+                    returnIntent.putExtra("xrToken", xrToken)
+                    returnIntent.putExtra("channelMasterId", 2)
+                    setResult(RESULT_OK, returnIntent)
+                    finish()
+                } catch (e: Exception) {
+                    Timber.tag("submitMetaJson exception").w(e)
+                }
+            }
+        }
+        webView.apply {
+            // 1. 先配置 WebViewClient
+            val script =
+                "(function() {const metaJson = localStorage.ONE_ACCOUNT_ROLE_META; Android.submitMetaJson(metaJson);})();".trim { it <= ' ' }
+            this.addJavascriptInterface(JsObject(), "Android")
+            webViewClient = object : WebViewClient() {
+                override fun onPageFinished(view: WebView, url: String) {
+                    super.onPageFinished(view, url)
+                    toolbar.title = view.title
+                    // 2. 页面加载完成后执行JS
+                    textButton.setOnClickListener {
+                        view.evaluateJavascript(script, null)
                     }
                 }
             }
         }
-        webView.loadUrl(arkHomeBiliUrl)
+        webView.loadUrl(arkUserUrl)
     }
 
     override fun onDestroy() {

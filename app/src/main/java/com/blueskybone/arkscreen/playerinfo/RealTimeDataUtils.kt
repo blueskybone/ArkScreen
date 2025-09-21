@@ -16,6 +16,7 @@ import com.blueskybone.arkscreen.network.model.Tradings
 import com.blueskybone.arkscreen.network.model.Training
 import com.blueskybone.arkscreen.playerinfo.cache.ApCache
 import com.blueskybone.arkscreen.playerinfo.cache.LaborCache
+import com.blueskybone.arkscreen.playerinfo.cache.MeetCache
 import com.blueskybone.arkscreen.playerinfo.cache.RecruitCache
 import com.blueskybone.arkscreen.playerinfo.cache.RefreshCache
 import com.blueskybone.arkscreen.playerinfo.cache.TrainCache
@@ -185,16 +186,24 @@ private fun calculateTrainInfo(
                             ((currentTs - train.lastUpdateTime!!).toDouble() * speed).toLong() + this.remainPoint
                         totalPoint = getTotalPoint(totalPointCalc)
 
-                        val targetPoint = when (profession) {
+
+                        val targetPointIrene = when (profession) {
                             "SNIPER", "WARRIOR" -> 24300L
+                            else -> 18900L
+                        }
+                        val targetPointLogos = when (profession) {
                             "CASTER", "SUPPORT" -> 24300L
                             else -> 18900L
                         }
-
-                        if (this.remainPoint > targetPoint) {
-                            val secs = (this.remainPoint - targetPoint) / speed
+                        if (this.remainPoint > targetPointIrene) {
+                            val secs = (this.remainPoint - targetPointIrene) / speed
                             changeRemainSecsIrene = secs.toLong()
                             changeTimeIrene = currentTs + secs.toLong()
+                        }
+                        if (this.remainPoint > targetPointLogos) {
+                            val secs = (this.remainPoint - targetPointLogos) / speed
+                            changeRemainSecsLogos = secs.toLong()
+                            changeTimeLogos = currentTs + secs.toLong()
                         }
                     }
                 }
@@ -511,10 +520,18 @@ fun setCaches(prefManager: PrefManager, realTimeData: RealTimeData) {
         realTimeData.hire.isNull,
     )
 
+    val meetCache = MeetCache(
+        realTimeData.currentTs,
+        realTimeData.meeting.completeTime,
+        realTimeData.meeting.status,
+        realTimeData.meeting.isNull
+    )
+
     prefManager.apCache.set(apCache)
     prefManager.laborCache.set(laborCache)
     prefManager.trainCache.set(trainCache)
     prefManager.recruitCache.set(recruitCache)
     prefManager.refreshCache.set(refreshCache)
+    prefManager.meetCache.set(meetCache)
 }
 

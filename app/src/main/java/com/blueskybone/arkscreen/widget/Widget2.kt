@@ -244,6 +244,41 @@ class Widget2 : AppWidgetProvider() {
                 }
             }
 
+            "meet" ->{
+                val now = getCurrentTs()
+                val meetCache = prefManager.meetCache.get()
+                if (meetCache.isnull) {
+                    views.setTextViewText(R.id.value, "暂无数据")
+                } else {
+                    when (meetCache.stats) {
+                        0 -> {
+                            views.setTextViewText(R.id.value, "空闲中")
+                            views.setTextViewText(R.id.max, "idle")
+                        }
+                        2 -> {
+                            views.setTextViewText(R.id.value, "交流完成")
+                            views.setTextViewText(R.id.max, "completed")
+                        }
+                        1 -> {
+                            if (now > meetCache.completeTime) {
+                                views.setTextViewText(R.id.value, "交流完成")
+                                views.setTextViewText(R.id.max, "completed")
+                            } else {
+                                views.setTextViewText(R.id.value, "交流中")
+                                views.setTextViewText(
+                                    R.id.max,
+                                    TimeUtils.getRemainTimeMinStr( meetCache.completeTime - now)
+                                )
+                            }
+                        }
+                        else -> {
+                            views.setTextViewText(R.id.value, "status错误")
+                            Timber.e("trainCache.status ${meetCache.stats}")
+                        }
+                    }
+                }
+            }
+
             else -> {
                 Timber.e("Unknown contentPref: $contentPref")
             }

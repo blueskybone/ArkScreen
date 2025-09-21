@@ -4,6 +4,9 @@ import android.content.Context
 import android.graphics.Color
 import androidx.core.content.ContextCompat.getString
 import com.blueskybone.arkscreen.R
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq.HOUR_1
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq.MIN_15
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq.MIN_30
 
 /**
  *   Created by blueskybone
@@ -117,6 +120,7 @@ data object WidgetSize : ListInfo {
             else -> throw IllegalArgumentException("Invalid : $size")
         }
     }
+
     //remember dpToPx
     fun getImageSize(size: String): Int {
         return when (size) {
@@ -163,17 +167,19 @@ data object WidgetContent : ListInfo {
     private const val AP = "ap"
     private const val LABOR = "labor"
     private const val TRAIN = "train"
+    private const val MEET = "meet"
     override val title: Int = R.string.widget_content
     override val key: String = "widget_content"
     override val defaultValue: String = AP
     const val defaultValue2: String = LABOR
-    override fun getEntryValues() = arrayOf(AP, LABOR, TRAIN)
+    override fun getEntryValues() = arrayOf(AP, LABOR, TRAIN, MEET)
 
     override fun getEntries(context: Context): Array<String> {
         val ap = getString(context, R.string.ap)
         val labor = getString(context, R.string.labor)
         val train = getString(context, R.string.train)
-        return arrayOf(ap, labor, train)
+        val meet = getString(context, R.string.meeting)
+        return arrayOf(ap, labor, train, meet)
     }
 
     fun getDrawableIcon(icon: String): Int {
@@ -181,6 +187,7 @@ data object WidgetContent : ListInfo {
             AP -> R.drawable.ic_bolt
             LABOR -> R.drawable.ic_drone
             TRAIN -> R.drawable.ic_train
+            MEET -> R.drawable.ic_clue
             else -> throw IllegalArgumentException("Invalid : $icon")
         }
     }
