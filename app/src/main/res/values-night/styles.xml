@@ -16,4 +16,13 @@
         <item name="textAppearanceHeadline4">@style/TextAppearance.Headline4</item>
         <item name="textAppearanceSubtitle2">@style/TextAppearance.Subtitle2</item>
     </style>
+    <style name="CardViewContent" parent="Widget.MaterialComponents.CardView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="cardCornerRadius">15dp</item>
+        <item name="cardElevation">0dp</item>
+    </style>
 </resources>
