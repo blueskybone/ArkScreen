@@ -20,6 +20,7 @@ import com.blueskybone.arkscreen.ui.bindinginfo.WidgetContent
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetTextColor
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq
+import com.blueskybone.arkscreen.ui.recyclerview.ViewType
 import java.util.function.Function
 
 /**
@@ -136,6 +137,7 @@ class PrefManager() {
             "widget_4_show_starter",
             true
         )
+        assetsViewType = preferenceStore.getInt("assets_view_type", ViewType.GRID.ordinal)
     }
 
     lateinit var warnOverlayPermission: Preference<Boolean>
@@ -165,6 +167,8 @@ class PrefManager() {
     lateinit var useInnerWeb: Preference<Boolean>
     lateinit var appTheme: Preference<String>
     lateinit var showHomeAnnounce: Preference<Boolean>
+
+    lateinit var assetsViewType: Preference<Int>
 
 
     //桌面组件相关设置

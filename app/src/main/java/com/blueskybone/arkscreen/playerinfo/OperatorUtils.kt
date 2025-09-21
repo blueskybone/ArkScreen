@@ -8,6 +8,7 @@ import coil.load
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.IconEquipBinding
 import com.blueskybone.arkscreen.databinding.IconSkillBinding
+import com.blueskybone.arkscreen.databinding.IconSkillLargeBinding
 import com.blueskybone.arkscreen.network.avatarUrl
 import com.blueskybone.arkscreen.network.equipUrl
 import com.blueskybone.arkscreen.network.model.PlayerInfoResp
@@ -151,6 +152,30 @@ fun bindSkillView(context: Context, view: IconSkillBinding, skill: Operator.Skil
         view.Special.visibility = View.VISIBLE
     }
 }
+
+fun bindSkillViewLarge(context: Context, view: IconSkillLargeBinding, skill: Operator.Skill, rank: Int) {
+    view.root.visibility = View.VISIBLE
+    view.Icon.alpha = 1.0F
+
+    val url = "$skillUrl${skill.id}.png"
+    view.Icon.load(url) {
+        crossfade(true)
+        crossfade(300)
+    }
+
+    if (skill.specializeLevel == 0) {
+        view.MainRank.text = rank.toString()
+        view.MainRank.visibility = View.VISIBLE
+        view.Special.visibility = View.GONE
+    } else {
+        val drawID = specialIconMap[skill.specializeLevel]
+        val draw = ContextCompat.getDrawable(context, drawID!!)
+        view.Special.setImageDrawable(draw)
+        view.MainRank.visibility = View.GONE
+        view.Special.visibility = View.VISIBLE
+    }
+}
+
 
 fun bindEquipView(view: IconEquipBinding, equip: Operator.Equip) {
     view.root.visibility = View.VISIBLE

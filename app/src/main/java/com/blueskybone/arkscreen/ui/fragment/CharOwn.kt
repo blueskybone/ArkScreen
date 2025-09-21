@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.common.FlowRadioGroup
@@ -30,6 +31,7 @@ import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.task.recruit.I18nManager
 import com.blueskybone.arkscreen.ui.recyclerview.CharAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
+import com.blueskybone.arkscreen.ui.recyclerview.ViewType
 import com.blueskybone.arkscreen.util.TimeUtils.getTimeStrYMD
 import com.blueskybone.arkscreen.util.openLink
 import com.blueskybone.arkscreen.viewmodel.CharModel
@@ -54,7 +56,6 @@ class CharOwn : Fragment(), ItemListener {
 
     private lateinit var adapter: CharAdapter
 
-    //    private lateinit var adapter_new: CharGridAdapter
     private val prefManager: PrefManager by getKoin().inject()
     private var i18nManager: I18nManager = I18nManager.instance
 
@@ -85,6 +86,7 @@ class CharOwn : Fragment(), ItemListener {
         _binding = FragmentCharBinding.inflate(inflater)
 
         setupBinding()
+        setUpObserver()
         setButtonLayout()
         setupListener()
         return binding.root
@@ -131,20 +133,6 @@ class CharOwn : Fragment(), ItemListener {
         binding.RecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.RecyclerView.adapter = adapter
 
-//        binding.RecyclerView.adapter = adapter_new
-        binding.RecyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
-            override fun getItemOffsets(
-                outRect: Rect,
-                view: View,
-                parent: RecyclerView,
-                state: RecyclerView.State
-            ) {
-                super.getItemOffsets(outRect, view, parent, state)
-                val params = view.layoutParams as RecyclerView.LayoutParams
-                params.width = parent.width / 2
-                view.layoutParams = params
-            }
-        })
         binding.Filter.setOnClickListener {
             if (binding.ButtonLayout.visibility == View.GONE) {
                 binding.ButtonLayout.visibility = View.VISIBLE
@@ -168,10 +156,34 @@ class CharOwn : Fragment(), ItemListener {
 
             submitFilter()
         }
+        binding.ViewChanger.setOnClickListener {
+            model.toggleViewType()
+        }
+    }
 
+    private fun setUpObserver() {
         model.charsList.observe(viewLifecycleOwner) { value ->
             adapter.refreshData(value)
             binding.RecyclerView.scrollToPosition(0)
+        }
+
+        model.currentViewType.observe(viewLifecycleOwner) { viewType ->
+            adapter.setViewType(viewType)
+
+            when (viewType) {
+                ViewType.LIST -> {
+                    binding.RecyclerView.layoutManager = LinearLayoutManager(requireContext())
+                    binding.ViewChanger.setImageResource(R.drawable.ic_list)
+                    binding.TableHeader.visibility = View.VISIBLE
+                }
+
+                ViewType.GRID, null -> {
+                    binding.RecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+                    binding.ViewChanger.setImageResource(R.drawable.ic_grid)
+                    binding.TableHeader.visibility = View.GONE
+                    prefManager.assetsViewType.set(ViewType.GRID.ordinal)
+                }
+            }
         }
     }
 
@@ -234,7 +246,7 @@ class CharOwn : Fragment(), ItemListener {
 
                 binding.PRTSlink.setOnClickListener {
                     val url = "https://prts.wiki/w/" + URLEncoder.encode(item.name, "UTF-8")
-                    openLink(requireContext(), url,prefManager)
+                    openLink(requireContext(), url, prefManager)
                 }
 
                 binding.Skill1.Icon.alpha = 0.0F

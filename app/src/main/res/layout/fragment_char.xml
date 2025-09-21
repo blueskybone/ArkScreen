@@ -26,33 +26,56 @@
 
 
         <ImageView
-            android:id="@+id/Grid"
+            android:id="@+id/ViewChanger"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:contentDescription="@string/text_default"
             android:padding="5dp"
-            android:visibility="gone"
             android:src="@drawable/ic_grid" />
-
-        <ImageView
-            android:id="@+id/List"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:contentDescription="@string/text_default"
-            android:padding="5dp"
-            android:src="@drawable/ic_list"
-            android:visibility="gone" />
-
-
     </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/TableHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Section"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="gone"
+        android:orientation="horizontal">
+
+        <TextView
+            android:text="干员"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"/>
+        <TextView
+            android:text="技能"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <TextView
+            android:text="信赖"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"/>
+        <TextView
+            android:text="模组"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"/>
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/RecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/Section"
+        android:layout_below="@id/TableHeader"
         android:scrollbarSize="5dp"
         android:scrollbarThumbVertical="@color/grey_500"
         android:scrollbars="vertical"
