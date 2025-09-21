@@ -4,6 +4,9 @@ import android.content.Context
 import android.graphics.Color
 import androidx.core.content.ContextCompat.getString
 import com.blueskybone.arkscreen.R
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq.HOUR_1
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq.MIN_15
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq.MIN_30
 
 /**
  *   Created by blueskybone
@@ -117,6 +120,7 @@ data object WidgetSize : ListInfo {
             else -> throw IllegalArgumentException("Invalid : $size")
         }
     }
+
     //remember dpToPx
     fun getImageSize(size: String): Int {
         return when (size) {

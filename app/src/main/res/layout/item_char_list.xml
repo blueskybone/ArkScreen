@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp">
+
+    <!--    <com.google.android.material.card.MaterialCardView-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="5dp"-->
+    <!--        android:layout_marginEnd="5dp"-->
+    <!--        app:cardCornerRadius="5dp"-->
+    <!--        app:cardElevation="0dp">-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/Avatar"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/char_ex_blaze"
+                    app:shapeAppearanceOverlay="@style/RoundedImageView" />
+
+                <ImageView
+                    android:id="@+id/Profession"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="start|top"
+                    android:layout_margin="5dp"
+                    android:contentDescription="@string/text_default" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/Name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="?attr/colorOnBackground"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+
+                    android:background="@color/trans_grey"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/Evolve"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp" />
+
+                    <TextView
+                        android:id="@+id/Level"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textSize="11sp" />
+
+                    <ImageView
+                        android:id="@+id/Potential"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/Skills"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <include
+                android:id="@+id/Skill1"
+                layout="@layout/icon_skill_large" />
+
+            <include
+                android:id="@+id/Skill2"
+                layout="@layout/icon_skill_large" />
+
+            <include
+                android:id="@+id/Skill3"
+                layout="@layout/icon_skill_large" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/Favor"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.3"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:id="@+id/Equips"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.8"
+            android:orientation="horizontal">
+
+            <include
+                android:id="@+id/Equip1"
+                layout="@layout/icon_equip" />
+
+            <include
+                android:id="@+id/Equip2"
+                layout="@layout/icon_equip" />
+
+            <include
+                android:id="@+id/Equip3"
+                layout="@layout/icon_equip" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:background="?android:attr/listDivider" />
+</FrameLayout>
