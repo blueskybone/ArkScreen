@@ -55,6 +55,11 @@
 <!--        <item name="cardBackgroundColor">@color/grey_200</item>-->
 <!--    </style>-->
 
+    <style name="PopupDownAnim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/popup_enter</item>
+        <item name="android:windowExitAnimation">@anim/popup_exit</item>
+    </style>
+
     <style name="CardViewContent" parent="Widget.MaterialComponents.CardView">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
