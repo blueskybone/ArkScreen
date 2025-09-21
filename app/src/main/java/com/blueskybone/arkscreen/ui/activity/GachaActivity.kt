@@ -148,17 +148,20 @@ class GachaActivity : AppCompatActivity() {
     private fun displayLoadingView(msg: String) {
         binding.Page.visibility = View.VISIBLE
         binding.NestedScrollView.visibility = View.GONE
+        binding.GachaTextFrame.visibility = View.GONE
         binding.Message.text = msg
     }
 
     private fun displayErrorView(msg: String) {
         binding.Page.visibility = View.VISIBLE
         binding.NestedScrollView.visibility = View.GONE
+        binding.GachaTextFrame.visibility = View.GONE
         binding.Message.text = msg
     }
 
     private fun displayView() {
         binding.Page.visibility = View.GONE
+        binding.GachaTextFrame.visibility = View.GONE
         binding.NestedScrollView.visibility = View.VISIBLE
 
         val account = prefManager.baseAccountGc.get()
