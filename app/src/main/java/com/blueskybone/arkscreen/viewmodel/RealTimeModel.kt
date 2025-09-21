@@ -97,6 +97,7 @@ class RealTimeModel : ViewModel() {
         } else {
             getRemainTimeStr(data.recruits.remainSecs)
         }
+        realTimeUi.recruit.notify = data.recruits.complete > 0
 
         //recruitRefresh
         if (data.hire.isNull) {
@@ -110,6 +111,7 @@ class RealTimeModel : ViewModel() {
                 getRemainTimeStr(data.hire.remainSecs)
             }
         }
+        realTimeUi.recruitRefresh.notify = data.hire.count > 0
 
         //labor
         realTimeUi.labor.value = "${data.labor.current}/${data.labor.max}"
@@ -118,6 +120,8 @@ class RealTimeModel : ViewModel() {
         } else {
             getRemainTimeStr(data.labor.remainSecs)
         }
+        realTimeUi.labor.notify = (data.labor.current == data.labor.max)
+
         //meeting
         if (data.meeting.isNull) {
             realTimeUi.meeting.value = "暂无数据"
@@ -131,12 +135,17 @@ class RealTimeModel : ViewModel() {
                 getRemainTimeStr(data.meeting.remainSecs)
             }
         }
+        realTimeUi.meeting.notify = realTimeUi.meeting.time == "交流完成"
 
         //base
         realTimeUi.manufacture.value = "${data.manufactures.current}/${data.manufactures.max}"
         realTimeUi.trading.value = "${data.tradings.current}/${data.tradings.max}"
         realTimeUi.dormitories.value = "${data.dormitories.current}/${data.dormitories.max}"
         realTimeUi.tired.value = "${data.tired.current}"
+
+        realTimeUi.manufacture.notify = (data.manufactures.current == data.manufactures.max)
+        realTimeUi.trading.notify = (data.tradings.current == data.tradings.max)
+        realTimeUi.tired.notify = data.tired.current > 0
 
         //train
         if (data.train.isNull) {
@@ -154,6 +163,8 @@ class RealTimeModel : ViewModel() {
             }
         }
         realTimeUi.campaign.value = "${data.routine.campaignCurrent}/${data.routine.campaignTotal}"
+        realTimeUi.train.notify = realTimeUi.train.time == "专精完成"
+
         //show change
         if (data.train.changeTimeLogos != -1L) {
             realTimeUi.displayChange = true
