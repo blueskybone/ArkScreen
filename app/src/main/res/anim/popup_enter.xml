@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<translate-->
+<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:duration="100"-->
+<!--    android:fromYDelta="-20dp"-->
+<!--    android:toYDelta="0"-->
+<!--    android:interpolator="@android:anim/decelerate_interpolator"/>-->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="200">
+    <!-- 淡入效果：从完全透明到完全不透明 -->
+    <alpha
+        android:fromAlpha="0.0"
+        android:toAlpha="1.0" />
+    <!-- 可选：添加轻微的缩放效果增强视觉体验 -->
+    <scale
+        android:fromXScale="0.95"
+        android:fromYScale="0.95"
+        android:toXScale="1.0"
+        android:toYScale="1.0"
+        android:pivotX="50%"
+        android:pivotY="0%" />
+</set>
