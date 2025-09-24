@@ -14,8 +14,8 @@
         android:id="@+id/gacha_correct"
         android:title="@string/gacha_correct" />
 
-    <item
-        android:id="@+id/action_view_toggle"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_grid"/>
+<!--    <item-->
+<!--        android:id="@+id/action_view_toggle"-->
+<!--        app:showAsAction="always"-->
+<!--        android:icon="@drawable/ic_grid"/>-->
 </menu>

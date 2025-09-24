@@ -131,11 +131,10 @@ class GachaModel : ViewModel() {
         return pullNewRecords(account, lastTs)
     }
 
-    private suspend fun convertRecordsToList(recordsDb: List<Gacha>): List<Gachas> {
+    private fun convertRecordsToList(recordsDb: List<Gacha>): List<Gachas> {
         val data = recordsDb.sortedByDescending { it.ts }
         if (data.isEmpty()) return listOf()
-        dateRange =
-            getTimeStrYMD(data.last().ts / 1000) + "-" + getTimeStrYMD(data.first().ts / 1000)
+        dateRange = getTimeStrYMD(data.last().ts / 1000) + "-" + getTimeStrYMD(data.first().ts / 1000)
 
 
         //test
