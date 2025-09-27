@@ -167,9 +167,9 @@ class GachaActivity : AppCompatActivity() {
             adapter?.submitList(value)
         }
 
-        model.gachaRecords.observe(this) { value ->
-            adapterText?.submitList(value)
-        }
+//        model.gachaRecords.observe(this) { value ->
+//            adapterText?.submitList(value)
+//        }
     }
 
     private fun displayLoadingView(msg: String) {

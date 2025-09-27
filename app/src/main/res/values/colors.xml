@@ -55,4 +55,6 @@
 
     <color name="theme_yellow">#F8DE05</color>
     <color name="theme_orig">#FF6801</color>
+
+    <color name="pie_text">#121318</color>
 </resources>

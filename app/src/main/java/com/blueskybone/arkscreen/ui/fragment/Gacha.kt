@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.FragmentGachaBinding
@@ -34,6 +35,14 @@ class Gacha : Fragment() {
     private fun setupBinding() {
         adapter = GachaAdapter(requireContext())
         binding.RecyclerView.adapter = adapter
+        binding.RecyclerView.apply {
+            // 设置固定大小，优化性能
+            setHasFixedSize(true)
+
+            // 禁用滚动
+            overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+            isNestedScrollingEnabled = false
+        }
     }
 
     private fun setUpObserver() {
