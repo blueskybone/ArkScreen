@@ -173,4 +173,5 @@ dependencies {
     implementation(libs.easy.window)
     implementation(libs.toaster)
     implementation(libs.androidx.webkit)
+    implementation(libs.mp.android.chart)
 }
