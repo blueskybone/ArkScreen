@@ -129,4 +129,16 @@
         android:padding="8dp"
         android:visibility="gone" />
 
+    <!--放置统计信息-->
+    <LinearLayout
+        android:id="@+id/StatisticsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Section"
+        android:background="?attr/android:colorBackground"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:visibility="gone" />
+
 </RelativeLayout>
