@@ -87,7 +87,7 @@ class GachaModel : ViewModel() {
     }
 
 
-    private fun initialize() {
+    fun initialize() {
         viewModelScope.launch {
             _uiState.value = DataUiState.Loading("加载中...")
             curAccount = prefManager.baseAccountGc.get()

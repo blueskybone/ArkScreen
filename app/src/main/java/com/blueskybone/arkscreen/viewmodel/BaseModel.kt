@@ -140,7 +140,7 @@ class BaseModel : ViewModel() {
         }
     }
 
-    fun checkAnnounce() {
+    private fun checkAnnounce() {
         if (!prefManager.showHomeAnnounce.get()) return
         executeAsync {
             try {

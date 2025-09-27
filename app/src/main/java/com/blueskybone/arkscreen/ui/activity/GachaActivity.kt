@@ -25,6 +25,7 @@ import com.blueskybone.arkscreen.ui.fragment.GachaStatis
 import com.blueskybone.arkscreen.ui.fragment.GachaText
 import com.blueskybone.arkscreen.ui.recyclerview.GachaAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.GachaTextAdapter
+import com.blueskybone.arkscreen.viewmodel.BaseModel
 import com.blueskybone.arkscreen.viewmodel.GachaModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
@@ -40,8 +41,8 @@ import org.koin.android.ext.android.getKoin
 class GachaActivity : AppCompatActivity() {
     private val prefManager: PrefManager by getKoin().inject()
     private val model: GachaModel by viewModels()
+    private val modelBase: BaseModel by viewModels()
     private var adapter: GachaAdapter? = null
-    private var adapterText: GachaTextAdapter? = null
 
     private var _binding: ActivityGachaBinding? = null
     private val binding get() = _binding!!
@@ -167,9 +168,6 @@ class GachaActivity : AppCompatActivity() {
             adapter?.submitList(value)
         }
 
-//        model.gachaRecords.observe(this) { value ->
-//            adapterText?.submitList(value)
-//        }
     }
 
     private fun displayLoadingView(msg: String) {
