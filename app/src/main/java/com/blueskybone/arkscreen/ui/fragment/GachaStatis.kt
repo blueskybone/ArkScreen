@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.blueskybone.arkscreen.R
@@ -29,6 +30,8 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.hjq.toast.Toaster
+import timber.log.Timber
 
 /*
 * 这个页面的更新逻辑：
@@ -54,8 +57,7 @@ class GachaStatis : Fragment() {
         _binding = FragmentGachaStatisBinding.inflate(inflater)
         setupBinding()
         setUpObserver()
-        setupSimpleBarChart()
-//        setupSpinner()
+//        setupSimpleBarChart()
         return binding.root
     }
 
@@ -109,10 +111,8 @@ class GachaStatis : Fragment() {
     }
 
     private fun setupSpinner(gachaInfo: List<GachaInfo>) {
-        // 数据源
-//        val cities = arrayOf("全部卡池", "人偶的歌谣", "未见蒙尘", "定向甄选", "不归花火")
+
         val dataText = gachaInfo.map { item -> item.poolName }
-        // 创建适配器
         val adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,  // 默认布局
@@ -132,10 +132,31 @@ class GachaStatis : Fragment() {
                 position: Int,
                 id: Long
             ) {
-                val info = gachaInfo[position]
-                setPieChart(info)
-                val countSum = info.rare3 + info.rare4 + info.rare5 + info.rare6
-                binding.RecordsCount.text = countSum.toString() + "抽"
+                try {
+                    val info = gachaInfo[position]
+                    setPieChart(info)
+                    val countSum = info.rare3 + info.rare4 + info.rare5 + info.rare6
+                    binding.RecordsCount.text = countSum.toString() + "抽"
+
+                    binding.Rare6Count.text = "共 " + info.rare6.toString() + " 个"
+                    binding.Rare6Percent.text = "占 " + "%.1f%%".format(info.rare6.toFloat() / countSum * 100)
+                    binding.Rare6Ave.text = if(info.rare6 == 0) "-" else (countSum /info.rare6).toString()  + "抽/个"
+
+                    binding.Rare5Count.text = "共 " + info.rare5.toString() + " 个"
+                    binding.Rare5Percent.text = "占 " + "%.1f%%".format(info.rare5.toFloat() / countSum * 100)
+                    binding.Rare5Ave.text = if(info.rare5 == 0) "-" else (countSum /info.rare5).toString()  + "抽/个"
+
+                    binding.Rare4Count.text = "共 " + info.rare4.toString() + " 个"
+                    binding.Rare4Percent.text = "占 " + "%.1f%%".format(info.rare4.toFloat() / countSum * 100)
+                    binding.Rare4Ave.text = if(info.rare4 == 0) "-" else (countSum /info.rare4).toString()  + "抽/个"
+
+                    binding.Rare3Count.text = "共 " + info.rare3.toString() + " 个"
+                    binding.Rare3Percent.text = "占 " + "%.1f%%".format(info.rare3.toFloat() / countSum * 100)
+                    binding.Rare3Ave.text = if(info.rare3 == 0) "-" else (countSum /info.rare3).toString()  + "抽/个"
+                }catch (e: Exception){
+                    Toaster.show(e.message)
+                    Timber.e(e)
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -184,8 +205,6 @@ class GachaStatis : Fragment() {
                 granularity = 1f
                 setDrawGridLines(false)
                 textSize = 12f
-
-//                spaceMax = 5f
             }
 
             // 左侧Y轴配置
@@ -202,7 +221,6 @@ class GachaStatis : Fragment() {
             invalidate()
 
         }
-//        barChart.groupBars(0f, 0.2f, barChart.barData.barWidth)
     }
 
     private fun setUpObserver() {
@@ -210,6 +228,4 @@ class GachaStatis : Fragment() {
             setupSpinner(value)
         }
     }
-
-
 }
