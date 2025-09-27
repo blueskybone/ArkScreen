@@ -82,7 +82,6 @@ class CharOwn : Fragment(), ItemListener {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         adapter = CharAdapter(requireContext(), 24, adapterListener)
-//        adapter_new = CharGridAdapter(requireContext(), 20)
         _binding = FragmentCharBinding.inflate(inflater)
 
         setupBinding()

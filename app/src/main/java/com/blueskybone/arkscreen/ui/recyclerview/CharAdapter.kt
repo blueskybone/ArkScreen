@@ -58,6 +58,8 @@ class CharAdapter(
     }
 
 
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
         val context = context
@@ -80,13 +82,19 @@ class CharAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+//    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+//        when (holder) {
+//            is CharListVH -> holder.bind(currentList[position])
+//            is CharGridVH -> holder.bind(currentList[position])
+//        }
+//    }
+
+    override fun bindViewHolder(holder: RecyclerView.ViewHolder, item: Operator) {
         when (holder) {
-            is CharListVH -> holder.bind(currentList[position])
-            is CharGridVH -> holder.bind(currentList[position])
+            is CharListVH -> holder.bind(item)
+            is CharGridVH -> holder.bind(item)
         }
     }
-
 
     inner class CharGridVH(
         private val context: Context,
