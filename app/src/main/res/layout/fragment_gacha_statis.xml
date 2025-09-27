@@ -28,7 +28,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|start"
-                        android:text="35抽"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
                     <Spinner
@@ -72,7 +71,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    android:text="共 5 个"
+                    android:text="共 - 个"
                     android:textColor="@color/rare_6" />
 
                 <TextView
@@ -80,7 +79,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    android:text="占 2.4 %"
+                    android:text="占 - %"
                     android:textColor="@color/rare_6" />
 
                 <TextView
@@ -88,7 +87,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    android:text="32.5抽/个"
+                    android:text="- 抽/个"
                     android:textColor="@color/rare_6" />
 
                 <TextView
@@ -103,7 +102,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    android:text="共 5 个"
+                    android:text="共 - 个"
                     android:textColor="@color/rare_5" />
 
                 <TextView
@@ -111,7 +110,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    android:text="占 2.4 %"
+                    android:text="占 - %"
                     android:textColor="@color/rare_5" />
 
                 <TextView
@@ -119,7 +118,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    android:text="32.5抽/个"
+                    android:text="- 抽/个"
                     android:textColor="@color/rare_5" />
 
                 <TextView
@@ -134,7 +133,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    android:text="共 5 个"
+                    android:text="共 - 个"
                     android:textColor="@color/rare_4" />
 
                 <TextView
@@ -142,7 +141,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    android:text="占 2.4 %"
+                    android:text="占 - %"
                     android:textColor="@color/rare_4" />
 
                 <TextView
@@ -150,7 +149,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    android:text="32.5抽/个"
+                    android:text="- 抽/个"
                     android:textColor="@color/rare_4" />
 
                 <TextView
@@ -165,7 +164,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    android:text="共 5 个"
+                    android:text="共 - 个"
                     android:textColor="@color/rare_3" />
 
                 <TextView
@@ -173,7 +172,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    android:text="占 2.4 %"
+                    android:text="占 - %"
                     android:textColor="@color/rare_3" />
 
                 <TextView
@@ -181,13 +180,15 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    android:text="32.5抽/个"
+                    android:text="- 抽/个"
                     android:textColor="@color/rare_3" />
             </GridLayout>
         </com.google.android.material.card.MaterialCardView>
 
 
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+        <com.google.android.material.card.MaterialCardView
+            android:visibility="gone"
+            style="@style/CardViewContent">
 
             <com.github.mikephil.charting.charts.HorizontalBarChart
                 android:id="@+id/BarChart"

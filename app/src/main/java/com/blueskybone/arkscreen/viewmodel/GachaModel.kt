@@ -31,6 +31,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.java.KoinJavaComponent.getKoin
+import org.w3c.dom.ls.LSInput
 import timber.log.Timber
 import java.io.BufferedReader
 import java.io.IOException
@@ -69,6 +70,7 @@ class GachaModel : ViewModel() {
     val gachaInfoList: LiveData<List<GachaInfo>> get() = _gachaInfoList
 
     private var fesPool: List<String>? = null
+    private var gachaRecordsList: List<GachaWithNum> = mutableListOf()
 
     private lateinit var charsNode: JsonNode
     var poolCountNormal = 0
@@ -101,8 +103,9 @@ class GachaModel : ViewModel() {
                     val listNewPull = pullRecords(curAccount, lastTs)
                     gachaDao.insert(listNewPull)
                     val records = loadLocalRecords(curAccount)
+                    gachaRecordsList = processGachaCount(records)
                     _gachaRecords.postValue(records.sortByTsAndPosDescending())
-                    _gachaRecordsCount.postValue(processGachaCount(records))
+                    _gachaRecordsCount.postValue(gachaRecordsList)
                     _gachaData.postValue(convertRecordsToList(records))
                     _gachaInfoList.postValue(processGachaInfo(records))
                     _uiState.postValue(DataUiState.Success(""))
@@ -253,7 +256,6 @@ class GachaModel : ViewModel() {
     }
 
 
-
     private fun processGachaInfo(recordsDb: List<Gacha>): List<GachaInfo> {
         val list = recordsDb.groupBy { it.poolId }.map { (poolId, list) ->
             val poolName = list.first().pool
@@ -293,6 +295,22 @@ class GachaModel : ViewModel() {
             }
         }
         return gachaList.sortDescending()
+    }
+
+    fun postPoolGachaList(poolId: String) {
+        val list = getProcessGachaCount(gachaRecordsList, poolId)
+        viewModelScope.launch {
+            _gachaRecordsCount.postValue(list)
+        }
+    }
+
+    private fun getProcessGachaCount(
+        recordsDb: List<GachaWithNum>,
+        poolId: String
+    ): List<GachaWithNum> {
+        //获取recordsDb中item.gacha.poolId == poolId的列表直接返回：若poolId == "ALL"直接返回recordsDb
+        if (poolId == "ALL") return recordsDb
+        return recordsDb.filter { it.gacha.poolId == poolId }
     }
 //    private fun deserialize(string: String): List<Record> {
 //        val list =

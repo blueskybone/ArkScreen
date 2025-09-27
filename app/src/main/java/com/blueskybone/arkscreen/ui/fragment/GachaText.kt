@@ -4,10 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.databinding.FragmentGachaTextBinding
+import com.blueskybone.arkscreen.ui.model.GachaInfo
 import com.blueskybone.arkscreen.ui.recyclerview.GachaTextAdapter
 import com.blueskybone.arkscreen.viewmodel.GachaModel
 
@@ -40,6 +44,10 @@ class GachaText : Fragment() {
             adapter.refreshData(value)
             binding.RecyclerView.scrollToPosition(0)
         }
+
+        model.gachaInfoList.observe(requireActivity()) { value ->
+            setupSpinner(value)
+        }
     }
 
     private fun setupListener() {
@@ -52,5 +60,38 @@ class GachaText : Fragment() {
                 }
             }
         })
+    }
+
+    private fun setupSpinner(gachaInfo: List<GachaInfo>) {
+        val dataText = gachaInfo.map { item -> item.poolName }
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,  // 默认布局
+            dataText
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)  // 下拉项布局
+
+        // 设置适配器
+        val spinner: Spinner = binding.Spinner
+        spinner.adapter = adapter
+
+        // 设置选择监听器
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val info = gachaInfo[position]
+                model.postPoolGachaList(info.poolId)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+        // 设置默认选择（可选）
+        // 选择第一项,并触发监听器
+        spinner.setSelection(0)
     }
 }
