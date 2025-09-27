@@ -217,11 +217,11 @@ class Home : Fragment() {
         }
 
         binding.RefreshGame.setOnClickListener {
-            //
+
         }
 
         binding.CurrentAccount.setOnClickListener { view ->
-            model.checkAnnounce()
+//            model.checkAnnounce() //? 这是什么
             model.accountSkList.value!!.let {
                 if (it.isEmpty()) {
                     //登入

@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.common.space
@@ -19,6 +20,7 @@ import com.blueskybone.arkscreen.databinding.FragmentGachaTextBinding
 import com.blueskybone.arkscreen.ui.model.GachaInfo
 import com.blueskybone.arkscreen.ui.recyclerview.GachaTextAdapter
 import com.blueskybone.arkscreen.util.getColorFromAttr
+import com.blueskybone.arkscreen.viewmodel.BaseModel
 import com.blueskybone.arkscreen.viewmodel.GachaModel
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
@@ -46,7 +48,7 @@ import timber.log.Timber
 * */
 
 class GachaStatis : Fragment() {
-    private val model: GachaModel by viewModels()
+    private val model : GachaModel by activityViewModels()
 
     private var _binding: FragmentGachaStatisBinding? = null
     private val binding get() = _binding!!
