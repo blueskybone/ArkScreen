@@ -86,8 +86,18 @@ class GachaModel : ViewModel() {
         initialize()
     }
 
+    private fun initValue() {
+        poolCountNormal = 0
+        poolCountFes = 0
+        poolCountCore = 0
+        finalCountSum = 0
+        rarity6Count = 0
+        id = 0
+    }
+
 
     fun initialize() {
+        initValue()
         viewModelScope.launch {
             _uiState.value = DataUiState.Loading("加载中...")
             curAccount = prefManager.baseAccountGc.get()

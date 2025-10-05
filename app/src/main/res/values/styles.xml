@@ -164,26 +164,6 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-<!--    <style name="Button_cal" parent="Widget.AppCompat.Button">-->
-<!--        <item name="android:textColor">?attr/colorSecondaryVariant</item>-->
-<!--        <item name="android:minWidth">0dp</item>-->
-<!--        <item name="android:minHeight">0dp</item>-->
-<!--        <item name="android:paddingTop">5dp</item>-->
-<!--        <item name="android:paddingBottom">5dp</item>-->
-<!--        <item name="android:paddingStart">10dp</item>-->
-<!--        <item name="android:paddingEnd">10dp</item>-->
-<!--    </style>-->
-
-<!--    <style name="Button_content_cp" parent="Widget.AppCompat.Button">-->
-<!--        <item name="android:textColor">?attr/colorOnPrimary</item>-->
-<!--        <item name="android:minWidth">0dp</item>-->
-<!--        <item name="android:minHeight">0dp</item>-->
-<!--        <item name="android:paddingTop">5dp</item>-->
-<!--        <item name="android:paddingBottom">5dp</item>-->
-<!--        <item name="android:paddingStart">10dp</item>-->
-<!--        <item name="android:paddingEnd">10dp</item>-->
-<!--        <item name="android:textSize">13sp</item>-->
-<!--    </style>-->
 
     <style name="Chip.Choice" parent="Widget.MaterialComponents.Chip.Choice">
         <item name="android:layout_margin">5dp</item>
@@ -210,7 +190,6 @@
         <item name="cardElevation">0dp</item>
         <item name="contentPadding">5dp</item>
     </style>
-
 
     <style name="TitleText">
         <item name="android:textColor">@color/black</item>
