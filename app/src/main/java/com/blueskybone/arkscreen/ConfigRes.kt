@@ -5,6 +5,7 @@ import com.blueskybone.arkscreen.network.downloadFile
 import com.blueskybone.arkscreen.network.makeSuspendRequest
 import com.blueskybone.arkscreen.util.readFileAsJsonNode
 import org.xmlpull.v1.XmlPullParser
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.StringReader
@@ -119,8 +120,6 @@ data object AppUpdateInfo {
     private val url =
         URL("https://gitee.com/blueskybone/ArkScreen/raw/master/resource/app_version.xml")
 
-    //    val versionCode = BuildConfig.VERSION_CODE
-    //    val versionName = BuildConfig.VERSION_NAME
     suspend fun remoteInfo(): UpdateInfo {
         val updateInfo = UpdateInfo()
         try {
@@ -146,6 +145,7 @@ data object AppUpdateInfo {
             return updateInfo
         } catch (e: Exception) {
             val errMsg = "error occur in getUpdateInfo: url=$url, ${e.message}"
+            Timber.e(errMsg)
             return updateInfo
         }
     }
