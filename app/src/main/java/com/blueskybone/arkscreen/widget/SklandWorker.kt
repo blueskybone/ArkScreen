@@ -16,6 +16,10 @@ import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.ArkDatabase
 import com.blueskybone.arkscreen.util.TimeUtils
+import com.blueskybone.arkscreen.util.updateNotification
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.getKoin
 import timber.log.Timber
 
@@ -38,10 +42,40 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
                 if (TimeUtils.getDayNum(currentTs) > TimeUtils.getDayNum(lastAttendanceTs)) {
                     val database = ArkDatabase.getDatabase(APP)
                     val accountSkDao = database.getAccountSkDao()
-                    val accountList = accountSkDao.getAll()
-                    for (account in accountList) {
-                        NetWorkTask.sklandAttendance(account)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val accountList = accountSkDao.getAll()
+                        val channelId = "atd_notify_channel"
+                        val channelName = "签到通知"
+                        for ((idx, account) in accountList.withIndex()) {
+                            updateNotification(
+                                APP,
+                                "正在签到中 (${idx + 1}/${accountList.size})",
+                                account.nickName,
+                                channelId,
+                                channelName
+                            )
+                            val msg = NetWorkTask.sklandAttendance(account)
+                            Timber.i(account.nickName + " : " + msg)
+                            updateNotification(
+                                APP,
+                                "正在签到中 (${idx + 1}/${accountList.size})",
+                                account.nickName + " : " + msg,
+                                channelId,
+                                channelName
+                            )
+                            Thread.sleep(500)
+                        }
+                        updateNotification(
+                            APP,
+                            "签到完成 (${accountList.size}/${accountList.size})",
+                            "",
+                            channelId,
+                            channelName
+                        )
                     }
+//                    for (account in accountList) {
+//                        NetWorkTask.sklandAttendance(account)
+//                    }
                     prefManager.lastAttendanceTs.set(currentTs)
                 }
             }

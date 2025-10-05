@@ -110,16 +110,16 @@ class CharModel : ViewModel() {
                     "* 干员总数  **$rarity6Size/${rarity6Size + rarity6MissSize}**\n" +
                     "* 精二  **$rarity6Evo2Size**\n" +
                     "* 专三  **$rarity6SpecialSize**\n" +
-                    "* Stage3模组  **$rarity6Stage3Size\n**" +
+                    "* Stage3模组  **$rarity6Stage3Size**\n" +
                     "### 5★干员  \n\n" +
                     "* 干员总数  **$rarity5Size/${rarity5Size + rarity5MissSize}**\n" +
                     "* 精二  **$rarity5Evo2Size**\n" +
                     "* 专三  **$rarity5SpecialSize**\n" +
                     "* Stage3模组  **$rarity5Stage3Size**\n" +
                     "### 4★干员  \n\n" +
-                    "* 干员总数  **$rarity4Size/${rarity4Size + rarity4MissSize}**n" +
-                    "* 精二  **$rarity4Evo2Size**n" +
-                    "* 专三  **$rarity4SpecialSize**n" +
+                    "* 干员总数  **$rarity4Size/${rarity4Size + rarity4MissSize}**\n" +
+                    "* 精二  **$rarity4Evo2Size**\n" +
+                    "* 专三  **$rarity4SpecialSize**\n" +
                     "* Stage3模组 **$rarity4Stage3Size**\n"
         )
         return builder.toString()

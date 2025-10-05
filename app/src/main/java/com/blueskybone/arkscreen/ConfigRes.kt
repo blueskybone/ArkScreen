@@ -132,8 +132,8 @@ data object AppUpdateInfo {
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 if (eventType == XmlPullParser.START_TAG) {
                     when (parser.name) {
-                        "versionCode" -> updateInfo.version = parser.nextText().toFloat()
-                        "version" -> updateInfo.version = parser.nextText().toFloat()
+                        "versionCode" -> updateInfo.versionCode = parser.nextText().toFloat()
+                        "version" -> updateInfo.version = parser.nextText()
                         "update" -> updateInfo.date = parser.nextText()
                         "link" -> updateInfo.link = parser.nextText()
                         "content" -> updateInfo.content = parser.nextText()
@@ -152,7 +152,7 @@ data object AppUpdateInfo {
 
     data class UpdateInfo(
         var versionCode: Float = 0F,
-        var version: Float = 0F,
+        var version: String = "",
         var date: String = "",
         var content: String = "",
         var link: String = ""
