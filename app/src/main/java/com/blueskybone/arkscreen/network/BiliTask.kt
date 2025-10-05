@@ -1,7 +1,16 @@
 package com.blueskybone.arkscreen.network
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.io.IOException
 import java.net.URL
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
+import java.util.TreeMap
 
 
 data class BiliVideo(
@@ -24,8 +33,17 @@ suspend fun getVideoList(): List<BiliVideo> {
 //        wbiParams = getBiliWbi()
 //    }
 //    val url = "https://api.bilibili.com/x/space/wbi/arc/search?" + wbiParams!!.enc(params)
-    val url = "https://app.biliapi.com/x/v2/space/archive/cursor?order=pubdate&vmid=161775300&order=click&ps=3"
-    val resp = makeSuspendRequest(URL(url))
+//    val url = "https://app.biliapi.com/x/v2/space/archive/cursor?order=pubdate&vmid=161775300&ps=3"
+//    val resp = makeSuspendRequest(URL(url))
+    val url = "https://app.biliapi.com/x/v2/space/archive/cursor"
+    val timestamp = System.currentTimeMillis() / 1000
+    val params = mutableMapOf(
+        "vmid" to "161775300",
+        "order" to "pubdate",
+        "ps" to "3",
+        "ts" to timestamp.toString()
+    )
+    val resp = makeBiliWbiRequest(url, params)
     try {
         val biliList = arrayListOf<BiliVideo>()
         val om = ObjectMapper()
