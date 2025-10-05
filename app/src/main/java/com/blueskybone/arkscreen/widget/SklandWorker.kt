@@ -7,12 +7,15 @@ import android.content.Intent
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.blueskybone.arkscreen.APP
+import com.blueskybone.arkscreen.network.NetWorkTask
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTask
 import com.blueskybone.arkscreen.playerinfo.RealTimeData
 import com.blueskybone.arkscreen.playerinfo.geneRealTimeData
 import com.blueskybone.arkscreen.playerinfo.setCaches
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountSk
+import com.blueskybone.arkscreen.room.ArkDatabase
+import com.blueskybone.arkscreen.util.TimeUtils
 import org.koin.java.KoinJavaComponent.getKoin
 import timber.log.Timber
 
@@ -28,23 +31,23 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
     private val prefManager: PrefManager by getKoin().inject()
     override suspend fun doWork(): Result {
         //签到
-//        try {
-//            if (prefManager.autoAttendance.get()) {
-//                val lastAttendanceTs = prefManager.lastAttendanceTs.get()
-//                val currentTs = TimeUtils.getCurrentTs()
-//                if (TimeUtils.getDayNum(currentTs) > TimeUtils.getDayNum(lastAttendanceTs)) {
-//                    val database = ArkDatabase.getDatabase(APP)
-//                    val accountSkDao = database.getAccountSkDao()
-//                    val accountList = accountSkDao.getAll()
-//                    for (account in accountList) {
-//                        NetWorkTask.sklandAttendance(account)
-//                    }
-//                    prefManager.lastAttendanceTs.set(currentTs)
-//                }
-//            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
+        try {
+            if (prefManager.autoAttendance.get()) {
+                val lastAttendanceTs = prefManager.lastAttendanceTs.get()
+                val currentTs = TimeUtils.getCurrentTs()
+                if (TimeUtils.getDayNum(currentTs) > TimeUtils.getDayNum(lastAttendanceTs)) {
+                    val database = ArkDatabase.getDatabase(APP)
+                    val accountSkDao = database.getAccountSkDao()
+                    val accountList = accountSkDao.getAll()
+                    for (account in accountList) {
+                        NetWorkTask.sklandAttendance(account)
+                    }
+                    prefManager.lastAttendanceTs.set(currentTs)
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
         val account = prefManager.baseAccountSk.get()
         if (account.uid == "") {
