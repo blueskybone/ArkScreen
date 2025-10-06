@@ -3,10 +3,14 @@ package com.blueskybone.arkscreen.ui.bindinginfo
 import android.content.Context
 import android.graphics.Color
 import androidx.core.content.ContextCompat.getString
+import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq.HOUR_1
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq.MIN_15
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq.MIN_30
+import com.blueskybone.arkscreen.util.getScreenHeightDp
+import com.blueskybone.arkscreen.util.getScreenWidthDp
+import kotlin.math.sqrt
 
 /**
  *   Created by blueskybone
@@ -113,32 +117,69 @@ data object WidgetSize : ListInfo {
     }
 
     fun getTextSizeSub(size: String): Float {
-        return when (size) {
+        val baseSize = when (size) {
             SMALL -> 10f
             MEDIUM -> 12f
             LARGE -> 14f
             else -> throw IllegalArgumentException("Invalid : $size")
         }
+        return getWidthBasedTextSize(baseSize)
     }
 
     //remember dpToPx
     fun getImageSize(size: String): Int {
-        return when (size) {
+        val baseSize = when (size) {
             SMALL -> 20
             MEDIUM -> 24
             LARGE -> 28
             else -> throw IllegalArgumentException("Invalid : $size")
         }
+        return getWidthBasedTextSize(baseSize.toFloat()).toInt()
     }
 
     fun getIconSize(size: String): Int {
-        return when (size) {
+        val baseSize = when (size) {
             SMALL -> 10
             MEDIUM -> 12
             LARGE -> 14
             else -> throw IllegalArgumentException("Invalid : $size")
         }
+        return getWidthBasedTextSize(baseSize.toFloat()).toInt()
     }
+
+    /**
+     * 基于屏幕宽度的百分比缩放
+     */
+    private fun getWidthBasedTextSize(baseSp: Float): Float {
+        val screenWidthDp = getScreenWidthDp(APP)
+        val baseWidth = 360f // 以 360dp 为基准
+
+        // 线性缩放公式
+        val scaleFactor = screenWidthDp / baseWidth
+
+        // 限制缩放范围：0.8x - 1.5x
+        val boundedScale = scaleFactor.coerceIn(0.8f, 1.8f)
+
+        return baseSp * boundedScale
+    }
+
+    private fun getAreaBasedTextSize(baseSp: Float): Float {
+        val screenWidthDp = getScreenWidthDp(APP)
+        val screenHeightDp = getScreenHeightDp(APP)
+        val baseArea = 360f * 770f // 基准屏幕面积
+
+        val currentArea = screenWidthDp * screenHeightDp
+        val areaRatio = currentArea / baseArea
+
+        // 使用平方根，让缩放更平缓
+        val scaleFactor = sqrt(areaRatio)
+
+        // 限制缩放范围
+        val boundedScale = scaleFactor.coerceIn(0.7f, 1.8f)
+
+        return baseSp * boundedScale
+    }
+
 }
 
 data object WidgetTextColor : ListInfo {
