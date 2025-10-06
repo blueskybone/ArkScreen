@@ -107,6 +107,58 @@ fun getDensityDpi(context: Context): Int {
     }
 }
 
+//fun getScreenWidthDp(context: Context): Float {
+//    val metrics = context.resources.displayMetrics
+//    return metrics.widthPixels / metrics.density
+//}
+//
+//fun getScreenHeightDp(context: Context): Float {
+//    val metrics = context.resources.displayMetrics
+//    return metrics.heightPixels / metrics.density
+//}
+
+
+fun getScreenWidthDp(context: Context): Float {
+    val displayMetrics = context.resources.displayMetrics
+    val widthPixels = displayMetrics.widthPixels
+    val density = displayMetrics.density
+    return widthPixels / density
+}
+
+fun getScreenHeightDp(context: Context): Float {
+    val displayMetrics = context.resources.displayMetrics
+    val heightPixels = displayMetrics.heightPixels
+    val density = displayMetrics.density
+    return heightPixels / density
+}
+
+fun getScreenInfo(context: Context): String {
+    val metrics = context.resources.displayMetrics
+    val widthDp = metrics.widthPixels / metrics.density
+    val heightDp = metrics.heightPixels / metrics.density
+    val density = metrics.density
+    val dpi = metrics.densityDpi
+
+    return """
+        屏幕信息:
+        - 像素尺寸: ${metrics.widthPixels} × ${metrics.heightPixels} px
+        - DP 尺寸: ${"%.1f".format(widthDp)} × ${"%.1f".format(heightDp)} dp
+        - 屏幕密度: $density (比例)
+        - DPI: $dpi
+        - 密度级别: ${getDensityLevel(dpi)}
+    """.trimIndent()
+}
+
+private fun getDensityLevel(dpi: Int): String {
+    return when {
+        dpi <= 120 -> "ldpi"
+        dpi <= 160 -> "mdpi"
+        dpi <= 240 -> "hdpi"
+        dpi <= 320 -> "xhdpi"
+        dpi <= 480 -> "xxhdpi"
+        else -> "xxxhdpi"
+    }
+}
 
 //TODO: 改一下逻辑，给ConfigRes复用
 fun getAssetsFilepath(filename: String): String {

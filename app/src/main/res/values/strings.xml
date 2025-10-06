@@ -119,7 +119,7 @@
     <string name="turn_off_battery_optimization">关闭电池优化</string>
     <string name="turn_off_battery_optimization_detail">自动刷新需关闭电池优化</string>
     <string name="power_saving_mode">省流模式</string>
-    <string name="power_saving_mode_detail">使用缓存推算理智/无人机数据</string>
+    <string name="power_saving_mode_detail">使用缓存推算理智等信息，需要手动同步远端</string>
 
     <string name="mess_option">杂项</string>=
     <string name="show_home_announce">显示首页公告</string>
