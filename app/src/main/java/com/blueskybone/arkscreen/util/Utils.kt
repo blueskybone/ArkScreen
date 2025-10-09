@@ -13,6 +13,7 @@ import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.WindowManager
 import android.webkit.CookieManager
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getString
 import com.blueskybone.arkscreen.APP
@@ -106,17 +107,6 @@ fun getDensityDpi(context: Context): Int {
         metrics.densityDpi
     }
 }
-
-//fun getScreenWidthDp(context: Context): Float {
-//    val metrics = context.resources.displayMetrics
-//    return metrics.widthPixels / metrics.density
-//}
-//
-//fun getScreenHeightDp(context: Context): Float {
-//    val metrics = context.resources.displayMetrics
-//    return metrics.heightPixels / metrics.density
-//}
-
 
 fun getScreenWidthDp(context: Context): Float {
     val displayMetrics = context.resources.displayMetrics
@@ -246,6 +236,7 @@ fun copyToClipboard(context: Context, text: String) {
     Toaster.show(getString(context, R.string.copied))
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun updateNotification(
     context: Context,
     title: String,
