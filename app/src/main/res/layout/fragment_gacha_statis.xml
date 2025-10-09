@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/NestedScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="?attr/actionBarSize">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:orientation="vertical">
+
+        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp">
+
+                    <TextView
+                        android:id="@+id/RecordsCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|start"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+                    <Spinner
+                        android:id="@+id/Spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|end" />
+                </FrameLayout>
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/PieChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_margin="16dp" />
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:alignmentMode="alignBounds"
+                android:columnCount="4"
+                android:columnOrderPreserved="false"
+                android:padding="10dp"
+                android:rowCount="4"
+                android:useDefaultMargins="true">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="6★"
+                    android:textColor="@color/rare_6" />
+
+                <TextView
+                    android:id="@+id/Rare6Count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="共 - 个"
+                    android:textColor="@color/rare_6" />
+
+                <TextView
+                    android:id="@+id/Rare6Percent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="占 - %"
+                    android:textColor="@color/rare_6" />
+
+                <TextView
+                    android:id="@+id/Rare6Ave"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="- 抽/个"
+                    android:textColor="@color/rare_6" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="5★"
+                    android:textColor="@color/rare_5" />
+
+                <TextView
+                    android:id="@+id/Rare5Count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="共 - 个"
+                    android:textColor="@color/rare_5" />
+
+                <TextView
+                    android:id="@+id/Rare5Percent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="占 - %"
+                    android:textColor="@color/rare_5" />
+
+                <TextView
+                    android:id="@+id/Rare5Ave"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="- 抽/个"
+                    android:textColor="@color/rare_5" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="4★"
+                    android:textColor="@color/rare_4" />
+
+                <TextView
+                    android:id="@+id/Rare4Count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="共 - 个"
+                    android:textColor="@color/rare_4" />
+
+                <TextView
+                    android:id="@+id/Rare4Percent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="占 - %"
+                    android:textColor="@color/rare_4" />
+
+                <TextView
+                    android:id="@+id/Rare4Ave"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="- 抽/个"
+                    android:textColor="@color/rare_4" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="3★"
+                    android:textColor="@color/rare_3" />
+
+                <TextView
+                    android:id="@+id/Rare3Count"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="共 - 个"
+                    android:textColor="@color/rare_3" />
+
+                <TextView
+                    android:id="@+id/Rare3Percent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="占 - %"
+                    android:textColor="@color/rare_3" />
+
+                <TextView
+                    android:id="@+id/Rare3Ave"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="- 抽/个"
+                    android:textColor="@color/rare_3" />
+            </GridLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:visibility="gone"
+            style="@style/CardViewContent">
+
+            <com.github.mikephil.charting.charts.HorizontalBarChart
+                android:id="@+id/BarChart"
+                android:layout_width="match_parent"
+                android:layout_height="400dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</ScrollView>

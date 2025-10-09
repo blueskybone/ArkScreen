@@ -102,25 +102,25 @@ class CharModel : ViewModel() {
         val builder = StringBuffer()
         builder.append(
             "### 全部干员\n\n " +
-                    "* 招募干员数  $totalSize/${totalSize + totalMissSize}\n" +
-                    "* 精二干员数  $totalEvo2Size\n" +
-                    "* 专三技能数  $totalSpecialSize\n" +
-                    "* Stage3模组数  $totalStage3Size\n" +
-                    "### 六星干员  \n\n" +
-                    "* 招募干员数  $rarity6Size/${rarity6Size + rarity6MissSize}\n" +
-                    "* 精二干员数  $rarity6Evo2Size\n" +
-                    "* 专三技能数  $rarity6SpecialSize\n" +
-                    "* Stage3模组数  $rarity6Stage3Size\n" +
-                    "### 五星干员  \n\n" +
-                    "* 招募干员数  $rarity5Size/${rarity5Size + rarity5MissSize}\n" +
-                    "* 精二干员数  $rarity5Evo2Size\n" +
-                    "* 专三技能数  $rarity5SpecialSize\n" +
-                    "* Stage3模组数  $rarity5Stage3Size\n" +
-                    "### 四星干员  \n\n" +
-                    "* 招募干员数  $rarity4Size/${rarity4Size + rarity4MissSize}\n" +
-                    "* 精二干员数  $rarity4Evo2Size\n" +
-                    "* 专三技能数  $rarity4SpecialSize\n" +
-                    "* Stage3模组数 $rarity4Stage3Size \n"
+                    "* 干员总数  **$totalSize/${totalSize + totalMissSize}**\n" +
+                    "* 精二  **$totalEvo2Size**\n" +
+                    "* 专三  **$totalSpecialSize**\n" +
+                    "* Stage3模组  **$totalStage3Size**\n" +
+                    "### 6★干员  \n\n" +
+                    "* 干员总数  **$rarity6Size/${rarity6Size + rarity6MissSize}**\n" +
+                    "* 精二  **$rarity6Evo2Size**\n" +
+                    "* 专三  **$rarity6SpecialSize**\n" +
+                    "* Stage3模组  **$rarity6Stage3Size**\n" +
+                    "### 5★干员  \n\n" +
+                    "* 干员总数  **$rarity5Size/${rarity5Size + rarity5MissSize}**\n" +
+                    "* 精二  **$rarity5Evo2Size**\n" +
+                    "* 专三  **$rarity5SpecialSize**\n" +
+                    "* Stage3模组  **$rarity5Stage3Size**\n" +
+                    "### 4★干员  \n\n" +
+                    "* 干员总数  **$rarity4Size/${rarity4Size + rarity4MissSize}**\n" +
+                    "* 精二  **$rarity4Evo2Size**\n" +
+                    "* 专三  **$rarity4SpecialSize**\n" +
+                    "* Stage3模组 **$rarity4Stage3Size**\n"
         )
         return builder.toString()
     }

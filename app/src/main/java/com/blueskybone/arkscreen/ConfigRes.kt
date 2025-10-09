@@ -5,6 +5,7 @@ import com.blueskybone.arkscreen.network.downloadFile
 import com.blueskybone.arkscreen.network.makeSuspendRequest
 import com.blueskybone.arkscreen.util.readFileAsJsonNode
 import org.xmlpull.v1.XmlPullParser
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.StringReader
@@ -119,8 +120,6 @@ data object AppUpdateInfo {
     private val url =
         URL("https://gitee.com/blueskybone/ArkScreen/raw/master/resource/app_version.xml")
 
-    //    val versionCode = BuildConfig.VERSION_CODE
-    //    val versionName = BuildConfig.VERSION_NAME
     suspend fun remoteInfo(): UpdateInfo {
         val updateInfo = UpdateInfo()
         try {
@@ -133,8 +132,8 @@ data object AppUpdateInfo {
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 if (eventType == XmlPullParser.START_TAG) {
                     when (parser.name) {
-                        "versionCode" -> updateInfo.version = parser.nextText().toFloat()
-                        "version" -> updateInfo.version = parser.nextText().toFloat()
+                        "versionCode" -> updateInfo.versionCode = parser.nextText().toFloat()
+                        "version" -> updateInfo.version = parser.nextText()
                         "update" -> updateInfo.date = parser.nextText()
                         "link" -> updateInfo.link = parser.nextText()
                         "content" -> updateInfo.content = parser.nextText()
@@ -146,13 +145,14 @@ data object AppUpdateInfo {
             return updateInfo
         } catch (e: Exception) {
             val errMsg = "error occur in getUpdateInfo: url=$url, ${e.message}"
+            Timber.e(errMsg)
             return updateInfo
         }
     }
 
     data class UpdateInfo(
         var versionCode: Float = 0F,
-        var version: Float = 0F,
+        var version: String = "",
         var date: String = "",
         var content: String = "",
         var link: String = ""

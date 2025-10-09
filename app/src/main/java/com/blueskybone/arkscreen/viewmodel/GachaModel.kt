@@ -17,6 +17,8 @@ import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.ArkDatabase
 import com.blueskybone.arkscreen.room.Gacha
+import com.blueskybone.arkscreen.room.GachaWithNum
+import com.blueskybone.arkscreen.ui.model.GachaInfo
 import com.blueskybone.arkscreen.util.TimeUtils.getTimeStrYMD
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -29,6 +31,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.java.KoinJavaComponent.getKoin
+import org.w3c.dom.ls.LSInput
 import timber.log.Timber
 import java.io.BufferedReader
 import java.io.IOException
@@ -60,7 +63,14 @@ class GachaModel : ViewModel() {
     private val _gachaRecords = MutableLiveData<List<Gacha>>()
     val gachaRecords: LiveData<List<Gacha>> get() = _gachaRecords
 
+    private val _gachaRecordsCount = MutableLiveData<List<GachaWithNum>>()
+    val gachaRecordsCount: LiveData<List<GachaWithNum>> get() = _gachaRecordsCount
+
+    private val _gachaInfoList = MutableLiveData<List<GachaInfo>>()
+    val gachaInfoList: LiveData<List<GachaInfo>> get() = _gachaInfoList
+
     private var fesPool: List<String>? = null
+    private var gachaRecordsList: List<GachaWithNum> = mutableListOf()
 
     private lateinit var charsNode: JsonNode
     var poolCountNormal = 0
@@ -76,8 +86,18 @@ class GachaModel : ViewModel() {
         initialize()
     }
 
+    private fun initValue() {
+        poolCountNormal = 0
+        poolCountFes = 0
+        poolCountCore = 0
+        finalCountSum = 0
+        rarity6Count = 0
+        id = 0
+    }
 
-    private fun initialize() {
+
+    fun initialize() {
+        initValue()
         viewModelScope.launch {
             _uiState.value = DataUiState.Loading("加载中...")
             curAccount = prefManager.baseAccountGc.get()
@@ -93,8 +113,11 @@ class GachaModel : ViewModel() {
                     val listNewPull = pullRecords(curAccount, lastTs)
                     gachaDao.insert(listNewPull)
                     val records = loadLocalRecords(curAccount)
+                    gachaRecordsList = processGachaCount(records)
                     _gachaRecords.postValue(records.sortByTsAndPosDescending())
-                    _gachaData.postValue((convertRecordsToList(records)))
+                    _gachaRecordsCount.postValue(gachaRecordsList)
+                    _gachaData.postValue(convertRecordsToList(records))
+                    _gachaInfoList.postValue(processGachaInfo(records))
                     _uiState.postValue(DataUiState.Success(""))
                 } catch (e: Exception) {
                     Timber.e("加载失败：${e.message}")
@@ -108,6 +131,13 @@ class GachaModel : ViewModel() {
         return sortedWith(
             compareByDescending<Gacha> { it.ts }
                 .thenByDescending { it.pos }
+        )
+    }
+
+    private fun List<GachaWithNum>.sortDescending(): List<GachaWithNum> {
+        return sortedWith(
+            compareByDescending<GachaWithNum> { it.gacha.ts }
+                .thenByDescending { it.gacha.pos }
         )
     }
 
@@ -131,14 +161,13 @@ class GachaModel : ViewModel() {
         return pullNewRecords(account, lastTs)
     }
 
-    private suspend fun convertRecordsToList(recordsDb: List<Gacha>): List<Gachas> {
-        val data = recordsDb.sortedByDescending { it.ts }
+    private fun convertRecordsToList(recordsDb: List<Gacha>): List<Gachas> {
+        val data = recordsDb.sortByTsAndPosDescending()
         if (data.isEmpty()) return listOf()
         dateRange =
             getTimeStrYMD(data.last().ts / 1000) + "-" + getTimeStrYMD(data.first().ts / 1000)
 
-
-        //test
+        //分类
         val groupByCate = data.groupBy { it.poolCate }
         val limited = groupByCate["LIMITED"] ?: listOf()
         val normal = groupByCate["NORMAL"] ?: listOf()
@@ -146,28 +175,28 @@ class GachaModel : ViewModel() {
         if (groupByCate["UN"] != null) Toaster.show("存在未知卡池，请注意修正")
         finalCountSum = data.size
 
-        //collect all poolName as Map<String, Gacha>'s key。
+        //处理标准池
         val normalIdx = normal.withIndex()
             .filter { it.value.rarity == 5 }
             .map { it.index }
         //generate <pool, records>Map.
-        val mapNormal = normal.distinctBy { it.pool }
+        val mapNormal = normal.distinctBy { it.poolId }
             .associateBy(
-                keySelector = { it.pool },
+                keySelector = { it.poolId },
                 valueTransform = { Gachas(pool = it.pool) }
             ).toMutableMap()
-        //add
         rarity6Count += normalIdx.size
         processCateGachaRecords(normal, normalIdx, mapNormal)
         poolCountNormal = normalIdx.firstOrNull() ?: normal.size
 
+        //处理中坚池
         val classicIdx = classic.withIndex()
             .filter { it.value.rarity == 5 }
             .map { it.index }
         rarity6Count += classicIdx.size
-        val mapClassic = classic.distinctBy { it.pool }
+        val mapClassic = classic.distinctBy { it.poolId }
             .associateBy(
-                keySelector = { it.pool },
+                keySelector = { it.poolId },
                 valueTransform = { Gachas(pool = it.pool) }
             ).toMutableMap()
 
@@ -175,31 +204,31 @@ class GachaModel : ViewModel() {
         poolCountCore = classicIdx.firstOrNull() ?: classic.size
         //单独处理限定池
 
-        val mapLimited = limited.distinctBy { it.pool }
+        val mapLimited = limited.distinctBy { it.poolId }
             .associateBy(
-                keySelector = { it.pool },
+                keySelector = { it.poolId },
                 valueTransform = { Gachas(pool = it.pool, isFes = true) }
             ).toMutableMap()
-        val oneLimitGacha = limited.groupBy { it.pool }
-        oneLimitGacha.forEach { (pool, gacha) ->
+        val oneLimitGacha = limited.groupBy { it.poolId }
+        oneLimitGacha.forEach { (poolId, gacha) ->
             val gachaIdx = gacha.withIndex()
                 .filter { it.value.rarity == 5 }
                 .map { it.index }
             rarity6Count += gachaIdx.size
+
             processCateGachaRecords(gacha, gachaIdx, mapLimited)
-            if (pool == limited.first().pool) {
+            if (poolId == limited.first().poolId) {
                 poolCountFes = gachaIdx.firstOrNull() ?: gacha.size
             }
         }
 
-
         val mapAll = mapLimited + mapClassic + mapNormal
         //给卡池TS赋值用于最终结果排序
-        val allPoolGacha = data.groupBy { it.pool }
-        allPoolGacha.forEach { (pool, list) ->
+        val allPoolGacha = data.groupBy { it.poolId }
+        allPoolGacha.forEach { (poolId, list) ->
             list.sortedByDescending { it.ts }
-            mapAll[pool]?.ts = list.first().ts
-            mapAll[pool]?.count = list.size
+            mapAll[poolId]?.ts = list.first().ts
+            mapAll[poolId]?.count = list.size
         }
 
 
@@ -220,7 +249,7 @@ class GachaModel : ViewModel() {
         filteredIndices.windowed(2, 1).forEach { (currentIdx, nextIdx) ->
             val count = nextIdx - currentIdx
             val record = gachaList[currentIdx]
-            targetMap[record.pool]?.data?.add(
+            targetMap[record.poolId]?.data?.add(
                 Records(id++, record.charName, record.charId, record.isNew, count, record.ts)
             )
         }
@@ -230,22 +259,69 @@ class GachaModel : ViewModel() {
             val lastIdx = filteredIndices.last()
             val record = gachaList[lastIdx]
             val count = gachaList.size - lastIdx
-            targetMap[record.pool]?.data?.add(
+            targetMap[record.poolId]?.data?.add(
                 Records(id++, record.charName, record.charId, record.isNew, count, record.ts)
             )
         }
     }
 
 
-    private fun findCharId(name: String): String {
-        for (char in charsNode.fields()) {
-            if (char.value.get("name").asText() == name) {
-                return char.key
-            }
+    private fun processGachaInfo(recordsDb: List<Gacha>): List<GachaInfo> {
+        val list = recordsDb.groupBy { it.poolId }.map { (poolId, list) ->
+            val poolName = list.first().pool
+            val isLimit = poolId.startsWith("LIMITED") || poolId.startsWith("LINKAGE")
+            val rare6 = list.count { it.rarity == 5 }
+            val rare5 = list.count { it.rarity == 4 }
+            val rare4 = list.count { it.rarity == 3 }
+            val rare3 = list.count { it.rarity == 2 }
+            GachaInfo(poolName, poolId, isLimit, rare6, rare5, rare4, rare3)
         }
-        return ""
+
+        val all = GachaInfo(
+            "全部卡池",
+            "ALL",
+            false,
+            recordsDb.count { it.rarity == 5 },
+            recordsDb.count { it.rarity == 4 },
+            recordsDb.count { it.rarity == 3 },
+            recordsDb.count { it.rarity == 2 })
+        return listOf(all) + list.reversed()
     }
 
+    private fun processGachaCount(recordsDb: List<Gacha>): List<GachaWithNum> {
+        val gachaList = mutableListOf<GachaWithNum>()
+        //先按照Gacha.poolId分类，然后在每一个list中倒序排序List<Gacha>.sortByTsAndPosDescending().reversed()。
+        // 然后遍历，维护两个值countSum和countNum。具体规则：countSum每次+1；countNum每次+1,遇到rarity == 6时归零。然后创建GachaWithNum
+        //最后把所有的list再次收集起来,倒序排序返回
+        recordsDb.groupBy { it.poolId }.map { (_, list) ->
+            val newList = list.sortByTsAndPosDescending().reversed()
+            var countSum = 0
+            var countNum = 0
+            for (record in newList) {
+                countSum++
+                countNum++
+                gachaList.add(GachaWithNum(record, countNum, countSum))
+                if (record.rarity == 5) countNum = 0
+            }
+        }
+        return gachaList.sortDescending()
+    }
+
+    fun postPoolGachaList(poolId: String) {
+        val list = getProcessGachaCount(gachaRecordsList, poolId)
+        viewModelScope.launch {
+            _gachaRecordsCount.postValue(list)
+        }
+    }
+
+    private fun getProcessGachaCount(
+        recordsDb: List<GachaWithNum>,
+        poolId: String
+    ): List<GachaWithNum> {
+        //获取recordsDb中item.gacha.poolId == poolId的列表直接返回：若poolId == "ALL"直接返回recordsDb
+        if (poolId == "ALL") return recordsDb
+        return recordsDb.filter { it.gacha.poolId == poolId }
+    }
 //    private fun deserialize(string: String): List<Record> {
 //        val list =
 //            string.split("@".toRegex()).dropLastWhile { it.isEmpty() }

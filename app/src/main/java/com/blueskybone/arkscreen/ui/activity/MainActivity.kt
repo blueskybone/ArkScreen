@@ -28,11 +28,13 @@ import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.ui.fragment.Function
 import com.blueskybone.arkscreen.ui.fragment.Home
 import com.blueskybone.arkscreen.ui.fragment.Setting
+import com.blueskybone.arkscreen.util.getScreenInfo
 import com.blueskybone.arkscreen.viewmodel.BaseModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
 import org.koin.java.KoinJavaComponent.getKoin
+import timber.log.Timber
 
 
 class MainActivity : AppCompatActivity() {
@@ -57,13 +59,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setUpNavigation()
         checkAppUpdate(this)
+        checkScreenInfo(this)
         requestOverlayPermission(this)
+    }
+
+    private fun checkScreenInfo(context: Context){
+        Timber.i(getScreenInfo(context))
     }
 
     private fun checkAppUpdate(context: Context) {
         model.appUpdateInfo.observe(this) { info ->
-            BuildConfig.VERSION_NAME.let {
-                if (it < info.version.toString())
+            BuildConfig.VERSION_CODE.let {
+                if (it < info.versionCode)
                     Handler(Looper.getMainLooper()).post {
                         MaterialAlertDialogBuilder(context)
                             .setTitle(info.version.toString())

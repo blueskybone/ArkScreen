@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
+    android:focusable="true"
     android:focusableInTouchMode="true"
     android:paddingTop="?attr/actionBarSize">
 
@@ -12,8 +13,8 @@
         android:id="@+id/Section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp">
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
 
         <ImageView
             android:id="@+id/Filter"
@@ -21,18 +22,43 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:contentDescription="@string/text_default"
-            android:padding="5dp"
+            android:padding="8dp"
             android:src="@drawable/ic_filter" />
 
 
-        <ImageView
-            android:id="@+id/ViewChanger"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:contentDescription="@string/text_default"
-            android:padding="5dp"
-            android:src="@drawable/ic_grid" />
+            android:layout_gravity="end">
+
+            <ImageView
+                android:id="@+id/Share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="@string/text_default"
+                android:padding="8dp"
+                android:src="@drawable/ic_share"
+                app:tint="?attr/colorOnBackground" />
+
+            <ImageView
+                android:id="@+id/Statistics"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/text_default"
+                android:padding="8dp"
+                android:src="@drawable/ic_dashboard"
+                app:tint="?attr/colorOnBackground" />
+
+            <ImageView
+                android:id="@+id/ViewChanger"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/text_default"
+                android:padding="8dp"
+                android:src="@drawable/ic_grid"
+                app:tint="?attr/colorOnBackground" />
+        </LinearLayout>
     </FrameLayout>
 
     <LinearLayout
@@ -42,33 +68,36 @@
         android:layout_below="@id/Section"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:visibility="gone"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
-            android:text="干员"
-            android:gravity="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.5"/>
+            android:layout_weight="1.5"
+            android:gravity="center"
+            android:text="干员" />
+
         <TextView
-            android:text="技能"
-            android:gravity="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="技能" />
+
         <TextView
-            android:text="信赖"
-            android:gravity="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3"/>
+            android:layout_weight="0.3"
+            android:gravity="center"
+            android:text="信赖" />
+
         <TextView
-            android:text="模组"
-            android:gravity="center"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.8"/>
+            android:layout_weight="0.8"
+            android:gravity="center"
+            android:text="模组" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

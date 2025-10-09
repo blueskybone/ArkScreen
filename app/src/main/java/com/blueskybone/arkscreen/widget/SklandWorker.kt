@@ -7,12 +7,19 @@ import android.content.Intent
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.blueskybone.arkscreen.APP
+import com.blueskybone.arkscreen.network.NetWorkTask
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTask
 import com.blueskybone.arkscreen.playerinfo.RealTimeData
 import com.blueskybone.arkscreen.playerinfo.geneRealTimeData
 import com.blueskybone.arkscreen.playerinfo.setCaches
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountSk
+import com.blueskybone.arkscreen.room.ArkDatabase
+import com.blueskybone.arkscreen.util.TimeUtils
+import com.blueskybone.arkscreen.util.updateNotification
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.getKoin
 import timber.log.Timber
 
@@ -28,23 +35,53 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
     private val prefManager: PrefManager by getKoin().inject()
     override suspend fun doWork(): Result {
         //签到
-//        try {
-//            if (prefManager.autoAttendance.get()) {
-//                val lastAttendanceTs = prefManager.lastAttendanceTs.get()
-//                val currentTs = TimeUtils.getCurrentTs()
-//                if (TimeUtils.getDayNum(currentTs) > TimeUtils.getDayNum(lastAttendanceTs)) {
-//                    val database = ArkDatabase.getDatabase(APP)
-//                    val accountSkDao = database.getAccountSkDao()
-//                    val accountList = accountSkDao.getAll()
+        try {
+            if (prefManager.autoAttendance.get()) {
+                val lastAttendanceTs = prefManager.lastAttendanceTs.get()
+                val currentTs = TimeUtils.getCurrentTs()
+                if (TimeUtils.getDayNum(currentTs) > TimeUtils.getDayNum(lastAttendanceTs)) {
+                    val database = ArkDatabase.getDatabase(APP)
+                    val accountSkDao = database.getAccountSkDao()
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val accountList = accountSkDao.getAll()
+                        val channelId = "atd_notify_channel"
+                        val channelName = "签到通知"
+                        for ((idx, account) in accountList.withIndex()) {
+                            updateNotification(
+                                APP,
+                                "正在签到中 (${idx + 1}/${accountList.size})",
+                                account.nickName,
+                                channelId,
+                                channelName
+                            )
+                            val msg = NetWorkTask.sklandAttendance(account)
+                            Timber.i(account.nickName + " : " + msg)
+                            updateNotification(
+                                APP,
+                                "正在签到中 (${idx + 1}/${accountList.size})",
+                                account.nickName + " : " + msg,
+                                channelId,
+                                channelName
+                            )
+                            Thread.sleep(500)
+                        }
+                        updateNotification(
+                            APP,
+                            "签到完成 (${accountList.size}/${accountList.size})",
+                            "",
+                            channelId,
+                            channelName
+                        )
+                    }
 //                    for (account in accountList) {
 //                        NetWorkTask.sklandAttendance(account)
 //                    }
-//                    prefManager.lastAttendanceTs.set(currentTs)
-//                }
-//            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
+                    prefManager.lastAttendanceTs.set(currentTs)
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
         val account = prefManager.baseAccountSk.get()
         if (account.uid == "") {

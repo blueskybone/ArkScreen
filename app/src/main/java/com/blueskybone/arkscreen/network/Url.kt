@@ -9,6 +9,10 @@ import okhttp3.Request
 import java.io.File
 import java.io.IOException
 import java.net.URL
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
+import java.util.TreeMap
 
 /**
  *   Created by blueskybone
@@ -64,6 +68,37 @@ suspend fun makeSuspendRequest(url: URL): String {
     }
 }
 
+suspend fun makeBiliWbiRequest(url: String, params: MutableMap<String, String>): String {
+    val appkey = "1d8b6e7d45233436"
+    val appsec = "560c52ccd288fed045859ed18bffd973"
+
+    val signedParams = appSign(params, appkey, appsec)
+    println("Signed params: $signedParams")
+
+    val query = buildQuery(signedParams)
+    println("Query string: $query")
+
+    return withContext(Dispatchers.IO) {
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .addHeader(
+                "user-agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+            )
+            .addHeader("referer", "https://space.bilibili.com/161775300/upload/video")
+            .url("$url?$query")
+            .build()
+        try {
+            client.newCall(request).execute().use {
+                if (!it.isSuccessful) throw IOException("Unexpected code: ${it.code}")
+                it.body?.string() ?: throw IOException("Empty response")
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+}
+
 suspend fun downloadFile(url: String, savePath: String): Boolean {
     return withContext(Dispatchers.IO) {
         val client = OkHttpClient()
@@ -103,3 +138,39 @@ suspend fun getSklandServerTs(): Long {
     }
 }
 
+//签名
+fun appSign(
+    params: MutableMap<String, String>,
+    appkey: String,
+    appsec: String
+): Map<String, String> {
+    // 添加appkey
+    params["appkey"] = appkey
+
+    // 按照key排序
+    val sortedParams = TreeMap(params)
+
+    // 构建查询字符串
+    val query = buildQuery(sortedParams)
+
+    // 计算签名
+    val sign = md5("$query$appsec")
+    sortedParams["sign"] = sign
+
+    return sortedParams
+}
+
+
+//构建查询字符串
+fun buildQuery(params: Map<String, String>): String {
+    return params.entries.joinToString("&") { (key, value) ->
+        "${URLEncoder.encode(key, StandardCharsets.UTF_8.name())}=${URLEncoder.encode(value, StandardCharsets.UTF_8.name())}"
+    }
+}
+
+//MD5加密
+fun md5(str: String): String {
+    val md = MessageDigest.getInstance("MD5")
+    val bytes = md.digest(str.toByteArray(StandardCharsets.UTF_8))
+    return bytes.joinToString("") { "%02x".format(it) }
+}

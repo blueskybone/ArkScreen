@@ -9,15 +9,27 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.databinding.ActivityGachaBinding
 import com.blueskybone.arkscreen.preference.PrefManager
+import com.blueskybone.arkscreen.ui.fragment.CharNotOwn
+import com.blueskybone.arkscreen.ui.fragment.CharOwn
+import com.blueskybone.arkscreen.ui.fragment.Gacha
+import com.blueskybone.arkscreen.ui.fragment.GachaStatis
+import com.blueskybone.arkscreen.ui.fragment.GachaText
 import com.blueskybone.arkscreen.ui.recyclerview.GachaAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.GachaTextAdapter
+import com.blueskybone.arkscreen.viewmodel.BaseModel
 import com.blueskybone.arkscreen.viewmodel.GachaModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.hjq.toast.Toaster
 import org.koin.android.ext.android.getKoin
 
@@ -29,9 +41,8 @@ import org.koin.android.ext.android.getKoin
 class GachaActivity : AppCompatActivity() {
     private val prefManager: PrefManager by getKoin().inject()
     private val model: GachaModel by viewModels()
+    private val modelBase: BaseModel by viewModels()
     private var adapter: GachaAdapter? = null
-    private var adapterText: GachaTextAdapter? = null
-    private var isGridView = true
 
     private var _binding: ActivityGachaBinding? = null
     private val binding get() = _binding!!
@@ -49,10 +60,25 @@ class GachaActivity : AppCompatActivity() {
     }
 
     private fun setUpBinding() {
-        adapter = GachaAdapter(this)
-        adapterText = GachaTextAdapter(this)
-        binding.RecyclerView.adapter = adapter
-        binding.GachaTextRecycler.adapter = adapterText
+
+        val vp = binding.ViewPager
+        val ta = binding.TabLayout
+        vp.adapter = ViewPagerFragmentAdapter(this)
+
+        ta.addOnTabSelectedListener(object : OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                vp.currentItem = tab.position
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {}
+            override fun onTabReselected(tab: TabLayout.Tab) {}
+        })
+
+        vp.registerOnPageChangeCallback(object : OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                ta.selectTab(ta.getTabAt(position))
+            }
+        })
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -63,6 +89,20 @@ class GachaActivity : AppCompatActivity() {
         return true
     }
 
+    inner class ViewPagerFragmentAdapter(fragmentActivity: FragmentActivity) :
+        FragmentStateAdapter(fragmentActivity) {
+        override fun getItemCount(): Int {
+            return 3
+        }
+
+        override fun createFragment(position: Int): Fragment {
+            return when (position) {
+                0 -> Gacha()
+                1 -> GachaStatis()
+                else -> GachaText()
+            }
+        }
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
@@ -110,18 +150,6 @@ class GachaActivity : AppCompatActivity() {
                 true
             }
 
-            R.id.action_view_toggle -> {
-                isGridView = !isGridView
-                if (isGridView) {
-                    binding.GachaTextFrame.visibility = View.GONE
-                    binding.NestedScrollView.visibility = View.VISIBLE
-                } else {
-                    binding.GachaTextFrame.visibility = View.VISIBLE
-                    binding.NestedScrollView.visibility = View.GONE
-                }
-                true
-            }
-
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -140,47 +168,23 @@ class GachaActivity : AppCompatActivity() {
             adapter?.submitList(value)
         }
 
-        model.gachaRecords.observe(this) { value ->
-            adapterText?.submitList(value)
-        }
     }
 
     private fun displayLoadingView(msg: String) {
         binding.Page.visibility = View.VISIBLE
-        binding.NestedScrollView.visibility = View.GONE
-        binding.GachaTextFrame.visibility = View.GONE
+        binding.ViewPager.visibility = View.GONE
         binding.Message.text = msg
     }
 
     private fun displayErrorView(msg: String) {
         binding.Page.visibility = View.VISIBLE
-        binding.NestedScrollView.visibility = View.GONE
-        binding.GachaTextFrame.visibility = View.GONE
+        binding.ViewPager.visibility = View.GONE
         binding.Message.text = msg
     }
 
     private fun displayView() {
         binding.Page.visibility = View.GONE
-        binding.GachaTextFrame.visibility = View.GONE
-        binding.NestedScrollView.visibility = View.VISIBLE
-
-        val account = prefManager.baseAccountGc.get()
-        binding.NickName.text = account.nickName
-        if (account.official) binding.Icon.setImageResource(R.drawable.hg_icon_80x80)
-        else binding.Icon.setImageResource(R.drawable.bili_icon_75x71)
-
-        binding.CountSum.text = getString(R.string.gacha_count, model.finalCountSum)
-        binding.Rarity6.text = model.rarity6Count.toString()
-        binding.AverageCount.text =
-            if (model.rarity6Count == 0) "-" else getString(
-                R.string.gacha_count,
-                model.finalCountSum / model.rarity6Count
-            )
-        binding.NormalCount.text = getString(R.string.gacha_count, model.poolCountNormal)
-        binding.FesCount.text = getString(R.string.gacha_count, model.poolCountFes)
-        binding.CoreCount.text = getString(R.string.gacha_count, model.poolCountCore)
-
-        binding.DateRange.text = getString(R.string.date_range, model.dateRange)
+        binding.ViewPager.visibility = View.VISIBLE
     }
 
     private fun registerLauncher() {

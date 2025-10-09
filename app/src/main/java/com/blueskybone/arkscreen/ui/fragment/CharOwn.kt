@@ -1,12 +1,14 @@
 package com.blueskybone.arkscreen.ui.fragment
 
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -36,6 +38,7 @@ import com.blueskybone.arkscreen.util.TimeUtils.getTimeStrYMD
 import com.blueskybone.arkscreen.util.openLink
 import com.blueskybone.arkscreen.viewmodel.CharModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import io.noties.markwon.Markwon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -55,6 +58,7 @@ class CharOwn : Fragment(), ItemListener {
     private val binding get() = _binding!!
 
     private lateinit var adapter: CharAdapter
+    private lateinit var launcherForTxt: ActivityResultLauncher<String>
 
     private val prefManager: PrefManager by getKoin().inject()
     private var i18nManager: I18nManager = I18nManager.instance
@@ -82,9 +86,9 @@ class CharOwn : Fragment(), ItemListener {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         adapter = CharAdapter(requireContext(), 24, adapterListener)
-//        adapter_new = CharGridAdapter(requireContext(), 20)
         _binding = FragmentCharBinding.inflate(inflater)
 
+        registerLauncher()
         setupBinding()
         setUpObserver()
         setButtonLayout()
@@ -150,6 +154,24 @@ class CharOwn : Fragment(), ItemListener {
         binding.ButtonLayout.setOnClickListener {
             // 空实现，拦截点击，防止点击事件穿透
         }
+
+
+        binding.Share.setOnClickListener {
+            launcherForTxt.launch(prefManager.baseAccountSk.get().nickName + "_char_assets")
+
+        }
+        binding.Statistics.setOnClickListener {
+            val textView = TextView(requireContext()).apply {
+                setPadding(80, 80, 80, 80) // 设置padding
+            }
+            val markwon = Markwon.create(requireContext())
+            markwon.setMarkdown(textView, model.generateStatisticMarkDownText())
+            MaterialAlertDialogBuilder(requireContext())
+                .setView(textView)
+                .setTitle(getString(R.string.statistic))
+                .show()
+        }
+
         binding.FrameDialog.setOnClickListener {
             binding.ButtonLayout.visibility = View.GONE
             binding.FrameDialog.visibility = View.GONE
@@ -323,5 +345,12 @@ class CharOwn : Fragment(), ItemListener {
 
     override fun onLongClick(position: Int) {
 
+    }
+
+    private fun registerLauncher() {
+        launcherForTxt =
+            registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
+                uri?.let { model.exportTxt(uri) }
+            }
     }
 }

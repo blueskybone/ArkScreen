@@ -128,7 +128,7 @@ class FloatWindow(private val context: Context) {
         linearView.removeAllViews()
 
         if (resultList.isEmpty()) {
-            rareText.text = "无4星以上组合"
+            rareText.text = "无4★以上组合"
             return
         }
         val rare = resultList[0].rare

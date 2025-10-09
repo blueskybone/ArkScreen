@@ -34,7 +34,6 @@ import org.koin.android.ext.android.getKoin
  */
 
 class CharAssets : AppCompatActivity() {
-    private val prefManager: PrefManager by getKoin().inject()
 
     private val model: CharModel by viewModels()
     private var _binding: ActivityCharAssetsBinding? = null
@@ -50,34 +49,34 @@ class CharAssets : AppCompatActivity() {
         setContentView(binding.root)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.toolbar_char_menu, menu)
-        return true
-    }
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        val inflater: MenuInflater = menuInflater
+//        inflater.inflate(R.menu.toolbar_char_menu, menu)
+//        return true
+//    }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_export -> {
-                launcherForTxt?.launch(prefManager.baseAccountSk.get().nickName + "_char_assets")
-                true
-            }
-            R.id.menu_statistics -> {
-                val textView = TextView(this).apply {
-                    setPadding(80, 80, 80, 80) // 设置padding
-                }
-                val markwon = Markwon.create(this)
-                markwon.setMarkdown(textView, model.generateStatisticMarkDownText())
-                MaterialAlertDialogBuilder(this)
-                    .setView(textView)
-                    .setTitle(getString(R.string.statistic))
-                    .show()
-                true
-            }
-
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        return when (item.itemId) {
+//            R.id.menu_export -> {
+//                launcherForTxt?.launch(prefManager.baseAccountSk.get().nickName + "_char_assets")
+//                true
+//            }
+//            R.id.menu_statistics -> {
+//                val textView = TextView(this).apply {
+//                    setPadding(80, 80, 80, 80) // 设置padding
+//                }
+//                val markwon = Markwon.create(this)
+//                markwon.setMarkdown(textView, model.generateStatisticMarkDownText())
+//                MaterialAlertDialogBuilder(this)
+//                    .setView(textView)
+//                    .setTitle(getString(R.string.statistic))
+//                    .show()
+//                true
+//            }
+//
+//            else -> super.onOptionsItemSelected(item)
+//        }
+//    }
 
     private fun setupBinding() {
         val vp = binding.ViewPager

@@ -13,6 +13,7 @@ import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.WindowManager
 import android.webkit.CookieManager
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getString
 import com.blueskybone.arkscreen.APP
@@ -107,6 +108,47 @@ fun getDensityDpi(context: Context): Int {
     }
 }
 
+fun getScreenWidthDp(context: Context): Float {
+    val displayMetrics = context.resources.displayMetrics
+    val widthPixels = displayMetrics.widthPixels
+    val density = displayMetrics.density
+    return widthPixels / density
+}
+
+fun getScreenHeightDp(context: Context): Float {
+    val displayMetrics = context.resources.displayMetrics
+    val heightPixels = displayMetrics.heightPixels
+    val density = displayMetrics.density
+    return heightPixels / density
+}
+
+fun getScreenInfo(context: Context): String {
+    val metrics = context.resources.displayMetrics
+    val widthDp = metrics.widthPixels / metrics.density
+    val heightDp = metrics.heightPixels / metrics.density
+    val density = metrics.density
+    val dpi = metrics.densityDpi
+
+    return """
+        屏幕信息:
+        - 像素尺寸: ${metrics.widthPixels} × ${metrics.heightPixels} px
+        - DP 尺寸: ${"%.1f".format(widthDp)} × ${"%.1f".format(heightDp)} dp
+        - 屏幕密度: $density (比例)
+        - DPI: $dpi
+        - 密度级别: ${getDensityLevel(dpi)}
+    """.trimIndent()
+}
+
+private fun getDensityLevel(dpi: Int): String {
+    return when {
+        dpi <= 120 -> "ldpi"
+        dpi <= 160 -> "mdpi"
+        dpi <= 240 -> "hdpi"
+        dpi <= 320 -> "xhdpi"
+        dpi <= 480 -> "xxhdpi"
+        else -> "xxxhdpi"
+    }
+}
 
 //TODO: 改一下逻辑，给ConfigRes复用
 fun getAssetsFilepath(filename: String): String {
@@ -194,6 +236,7 @@ fun copyToClipboard(context: Context, text: String) {
     Toaster.show(getString(context, R.string.copied))
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun updateNotification(
     context: Context,
     title: String,

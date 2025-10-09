@@ -34,3 +34,9 @@ data class Gacha(
     val isNew: Boolean,
     var pos: Int = 0
 )
+
+data class GachaWithNum(
+    val gacha: Gacha,
+    val numCount: Int,
+    val numSum: Int
+)
