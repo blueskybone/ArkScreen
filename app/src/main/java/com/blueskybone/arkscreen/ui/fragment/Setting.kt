@@ -17,10 +17,8 @@ import com.blueskybone.arkscreen.BuildConfig
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.databinding.DialogDonateBinding
-import com.blueskybone.arkscreen.databinding.DialogInputBinding
 import com.blueskybone.arkscreen.databinding.FragmentSettingBinding
 import com.blueskybone.arkscreen.databinding.PreferenceBinding
-import com.blueskybone.arkscreen.databinding.PreferenceSeekbarBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSwitchBinding
 import com.blueskybone.arkscreen.logger.FileLoggingInterceptor
 import com.blueskybone.arkscreen.logger.FileLoggingTree
@@ -32,7 +30,6 @@ import com.blueskybone.arkscreen.ui.bindinginfo.AppTheme
 import com.blueskybone.arkscreen.ui.bindinginfo.CheckUpdate
 import com.blueskybone.arkscreen.ui.bindinginfo.GroupChat
 import com.blueskybone.arkscreen.ui.bindinginfo.ListInfo
-import com.blueskybone.arkscreen.ui.bindinginfo.SeekBarInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.TextInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.TimeCorrection
 import com.blueskybone.arkscreen.ui.bindinginfo.UseInnerWeb
@@ -85,7 +82,7 @@ class Setting : Fragment() {
 
         binding.AppTheme.setUp(AppTheme, prefManager.appTheme) {
             Toaster.show("重启应用生效")
-//            requireActivity().recreate()
+//            requireActivity().recreate()  //立即重新创建Activity生效，但是会有性能问题。暂时移除。
         }
 
 

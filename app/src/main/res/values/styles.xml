@@ -20,11 +20,6 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-<!--    <style name="CardView" parent="Widget.Material3.CardView.Filled">-->
-<!--        <item name="colorSurface">@color/grey_200</item>-->
-<!--        <item name="backgroundColor">@color/grey_200</item>-->
-<!--    </style>-->
-
     <style name="TextView.Clickable" parent="Widget.AppCompat.TextView">
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
@@ -50,10 +45,6 @@
     <style name="RoundedRectangle" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerSize">16dp</item>
     </style>
-
-<!--    <style name="myCardView" parent="CardView.Light">-->
-<!--        <item name="cardBackgroundColor">@color/grey_200</item>-->
-<!--    </style>-->
 
     <style name="PopupDownAnim" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/popup_enter</item>

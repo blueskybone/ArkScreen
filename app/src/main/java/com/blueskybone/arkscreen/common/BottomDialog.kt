@@ -14,7 +14,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class BottomDialog(context: Context) : BottomSheetDialog(context) {
-
+    /*
+    * 底部多选框组件封装
+    * */
     private lateinit var textView: TextView
     private lateinit var button: Button
     private var buttonClickListener: View.OnClickListener? = null

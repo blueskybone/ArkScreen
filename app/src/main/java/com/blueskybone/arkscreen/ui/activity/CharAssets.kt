@@ -1,11 +1,7 @@
 package com.blueskybone.arkscreen.ui.activity
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -15,17 +11,12 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.blueskybone.arkscreen.DataUiState
-import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.ActivityCharAssetsBinding
-import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.ui.fragment.CharNotOwn
 import com.blueskybone.arkscreen.ui.fragment.CharOwn
 import com.blueskybone.arkscreen.viewmodel.CharModel
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
-import io.noties.markwon.Markwon
-import org.koin.android.ext.android.getKoin
 
 
 /**
@@ -48,35 +39,6 @@ class CharAssets : AppCompatActivity() {
         registerLauncher()
         setContentView(binding.root)
     }
-
-//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-//        val inflater: MenuInflater = menuInflater
-//        inflater.inflate(R.menu.toolbar_char_menu, menu)
-//        return true
-//    }
-
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        return when (item.itemId) {
-//            R.id.menu_export -> {
-//                launcherForTxt?.launch(prefManager.baseAccountSk.get().nickName + "_char_assets")
-//                true
-//            }
-//            R.id.menu_statistics -> {
-//                val textView = TextView(this).apply {
-//                    setPadding(80, 80, 80, 80) // 设置padding
-//                }
-//                val markwon = Markwon.create(this)
-//                markwon.setMarkdown(textView, model.generateStatisticMarkDownText())
-//                MaterialAlertDialogBuilder(this)
-//                    .setView(textView)
-//                    .setTitle(getString(R.string.statistic))
-//                    .show()
-//                true
-//            }
-//
-//            else -> super.onOptionsItemSelected(item)
-//        }
-//    }
 
     private fun setupBinding() {
         val vp = binding.ViewPager

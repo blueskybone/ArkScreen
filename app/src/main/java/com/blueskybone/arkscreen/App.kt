@@ -123,6 +123,7 @@ class App : Application() {
         println("setDailyAlarm")
         val prefManager: PrefManager by getKoin().inject()
 //        if (!prefManager.backAutoAtd.get()) return
+        //TODO:此处逻辑存在问题：应该进行backAutoAtd.get()的判断。包括整个alarmManager的启动与停止的逻辑都没有真正实现。
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, AtdAlarmReceiver::class.java)
         val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

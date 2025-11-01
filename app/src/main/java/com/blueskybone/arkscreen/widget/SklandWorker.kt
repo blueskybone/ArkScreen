@@ -4,13 +4,11 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.network.NetWorkTask
-import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTask
+import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoTask
 import com.blueskybone.arkscreen.playerinfo.RealTimeData
 import com.blueskybone.arkscreen.playerinfo.geneRealTimeData
 import com.blueskybone.arkscreen.playerinfo.setCaches
@@ -35,7 +33,6 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
 ) {
 
     private val prefManager: PrefManager by getKoin().inject()
-    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun doWork(): Result {
         //签到
         try {
@@ -142,7 +139,7 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
     }
 
     private suspend fun getPlayerData(account: AccountSk): RealTimeData {
-        val response = getGameInfoConnectionTask(account)
+        val response = getGameInfoTask(account)
         if (!response.isSuccessful) throw Exception("!response.isSuccessful")
         response.body() ?: throw Exception("response empty")
         return geneRealTimeData(response.body()!!)

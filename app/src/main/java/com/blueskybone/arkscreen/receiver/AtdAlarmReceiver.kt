@@ -21,7 +21,9 @@ import timber.log.Timber
  */
 
 class AtdAlarmReceiver : BroadcastReceiver() {
-
+    /*
+    * 后台签到的Receiver，收到定时消息后在此处执行预设定的功能。
+    * */
     override fun onReceive(context: Context, intent: Intent) {
         Timber.i("Received intent: $intent")
         if (intent.action == "android.intent.action.BOOT_COMPLETED") { //Intent.ACTION_BOOT_COMPLETED
@@ -30,6 +32,7 @@ class AtdAlarmReceiver : BroadcastReceiver() {
             APP.setDailyAlarm()
             return
         } else {
+            //TODO:签到的逻辑单独提出来。
             val prefManager: PrefManager by getKoin().inject()
             val database = ArkDatabase.getDatabase(APP)
             val accountSkDao = database.getAccountSkDao()
@@ -64,6 +67,7 @@ class AtdAlarmReceiver : BroadcastReceiver() {
                     channelName
                 )
             }
+            //记录签到时间，避免同一天重复签到
             prefManager.lastAttendanceTs.set(getCurrentTs())
         }
     }

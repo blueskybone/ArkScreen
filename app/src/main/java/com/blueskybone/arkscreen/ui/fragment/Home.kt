@@ -17,13 +17,10 @@ import android.widget.PopupWindow
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.blueskybone.arkscreen.R
@@ -36,7 +33,6 @@ import com.blueskybone.arkscreen.databinding.PopupAccountBinding
 import com.blueskybone.arkscreen.network.BiliVideo
 import com.blueskybone.arkscreen.playerinfo.cache.ApCache
 import com.blueskybone.arkscreen.preference.PrefManager
-import com.blueskybone.arkscreen.room.Account
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Link
 import com.blueskybone.arkscreen.ui.activity.AccountMngActivity
@@ -68,8 +64,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.getKoin
-import kotlin.math.abs
-import kotlin.math.max
 
 
 /**

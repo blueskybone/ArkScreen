@@ -105,7 +105,6 @@ class WidgetThemeActivity : AppCompatActivity() {
         }
     }
 
-
     private fun bindImageRadioGroup() {
         val radioGroup = getCustomRadioGroup(this)
         for (bg in bgList) {

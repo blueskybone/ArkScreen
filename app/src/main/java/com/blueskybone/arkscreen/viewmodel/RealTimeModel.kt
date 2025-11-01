@@ -1,13 +1,11 @@
 package com.blueskybone.arkscreen.viewmodel
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.DataUiState
-import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTask
+import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoTask
 import com.blueskybone.arkscreen.network.avatarUrl
 import com.blueskybone.arkscreen.playerinfo.RealTimeData
 import com.blueskybone.arkscreen.playerinfo.RealTimeUi
@@ -32,7 +30,6 @@ import java.net.URLEncoder
  */
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 class RealTimeModel : ViewModel() {
     private val prefManager: PrefManager by getKoin().inject()
 
@@ -50,7 +47,6 @@ class RealTimeModel : ViewModel() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun loadRealTimeData() {
         val accountSk = prefManager.baseAccountSk.get()
         if (accountSk.uid == "") {
@@ -67,7 +63,6 @@ class RealTimeModel : ViewModel() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun processData(data: RealTimeData, official: Boolean): RealTimeUi {
         val realTimeUi = RealTimeUi()
         realTimeUi.level = "Lv" + data.playerStatus.level
@@ -190,7 +185,7 @@ class RealTimeModel : ViewModel() {
     private suspend fun getRealTimeData(account: AccountSk): RealTimeData? {
 
         try {
-            val response = getGameInfoConnectionTask(account)
+            val response = getGameInfoTask(account)
             if (!response.isSuccessful) throw Exception("!response.isSuccessful")
             response.body() ?: throw Exception("response empty")
             return geneRealTimeData(response.body()!!)

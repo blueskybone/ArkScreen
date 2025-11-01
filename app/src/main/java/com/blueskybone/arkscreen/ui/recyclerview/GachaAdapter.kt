@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.ItemGachaCardBinding
 import com.blueskybone.arkscreen.playerinfo.Gachas
 

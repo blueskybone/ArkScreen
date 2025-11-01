@@ -5,9 +5,6 @@ import android.graphics.Color
 import androidx.core.content.ContextCompat.getString
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq.HOUR_1
-import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq.MIN_15
-import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq.MIN_30
 import com.blueskybone.arkscreen.util.getScreenHeightDp
 import com.blueskybone.arkscreen.util.getScreenWidthDp
 import kotlin.math.sqrt

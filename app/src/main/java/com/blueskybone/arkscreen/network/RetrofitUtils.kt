@@ -210,7 +210,7 @@ class RetrofitUtils {
             }
         }
 
-        suspend fun getGameInfoConnection(
+        suspend fun getGameInfo(
             credAndToken: CredAndToken,
             uid: String
         ): Response<PlayerInfoResp> {

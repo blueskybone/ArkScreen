@@ -10,25 +10,20 @@ import android.widget.PopupWindow
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.FragmentGachaBinding
 import com.blueskybone.arkscreen.databinding.PopupAccountBinding
-import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.ui.recyclerview.AccountAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.GachaAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
 import com.blueskybone.arkscreen.viewmodel.BaseModel
 import com.blueskybone.arkscreen.viewmodel.GachaModel
-import org.koin.android.ext.android.getKoin
 
 class Gacha : Fragment() {
 
-//    private val model: GachaModel by viewModels()
-//    private val modelBase: BaseModel by viewModels()
     private val model : GachaModel by activityViewModels()
     private val modelBase: BaseModel by activityViewModels()
     private var adapter: GachaAdapter? = null

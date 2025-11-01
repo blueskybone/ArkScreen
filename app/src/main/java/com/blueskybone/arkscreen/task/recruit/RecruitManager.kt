@@ -30,6 +30,7 @@ class RecruitManager {
     init {
         CoroutineScope(Dispatchers.IO).launch {
             try {
+                //TODO:没有阻塞该阻塞的进程，会优先读取本地文件的情况。
                 RecruitDb.updateFile()
             } catch (e: Exception) {
                 Timber.e("RecruitDb update failed: ${e.message}")

@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
                 if (it < info.versionCode)
                     Handler(Looper.getMainLooper()).post {
                         MaterialAlertDialogBuilder(context)
-                            .setTitle(info.version.toString())
+                            .setTitle(info.version)
                             .setMessage(info.content)
                             .setNegativeButton(R.string.cancel, null)
                             .setPositiveButton(getString(R.string.download)) { _, _ ->
