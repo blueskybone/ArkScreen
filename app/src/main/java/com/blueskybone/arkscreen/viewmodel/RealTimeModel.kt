@@ -1,5 +1,7 @@
 package com.blueskybone.arkscreen.viewmodel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -30,6 +32,7 @@ import java.net.URLEncoder
  */
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 class RealTimeModel : ViewModel() {
     private val prefManager: PrefManager by getKoin().inject()
 
@@ -47,10 +50,11 @@ class RealTimeModel : ViewModel() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun loadRealTimeData() {
         val accountSk = prefManager.baseAccountSk.get()
         if (accountSk.uid == "") {
-            _uiState.postValue(DataUiState.Error("请先添加账号"))
+            _uiState.postValue(DataUiState.Error("请先在 账号管理 添加游戏账号"))
             return
         }
         try {
@@ -63,6 +67,7 @@ class RealTimeModel : ViewModel() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun processData(data: RealTimeData, official: Boolean): RealTimeUi {
         val realTimeUi = RealTimeUi()
         realTimeUi.level = "Lv" + data.playerStatus.level
@@ -85,8 +90,8 @@ class RealTimeModel : ViewModel() {
         realTimeUi.nickName = data.playerStatus.nickname
         realTimeUi.lastLogin = "上次登录 " +
                 when (getDayNum(getCurrentTs()) - getDayNum(data.playerStatus.lastOnlineTs)) {
-                    0L -> "今天"
-                    1L -> "昨天"
+                    0L -> "今天 " + getTimeStr(data.playerStatus.lastOnlineTs * 1000, "HH:mm")
+                    1L -> "昨天 "
                     else -> getTimeStr(data.playerStatus.lastOnlineTs * 1000, "yyyy-MM-dd")
                 }
 
