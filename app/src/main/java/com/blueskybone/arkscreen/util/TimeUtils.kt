@@ -1,6 +1,8 @@
 package com.blueskybone.arkscreen.util
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.blueskybone.arkscreen.preference.PrefManager
 import org.koin.java.KoinJavaComponent.getKoin
 import java.text.SimpleDateFormat
@@ -20,6 +22,7 @@ object TimeUtils {
         val sec: Long
     )
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private val zoneId = ZoneId.of("Asia/Shanghai")
 
     private fun getMinusWDHMS(sec: Long): WDHMS {
@@ -72,6 +75,7 @@ object TimeUtils {
         return getWDHMSToStr3(getMinusWDHMS(sec.coerceAtLeast(0)))
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SimpleDateFormat")
     fun getTimeStr(ts: Long, format: String = "MM-dd HH:mm:ss"): String {
         val sdf = SimpleDateFormat(format)
@@ -123,6 +127,7 @@ object TimeUtils {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun getTimeStrYMD(ts: Long): String {
         val zoneId = ZoneId.systemDefault()
         val instant = Instant.ofEpochSecond(ts)
