@@ -39,11 +39,13 @@ import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.Account
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Link
+import com.blueskybone.arkscreen.ui.activity.AccountMngActivity
 import com.blueskybone.arkscreen.ui.activity.CharAssets
 import com.blueskybone.arkscreen.ui.activity.GachaActivity
 import com.blueskybone.arkscreen.ui.activity.LoginWeb
 import com.blueskybone.arkscreen.ui.activity.RealTimeActivity
 import com.blueskybone.arkscreen.ui.activity.RecruitActivity
+import com.blueskybone.arkscreen.ui.bindinginfo.AccountManager
 import com.blueskybone.arkscreen.ui.bindinginfo.Attendance
 import com.blueskybone.arkscreen.ui.bindinginfo.FuncChipInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.GachaStat
@@ -256,6 +258,7 @@ class Home : Fragment() {
         binding.OpeAssets.setup(OpeAssets)
         binding.GachaStat.setup(GachaStat)
         binding.Attendance.setup(Attendance)
+        binding.AccountManager.setup(AccountManager)
 
         binding.RecruitCalc.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), RecruitActivity::class.java))
@@ -265,6 +268,9 @@ class Home : Fragment() {
         }
         binding.GachaStat.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), GachaActivity::class.java))
+        }
+        binding.AccountManager.Layout.setOnClickListener {
+            startActivity(Intent(requireContext(), AccountMngActivity::class.java))
         }
         binding.AddLink.setOnClickListener {
             onAddButtonClick()
