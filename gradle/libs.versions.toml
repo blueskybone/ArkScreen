@@ -18,7 +18,7 @@ markwon = "4.2.0"
 
 # SDK 版本
 compileSdk = "34"
-minSdk = "24"
+minSdk = "26"
 targetSdk = "34"
 
 # Compose 版本 (与 Kotlin 2.0.21 兼容)

@@ -13,7 +13,6 @@ import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.WindowManager
 import android.webkit.CookieManager
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getString
 import com.blueskybone.arkscreen.APP
@@ -236,7 +235,6 @@ fun copyToClipboard(context: Context, text: String) {
     Toaster.show(getString(context, R.string.copied))
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun updateNotification(
     context: Context,
     title: String,

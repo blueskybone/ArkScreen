@@ -42,11 +42,6 @@ class Widget1 : AppWidgetProvider() {
 
     private val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
 
-    companion object {
-        const val REQUEST_CODE = 1097
-    }
-
-
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,

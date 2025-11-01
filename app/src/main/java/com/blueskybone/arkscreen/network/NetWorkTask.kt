@@ -43,9 +43,9 @@ class NetWorkTask {
         }
 
         @Throws(Exception::class)
-        suspend fun getGameInfoConnectionTask(accountSk: AccountSk): Response<PlayerInfoResp> {
+        suspend fun getGameInfoTask(accountSk: AccountSk): Response<PlayerInfoResp> {
             val credAndToken = getCredCode(accountSk)
-            return RetrofitUtils.getGameInfoConnection(
+            return RetrofitUtils.getGameInfo(
                 credAndToken,
                 accountSk.uid
             )
@@ -73,25 +73,6 @@ class NetWorkTask {
             val grant = getGrantByToken(token)
             return getCredByGrant(grant, dId)
         }
-
-//        suspend fun getNewRecords(
-//            token: String,
-//            channelMasterId: Int,
-//            uid: String,
-//            lastTs: Long?
-//        ): List<Gacha> {
-//            val newRecords = mutableListOf<Gacha>()
-//            for (page in 1..100) {
-//                val records =
-//                    getGachaRecords(page, token, channelMasterId, uid) ?: return newRecords
-//                for (record in records) {
-//                    if (record.ts == lastTs) return newRecords
-//                    else newRecords.add(record)
-//                }
-//            }
-//            return newRecords
-//        }
-
 
         suspend fun pullNewRecords(
             accountGc: AccountGc,

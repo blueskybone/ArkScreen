@@ -10,7 +10,7 @@ import java.io.FileInputStream
  *   Date: 2025/1/21
  */
 class I18nManager private constructor(){
-
+    //TODO：换成新的i18n_new.json的逻辑，取消TYPE
     private object Holder {
         val INSTANCE = I18nManager()
     }

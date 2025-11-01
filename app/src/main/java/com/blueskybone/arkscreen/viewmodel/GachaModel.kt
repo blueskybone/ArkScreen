@@ -6,11 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.APP
-import com.blueskybone.arkscreen.CharAllMap
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.Progress
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.pullNewRecords
-import com.blueskybone.arkscreen.network.announceUrl
 import com.blueskybone.arkscreen.playerinfo.Gachas
 import com.blueskybone.arkscreen.playerinfo.Records
 import com.blueskybone.arkscreen.preference.PrefManager
@@ -20,23 +18,14 @@ import com.blueskybone.arkscreen.room.Gacha
 import com.blueskybone.arkscreen.room.GachaWithNum
 import com.blueskybone.arkscreen.ui.model.GachaInfo
 import com.blueskybone.arkscreen.util.TimeUtils.getTimeStrYMD
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.node.ArrayNode
-import com.fasterxml.jackson.databind.node.ObjectNode
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import org.koin.java.KoinJavaComponent.getKoin
-import org.w3c.dom.ls.LSInput
 import timber.log.Timber
-import java.io.BufferedReader
 import java.io.IOException
-import java.io.InputStreamReader
-import kotlin.math.sin
 
 /**
  *   Created by blueskybone
@@ -48,20 +37,18 @@ class GachaModel : ViewModel() {
     private val _uiState = MutableLiveData<DataUiState>()
     val uiState: LiveData<DataUiState> get() = _uiState
 
-    val importingBackup = MutableLiveData<Progress>()
+//    val importingBackup = MutableLiveData<Progress>()
     val exportingBackup = MutableLiveData<Progress>()
 
     private lateinit var curAccount: AccountGc
 
     private val database = ArkDatabase.getDatabase(APP)
     private val gachaDao = database.getGachaDao()
-    private val accountGcDao = database.getAccountGcDao()
 
     private val _gachaData = MutableLiveData<List<Gachas>>()
     val gachaData: LiveData<List<Gachas>> get() = _gachaData
 
     private val _gachaRecords = MutableLiveData<List<Gacha>>()
-    val gachaRecords: LiveData<List<Gacha>> get() = _gachaRecords
 
     private val _gachaRecordsCount = MutableLiveData<List<GachaWithNum>>()
     val gachaRecordsCount: LiveData<List<GachaWithNum>> get() = _gachaRecordsCount
@@ -69,10 +56,8 @@ class GachaModel : ViewModel() {
     private val _gachaInfoList = MutableLiveData<List<GachaInfo>>()
     val gachaInfoList: LiveData<List<GachaInfo>> get() = _gachaInfoList
 
-    private var fesPool: List<String>? = null
     private var gachaRecordsList: List<GachaWithNum> = mutableListOf()
 
-    private lateinit var charsNode: JsonNode
     var poolCountNormal = 0
     var poolCountFes = 0
     var poolCountCore = 0
@@ -140,18 +125,6 @@ class GachaModel : ViewModel() {
                 .thenByDescending { it.gacha.pos }
         )
     }
-
-    //数据库偷数据。
-    //pull新数据
-    //合并
-    //更新数据库 （ts, pos, uid）
-    //从数据库获取历史寻访数据[uid]
-//    private suspend fun loadGachaRecords(account: AccountGc) {
-//        val list = gachaDao.getByUid(account.uid)
-//        val ts = if (list.isEmpty()) null else list.last().ts
-//        val newList = getNewRecords(account.token, account.channelMasterId, account.uid, ts)
-//        gachaDao.insert(newList.reversed())
-//    }
 
     private suspend fun loadLocalRecords(account: AccountGc): List<Gacha> {
         return gachaDao.getByUid(account.uid)
@@ -322,41 +295,7 @@ class GachaModel : ViewModel() {
         if (poolId == "ALL") return recordsDb
         return recordsDb.filter { it.gacha.poolId == poolId }
     }
-//    private fun deserialize(string: String): List<Record> {
-//        val list =
-//            string.split("@".toRegex()).dropLastWhile { it.isEmpty() }
-//                .toTypedArray()
-//        val records = mutableListOf<Record>()
-//        for (item in list) {
-//            val arrays = item.split("-".toRegex()).dropLastWhile { it.isEmpty() }
-//                .toTypedArray()
-//            records.add(Record(arrays[0], arrays[1].toInt(), arrays[2].toBoolean()))
-//        }
-//        return records
-//    }
 
-//    private fun deserializeLine(line: String, uid: String): Gacha {
-//        val list =
-//            line.split(",".toRegex()).dropLastWhile { it.isEmpty() }
-//                .toTypedArray()
-//        val recordStr = list[2]
-//
-//        return Gacha(uid = uid, ts = list[0].toLong(), pool = list[1], record = list[2])
-//    }
-
-    //ts, poolname, records: name, rarity, isNew
-    //单独判断 records split.list.size
-    //    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    //    var poolId: String = "UN",
-    //    val uid: String,
-    //    val ts: Long,
-    //    val pool: String,
-    //    val charName: String,
-    //    val charId: String,
-    //    val rarity: Int,
-    //    val isNew: Boolean,
-    //    var pos: Int = 0
-    //测试内容
     fun deleteRecords() {
         executeAsync {
             gachaDao.deleteByUid(curAccount.uid)
@@ -553,26 +492,6 @@ class GachaModel : ViewModel() {
             gachaNode.put("pos", gacha.pos)
         }
         return mapper.writeValueAsString(root)
-    }
-
-    private suspend fun getPoolType(): List<String> {
-        val client = OkHttpClient()
-        val request = Request.Builder().url(announceUrl).build()
-        return withContext(Dispatchers.IO) {
-            client.newCall(request).execute().use { response ->
-                response.body?.string().let { resp ->
-                    try {
-                        val poolList = mutableListOf<String>()
-                        val list = ObjectMapper().readTree(resp).at("/fes")
-                        for (item in list) poolList.add(item.asText())
-                        poolList
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        emptyList()
-                    }
-                }
-            }
-        }
     }
 
 }

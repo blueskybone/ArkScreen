@@ -139,6 +139,7 @@ class RealTimeActivity : AppCompatActivity() {
         binding.Page.visibility = View.GONE
         binding.ScrollView.visibility = View.VISIBLE
 
+        //发送广播强制更新桌面组件
 //        val intent = Intent(APP, WidgetReceiver::class.java)
 //        intent.action = WidgetReceiver.MANUAL_UPDATE
 //        APP.sendBroadcast(intent)

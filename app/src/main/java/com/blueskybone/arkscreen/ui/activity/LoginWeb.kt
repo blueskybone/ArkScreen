@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
@@ -22,7 +21,6 @@ import com.blueskybone.arkscreen.databinding.ActivityLoginWebBinding
 import com.blueskybone.arkscreen.util.getCookie
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.hjq.toast.Toaster
 import timber.log.Timber
 
 /**
@@ -221,7 +219,6 @@ class LoginWeb : AppCompatActivity() {
             }
         }
         webView.apply {
-            // 1. 先配置 WebViewClient
             val script =
                 "(function() {const metaJson = localStorage.ONE_ACCOUNT_ROLE_META; Android.submitMetaJson(metaJson);})();".trim { it <= ' ' }
             this.addJavascriptInterface(JsObject(), "Android")
@@ -229,7 +226,7 @@ class LoginWeb : AppCompatActivity() {
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
                     toolbar.title = view.title
-                    // 3. 页面加载完成后执行JS
+                    // 页面加载完成后执行JS
                     textButton.setOnClickListener {
                         view.evaluateJavascript(script, null)
                     }
@@ -264,7 +261,6 @@ class LoginWeb : AppCompatActivity() {
             }
         }
         webView.apply {
-            // 1. 先配置 WebViewClient
             val script =
                 "(function() {const metaJson = localStorage.ONE_ACCOUNT_ROLE_META; Android.submitMetaJson(metaJson);})();".trim { it <= ' ' }
             this.addJavascriptInterface(JsObject(), "Android")
@@ -272,7 +268,7 @@ class LoginWeb : AppCompatActivity() {
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
                     toolbar.title = view.title
-                    // 2. 页面加载完成后执行JS
+                    // 页面加载完成后执行JS
                     textButton.setOnClickListener {
                         view.evaluateJavascript(script, null)
                     }

@@ -2,28 +2,19 @@ package com.blueskybone.arkscreen.ui.fragment
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.common.space
 import com.blueskybone.arkscreen.databinding.FragmentGachaStatisBinding
-import com.blueskybone.arkscreen.databinding.FragmentGachaTextBinding
 import com.blueskybone.arkscreen.ui.model.GachaInfo
-import com.blueskybone.arkscreen.ui.recyclerview.GachaTextAdapter
-import com.blueskybone.arkscreen.util.getColorFromAttr
-import com.blueskybone.arkscreen.viewmodel.BaseModel
 import com.blueskybone.arkscreen.viewmodel.GachaModel
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
@@ -36,14 +27,14 @@ import com.hjq.toast.Toaster
 import timber.log.Timber
 
 /*
-* 这个页面的更新逻辑：
+* 页面更新逻辑：
 * 点击snipper触发model更新。
 * 数据传递：
 * 数据源：以卡池ID为准传递给model。这样的话实际上是text 和 id的对应关系
 * 然后model返回的内容：关于这个卡池的数据：6,5,4,3星数量。剩下的前端自己算一下吧。然后再返回一个数据时间跨度？
 * 然后递交给pieChart。
 *
-* 所以页面初始化的逻辑：先获取gacha list， 返回给前端，前端setupSpinner()，的时候，触发一次model.calc_gacha(gacha_id)
+* 页面初始化的逻辑：先获取gacha list， 返回给前端，前端setupSpinner()，的时候，触发一次model.calc_gacha(gacha_id)
 * 在observe,观察6,5,4,3星的变化。然后holecentertext直接抓取snipper的数据
 * */
 

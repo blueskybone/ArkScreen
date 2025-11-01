@@ -1,7 +1,5 @@
 package com.blueskybone.arkscreen.ui.fragment
 
-import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -12,15 +10,10 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.common.MenuDialog
-import com.blueskybone.arkscreen.databinding.DialogInputBinding
 import com.blueskybone.arkscreen.databinding.DialogTimepickerBinding
 import com.blueskybone.arkscreen.databinding.FragmentDashboardBinding
 import com.blueskybone.arkscreen.databinding.PreferenceBinding
@@ -28,8 +21,6 @@ import com.blueskybone.arkscreen.databinding.PreferenceSeekbarBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSwitchBinding
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.preference.preference.Preference
-import com.blueskybone.arkscreen.room.Account
-import com.blueskybone.arkscreen.ui.activity.LoginWeb
 import com.blueskybone.arkscreen.ui.activity.MainActivity
 import com.blueskybone.arkscreen.ui.activity.WidgetThemeActivity
 import com.blueskybone.arkscreen.ui.bindinginfo.BackAutoAtd
@@ -46,17 +37,10 @@ import com.blueskybone.arkscreen.ui.bindinginfo.SetAtdTime
 import com.blueskybone.arkscreen.ui.bindinginfo.TextInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.TurnOffBatteryOptimization
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq
-import com.blueskybone.arkscreen.ui.recyclerview.AccountAdapter
-import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
 import com.blueskybone.arkscreen.util.TimeUtils
-import com.blueskybone.arkscreen.util.copyToClipboard
-import com.blueskybone.arkscreen.util.openLink
-import com.blueskybone.arkscreen.util.saveDrawableToGallery
-import com.blueskybone.arkscreen.viewmodel.BaseModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
 import org.koin.android.ext.android.getKoin
-import timber.log.Timber
 import java.util.Locale
 
 /**
@@ -129,6 +113,13 @@ class Function : Fragment() {
         }
         binding.NotifyPermission.Layout.setOnClickListener {
             (activity as MainActivity?)?.openNotificationSettings(requireContext())
+        }
+        binding.WidgetInfo.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.account_info)
+                .setMessage(R.string.widget_info)
+                .setNegativeButton(R.string.confirm, null)
+                .show()
         }
         timePickerBinding()
     }
