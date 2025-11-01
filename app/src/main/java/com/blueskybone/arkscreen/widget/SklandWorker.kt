@@ -4,6 +4,8 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.blueskybone.arkscreen.APP
@@ -33,6 +35,7 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
 ) {
 
     private val prefManager: PrefManager by getKoin().inject()
+    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun doWork(): Result {
         //签到
         try {

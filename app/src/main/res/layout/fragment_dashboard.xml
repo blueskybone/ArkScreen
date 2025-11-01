@@ -188,8 +188,7 @@
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/AutoAttendance"
                     style="@style/SwitchPreference"
-                    android:text="@string/skland_auto_attendance"
-                    android:visibility="gone" />
+                    android:text="@string/skland_auto_attendance" />
 
                 <include
                     android:id="@+id/PowerSavingMode"
