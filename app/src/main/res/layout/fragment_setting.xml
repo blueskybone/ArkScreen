@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/settingScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,6 +15,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/setting" />
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:src="@mipmap/ic_rosm" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:text="@string/app_name" />
 
         <include
             android:id="@+id/AppTheme"
