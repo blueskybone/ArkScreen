@@ -64,13 +64,8 @@ import java.util.Locale
  *   Date: 2024/12/31
  */
 class Function : Fragment() {
-    private val model: BaseModel by activityViewModels()
     private var _binding: FragmentDashboardBinding? = null
     private val prefManager: PrefManager by getKoin().inject()
-    private var adapter: AccountAdapter? = null
-    private var adapterGc: AccountAdapter? = null
-    private lateinit var activityResultLauncherSk: ActivityResultLauncher<Intent>
-    private lateinit var activityResultLauncherGc: ActivityResultLauncher<Intent>
 
     private val binding get() = _binding!!
     override fun onCreateView(
@@ -80,168 +75,11 @@ class Function : Fragment() {
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         _binding = FragmentDashboardBinding.inflate(inflater)
-        initialize()
         setUpBinding()
         return binding.root
     }
 
-
-    private val adapterSkListener = object : ItemListener {
-        @SuppressLint("NotifyDataSetChanged")
-        override fun onClick(position: Int) {
-            adapter?.currentList?.get(position)?.let { value ->
-                model.setDefaultAccountSk(value as com.blueskybone.arkscreen.room.AccountSk)
-                Toaster.show(getString(R.string.set_default_account, value.nickName))
-                adapter?.notifyDataSetChanged()
-            }
-        }
-
-        override fun onLongClick(position: Int) {
-            adapter?.currentList?.get(position)?.let { value ->
-                MenuDialog(requireContext())
-                    .add(getString(R.string.export_cookie)) {
-                        displayExportDialog("${value.token}@${(value as com.blueskybone.arkscreen.room.AccountSk).dId}")
-                    }
-                    .add(R.string.delete) { confirmDeletion(value) }
-                    .show()
-            }
-        }
-    }
-
-    private val adapterGcListener = object : ItemListener {
-        @SuppressLint("NotifyDataSetChanged")
-        override fun onClick(position: Int) {
-            adapterGc?.currentList?.get(position)?.let { value ->
-                model.setDefaultAccountGc(value as com.blueskybone.arkscreen.room.AccountGc)
-                Toaster.show(getString(R.string.set_default_account, value.nickName))
-                adapterGc?.notifyDataSetChanged()
-            }
-        }
-
-        override fun onLongClick(position: Int) {
-            adapterGc?.currentList?.get(position)?.let { value ->
-                MenuDialog(requireContext())
-                    .add(getString(R.string.export_cookie)) {
-                        val account = value as com.blueskybone.arkscreen.room.AccountGc
-                        displayExportDialog("${account.token}@${account.akUserCenter}@${account.xrToken}")
-                    }
-                    .add(R.string.delete) { confirmDeletion(value) }
-                    .show()
-                //
-            }
-        }
-    }
-
-
-    private fun initialize() {
-        adapter = AccountAdapter(requireContext(), adapterSkListener)
-        binding.RecyclerView.adapter = adapter
-        model.accountSkList.observe(viewLifecycleOwner) { value ->
-            adapter?.submitList(value as List<Account>?)
-        }
-
-        adapterGc = AccountAdapter(requireContext(), adapterGcListener)
-        binding.RecyclerViewGc.adapter = adapterGc
-        model.accountGcList.observe(viewLifecycleOwner) { value ->
-            adapterGc?.submitList(value as List<Account>?)
-        }
-
-        activityResultLauncherSk = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            // 处理返回结果
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                // 解析返回的数据
-                //TODO:添加try catch
-                val token = data?.getStringExtra("token")
-                val dId = data?.getStringExtra("dId")
-                if (token != null && dId != null) {
-                    Toaster.show(getString(R.string.getting_info))
-                    model.accountSkLogin(token, dId)
-                } else {
-                    Toaster.show("null")
-                }
-            }
-        }
-
-        activityResultLauncherGc = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            // 处理返回结果
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                // 解析返回的数据
-                //TODO:添加try catch
-                val token = data?.getStringExtra("token") ?: "null"
-                val xrToken = data?.getStringExtra("xrToken")
-                val userCenter = data?.getStringExtra("userCenter")
-                val channelMasterId = data?.getIntExtra("channelMasterId", 1)
-                if (xrToken != null && userCenter != null) {
-                    Toaster.show(getString(R.string.getting_info))
-                    model.accountGcLogin(token, channelMasterId!!, userCenter, xrToken)
-                } else {
-                    Toaster.show("null")
-                }
-            }
-        }
-    }
-
     private fun setUpBinding() {
-
-        binding.AddAccountSk.setOnClickListener {
-            MenuDialog(requireContext())
-                .add(getString(R.string.import_cookie)) {
-                    displayLoginDialog(1)
-                }
-                .add(R.string.web_login) {
-                    val intent =
-                        LoginWeb.startIntent(requireContext(), LoginWeb.Companion.LoginType.SKLAND)
-                    activityResultLauncherSk.launch(intent)
-                }
-                .show()
-        }
-
-        binding.AddAccountGc.setOnClickListener {
-            MenuDialog(requireContext())
-                .add(getString(R.string.import_cookie)) {
-                    displayLoginDialog(2)
-                }
-                .add(R.string.web_login_official) {
-                    val intent =
-                        LoginWeb.startIntent(
-                            requireContext(),
-                            LoginWeb.Companion.LoginType.GACHA_OFFICIAL
-                        )
-                    activityResultLauncherGc.launch(intent)
-                }.add(R.string.web_login_bili) {
-                    val intent =
-                        LoginWeb.startIntent(
-                            requireContext(),
-                            LoginWeb.Companion.LoginType.GACHA_BILI
-                        )
-                    activityResultLauncherGc.launch(intent)
-                }
-                .show()
-        }
-
-        binding.GcInfo.setOnClickListener {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.account_info)
-                .setMessage(R.string.gc_account_info)
-                .setNegativeButton(R.string.cancel, null)
-                .show()
-        }
-
-        binding.SkInfo.setOnClickListener {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.account_info)
-                .setMessage(R.string.sk_account_info)
-                .setNegativeButton(R.string.cancel, null)
-                .show()
-        }
-
-
         bindSwitchView(binding.AutoAttendance, prefManager.autoAttendance)
         binding.RecruitMode.setUp(RecruitMode, prefManager.recruitMode, null)
         binding.FloatWindowAppearance.setUp(
@@ -293,47 +131,6 @@ class Function : Fragment() {
             (activity as MainActivity?)?.openNotificationSettings(requireContext())
         }
         timePickerBinding()
-    }
-
-    //type: 1 for sk, 2 for gc
-    private fun displayLoginDialog(type: Int) {
-        val dialogBinding = DialogInputBinding.inflate(layoutInflater)
-        dialogBinding.EditText2.visibility = View.GONE
-        dialogBinding.EditText1.hint = getString(R.string.import_cookie)
-        MaterialAlertDialogBuilder(requireContext())
-            .setView(dialogBinding.root)
-            .setTitle(R.string.import_cookie)
-            .setNegativeButton(R.string.cancel, null)
-            .setPositiveButton(R.string.import_cookie) { _, _ ->
-                val str = dialogBinding.EditText1.text.toString()
-                val list = str.split("@")
-                if (type == 1) {
-                    if (list.size == 2) {
-                        try {
-                            Toaster.show(getString(R.string.getting_info))
-                            model.accountSkLogin(list[0], list[1])
-                        } catch (e: Exception) {
-                            Toaster.show("cookie登录失败：${e.message}")
-                            Timber.e("cookie登录失败：${e.message}")
-                        }
-                    } else {
-                        Toaster.show(getString(R.string.wrong_format))
-                    }
-                } else if (type == 2) {
-                    if (list.size == 3) {
-                        try {
-                            Toaster.show(getString(R.string.getting_info))
-                            model.accountGcLogin(list[0], 1, list[1], list[2])
-                        } catch (e: Exception) {
-                            Toaster.show("cookie登录失败：${e.message}")
-                            Timber.e("cookie登录失败：${e.message}")
-                        }
-                    } else {
-                        Toaster.show(getString(R.string.wrong_format) + list.size)
-                    }
-                }
-
-            }.show()
     }
 
     private fun bindSwitchView(switch: SwitchCompat, pref: Preference<Boolean>) {
@@ -438,27 +235,6 @@ class Function : Fragment() {
                     if (prefManager.backAutoAtd.get()) APP.setDailyAlarm()
                 }.show()
         }
-    }
-
-    private fun displayExportDialog(key: String) {
-        val dialogBinding = DialogInputBinding.inflate(layoutInflater)
-        dialogBinding.EditText2.visibility = View.GONE
-        dialogBinding.EditText1.setText(key)
-        MaterialAlertDialogBuilder(requireContext())
-            .setView(dialogBinding.root)
-            .setTitle(R.string.export_cookie)
-            .setNegativeButton(R.string.cancel, null)
-            .setPositiveButton(R.string.copy) { _, _ ->
-                copyToClipboard(requireContext(), key)
-            }.show()
-    }
-
-    private fun confirmDeletion(value: Account) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setMessage(R.string.confirm_delete)
-            .setPositiveButton(R.string.delete) { _, _ -> model.deleteAccount(value) }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
     }
 
     private fun openAutoStartSettings(context: Context) {

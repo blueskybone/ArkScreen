@@ -133,43 +133,86 @@
             android:clickable="false"
             android:focusable="false">
 
-            <LinearLayout
+            <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:baselineAligned="false"
-                android:orientation="horizontal"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp"
-                android:weightSum="4">
-
+                android:layout_gravity="center"
+                android:alignmentMode="alignBounds"
+                android:columnCount="4"
+                android:columnOrderPreserved="false"
+                android:padding="10dp"
+                android:rowCount="4"
+                android:useDefaultMargins="true">
                 <include
                     android:id="@+id/RecruitCalc"
                     layout="@layout/chip_round"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
+                    android:layout_columnWeight="1" />
                 <include
                     android:id="@+id/OpeAssets"
                     layout="@layout/chip_round"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
+                    android:layout_columnWeight="1" />
                 <include
                     android:id="@+id/GachaStat"
                     layout="@layout/chip_round"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
+                    android:layout_columnWeight="1" />
                 <include
                     android:id="@+id/Attendance"
                     layout="@layout/chip_round"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-            </LinearLayout>
+                    android:layout_columnWeight="1" />
+                <include
+                    android:id="@+id/AccountManager"
+                    layout="@layout/chip_round"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1" />
+            </GridLayout>
+<!--            <LinearLayout-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:baselineAligned="false"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:paddingTop="16dp"-->
+<!--                android:paddingBottom="16dp"-->
+<!--                android:weightSum="4">-->
+
+<!--                <include-->
+<!--                    android:id="@+id/RecruitCalc"-->
+<!--                    layout="@layout/chip_round"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1" />-->
+
+<!--                <include-->
+<!--                    android:id="@+id/OpeAssets"-->
+<!--                    layout="@layout/chip_round"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1" />-->
+
+<!--                <include-->
+<!--                    android:id="@+id/GachaStat"-->
+<!--                    layout="@layout/chip_round"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1" />-->
+
+<!--                <include-->
+<!--                    android:id="@+id/Attendance"-->
+<!--                    layout="@layout/chip_round"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1" />-->
+
+<!--            </LinearLayout>-->
         </com.google.android.material.card.MaterialCardView>
 
         <FrameLayout

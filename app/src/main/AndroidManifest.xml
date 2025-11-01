@@ -138,6 +138,11 @@
             android:parentActivityName=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
+            android:name=".ui.activity.AccountMngActivity"
+            android:exported="true"
+            android:parentActivityName=".ui.activity.MainActivity"
+            android:windowSoftInputMode="adjustNothing" />
+        <activity
             android:name=".ui.activity.WidgetThemeActivity"
             android:exported="true"
             android:parentActivityName=".ui.activity.MainActivity"

@@ -17,106 +17,112 @@
             android:text="@string/function" />
 
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+<!--        <FrameLayout-->
+<!--            android:visibility="gone"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content">-->
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal">-->
 
-                <TextView
-                    style="@style/PreferenceHeader"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:text="@string/skland_account_manage" />
-                <ImageView
-                    android:id="@+id/SkInfo"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_info" />
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    style="@style/PreferenceHeader"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="start"-->
+<!--                    android:text="@string/skland_account_manage" />-->
+<!--                <ImageView-->
+<!--                    android:id="@+id/SkInfo"-->
+<!--                    android:layout_width="20dp"-->
+<!--                    android:layout_height="20dp"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:contentDescription="@null"-->
+<!--                    android:src="@drawable/ic_info" />-->
+<!--            </LinearLayout>-->
 
-            <TextView
-                android:id="@+id/AddAccountSk"
-                style="@style/PreferenceHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="@string/add" />
-            <!--            <ImageView-->
-            <!--                android:id="@+id/AddAccount"-->
-            <!--                android:layout_width="14dp"-->
-            <!--                android:layout_height="14dp"-->
-            <!--                android:layout_marginEnd="20dp"-->
-            <!--                android:layout_gravity="center|end"-->
-            <!--                android:contentDescription="@null"-->
-            <!--                android:src="@drawable/ic_plus" />-->
-        </FrameLayout>
+<!--            <TextView-->
+<!--                android:id="@+id/AddAccountSk"-->
+<!--                style="@style/PreferenceHeader"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="end"-->
+<!--                android:text="@string/add" />-->
+<!--            &lt;!&ndash;            <ImageView&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:id="@+id/AddAccount"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:layout_width="14dp"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:layout_height="14dp"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:layout_marginEnd="20dp"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:layout_gravity="center|end"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:contentDescription="@null"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:src="@drawable/ic_plus" />&ndash;&gt;-->
+<!--        </FrameLayout>-->
 
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+<!--        <com.google.android.material.card.MaterialCardView-->
+<!--            android:visibility="gone"-->
+<!--            style="@style/CardViewContent">-->
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/RecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-        </com.google.android.material.card.MaterialCardView>
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/RecyclerView"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />-->
+<!--        </com.google.android.material.card.MaterialCardView>-->
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+<!--        <FrameLayout-->
+<!--            android:visibility="gone"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content">-->
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal">-->
 
-                <TextView
-                    style="@style/PreferenceHeader"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:text="@string/gacha_account_manage" />
+<!--                <TextView-->
+<!--                    style="@style/PreferenceHeader"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="start"-->
+<!--                    android:text="@string/gacha_account_manage" />-->
 
-                <ImageView
-                    android:id="@+id/GcInfo"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_info" />
-            </LinearLayout>
+<!--                <ImageView-->
+<!--                    android:id="@+id/GcInfo"-->
+<!--                    android:layout_width="20dp"-->
+<!--                    android:layout_height="20dp"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:contentDescription="@null"-->
+<!--                    android:src="@drawable/ic_info" />-->
+<!--            </LinearLayout>-->
 
-            <TextView
-                android:id="@+id/AddAccountGc"
-                style="@style/PreferenceHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="@string/add" />
-            <!--            <ImageView-->
-            <!--                android:id="@+id/AddAccountGc"-->
-            <!--                android:layout_width="14dp"-->
-            <!--                android:layout_height="14dp"-->
-            <!--                android:layout_marginEnd="20dp"-->
-            <!--                android:layout_gravity="center|end"-->
-            <!--                android:contentDescription="@null"-->
-            <!--                android:src="@drawable/ic_plus" />-->
-        </FrameLayout>
+<!--            <TextView-->
+<!--                android:id="@+id/AddAccountGc"-->
+<!--                style="@style/PreferenceHeader"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="end"-->
+<!--                android:text="@string/add" />-->
+<!--            &lt;!&ndash;            <ImageView&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:id="@+id/AddAccountGc"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:layout_width="14dp"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:layout_height="14dp"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:layout_marginEnd="20dp"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:layout_gravity="center|end"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:contentDescription="@null"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:src="@drawable/ic_plus" />&ndash;&gt;-->
+<!--        </FrameLayout>-->
 
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+<!--        <com.google.android.material.card.MaterialCardView-->
+<!--            android:visibility="gone"-->
+<!--            style="@style/CardViewContent">-->
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/RecyclerViewGc"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-        </com.google.android.material.card.MaterialCardView>
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/RecyclerViewGc"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />-->
+<!--        </com.google.android.material.card.MaterialCardView>-->
 
 
         <FrameLayout

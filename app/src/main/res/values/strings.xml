@@ -136,8 +136,6 @@
     <!-- Function Page -->
     <string name="quick_recruit">快速公招</string>
     <string name="float_recruit">悬浮球公招</string>
-    <string name="skland_account_manage">游戏账号</string>
-    <string name="gacha_account_manage">卡池账号</string>
     <string name="recruit_calc">公招计算</string>
     <string name="real_time_data">实时数据</string>
     <string name="operator_assets">干员资产</string>
@@ -145,6 +143,9 @@
     <string name="gacha_statistics">寻访统计</string>
 
     <!-- Account Page-->
+    <string name="account_manager">账号管理</string>
+    <string name="skland_account_manage">游戏账号</string>
+    <string name="gacha_account_manage">卡池账号</string>
     <string name="text_web_skland">划到最右端点击“发图文”，登录后点击此处</string>
     <string name="text_web_ark">登录后点击此处</string>
     <string name="getting_info">获取信息中</string>
