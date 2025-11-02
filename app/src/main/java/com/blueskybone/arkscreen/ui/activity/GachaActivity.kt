@@ -26,7 +26,6 @@ import com.blueskybone.arkscreen.viewmodel.GachaModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
-import com.hjq.toast.Toaster
 import org.koin.android.ext.android.getKoin
 
 /**
@@ -112,16 +111,15 @@ class GachaActivity : AppCompatActivity() {
             }
 
             R.id.menu_import -> {
-                Toaster.show("施工中...")
-//                MaterialAlertDialogBuilder(this)
-//                    .setTitle(getString(R.string.import_data))
-//                    .setMessage(R.string.import_data_detail)
-//                    .setPositiveButton(R.string.import_data) { _, _ ->
-//                        val mimeTypes = arrayOf("text/plain", "application/json")
-//                        launcherForImport?.launch(mimeTypes)
-//                    }
-//                    .setNegativeButton(R.string.cancel, null)
-//                    .show()
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(getString(R.string.import_data))
+                    .setMessage(R.string.import_data_detail)
+                    .setPositiveButton(R.string.import_data) { _, _ ->
+                        val mimeTypes = arrayOf("text/plain", "application/json")
+                        launcherForImport?.launch(mimeTypes)
+                    }
+                    .setNegativeButton(R.string.cancel, null)
+                    .show()
                 true
             }
 
@@ -198,8 +196,7 @@ class GachaActivity : AppCompatActivity() {
         launcherForImport =
             registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
                 uri?.let {
-                    Toaster.show("施工中...")
-//                    model.importData(uri)
+                    model.importData(uri)
                 }
             }
     }
