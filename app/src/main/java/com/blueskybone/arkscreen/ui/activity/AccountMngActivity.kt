@@ -75,7 +75,7 @@ class AccountMngActivity : AppCompatActivity() {
                         Toaster.show("登录出现意外：${e.message}")
                     }
                 } else {
-                    Toaster.show("null")
+                    Toaster.show("failed：获取token失败")
                 }
             }
         }
@@ -99,7 +99,7 @@ class AccountMngActivity : AppCompatActivity() {
                         Toaster.show("登录出现意外：${e.message}")
                     }
                 } else {
-                    Toaster.show("null")
+                    Toaster.show("failed：获取token失败")
                 }
             }
         }
