@@ -149,8 +149,8 @@
     <string name="account_manager">账号管理</string>
     <string name="skland_account_manage">游戏账号</string>
     <string name="gacha_account_manage">卡池账号</string>
-    <string name="text_web_skland">划到最右端点击“发图文”，登录后点击此处</string>
-    <string name="text_web_ark">登录后点击此处</string>
+    <string name="text_web_skland">划到最右端点击“发图文”，登录后将自动跳转。如未跳转，请手动点击此处。</string>
+    <string name="text_web_ark">登录后将自动跳转。如未跳转，请手动点击此处。</string>
     <string name="getting_info">获取信息中</string>
     <string name="sk_account_info">游戏账号用于查询游戏数据、森空岛签到。\n可能会导致森空岛app登录状态失效。\n可长按操作。</string>
     <string name="gc_account_info">卡池账号仅用于寻访统计。\n可长按操作。</string>
