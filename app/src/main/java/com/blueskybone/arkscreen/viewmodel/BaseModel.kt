@@ -212,6 +212,7 @@ class BaseModel : ViewModel() {
                 _accountSkList.postValue(accountSkDao.getAll())
                 if (prefManager.baseAccountSk.get().uid == "")
                     prefManager.baseAccountSk.set(list[0])
+                Toaster.show("登录成功：导入${list.size}条账号")
             } catch (e: Exception) {
                 e.printStackTrace()
             }
