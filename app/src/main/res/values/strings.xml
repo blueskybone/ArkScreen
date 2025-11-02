@@ -228,7 +228,7 @@
     <string name="input_cookie">输入Cookie</string>
 
     <string name="import_data">导入数据</string>
-    <string name="import_data_detail">支持主流的.txt,.json格式的寻访记录文件，详细见使用手册。\n导入前请确认将要导入的记录和当前账号一致。</string>
+    <string name="import_data_detail">目前仅支持公招助手的导入导出格式。</string>
     <string name="export_data">导出数据</string>
     <string name="update_data">更新数据</string>
     <string name="clear_data">清除数据</string>
