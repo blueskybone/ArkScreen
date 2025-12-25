@@ -144,6 +144,7 @@
     <string name="operator_assets">干员资产</string>
     <string name="attendance_click">一键签到</string>
     <string name="gacha_statistics">寻访统计</string>
+    <string name="game_starter">游戏启动</string>
 
     <!-- Account Page-->
     <string name="account_manager">账号管理</string>
