@@ -13,6 +13,7 @@ import com.blueskybone.arkscreen.network.model.PlayerInfoResp
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Gacha
+import com.blueskybone.arkscreen.util.toCate
 import retrofit2.Response
 
 /**
@@ -105,13 +106,6 @@ class NetWorkTask {
                 }
             }
             return records.toList()
-        }
-
-        private fun String.toCate(): String {
-            if (this.startsWith("LIMITED") || this.startsWith("LINKAGE")) return "LIMITED"
-            if (this.startsWith("CLASSIC")|| this.startsWith("FESCLASSIC") ) return "CLASSIC"
-            if (this.startsWith("SINGLE") || this.startsWith("DOUBLE") || this.startsWith("SPECIAL") || this.startsWith("NORM")) return "NORMAL"
-            return "UN"
         }
     }
 
