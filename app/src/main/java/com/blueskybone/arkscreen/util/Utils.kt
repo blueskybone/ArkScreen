@@ -281,3 +281,14 @@ fun getTargetDrawableId(drawable: Int, pref: Preference<String>): Int {
     } else drawable
 
 }
+
+fun String.toCate(): String {
+    if (this.startsWith("LIMITED") || this.startsWith("LINKAGE")) return "LIMITED"
+    if (this.startsWith("CLASSIC")|| this.startsWith("FESCLASSIC")) return "CLASSIC"
+    if (this.startsWith("SINGLE") ||
+        this.startsWith("DOUBLE") ||
+        this.startsWith("SPECIAL") ||
+        this.startsWith("NORM")
+    ) return "NORMAL"
+    return "UN"
+}
