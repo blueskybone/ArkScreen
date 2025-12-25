@@ -173,6 +173,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1" />
+                <include
+                    android:id="@+id/GameStarter"
+                    layout="@layout/chip_round"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1" />
             </GridLayout>
 <!--            <LinearLayout-->
 <!--                android:visibility="gone"-->
