@@ -20,6 +20,7 @@ import com.blueskybone.arkscreen.databinding.DialogDonateBinding
 import com.blueskybone.arkscreen.databinding.FragmentSettingBinding
 import com.blueskybone.arkscreen.databinding.PreferenceBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSwitchBinding
+import com.blueskybone.arkscreen.databinding.PreferenceValueBinding
 import com.blueskybone.arkscreen.logger.FileLoggingInterceptor
 import com.blueskybone.arkscreen.logger.FileLoggingTree
 import com.blueskybone.arkscreen.network.getSklandServerTs
@@ -237,10 +238,6 @@ class Setting : Fragment() {
     }
 
 
-    private fun displayDonateDialog() {
-
-    }
-
     private fun bindSwitchView(switch: SwitchCompat, pref: Preference<Boolean>) {
         switch.isChecked = pref.get()
         switch.setOnCheckedChangeListener { _, isChecked -> pref.set(isChecked) }
@@ -306,48 +303,4 @@ class Setting : Fragment() {
         }
     }
 
-//    private fun openAutoStartSettings(context: Context) {
-//        try {
-//            val intent = Intent()
-//            val manufacturer = Build.MANUFACTURER.lowercase(Locale.ROOT)
-//            when {
-//                manufacturer.contains("xiaomi") -> {
-//                    intent.component = ComponentName(
-//                        "com.miui.securitycenter",
-//                        "com.miui.permcenter.autostart.AutoStartManagementActivity"
-//                    )
-//                }
-//
-//                manufacturer.contains("oppo") -> {
-//                    intent.component = ComponentName(
-//                        "com.coloros.safecenter",
-//                        "com.coloros.safecenter.permission.startup.StartupAppListActivity"
-//                    )
-//                }
-//
-//                manufacturer.contains("vivo") -> {
-//                    intent.component = ComponentName(
-//                        "com.vivo.permissionmanager",
-//                        "com.vivo.permissionmanager.activity.BgStartUpManagerActivity"
-//                    )
-//                }
-//
-//                manufacturer.contains("honor") -> {
-//                    intent.component = ComponentName(
-//                        "com.huawei.systemmanager",
-//                        "com.huawei.systemmanager.optimize.process.ProtectActivity"
-//                    )
-//                }
-//
-//                else -> {
-//                    Toaster.show("请手动在设置中找到自启动设置")
-//                    return
-//                }
-//            }
-//            context.startActivity(intent)
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            Toaster.show("无法打开自启动设置页面")
-//        }
-//    }
 }

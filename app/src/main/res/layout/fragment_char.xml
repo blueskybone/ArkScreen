@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/text_default"
                 android:padding="8dp"
-                android:src="@drawable/ic_dashboard"
+                android:src="@drawable/ic_gacha"
                 app:tint="?attr/colorOnBackground" />
 
             <ImageView

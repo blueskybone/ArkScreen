@@ -48,6 +48,7 @@ import com.blueskybone.arkscreen.ui.bindinginfo.GachaStat
 import com.blueskybone.arkscreen.ui.bindinginfo.GameStarter
 import com.blueskybone.arkscreen.ui.bindinginfo.OpeAssets
 import com.blueskybone.arkscreen.ui.bindinginfo.RecruitCal
+import com.blueskybone.arkscreen.ui.bindinginfo.UserManual
 import com.blueskybone.arkscreen.ui.recyclerview.AccountAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
 import com.blueskybone.arkscreen.ui.recyclerview.LinkGridAdapter
@@ -255,6 +256,7 @@ class Home : Fragment() {
         binding.Attendance.setup(Attendance)
         binding.AccountManager.setup(AccountManager)
         binding.GameStarter.setup(GameStarter)
+        binding.UserManual.setup(UserManual)
 
         binding.RecruitCalc.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), RecruitActivity::class.java))
@@ -274,6 +276,17 @@ class Home : Fragment() {
                 openAnotherApp("com.hypergryph.arknights")
             }else{
                 openAnotherApp("com.hypergryph.arknights.bilibili")
+            }
+        }
+        binding.UserManual.Layout.setOnClickListener {
+            val cvId = "40623349"
+            try {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("bilibili://article/$cvId"))
+                startActivity(intent)
+            } catch (e: Exception) {
+                val intent =
+                    Intent(Intent.ACTION_VIEW, Uri.parse("https://www.bilibili.com/read/cv$cvId"))
+                startActivity(intent)
             }
         }
         binding.AddLink.setOnClickListener {

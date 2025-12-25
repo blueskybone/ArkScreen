@@ -51,10 +51,9 @@ data object OpenAutoStartSettings : TextInfo {
     override val subTitle = R.string.open_auto_start_settings_detail
 }
 
-//单独绑定
 data object SetAtdTime : TextInfo {
-    override val title = R.string.set_auto_attendance_time
-    override val subTitle = R.string.auto_attendance_time
+    override val title = R.string.attendance_time
+    override val subTitle = R.string.attendance_time_detail
 }
 
 data object UseInnerWeb : TextInfo {

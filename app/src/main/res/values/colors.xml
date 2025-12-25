@@ -29,6 +29,7 @@
 <!--    <color name="purple_50">#E9EDFF</color>-->
     <color name="purple_50">#F0F5FA</color>
     <color name="purple_bg">#F7F9FF</color>
+    <color name="day_bg">#F6F6F6</color>
 
     <color name="LightBlue500">#79B8EA</color>
     <color name="LightBlue200">#65C9DDED</color>

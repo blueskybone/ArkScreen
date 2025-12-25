@@ -47,3 +47,9 @@ data object GameStarter : FuncChipInfo {
     override val icon = R.drawable.ic_starter
     override val iconColor = R.color.blue_500
 }
+
+data object UserManual : FuncChipInfo {
+    override val title = R.string.manual
+    override val icon = R.drawable.ic_question
+    override val iconColor = R.color.blue_500
+}
