@@ -18,7 +18,9 @@ import com.blueskybone.arkscreen.databinding.DialogTimepickerBinding
 import com.blueskybone.arkscreen.databinding.FragmentDashboardBinding
 import com.blueskybone.arkscreen.databinding.PreferenceBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSeekbarBinding
+import com.blueskybone.arkscreen.databinding.PreferenceSubValueBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSwitchBinding
+import com.blueskybone.arkscreen.databinding.PreferenceValueBinding
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.preference.preference.Preference
 import com.blueskybone.arkscreen.ui.activity.MainActivity
@@ -73,7 +75,8 @@ class Function : Fragment() {
 
         binding.ScreenShotDelay.setUp(ScreenshotDelay, prefManager.screenShotDelay)
         binding.TurnOffBatteryOptimization.setUp(TurnOffBatteryOptimization)
-        binding.WidgetAppearance.setOnClickListener {
+        binding.WidgetAppearance.apply {  this.Title.text = getString(R.string.widget_appearance) }
+        binding.WidgetAppearance.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), WidgetThemeActivity::class.java))
         }
         binding.WidgetRefresh.setUp(WidgetUpdateFreq, prefManager.widgetUpdateFreq, null)
@@ -192,6 +195,32 @@ class Function : Fragment() {
         }
     }
 
+    private fun PreferenceValueBinding.setUp(
+        listInfo: ListInfo,
+        pref: Preference<String>,
+        onClick: (() -> Unit)?
+    ) {
+        Title.setText(listInfo.title)
+        val entries = listInfo.getEntries(requireContext())
+        val entryValues = listInfo.getEntryValues()
+        var checked = entryValues.indexOf(pref.get())
+        val displayValue = entries[checked]
+        Value.text = displayValue
+        root.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(listInfo.title)
+                .setSingleChoiceItems(entries, checked) { dialog, which ->
+                    dialog.cancel()
+                    pref.set(entryValues[which])
+                    Value.text = entries[which]
+                    checked = which
+                    onClick?.invoke()
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
@@ -199,6 +228,7 @@ class Function : Fragment() {
 
     private fun timePickerBinding() {
         binding.SetAtdTime.Title.setText(SetAtdTime.title)
+        binding.SetAtdTime.Detail.setText(SetAtdTime.subTitle)
         val hour = prefManager.alarmAtdHour.get()
         val min = prefManager.alarmAtdMin.get()
         binding.SetAtdTime.Value.text =
@@ -210,7 +240,7 @@ class Function : Fragment() {
             }
             MaterialAlertDialogBuilder(requireContext())
                 .setView(dialogBinding.root)
-                .setTitle(R.string.set_auto_attendance_time)
+                .setTitle(R.string.attendance_time)
                 .setNegativeButton(R.string.cancel, null)
                 .setPositiveButton(R.string.confirm) { _, _ ->
                     val newHour = dialogBinding.TimePicker.hour

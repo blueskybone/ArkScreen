@@ -46,7 +46,7 @@
 
                 <include
                     android:id="@+id/RecruitMode"
-                    layout="@layout/preference" />
+                    layout="@layout/preference_value" />
 
                 <include
                     android:id="@+id/FloatWindowAppearance"
@@ -109,12 +109,15 @@
                     layout="@layout/preference_switch" />
 
 
-                <TextView
+                <include
                     android:id="@+id/WidgetAppearance"
-                    style="@style/Preference"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/widget_appearance" />
+                    layout="@layout/preference_icon" />
+<!--                <TextView-->
+<!--                    android:id="@+id/WidgetAppearance"-->
+<!--                    style="@style/Preference"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/widget_appearance" />-->
 
                 <include
                     android:id="@+id/WidgetRefresh"
@@ -148,7 +151,7 @@
 
                 <include
                     android:id="@+id/SetAtdTime"
-                    layout="@layout/preference" />
+                    layout="@layout/preference_sub_value" />
 
                 <include
                     android:id="@+id/OpenAutoStartSettings"

@@ -38,14 +38,14 @@
 
         <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
 
-<!--            <ImageView-->
-<!--                android:id="@+id/TitleImage"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="120dp"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:contentDescription="@string/text_default"-->
-<!--                android:scaleType="centerCrop"-->
-<!--                android:visibility="gone" />-->
+            <!--            <ImageView-->
+            <!--                android:id="@+id/TitleImage"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="120dp"-->
+            <!--                android:layout_gravity="center"-->
+            <!--                android:contentDescription="@string/text_default"-->
+            <!--                android:scaleType="centerCrop"-->
+            <!--                android:visibility="gone" />-->
 
 
             <com.blueskybone.arkscreen.common.NestedScrollableHost
@@ -73,23 +73,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                style="@style/PreferenceHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:text="@string/real_time_data" />
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/RefreshGame"
                 style="@style/PreferenceHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:text="@string/refresh" />
+                android:text="@string/refresh"
+                android:visibility="gone" />
         </FrameLayout>
-
+        <TextView
+            style="@style/PreferenceHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="@string/real_time_data" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/RealTimeData"
@@ -98,9 +97,10 @@
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground">
 
-            <include
-                android:id="@+id/ApCacheCard"
-                layout="@layout/card_ap_cache" />
+                <include
+                    android:id="@+id/ApCacheCard"
+                    layout="@layout/card_ap_cache" />
+
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
@@ -127,98 +127,69 @@
             android:layout_height="wrap_content"
             android:text="@string/tools" />
 
-
         <com.google.android.material.card.MaterialCardView
             style="@style/CardViewContent"
             android:clickable="false"
             android:focusable="false">
-
-            <GridLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:alignmentMode="alignBounds"
-                android:columnCount="4"
-                android:columnOrderPreserved="false"
-                android:padding="10dp"
-                android:rowCount="4"
-                android:useDefaultMargins="true">
-                <include
-                    android:id="@+id/RecruitCalc"
-                    layout="@layout/chip_round"
-                    android:layout_width="0dp"
+                <GridLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_columnWeight="1" />
-                <include
-                    android:id="@+id/OpeAssets"
-                    layout="@layout/chip_round"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1" />
-                <include
-                    android:id="@+id/GachaStat"
-                    layout="@layout/chip_round"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1" />
-                <include
-                    android:id="@+id/Attendance"
-                    layout="@layout/chip_round"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1" />
-                <include
-                    android:id="@+id/AccountManager"
-                    layout="@layout/chip_round"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1" />
-                <include
-                    android:id="@+id/GameStarter"
-                    layout="@layout/chip_round"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1" />
-            </GridLayout>
-<!--            <LinearLayout-->
-<!--                android:visibility="gone"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:baselineAligned="false"-->
-<!--                android:orientation="horizontal"-->
-<!--                android:paddingTop="16dp"-->
-<!--                android:paddingBottom="16dp"-->
-<!--                android:weightSum="4">-->
+                    android:layout_gravity="center"
+                    android:alignmentMode="alignBounds"
+                    android:columnCount="4"
+                    android:columnOrderPreserved="false"
+                    android:padding="10dp"
+                    android:rowCount="4"
+                    android:useDefaultMargins="true">
 
-<!--                <include-->
-<!--                    android:id="@+id/RecruitCalc"-->
-<!--                    layout="@layout/chip_round"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1" />-->
+                    <include
+                        android:id="@+id/RecruitCalc"
+                        layout="@layout/chip_round"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1" />
 
-<!--                <include-->
-<!--                    android:id="@+id/OpeAssets"-->
-<!--                    layout="@layout/chip_round"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1" />-->
+                    <include
+                        android:id="@+id/OpeAssets"
+                        layout="@layout/chip_round"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1" />
 
-<!--                <include-->
-<!--                    android:id="@+id/GachaStat"-->
-<!--                    layout="@layout/chip_round"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1" />-->
+                    <include
+                        android:id="@+id/GachaStat"
+                        layout="@layout/chip_round"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1" />
 
-<!--                <include-->
-<!--                    android:id="@+id/Attendance"-->
-<!--                    layout="@layout/chip_round"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1" />-->
+                    <include
+                        android:id="@+id/Attendance"
+                        layout="@layout/chip_round"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1" />
 
-<!--            </LinearLayout>-->
+                    <include
+                        android:id="@+id/AccountManager"
+                        layout="@layout/chip_round"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1" />
+
+                    <include
+                        android:id="@+id/GameStarter"
+                        layout="@layout/chip_round"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1" />
+                    <include
+                        android:id="@+id/UserManual"
+                        layout="@layout/chip_round"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1" />
+                </GridLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <FrameLayout
@@ -241,42 +212,45 @@
                 android:layout_gravity="end"
                 android:text="@string/add" />
         </FrameLayout>
-
-
         <com.google.android.material.card.MaterialCardView
             style="@style/CardViewContent"
             android:clickable="false"
             android:focusable="false">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/ExLinks"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:visibility="visible"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/ExLinks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:visibility="visible"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         </com.google.android.material.card.MaterialCardView>
 
-
-        <TextView
-            android:id="@+id/AnnounceTitle"
-            style="@style/PreferenceHeader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/announcement" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/AnnounceCard"
             style="@style/CardViewContent">
 
-            <TextView
-                android:id="@+id/Announce"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/AnnounceTitle"
+                    style="@style/PreferenceHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/announcement" />
+
+                <TextView
+                    android:id="@+id/Announce"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp" />
+            </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>

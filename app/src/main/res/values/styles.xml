@@ -7,7 +7,7 @@
         <item name="colorSecondary">?attr/colorPrimary</item>
         <item name="colorSurface">@color/purple_50</item>
         <item name="colorOnSurface">@color/dark_blue</item>
-        <item name="android:colorBackground">@color/purple_bg</item>
+        <item name="android:colorBackground">@color/day_bg</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/transparent</item>
         <item name="textAppearanceBody1">@style/TextAppearance.Body1</item>
@@ -59,9 +59,10 @@
         <item name="android:layout_marginEnd">16dp</item>
         <item name="cardCornerRadius">15dp</item>
         <item name="cardElevation">0dp</item>
-        <item name="cardBackgroundColor">?attr/android:colorBackground</item>
+<!--        <item name="cardBackgroundColor">?attr/android:colorBackground</item>-->
+        <item name="cardBackgroundColor">@color/white</item>
         <item name="strokeWidth">1dp</item>
-        <item name="strokeColor">@color/grey_300</item>
+<!--        <item name="strokeColor">@color/grey_300</item>-->
     </style>
 
 
@@ -69,6 +70,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">16dp</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textAppearance">@style/PreferenceTitle</item>
     </style>
 
@@ -106,12 +108,13 @@
         <item name="android:paddingEnd">16dp</item>
         <item name="android:paddingTop">16dp</item>
         <item name="android:paddingStart">16dp</item>
-        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingBottom">4dp</item>
         <item name="android:textAppearance">?attr/textAppearanceSubtitle2</item>
     </style>
 
     <style name="Preference" parent="TextView.Clickable">
         <item name="android:padding">16dp</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textAppearance">@style/PreferenceTitle</item>
     </style>
 
@@ -174,12 +177,12 @@
     </style>
 
     <style name="CardViewChip" parent="Widget.MaterialComponents.CardView">
-        <item name="cardBackgroundColor">@color/transparent</item>
-        <item name="cardCornerRadius">16dp</item>
-        <item name="strokeWidth">1dp</item>
-        <item name="strokeColor">?attr/colorPrimary</item>
+        <item name="cardBackgroundColor">@color/white</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="cardCornerRadius">5dp</item>
+        <item name="android:layout_margin">5dp</item>
         <item name="cardElevation">0dp</item>
-        <item name="contentPadding">5dp</item>
     </style>
 
     <style name="TitleText">
