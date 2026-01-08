@@ -26,7 +26,9 @@
     <!-- Fragment Title -->
     <string name="home">首页</string>
     <string name="function">功能</string>
+    <string name="config">配置</string>
     <string name="setting">设置</string>
+    <string name="more">更多</string>
 
     <!-- SubTitle -->
     <string name="tools">工具</string>
@@ -62,10 +64,14 @@
     <string name="colorful">彩色</string>
     <string name="simple">简洁</string>
 
-    <string name="screenshot_delay">截图延迟秒数</string>
+    <string name="screenshot_delay">截图延迟</string>
+    <string name="screenshot_delay_detail">提示“未获取有效信息”时尝试调整</string>
+    <string name="sec_1">1s</string>
+    <string name="sec_2">2s</string>
+    <string name="sec_3">3s</string>
 
     <string name="overlay_permission">获取悬浮窗权限</string>
-    <string name="overlay_permission_detail">快速公招功能需要悬浮窗权限</string>
+    <string name="overlay_permission_detail">截图需要悬浮窗权限</string>
     <string name="acquire_overlay_permission_content">未授予悬浮窗权限，截屏公招功能无法正常使用。</string>
 
     <string name="notify_permission">通知权限</string>

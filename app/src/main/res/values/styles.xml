@@ -189,4 +189,13 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="BottomNavigationViewStyle" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="itemIconSize">20dp</item> <!-- 设置图标大小 -->
+        <item name="itemTextAppearanceActive">@style/BottomNavigationTextStyle</item>
+        <item name="itemTextAppearanceInactive">@style/BottomNavigationTextStyle</item>
+    </style>
+
+    <style name="BottomNavigationTextStyle" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">12sp</item> <!-- 设置文字大小 -->
+    </style>
 </resources>

@@ -33,7 +33,9 @@ import com.blueskybone.arkscreen.ui.bindinginfo.OpenAutoStartSettings
 import com.blueskybone.arkscreen.ui.bindinginfo.OverlayPermission
 import com.blueskybone.arkscreen.ui.bindinginfo.PowerSavingMode
 import com.blueskybone.arkscreen.ui.bindinginfo.RecruitMode
+import com.blueskybone.arkscreen.ui.bindinginfo.ScDelay
 import com.blueskybone.arkscreen.ui.bindinginfo.ScreenshotDelay
+//import com.blueskybone.arkscreen.ui.bindinginfo.ScreenshotDelay
 import com.blueskybone.arkscreen.ui.bindinginfo.SeekBarInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.SetAtdTime
 import com.blueskybone.arkscreen.ui.bindinginfo.TextInfo
@@ -73,7 +75,7 @@ class Function : Fragment() {
             prefManager.floatWindowAppearance, null
         )
 
-        binding.ScreenShotDelay.setUp(ScreenshotDelay, prefManager.screenShotDelay)
+        binding.ScreenShotDelay.setUp(ScreenshotDelay,ScDelay, prefManager.screenShotDelay, null)
         binding.TurnOffBatteryOptimization.setUp(TurnOffBatteryOptimization)
         binding.WidgetAppearance.apply {  this.Title.text = getString(R.string.widget_appearance) }
         binding.WidgetAppearance.Layout.setOnClickListener {
@@ -145,6 +147,34 @@ class Function : Fragment() {
         Slider.stepSize = seekBarInfo.step.toFloat()
         Slider.addOnChangeListener { _, value, _ ->
             pref.set(value.toInt())
+        }
+    }
+
+    private fun PreferenceSubValueBinding.setUp(
+        textInfo: TextInfo,
+        listInfo: ListInfo,
+        pref: Preference<String>,
+        onClick: (() -> Unit)?
+    ) {
+        Title.setText(textInfo.title)
+        SubTitle.setText(textInfo.subTitle)
+        val entries = listInfo.getEntries(requireContext())
+        val entryValues = listInfo.getEntryValues()
+        var checked = entryValues.indexOf(pref.get())
+        val displayValue = entries[checked]
+        Value.text = displayValue
+        root.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(listInfo.title)
+                .setSingleChoiceItems(entries, checked) { dialog, which ->
+                    dialog.cancel()
+                    pref.set(entryValues[which])
+                    Value.text = entries[which]
+                    checked = which
+                    onClick?.invoke()
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
         }
     }
 
@@ -228,7 +258,7 @@ class Function : Fragment() {
 
     private fun timePickerBinding() {
         binding.SetAtdTime.Title.setText(SetAtdTime.title)
-        binding.SetAtdTime.Detail.setText(SetAtdTime.subTitle)
+        binding.SetAtdTime.SubTitle.setText(SetAtdTime.subTitle)
         val hour = prefManager.alarmAtdHour.get()
         val min = prefManager.alarmAtdMin.get()
         binding.SetAtdTime.Value.text =
