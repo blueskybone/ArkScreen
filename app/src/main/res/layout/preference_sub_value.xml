@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
+    android:gravity="center"
     android:id="@+id/Layout"
     android:padding="16dp">
 
@@ -32,7 +33,7 @@
             android:textAppearance="@style/PreferenceTitle" />
 
         <TextView
-            android:id="@+id/Detail"
+            android:id="@+id/SubTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp"/>

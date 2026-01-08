@@ -16,7 +16,7 @@
             style="@style/TextView.Headline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/setting" />
+            android:text="@string/more" />
 
         <ImageView
             android:layout_width="100dp"

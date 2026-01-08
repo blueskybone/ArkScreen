@@ -14,6 +14,7 @@ import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.ui.bindinginfo.AppTheme
 import com.blueskybone.arkscreen.ui.bindinginfo.FloatWindowAppearance
 import com.blueskybone.arkscreen.ui.bindinginfo.RecruitMode
+import com.blueskybone.arkscreen.ui.bindinginfo.ScDelay
 import com.blueskybone.arkscreen.ui.bindinginfo.ScreenshotDelay
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetAlpha
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetContent
@@ -32,7 +33,7 @@ class PrefManager() {
         recruitMode = preferenceStore.getString(RecruitMode.key, RecruitMode.FLOATWINDOW)
         floatWindowAppearance =
             preferenceStore.getString(FloatWindowAppearance.key, FloatWindowAppearance.COLORFUL)
-        screenShotDelay = preferenceStore.getInt(ScreenshotDelay.key, ScreenshotDelay.defaultValue)
+        screenShotDelay = preferenceStore.getString(ScDelay.key, ScDelay.defaultValue)
         powerSavingMode = preferenceStore.getBoolean("power_saving_mode", false)
 
 
@@ -143,7 +144,7 @@ class PrefManager() {
     lateinit var warnOverlayPermission: Preference<Boolean>  //开屏不再提示悬浮窗权限
     lateinit var recruitMode: Preference<String>        //快速公招模式
     lateinit var floatWindowAppearance: Preference<String>  //快速公招结果显示风格（未实装）
-    lateinit var screenShotDelay: Preference<Int>       //快速公招截图延迟选项（已移除）
+    lateinit var screenShotDelay: Preference<String>       //快速公招截图延迟选项
     lateinit var powerSavingMode: Preference<Boolean>   //桌面组件省流模式
     lateinit var autoAttendance: Preference<Boolean>    //桌面组件自动签到
     lateinit var lastAttendanceTs: Preference<Long>     //记录签到时间，避免同一天重复签到

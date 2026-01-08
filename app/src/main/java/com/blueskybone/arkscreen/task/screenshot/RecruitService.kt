@@ -26,6 +26,7 @@ import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.task.CapturePermission
 import com.blueskybone.arkscreen.task.recruit.RecruitManager
 import com.blueskybone.arkscreen.ui.bindinginfo.RecruitMode
+import com.blueskybone.arkscreen.ui.bindinginfo.ScDelay
 import com.blueskybone.arkscreen.util.convertImageToBitmap
 import com.blueskybone.arkscreen.util.getDensityDpi
 import com.blueskybone.arkscreen.util.getEleCombination
@@ -136,9 +137,14 @@ class RecruitService : Service() {
 //        startActivity(emptyIntent)
         try {
             if (sleepScreenshot) {
-                Thread.sleep(1000L)
+                try {
+                    val delay = ScDelay.getMSec(prefManager.screenShotDelay.get())
+                    Thread.sleep(delay)
+                }catch (e: IllegalArgumentException){
+                    Timber.e(e.message)
+                    Thread.sleep(2000L)
+                }
             }
-//            Thread.sleep(prefManager.screenShotDelay.get() * 1000L)
             imageReader!!.acquireLatestImage().use { image ->
 
                 // TransActivity.finishActivity()

@@ -16,6 +16,11 @@ data object PowerSavingMode : TextInfo {
     override val subTitle = R.string.power_saving_mode_detail
 }
 
+data object ScreenshotDelay : TextInfo {
+    override val title = R.string.screenshot_delay
+    override val subTitle = R.string.screenshot_delay_detail
+}
+
 data object TurnOffBatteryOptimization : TextInfo {
     override val title = R.string.turn_off_battery_optimization
     override val subTitle = R.string.turn_off_battery_optimization_detail
