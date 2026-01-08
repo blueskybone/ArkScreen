@@ -31,24 +31,24 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end">
 
-            <ImageView
-                android:id="@+id/Share"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:contentDescription="@string/text_default"
-                android:padding="8dp"
-                android:src="@drawable/ic_share"
-                app:tint="?attr/colorOnBackground" />
-
-            <ImageView
-                android:id="@+id/Statistics"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/text_default"
-                android:padding="8dp"
-                android:src="@drawable/ic_gacha"
-                app:tint="?attr/colorOnBackground" />
+<!--            <ImageView-->
+<!--                android:id="@+id/Share"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:contentDescription="@string/text_default"-->
+<!--                android:padding="8dp"-->
+<!--                android:src="@drawable/ic_share"-->
+<!--                app:tint="?attr/colorOnBackground" />-->
+                
+<!--            <ImageView-->
+<!--                android:id="@+id/Statistics"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:contentDescription="@string/text_default"-->
+<!--                android:padding="8dp"-->
+<!--                android:src="@drawable/ic_gacha"-->
+<!--                app:tint="?attr/colorOnBackground" />-->
 
             <ImageView
                 android:id="@+id/ViewChanger"
