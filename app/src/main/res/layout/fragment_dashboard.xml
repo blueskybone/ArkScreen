@@ -17,6 +17,7 @@
             android:text="@string/config" />
 
         <FrameLayout
+            android:paddingTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -27,13 +28,22 @@
                 android:layout_gravity="start"
                 android:text="@string/quick_recruit" />
 
-            <TextView
+<!--            <TextView-->
+<!--                android:id="@+id/RecruitVideo"-->
+<!--                style="@style/PreferenceHeader"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="end"-->
+<!--                android:text="@string/recruit_video" />-->
+            <com.google.android.material.chip.Chip
                 android:id="@+id/RecruitVideo"
-                style="@style/PreferenceHeader"
+                android:layout_marginEnd="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/recruit_video"
                 android:layout_gravity="end"
-                android:text="@string/recruit_video" />
+                android:theme="@style/Theme.Material3.DayNight.NoActionBar"
+                style="@style/Widget.Material3.Chip.Assist"/>
 
         </FrameLayout>
 
@@ -59,16 +69,19 @@
 
                 <include
                     android:id="@+id/OverlayPermission"
-                    layout="@layout/preference" />
+                    layout="@layout/preference"
+                    android:visibility="gone"/>
 
                 <include
                     android:id="@+id/NotifyPermission"
-                    layout="@layout/preference" />
+                    layout="@layout/preference"
+                    android:visibility="gone"/>
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
         <LinearLayout
+            android:paddingTop="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -125,13 +138,15 @@
 
                 <include
                     android:id="@+id/TurnOffBatteryOptimization"
-                    layout="@layout/preference" />
+                    layout="@layout/preference"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
+            android:layout_marginTop="16dp"
             style="@style/PreferenceHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -154,7 +169,8 @@
 
                 <include
                     android:id="@+id/OpenAutoStartSettings"
-                    layout="@layout/preference" />
+                    layout="@layout/preference"
+                    android:visibility="gone"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
