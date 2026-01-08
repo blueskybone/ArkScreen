@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.ui.fragment
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -35,6 +36,7 @@ import com.blueskybone.arkscreen.ui.bindinginfo.TextInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.TimeCorrection
 import com.blueskybone.arkscreen.ui.bindinginfo.UseInnerWeb
 import com.blueskybone.arkscreen.util.copyToClipboard
+import com.blueskybone.arkscreen.util.getScreenInfo
 import com.blueskybone.arkscreen.util.saveDrawableToGallery
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
@@ -149,6 +151,7 @@ class Setting : Fragment() {
         }
 
         binding.CheckLogs.setOnClickListener {
+            checkScreenInfo(requireContext())
             val combinedFiles = mutableListOf<File>()
             FileLoggingTree.logDir.listFiles()?.let {
                 combinedFiles.addAll(it)
@@ -228,7 +231,7 @@ class Setting : Fragment() {
                 .setNegativeButton(R.string.cancel, null)
                 .setNeutralButton(R.string.donated) { _, _ -> Toaster.show(getString(R.string.thank_for_donate)) }
                 .setPositiveButton(R.string.save_code) { _, _ ->
-                    CoroutineScope(Dispatchers.IO).launch{
+                    CoroutineScope(Dispatchers.IO).launch {
                         saveDrawableToGallery(requireContext(), R.drawable.wechat)
                         saveDrawableToGallery(requireContext(), R.drawable.zfb)
                         Toaster.show("已保存到本地")
@@ -303,4 +306,7 @@ class Setting : Fragment() {
         }
     }
 
+    private fun checkScreenInfo(context: Context) {
+        Timber.i(getScreenInfo(context))
+    }
 }

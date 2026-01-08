@@ -174,4 +174,6 @@ dependencies {
     implementation(libs.toaster)
     implementation(libs.androidx.webkit)
     implementation(libs.mp.android.chart)
+    implementation(libs.circular.progressbar)
+
 }
