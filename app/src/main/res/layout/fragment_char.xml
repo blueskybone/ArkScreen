@@ -31,24 +31,41 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end">
 
-            <ImageView
-                android:id="@+id/Share"
+            <TextView
+                android:id="@+id/Export"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:contentDescription="@string/text_default"
-                android:padding="8dp"
-                android:src="@drawable/ic_share"
-                app:tint="?attr/colorOnBackground" />
-                
-            <ImageView
-                android:id="@+id/Statistics"
+                android:layout_gravity="end"
+                android:padding="12dp"
+                android:text="@string/export"
+                android:textAppearance="?attr/textAppearanceSubtitle2" />
+
+            <TextView
+                android:id="@+id/Statistic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/text_default"
-                android:padding="8dp"
-                android:src="@drawable/ic_gacha"
-                app:tint="?attr/colorOnBackground" />
+                android:layout_gravity="end"
+                android:padding="12dp"
+                android:text="@string/statistic"
+                android:textAppearance="?attr/textAppearanceSubtitle2" />
+            <!--            <ImageView-->
+            <!--                android:id="@+id/Share"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_gravity="center"-->
+            <!--                android:contentDescription="@string/text_default"-->
+            <!--                android:padding="8dp"-->
+            <!--                android:src="@drawable/ic_share"-->
+            <!--                app:tint="?attr/colorOnBackground" />-->
+            <!--                -->
+            <!--            <ImageView-->
+            <!--                android:id="@+id/Statistics"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:contentDescription="@string/text_default"-->
+            <!--                android:padding="8dp"-->
+            <!--                android:src="@drawable/ic_gacha"-->
+            <!--                app:tint="?attr/colorOnBackground" />-->
 
             <ImageView
                 android:id="@+id/ViewChanger"

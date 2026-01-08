@@ -59,13 +59,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setUpNavigation()
         checkAppUpdate(this)
-        checkScreenInfo(this)
         requestOverlayPermission(this)
     }
 
-    private fun checkScreenInfo(context: Context){
-        Timber.i(getScreenInfo(context))
-    }
 
     private fun checkAppUpdate(context: Context) {
         model.appUpdateInfo.observe(this) { info ->

@@ -156,11 +156,11 @@ class CharOwn : Fragment(), ItemListener {
         }
 
 
-        binding.Share.setOnClickListener {
+        binding.Export.setOnClickListener {
             launcherForTxt.launch(prefManager.baseAccountSk.get().nickName + "_char_assets")
 
         }
-        binding.Statistics.setOnClickListener {
+        binding.Statistic.setOnClickListener {
             val textView = TextView(requireContext()).apply {
                 setPadding(80, 80, 80, 80) // 设置padding
             }

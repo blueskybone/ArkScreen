@@ -4,6 +4,7 @@
     <color name="cyan_200">#91DCD3</color>
     <color name="cyan_500">#1FD5E6</color>
     <color name="cyan_700">#0E9EA3</color>
+    <color name="cyan_trans">#86ABD7D8</color>
 <!--    <color name="light_cyan">#0E9EA3</color>-->
     <color name="cyan_bg">#151919</color>
     <color name="blue_200">#D2EBF6</color>

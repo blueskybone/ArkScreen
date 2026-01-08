@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:padding="5dp"
-                    android:text="线索 3h25m"
+                    android:text="线索 -"
                     android:textAppearance="?attr/textAppearanceHeadline5"
                     android:textColor="@color/white"
                     android:textSize="12sp"
