@@ -103,6 +103,31 @@
                     android:padding="10dp">
 
 
+
+
+                    <GridLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:columnCount="1"
+                        android:padding="10dp"
+                        android:rowCount="2">
+
+                        <include
+                            android:id="@+id/Recruit"
+                            layout="@layout/info_card"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_columnWeight="1" />
+
+                        <include
+                            android:id="@+id/RecruitReFresh"
+                            layout="@layout/info_card"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_columnWeight="1" />
+                    </GridLayout>
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
@@ -164,31 +189,6 @@
                                 android:layout_gravity="center" />
                         </LinearLayout>
                     </FrameLayout>
-
-
-                    <GridLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:columnCount="1"
-                        android:padding="10dp"
-                        android:rowCount="2">
-
-                        <include
-                            android:id="@+id/Recruit"
-                            layout="@layout/info_card"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1" />
-
-                        <include
-                            android:id="@+id/RecruitReFresh"
-                            layout="@layout/info_card"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1" />
-                    </GridLayout>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

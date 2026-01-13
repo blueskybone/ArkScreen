@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/Layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
     android:orientation="horizontal"
-    android:padding="20dp">
+    android:paddingStart="20dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="20dp"
+    android:id="@+id/Layout"
+    android:paddingBottom="12dp">
 
     <ImageView
         android:id="@+id/Icon"
@@ -33,18 +35,17 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/SubTitle"
+            android:id="@+id/Value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp" />
+
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/Value"
+    <androidx.appcompat.widget.SwitchCompat
+        android:saveEnabled="false"
+        android:id="@+id/Switch"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:textSize="14sp" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

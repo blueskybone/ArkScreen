@@ -20,6 +20,7 @@ import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.databinding.DialogDonateBinding
 import com.blueskybone.arkscreen.databinding.FragmentSettingBinding
 import com.blueskybone.arkscreen.databinding.PreferenceBinding
+import com.blueskybone.arkscreen.databinding.PreferenceSubSwitchBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSwitchBinding
 import com.blueskybone.arkscreen.databinding.PreferenceValueBinding
 import com.blueskybone.arkscreen.logger.FileLoggingInterceptor
@@ -74,27 +75,35 @@ class Setting : Fragment() {
     }
 
     private fun setUpBinding() {
-        bindSwitchView(binding.AutoUpdateApp, prefManager.autoUpdateApp)
-        bindSwitchView(binding.ShowHomeAnnounce, prefManager.showHomeAnnounce)
-
-        binding.UseInnerWeb.setUp(UseInnerWeb, prefManager.useInnerWeb, null, null)
+//        bindSwitchView(binding.AutoUpdateApp, prefManager.autoUpdateApp)
+//        bindSwitchView(binding.ShowHomeAnnounce, prefManager.showHomeAnnounce)
+        binding.AutoUpdateApp.setUp(
+            R.drawable.ic_refresh,
+            R.string.auto_check_update,
+            prefManager.autoUpdateApp
+        )
+        binding.ShowHomeAnnounce.setUp(
+            R.drawable.ic_megaphone,
+            R.string.show_home_announce,
+            prefManager.showHomeAnnounce
+        )
+        binding.UseInnerWeb.setUp(R.drawable.ic_link, UseInnerWeb, prefManager.useInnerWeb, null, null)
         binding.TimeCorrect.setUp(
+            R.drawable.ic_delay,
             TimeCorrection, prefManager.timeCorrect,
             { recordTimeCorrect() }, null
         )
 
-        binding.AppTheme.setUp(AppTheme, prefManager.appTheme) {
+        binding.AppTheme.setUp(R.drawable.ic_palette, AppTheme, prefManager.appTheme) {
             Toaster.show("重启应用生效")
 //            requireActivity().recreate()  //立即重新创建Activity生效，但是会有性能问题。暂时移除。
         }
 
-
-
-        binding.CheckUpdate.setUp(CheckUpdate)
+        binding.CheckUpdate.setUp(R.drawable.ic_update, CheckUpdate)
         binding.CheckUpdate.apply {
             this.Value.text = BuildConfig.VERSION_NAME
         }
-        binding.GroupChat.setUp(GroupChat)
+        binding.GroupChat.setUp(R.drawable.ic_group, GroupChat)
 
         binding.CheckUpdate.Layout.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
@@ -241,17 +250,48 @@ class Setting : Fragment() {
     }
 
 
-    private fun bindSwitchView(switch: SwitchCompat, pref: Preference<Boolean>) {
-        switch.isChecked = pref.get()
-        switch.setOnCheckedChangeListener { _, isChecked -> pref.set(isChecked) }
-    }
+//    private fun bindSwitchView(switch: SwitchCompat, pref: Preference<Boolean>) {
+//        switch.isChecked = pref.get()
+//        switch.setOnCheckedChangeListener { _, isChecked -> pref.set(isChecked) }
+//    }
 
     private fun PreferenceSwitchBinding.setUp(
+        icon: Int?,
+        text: Int,
+        pref: Preference<Boolean>
+    ) {
+//        Switch.isSaveEnabled = false
+//        Switch.setOnCheckedChangeListener(null)
+//        Switch.isSaveEnabled = false
+        Switch.isChecked = pref.get()
+        Switch.setOnCheckedChangeListener { _, isChecked -> pref.set(isChecked) }
+//        Switch.setOnClickListener {
+//            val newState = (it as SwitchCompat).isChecked
+//            pref.set(newState)
+//        }
+//        Switch.post {
+//            Switch.setOnCheckedChangeListener(null)
+//            Switch.isChecked = pref.get()
+//            Switch.setOnCheckedChangeListener { _, isChecked -> pref.set(isChecked) }
+//        }
+        if (icon == null) {
+            Icon.visibility = View.GONE
+        } else {
+            Icon.setImageResource(icon)
+        }
+        Title.setText(text)
+    }
+
+    private fun PreferenceSubSwitchBinding.setUp(
+        icon: Int?,
         textInfo: TextInfo,
         pref: Preference<Boolean>,
         onCall: (() -> Unit)?,
         offCall: (() -> Unit)?,
     ) {
+        if (icon == null) {
+            Icon.visibility = View.GONE
+        } else Icon.setImageResource(icon)
         Title.setText(textInfo.title)
         Value.setText(textInfo.subTitle)
         this.Switch.isChecked = pref.get()
@@ -262,16 +302,23 @@ class Setting : Fragment() {
         }
     }
 
-    private fun PreferenceBinding.setUp(textInfo: TextInfo) {
+    private fun PreferenceBinding.setUp(icon: Int?, textInfo: TextInfo) {
+        if (icon == null) {
+            Icon.visibility = View.GONE
+        } else Icon.setImageResource(icon)
         Title.setText(textInfo.title)
         Value.setText(textInfo.subTitle)
     }
 
     private fun PreferenceBinding.setUp(
+        icon: Int?,
         listInfo: ListInfo,
         pref: Preference<String>,
         onClick: (() -> Unit)?
     ) {
+        if (icon == null) {
+            Icon.visibility = View.GONE
+        } else Icon.setImageResource(icon)
         Title.setText(listInfo.title)
         val entries = listInfo.getEntries(requireContext())
         val entryValues = listInfo.getEntryValues()

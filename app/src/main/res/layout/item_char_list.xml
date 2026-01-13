@@ -62,7 +62,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="?attr/colorOnBackground"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
@@ -76,8 +77,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|center"
                         android:background="@color/trans_grey"
-                        android:padding="1dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="1dp">
 
                         <ImageView
                             android:id="@+id/Evolve"

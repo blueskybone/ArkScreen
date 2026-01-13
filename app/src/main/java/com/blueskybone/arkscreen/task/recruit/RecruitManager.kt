@@ -119,6 +119,9 @@ class RecruitManager {
         return false
     }
 
+    fun getNewOpe():List<String>{
+        return recruitDatabase.newOpe.name
+    }
 
     data class RecruitResult(
         val tags: List<String> = listOf(),

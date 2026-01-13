@@ -97,6 +97,15 @@
         <item>@color/rare_6</item>
     </array>
 
+    <array name="rarity_theme">
+        <item>@style/Theme.ChipOverlayRare1</item>
+        <item>@style/Theme.ChipOverlayRare2</item>
+        <item>@style/Theme.ChipOverlayRare3</item>
+        <item>@style/Theme.ChipOverlayRare4</item>
+        <item>@style/Theme.ChipOverlayRare5</item>
+        <item>@style/Theme.ChipOverlayRare6</item>
+    </array>
+
     <string-array name="special_value">
         <item>1</item>
         <item>2</item>

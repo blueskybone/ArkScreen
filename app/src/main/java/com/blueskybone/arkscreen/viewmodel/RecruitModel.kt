@@ -30,6 +30,9 @@ class RecruitModel : ViewModel() {
     private val _update = MutableLiveData<String>()
     val update: LiveData<String> get() = _update
 
+    private val _newOpe = MutableLiveData<List<String>>()
+    val newOpe: LiveData<List<String>> get() = _newOpe
+
     init {
         viewModelScope.launch {
             _uiState.value = DataUiState.Loading("加载中...")
@@ -37,6 +40,7 @@ class RecruitModel : ViewModel() {
                 try{
                     recruitManager = RecruitManager.instance
                     _update.postValue(RecruitDb.updateTime())
+                    _newOpe.postValue(RecruitDb.newOpes())
                     _uiState.postValue(DataUiState.Success(""))
                 }catch (e: Exception) {
                     e.printStackTrace()

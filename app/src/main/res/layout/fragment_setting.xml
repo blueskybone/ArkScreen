@@ -37,23 +37,30 @@
             layout="@layout/preference" />
 
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/ShowHomeAnnounce"
-            style="@style/SwitchPreference"
-            android:text="@string/show_home_announce" />
+        <!--        <androidx.appcompat.widget.SwitchCompat-->
+        <!--            android:id="@+id/ShowHomeAnnounce"-->
+        <!--            style="@style/SwitchPreference"-->
+        <!--            android:text="@string/show_home_announce" />-->
 
-        <androidx.appcompat.widget.SwitchCompat
+        <!--        <androidx.appcompat.widget.SwitchCompat-->
+        <!--            android:id="@+id/AutoUpdateApp"-->
+        <!--            style="@style/SwitchPreference"-->
+        <!--            android:text="@string/auto_check_update" />-->
+        <include
+            android:id="@+id/ShowHomeAnnounce"
+            layout="@layout/preference_switch" />
+
+        <include
             android:id="@+id/AutoUpdateApp"
-            style="@style/SwitchPreference"
-            android:text="@string/auto_check_update" />
+            layout="@layout/preference_switch" />
 
         <include
             android:id="@+id/UseInnerWeb"
-            layout="@layout/preference_switch" />
+            layout="@layout/preference_sub_switch" />
 
         <include
             android:id="@+id/TimeCorrect"
-            layout="@layout/preference_switch" />
+            layout="@layout/preference_sub_switch" />
 
         <View
             android:layout_width="match_parent"
@@ -62,21 +69,14 @@
 
         <TextView
             style="@style/PreferenceHeader"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="@string/about" />
 
         <include
             android:id="@+id/CheckUpdate"
             layout="@layout/preference" />
-
-
-        <TextView
-            android:id="@+id/OpenSourceLicense"
-            style="@style/Preference"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/open_license" />
 
         <include
             android:id="@+id/GroupChat"
@@ -90,8 +90,9 @@
 
         <TextView
             style="@style/PreferenceHeader"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="@string/logs_option" />
 
         <TextView
@@ -115,9 +116,17 @@
 
         <TextView
             style="@style/PreferenceHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/others" />
+
+        <TextView
+            android:id="@+id/OpenSourceLicense"
+            style="@style/Preference"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/others" />
+            android:text="@string/open_license" />
 
         <TextView
             android:id="@+id/FeedBack"

@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.CharAllMap
 import com.blueskybone.arkscreen.DataUiState
-import com.blueskybone.arkscreen.Progress
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoTask
 import com.blueskybone.arkscreen.playerinfo.Operator
 import com.blueskybone.arkscreen.playerinfo.compareOperators
@@ -50,6 +49,9 @@ class CharModel : ViewModel() {
 
     private val _currentViewType = MutableLiveData<ViewType>()
     val currentViewType: LiveData<ViewType> = _currentViewType
+
+    private val _update = MutableLiveData<String>()
+    val update: LiveData<String> get() = _update
 
     //切换视图
     fun toggleViewType() {
@@ -127,6 +129,7 @@ class CharModel : ViewModel() {
             _uiState.value = DataUiState.Loading("加载中...")
             withContext(Dispatchers.IO) {
                 loadCharAssets()
+                _update.postValue(CharAllMap.updateTime())
             }
             val type = prefManager.assetsViewType.get()
             _currentViewType.value = ViewType.entries[type]

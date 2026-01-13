@@ -44,7 +44,7 @@ data object AccountManager : FuncChipInfo {
 
 data object GameStarter : FuncChipInfo {
     override val title = R.string.game_starter
-    override val icon = R.drawable.ic_starter
+    override val icon = R.drawable.ic_notf_point
     override val iconColor = R.color.blue_500
 }
 
