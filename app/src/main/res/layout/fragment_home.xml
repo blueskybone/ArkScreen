@@ -38,15 +38,6 @@
 
         <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
 
-            <!--            <ImageView-->
-            <!--                android:id="@+id/TitleImage"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="120dp"-->
-            <!--                android:layout_gravity="center"-->
-            <!--                android:contentDescription="@string/text_default"-->
-            <!--                android:scaleType="centerCrop"-->
-            <!--                android:visibility="gone" />-->
-
 
             <com.blueskybone.arkscreen.common.NestedScrollableHost
                 android:layout_width="match_parent"
@@ -89,6 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
+            android:layout_marginTop="16dp"
             android:text="@string/real_time_data" />
 
         <com.google.android.material.card.MaterialCardView
@@ -124,8 +116,9 @@
 
         <TextView
             style="@style/PreferenceHeader"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="@string/tools" />
 
         <com.google.android.material.card.MaterialCardView
@@ -197,33 +190,25 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
 
             <TextView
                 android:id="@+id/LinkPreference"
                 style="@style/PreferenceHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
+                android:layout_gravity="start|center"
                 android:text="@string/tools_3rd" />
-
-<!--            <TextView-->
-<!--                android:id="@+id/AddLink"-->
-<!--                style="@style/PreferenceHeader"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="end"-->
-<!--                android:text="@string/add" />-->
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/AddLink"
+                style="@style/Widget.MyApp.Chip.Suggestion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/add"
-                android:layout_marginEnd="16dp"
                 android:layout_gravity="end"
-                android:theme="@style/Theme.Material3.DayNight.NoActionBar"
-                style="@style/Widget.Material3.Chip.Assist"/>
+                android:layout_marginEnd="16dp"
+                android:text="@string/add" />
         </FrameLayout>
 
         <com.google.android.material.card.MaterialCardView
@@ -247,13 +232,15 @@
         <TextView
             android:id="@+id/AnnounceTitle"
             style="@style/PreferenceHeader"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="@string/announcement" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/AnnounceCard"
             style="@style/CardViewContent">
+
             <TextView
                 android:id="@+id/Announce"
                 android:layout_width="match_parent"

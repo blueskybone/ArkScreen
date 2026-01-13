@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.google.android.material.card.MaterialCardView
-       style="@style/CardViewChip">
+    <com.google.android.material.card.MaterialCardView style="@style/CardViewChip">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -70,8 +69,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
                 android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -79,7 +78,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="?attr/colorOnBackground"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:id="@+id/Skills"
@@ -121,10 +121,10 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-<!--        <View-->
-<!--            android:background="@drawable/gradient_bg"-->
-<!--            android:layout_width="36dp"-->
-<!--            android:layout_gravity="end|bottom"-->
-<!--            android:layout_height="36dp" />-->
+        <!--        <View-->
+        <!--            android:background="@drawable/gradient_bg"-->
+        <!--            android:layout_width="36dp"-->
+        <!--            android:layout_gravity="end|bottom"-->
+        <!--            android:layout_height="36dp" />-->
     </com.google.android.material.card.MaterialCardView>
 </FrameLayout>

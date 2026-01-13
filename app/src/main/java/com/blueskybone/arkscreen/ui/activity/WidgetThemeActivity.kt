@@ -66,23 +66,23 @@ class WidgetThemeActivity : AppCompatActivity() {
     }
 
     private fun setUpBinding() {
-        binding.TextSize1x1.setUp(WidgetSize, prefManager.widget1Size, null)
-        binding.TextSize1x2.setUp(WidgetSize, prefManager.widget2Size, null)
-        binding.TextSize2x2.setUp(WidgetSize, prefManager.widget3Size, null)
-        binding.TextSize2x3.setUp(WidgetSize, prefManager.widget4Size, null)
+        binding.TextSize1x1.setUp(null, WidgetSize, prefManager.widget1Size, null)
+        binding.TextSize1x2.setUp(null, WidgetSize, prefManager.widget2Size, null)
+        binding.TextSize2x2.setUp(null, WidgetSize, prefManager.widget3Size, null)
+        binding.TextSize2x3.setUp(null, WidgetSize, prefManager.widget4Size, null)
 
-        binding.Context1x1.setUp(WidgetContent, prefManager.widget1Content, null)
-        binding.Context1x2.setUp(WidgetContent, prefManager.widget2Content, null)
-        binding.Context2x21.setUp(WidgetContent, prefManager.widget3Content1, null)
-        binding.Context2x22.setUp(WidgetContent, prefManager.widget3Content2, null)
+        binding.Context1x1.setUp(null, WidgetContent, prefManager.widget1Content, null)
+        binding.Context1x2.setUp(null, WidgetContent, prefManager.widget2Content, null)
+        binding.Context2x21.setUp(null, WidgetContent, prefManager.widget3Content1, null)
+        binding.Context2x22.setUp(null, WidgetContent, prefManager.widget3Content2, null)
 
         binding.TextColor.setUp(WidgetTextColor, prefManager.widgetTextColor)
         binding.RecruitCheckBox.setup(prefManager.widget4ShowRecruit)
         binding.ApLaborCheckBox.setup(prefManager.widget4ShowDatabase)
         binding.TrainCheckBox.setup(prefManager.widget4ShowTrain)
-        bindSwitchView(binding.ShowStarter,prefManager.widget4ShowStarter)
+        bindSwitchView(binding.ShowStarter, prefManager.widget4ShowStarter)
 
-        binding.Apply.setOnClickListener{
+        binding.Apply.setOnClickListener {
             val intent = Intent(APP, WidgetReceiver::class.java)
             intent.action = WidgetReceiver.MANUAL_UPDATE
             intent.putExtra("msg", "组件刷新中...")
@@ -129,10 +129,14 @@ class WidgetThemeActivity : AppCompatActivity() {
     }
 
     private fun PreferenceBinding.setUp(
+        icon: Int?,
         listInfo: ListInfo,
         pref: Preference<String>,
         onClick: (() -> Unit)?
     ) {
+        if (icon == null) {
+            Icon.visibility = View.GONE
+        } else Icon.setImageResource(icon)
         Title.setText(listInfo.title)
         val entries = listInfo.getEntries(this@WidgetThemeActivity)
         val entryValues = listInfo.getEntryValues()
@@ -187,6 +191,7 @@ class WidgetThemeActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun bindSwitchView(switch: SwitchCompat, pref: Preference<Boolean>) {
         switch.isChecked = pref.get()
         switch.setOnCheckedChangeListener { _, isChecked -> pref.set(isChecked) }

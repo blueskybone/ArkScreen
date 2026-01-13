@@ -71,7 +71,8 @@
     <string name="sec_2">2s</string>
     <string name="sec_3">3s</string>
 
-    <string name="overlay_permission">获取悬浮窗权限</string>
+    <string name="permission">权限</string>
+    <string name="overlay_permission">悬浮窗权限</string>
     <string name="overlay_permission_detail">截图需要悬浮窗权限</string>
     <string name="acquire_overlay_permission_content">未授予悬浮窗权限，截屏公招功能无法正常使用。</string>
 
@@ -118,8 +119,9 @@
 
     <string name="auto_attendance">自动签到</string>
     <string name="back_auto_attendance">后台自动签到</string>
-    <string name="back_auto_attendance_detail">提示：不稳定，建议开启通知观察签到情况</string>
+    <string name="back_auto_attendance_detail">提示：可能不稳定</string>
     <string name="open_auto_start_settings">允许应用自启动</string>
+    <string name="auto_start">自启动</string>
     <string name="open_auto_start_settings_detail">后台签到需要自启动权限</string>
     <string name="attendance_time">签到时间</string>
     <string name="attendance_time_detail">尽量设置在手机活跃使用时间</string>
@@ -127,6 +129,7 @@
 
     <string name="skland_auto_attendance">森空岛自动签到</string>
     <string name="skland_auto_attendance_detail">桌面组件更新时触发，保证签到稳定</string>
+    <string name="battery_opt">电池优化</string>
     <string name="turn_off_battery_optimization">关闭电池优化</string>
     <string name="turn_off_battery_optimization_detail">自动刷新需关闭电池优化</string>
     <string name="power_saving_mode">省流模式</string>
@@ -150,6 +153,7 @@
     <string name="recruit_calc">公招计算</string>
     <string name="real_time_data">实时数据</string>
     <string name="operator_assets">干员资产</string>
+    <string name="not_own">暂未获取</string>
     <string name="attendance_click">一键签到</string>
     <string name="gacha_statistics">寻访统计</string>
     <string name="game_starter">游戏启动</string>
@@ -226,7 +230,7 @@
     <string name="donate_msg">如果软件有帮助到你的话，请开发者喝杯冰阔落吧:D</string>
 
     <string name="text_init">初始化</string>
-    <string name="recruit_video">演示视频</string>
+    <string name="recruit_video">演示</string>
 
     <string name="wrong_format">错误的格式</string>
     <string name="copied">已复制到剪贴板</string>

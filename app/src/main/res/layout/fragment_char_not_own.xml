@@ -4,8 +4,24 @@
     android:layout_height="match_parent"
     android:paddingTop="?attr/actionBarSize">
 
-    <com.nex3z.flowlayout.FlowLayout
-        android:id="@+id/FlowLayout"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/Update"
+            style="@style/Widget.MyApp.Chip.Assist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp" />
+
+        <com.nex3z.flowlayout.FlowLayout
+            android:id="@+id/FlowLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
 </ScrollView>
