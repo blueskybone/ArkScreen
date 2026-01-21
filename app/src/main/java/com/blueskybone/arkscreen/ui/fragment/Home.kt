@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.text.InputType
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -233,6 +234,9 @@ class Home : Fragment() {
                                 )
                             activityResultLauncher.launch(intent)
                         }
+                        .add(R.string.password_login) {
+                            displayPasswordLoginDialog()
+                        }
                         .show()
 
                 } else {
@@ -381,6 +385,44 @@ class Home : Fragment() {
                     Toaster.show(getString(R.string.wrong_format))
                 }
             }.show()
+    }
+
+    /**
+     * 密码登录对话框
+     */
+    private fun displayPasswordLoginDialog() {
+        val dialogBinding = DialogInputBinding.inflate(layoutInflater)
+        dialogBinding.EditText1.hint = getString(R.string.phone_number)
+        dialogBinding.EditText2.visibility = View.VISIBLE
+        dialogBinding.EditText2.hint = getString(R.string.password)
+        dialogBinding.EditText2.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setView(dialogBinding.root)
+            .setTitle(R.string.password_login)
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton(R.string.login) { _, _ ->
+                val phone = dialogBinding.EditText1.text.toString()
+                val password = dialogBinding.EditText2.text.toString()
+
+                if (phone.isEmpty() || password.isEmpty()) {
+                    Toaster.show("请输入手机号和密码")
+                    return@setPositiveButton
+                }
+
+                Toaster.show(getString(R.string.logging_in))
+
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        model.accountSkLoginByPassword(phone, password)
+                    } catch (e: Exception) {
+                        withContext(Dispatchers.Main) {
+                            Toaster.show("登录失败：${e.message}")
+                        }
+                    }
+                }
+            }
+            .show()
     }
 
 //    @SuppressLint("QueryPermissionsNeeded")

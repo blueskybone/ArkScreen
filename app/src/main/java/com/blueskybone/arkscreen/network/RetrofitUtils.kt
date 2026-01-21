@@ -5,6 +5,7 @@ import com.blueskybone.arkscreen.network.model.AttendanceRequest
 import com.blueskybone.arkscreen.network.model.CredRequest
 import com.blueskybone.arkscreen.network.model.GachaResponse
 import com.blueskybone.arkscreen.network.model.GrantRequest
+import com.blueskybone.arkscreen.network.model.LoginRequest
 import com.blueskybone.arkscreen.network.model.PlayerInfoResp
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
@@ -22,11 +23,34 @@ class RetrofitUtils {
     companion object {
         private const val APP_CODE = "4ca99fa6b56cc2ba"
 
-        suspend fun getGrantByToken(token: String): String {
+        suspend fun loginByPassword(phone: String, password: String, dId: String): String {
+            val request = LoginRequest(phone, password)
+            val headers = createLoginHeaders().toMutableMap().apply {
+                put("dId", dId)
+                put("platform", "3")
+                put("vName", "1.0.0")
+            }
+            val response = RetrofitClient.hypergryphService.loginByPassword(
+                request,
+                headers
+            )
+            return if (response.isSuccessful) {
+                response.body()?.data?.token ?: throw Exception("Empty response data")
+            } else {
+                throw Exception("API error: ${response.errorBody()?.string()}")
+            }
+        }
+
+        suspend fun getGrantByToken(token: String, dId: String): String {
             val request = GrantRequest(appCode = APP_CODE, token = token, type = 0)
+            val headers = createLoginHeaders().toMutableMap().apply {
+                put("dId", dId)
+                put("platform", "3")
+                put("vName", "1.0.0")
+            }
             val response = RetrofitClient.hypergryphService.getGrant(
                 request,
-                createLoginHeaders()
+                headers
             )
             return if (response.isSuccessful) {
                 response.body()?.data?.code ?: throw Exception("Empty response data")
@@ -56,10 +80,26 @@ class RetrofitUtils {
             token: String,
             dId: String
         ): List<AccountSk> {
+            // 使用签名的请求头,参考 ZOOT 项目的实现
             val timeStamp = getCurrentTs().toString()
-            val sign =
-                generateSign("/api/v1/game/player/binding", "", credToken, timeStamp)
-            val headers = createSignHeaders(cred, sign, timeStamp)
+            val sign = generateSign(
+                "/api/v1/game/player/binding",
+                "",
+                credToken,
+                timeStamp,
+                dId
+            )
+            val headers = mutableMapOf(
+                "cred" to cred,
+                "sign" to sign,
+                "timestamp" to timeStamp,
+                "dId" to dId,
+                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
+                "Connection" to "close",
+                "Content-Type" to "application/json",
+                "platform" to "",
+                "vName" to ""
+            )
             val response = RetrofitClient.apiService.getPlayerBinding(headers)
             return if (response.isSuccessful) {
                 Timber.i("getPlayerBinding response.isSuccessful")
@@ -172,7 +212,8 @@ class RetrofitUtils {
             cred: String,
             credToken: String,
             uid: String,
-            channelMasterId: String
+            channelMasterId: String,
+            dId: String
         ): String {
             val timeStamp = getCurrentTs().toString()
             val jsonInputString = "{\"gameId\":$channelMasterId,\"uid\":\"$uid\"}"
@@ -180,9 +221,10 @@ class RetrofitUtils {
                 "/api/v1/game/attendance",
                 jsonInputString,
                 credToken,
-                timeStamp
+                timeStamp,
+                dId
             )
-            val headers = createSignHeaders(cred, sign, timeStamp)
+            val headers = createSignHeaders(cred, sign, timeStamp, dId)
             val response = RetrofitClient.apiService.attendance(
                 AttendanceRequest(
                     channelMasterId.toInt(),
@@ -212,16 +254,18 @@ class RetrofitUtils {
 
         suspend fun getGameInfo(
             credAndToken: CredAndToken,
-            uid: String
+            uid: String,
+            dId: String
         ): Response<PlayerInfoResp> {
             val timeStamp = getCurrentTs().toString()
             val sign = generateSign(
                 "/api/v1/game/player/info",
                 "uid=$uid",
                 credAndToken.token,
-                timeStamp
+                timeStamp,
+                dId
             )
-            val headers = createSignHeaders(credAndToken.cred, sign, timeStamp)
+            val headers = createSignHeaders(credAndToken.cred, sign, timeStamp, dId)
             return RetrofitClient.apiService.getPlayerInfoJson(
                 uid, headers
             )
@@ -293,6 +337,7 @@ class RetrofitUtils {
             cred: String,
             sign: String,
             timestamp: String,
+            dId: String = ""
         ): Map<String, String> {
             return mapOf(
                 "cred" to cred,
@@ -303,7 +348,7 @@ class RetrofitUtils {
                 "sign" to sign,
                 "platform" to "",
                 "timestamp" to timestamp,
-                "dId" to "",
+                "dId" to dId,
                 "vName" to ""
             )
         }

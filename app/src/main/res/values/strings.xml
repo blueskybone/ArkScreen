@@ -237,6 +237,14 @@
     <string name="file_txt">.txt文件</string>
     <string name="file_json">.json文件</string>
 
+    <!-- 密码登录 -->
+    <string name="phone_number">手机号</string>
+    <string name="password">密码</string>
+    <string name="login">登录</string>
+    <string name="logging_in">登录中...</string>
+    <string name="password_login">账号密码登录</string>
+
+
     <string name="goto_PRTS">前往PRTS</string>
     <string name="title">标题</string>
     <string name="site_url">网址</string>
