@@ -10,6 +10,7 @@ import com.blueskybone.arkscreen.AppUpdateInfo
 import com.blueskybone.arkscreen.network.BiliVideo
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.createAccountList
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.createGachaAccount
+import com.blueskybone.arkscreen.network.RetrofitUtils
 import com.blueskybone.arkscreen.network.announceUrl
 import com.blueskybone.arkscreen.network.getVideoList
 import com.blueskybone.arkscreen.playerinfo.cache.ApCache
@@ -231,6 +232,55 @@ class BaseModel : ViewModel() {
                 Toaster.show("登录成功：" + account.nickName)
             } catch (e: Exception) {
                 e.printStackTrace()
+            }
+        }
+    }
+
+    /**
+     * 密码登录森空岛账号
+     * 参考 ZOOT 项目的登录流程
+     */
+    fun accountSkLoginByPassword(phone: String, password: String) {
+        executeAsync {
+            try {
+                // 1. 通过密码登录获取 hgToken (需要 dId)
+                val dId1 = com.blueskybone.arkscreen.util.generateDId()
+                val hgToken = RetrofitUtils.loginByPassword(phone, password, dId1)
+
+                // 2. 通过 hgToken 获取 grantCode (需要 dId)
+                val dId2 = com.blueskybone.arkscreen.util.generateDId()
+                val grantCode = RetrofitUtils.getGrantByToken(hgToken, dId2)
+
+                // 3. 通过 grantCode 获取 cred 和 credToken (需要 dId)
+                val dId3 = com.blueskybone.arkscreen.util.generateDId()
+                val credAndToken = RetrofitUtils.getCredByGrant(grantCode, dId3)
+
+                // 4. 获取账号列表 (使用签名,需要 dId)
+                val dId4 = com.blueskybone.arkscreen.util.generateDId()
+                val accountList = RetrofitUtils.createAccountSkList(
+                    credAndToken.cred,
+                    credAndToken.token,
+                    hgToken,
+                    dId4
+                )
+
+                // 5. 保存到数据库
+                accountSkDao.insert(accountList)
+                _accountSkList.postValue(accountSkDao.getAll())
+
+                // 6. 如果还没有默认账号，设置第一个为默认
+                if (prefManager.baseAccountSk.get().uid == "" && accountList.isNotEmpty()) {
+                    prefManager.baseAccountSk.set(accountList[0])
+                }
+
+                withContext(Dispatchers.Main) {
+                    Toaster.show("登录成功：导入${accountList.size}条账号")
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toaster.show("登录失败：${e.message}")
+                }
+                Timber.e("密码登录失败", e)
             }
         }
     }

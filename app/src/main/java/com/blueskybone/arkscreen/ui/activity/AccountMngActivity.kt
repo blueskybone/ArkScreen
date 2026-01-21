@@ -4,11 +4,13 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.databinding.ActivityAccountMngBinding
@@ -19,8 +21,11 @@ import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
 import com.blueskybone.arkscreen.util.copyToClipboard
 import com.blueskybone.arkscreen.viewmodel.BaseModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.hjq.toast.Toaster
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
+import com.hjq.toast.Toaster
 
 /**
  *   Created by blueskybone
@@ -117,6 +122,9 @@ class AccountMngActivity : AppCompatActivity() {
                         LoginWeb.startIntent(this, LoginWeb.Companion.LoginType.SKLAND)
                     activityResultLauncherSk.launch(intent)
                 }
+                .add(R.string.password_login) {
+                    displayPasswordLoginDialog(1)
+                }
                 .show()
         }
 
@@ -198,6 +206,48 @@ class AccountMngActivity : AppCompatActivity() {
                 }
 
             }.show()
+    }
+
+    /**
+     * 密码登录对话框
+     */
+    private fun displayPasswordLoginDialog(type: Int) {
+        val dialogBinding = DialogInputBinding.inflate(layoutInflater)
+        dialogBinding.EditText1.hint = getString(R.string.phone_number)
+        dialogBinding.EditText2.visibility = View.VISIBLE
+        dialogBinding.EditText2.hint = getString(R.string.password)
+        dialogBinding.EditText2.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+
+        MaterialAlertDialogBuilder(this)
+            .setView(dialogBinding.root)
+            .setTitle(R.string.password_login)
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton(R.string.login) { _, _ ->
+                val phone = dialogBinding.EditText1.text.toString()
+                val password = dialogBinding.EditText2.text.toString()
+
+                if (phone.isEmpty() || password.isEmpty()) {
+                    Toaster.show("请输入手机号和密码")
+                    return@setPositiveButton
+                }
+
+                Toaster.show(getString(R.string.logging_in))
+
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        if (type == 1) {
+                            // 森空岛密码登录
+                            model.accountSkLoginByPassword(phone, password)
+                        }
+                    } catch (e: Exception) {
+                        withContext(Dispatchers.Main) {
+                            Toaster.show("登录失败：${e.message}")
+                        }
+                        Timber.e("密码登录失败", e)
+                    }
+                }
+            }
+            .show()
     }
 
     private val adapterSkListener = object : ItemListener {

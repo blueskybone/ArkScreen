@@ -10,6 +10,8 @@ import com.blueskybone.arkscreen.network.model.GachaCateResponse
 import com.blueskybone.arkscreen.network.model.GachaResponse
 import com.blueskybone.arkscreen.network.model.GrantRequest
 import com.blueskybone.arkscreen.network.model.GrantResponse
+import com.blueskybone.arkscreen.network.model.LoginRequest
+import com.blueskybone.arkscreen.network.model.LoginResponse
 import com.blueskybone.arkscreen.network.model.PlayerInfoResp
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -100,6 +102,13 @@ interface ApiService {
         @Query("size") size: Int = 10,
         @HeaderMap headers: Map<String, String>
     ): Response<GachaResponse>
+
+    // 通过手机号和密码登录获取鹰角 token
+    @POST("/user/auth/v1/token_by_phone_password")
+    suspend fun loginByPassword(
+        @Body request: LoginRequest,
+        @HeaderMap headers: Map<String, String>
+    ): Response<LoginResponse>
 
 //    // 登出
 //    @POST("/user/info/v1/logout")
