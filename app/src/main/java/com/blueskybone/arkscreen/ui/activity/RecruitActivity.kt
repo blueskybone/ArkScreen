@@ -22,6 +22,7 @@ import coil.load
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.common.BottomDialog
+import com.blueskybone.arkscreen.common.getChip
 import com.blueskybone.arkscreen.common.getFlowLayout
 import com.blueskybone.arkscreen.common.line
 import com.blueskybone.arkscreen.common.space
@@ -34,6 +35,7 @@ import com.blueskybone.arkscreen.util.copyToClipboard
 import com.blueskybone.arkscreen.util.dpToPx
 import com.blueskybone.arkscreen.util.openLink
 import com.blueskybone.arkscreen.viewmodel.RecruitModel
+import com.google.android.material.chip.Chip
 import com.hjq.toast.Toaster
 import com.nex3z.flowlayout.FlowLayout
 import org.koin.android.ext.android.getKoin
@@ -118,19 +120,27 @@ class RecruitActivity : AppCompatActivity() {
 
     private lateinit var rarityValValues: List<String>
     private lateinit var rarityColorIds: List<Int>
+    private lateinit var rarityThemeIds: List<Int>
 
     // 初始化稀有度相关数据
     private fun initialize() {
         val rarityValues = resources.getStringArray(R.array.rarity_value)
         val rarityDrawable: TypedArray = resources.obtainTypedArray(R.array.rarity_draw)
+        val rarityTheme: TypedArray = resources.obtainTypedArray(R.array.rarity_theme)
 
         rarityValValues = rarityValues.toList()
-        val list = ArrayList<Int>()
+        val listColor = ArrayList<Int>()
+        val listTheme = ArrayList<Int>()
         for (idx in rarityValValues.indices) {
-            list.add(rarityDrawable.getResourceId(idx, 1))
+            listColor.add(rarityDrawable.getResourceId(idx, 1))
+            listTheme.add(rarityTheme.getResourceId(idx, 1))
         }
-        rarityColorIds = list
+        rarityColorIds = listColor
+        rarityThemeIds = listTheme
+
         rarityDrawable.recycle()
+        rarityTheme.recycle()
+
     }
 
     // 设置标签按钮布局
@@ -224,6 +234,12 @@ class RecruitActivity : AppCompatActivity() {
         return binding.root
     }
 
+    private fun opeChip(context: Context, chars: RecruitManager.Operator): Chip {
+        val rarityIdx = rarityValValues.indexOf((chars.rare).toString())
+        val themeId = rarityThemeIds[rarityIdx]
+        return getChip(context, chars.name, themeId)
+    }
+
     // 创建结果标签按钮
     private fun resultTagButton(context: Context, text: String): Button {
         val button = tagButton(this, text)
@@ -269,6 +285,12 @@ class RecruitActivity : AppCompatActivity() {
         builder.create().show()
     }
 
+    private fun showNewOpe(opes: List<String>) {
+        val layoutInfo = findViewById<LinearLayout>(R.id.LayoutInfo)
+        for (ope in opes) {
+            layoutInfo.addView(getChip(this, ope))
+        }
+    }
     // 显示计算结果
     private fun showResult(resultList: List<RecruitManager.RecruitResult>) {
         val linearLayout = findViewById<LinearLayout>(R.id.ResultLayout)
@@ -298,7 +320,8 @@ class RecruitActivity : AppCompatActivity() {
             }
             // 添加干员
             for (operator in result.operators) {
-                val opeView = opeButton(this, operator)
+//                val opeView = opeButton(this, operator)
+                val opeView = opeChip(this, operator)
                 opeView.setOnClickListener {
                     displayCharDialog(operator)
                 }
@@ -345,6 +368,11 @@ class RecruitActivity : AppCompatActivity() {
             val text = findViewById<TextView>(R.id.Update)
             text.text = getString(R.string.last_update, update)
         }
+
+        model.newOpe.observe(this) { newOpes ->
+            showNewOpe(newOpes)
+        }
+
         model.result.observe(this) { result ->
             showResult(result)
         }

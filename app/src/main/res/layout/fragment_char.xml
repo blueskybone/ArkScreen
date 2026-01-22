@@ -20,7 +20,7 @@
             android:id="@+id/Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
+            android:layout_gravity="start|center"
             android:contentDescription="@string/text_default"
             android:padding="8dp"
             android:src="@drawable/ic_filter" />
@@ -29,26 +29,62 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end">
+            android:layout_gravity="end|center"
+            android:gravity="center">
 
-            <ImageView
-                android:id="@+id/Share"
+<!--            <TextView-->
+<!--                android:id="@+id/Export"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="end"-->
+<!--                android:padding="12dp"-->
+<!--                android:text="@string/export"-->
+<!--                android:textAppearance="?attr/textAppearanceSubtitle2" />-->
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/Export"
+                style="@style/Widget.MyApp.Chip.Suggestion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:contentDescription="@string/text_default"
-                android:padding="8dp"
-                android:src="@drawable/ic_share"
-                app:tint="?attr/colorOnBackground" />
+                android:layout_gravity="end"
+                android:layout_marginStart="4dp"
+                android:text="@string/export" />
 
-            <ImageView
-                android:id="@+id/Statistics"
+            <com.google.android.material.chip.Chip
+                android:id="@+id/Statistic"
+                style="@style/Widget.MyApp.Chip.Suggestion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/text_default"
-                android:padding="8dp"
-                android:src="@drawable/ic_dashboard"
-                app:tint="?attr/colorOnBackground" />
+                android:layout_gravity="end"
+                android:layout_marginStart="4dp"
+
+                android:text="@string/statistic" />
+<!--            <TextView-->
+<!--                android:id="@+id/Statistic"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="end"-->
+<!--                android:padding="12dp"-->
+<!--                android:text="@string/statistic"-->
+<!--                android:textAppearance="?attr/textAppearanceSubtitle2" />-->
+            <!--            <ImageView-->
+            <!--                android:id="@+id/Share"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_gravity="center"-->
+            <!--                android:contentDescription="@string/text_default"-->
+            <!--                android:padding="8dp"-->
+            <!--                android:src="@drawable/ic_share"-->
+            <!--                app:tint="?attr/colorOnBackground" />-->
+            <!--                -->
+            <!--            <ImageView-->
+            <!--                android:id="@+id/Statistics"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:contentDescription="@string/text_default"-->
+            <!--                android:padding="8dp"-->
+            <!--                android:src="@drawable/ic_gacha"-->
+            <!--                app:tint="?attr/colorOnBackground" />-->
 
             <ImageView
                 android:id="@+id/ViewChanger"

@@ -34,19 +34,16 @@ class FileLoggingTree : Timber.Tree() {
 
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
         try {
-            val date = dateFormat.format(Date())
-            val time = timeFormat.format(Date())
+            val timestamp = System.currentTimeMillis()
+            val date = dateFormat.format(Date(timestamp))
+            val time = timeFormat.format(Date(timestamp))
             val logFile = File(logDir, "app_$date.log")
 
             val logMessage = StringBuilder()
-                .append(time)
-                .append(" ")
-                .append(getPriorityChar(priority))
-                .append("/")
-                .append(tag ?: "?")
+                .append("[$date $time] ")
                 .append(": ")
                 .append(message)
-                .append("\n")
+                .append("\n\n")
 
             if (t != null) {
                 logMessage.append(Log.getStackTraceString(t)).append("\n")

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="?attr/actionBarSize">
@@ -14,26 +14,186 @@
             style="@style/TextView.Headline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/function" />
+            android:text="@string/config" />
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp">
 
             <TextView
                 style="@style/PreferenceHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
+                android:layout_gravity="start|center"
                 android:text="@string/quick_recruit" />
 
-            <TextView
-                android:id="@+id/RecruitVideo"
-                style="@style/PreferenceHeader"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:text="@string/recruit_video" />
+                android:layout_marginEnd="16dp">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/OverlayPermissionChip"
+                    style="@style/Widget.MyApp.Chip.Suggestion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/permission"
+                    app:chipIcon="@drawable/ic_info" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/RecruitVideo"
+                    style="@style/Widget.MyApp.Chip.Assist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/recruit_video"
+                    app:chipIcon="@drawable/ic_play" />
+
+            </LinearLayout>
+
+
+        </FrameLayout>
+
+        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <include
+                    android:id="@+id/RecruitMode"
+                    layout="@layout/preference_value" />
+
+                <include
+                    android:id="@+id/FloatWindowAppearance"
+                    layout="@layout/preference"
+                    android:visibility="gone" />
+
+                <include
+                    android:id="@+id/ScreenShotDelay"
+                    layout="@layout/preference_sub_value" />
+
+                <include
+                    android:id="@+id/OverlayPermission"
+                    layout="@layout/preference"
+                    android:visibility="gone" />
+
+                <include
+                    android:id="@+id/NotifyPermission"
+                    layout="@layout/preference"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp">
+
+            <TextView
+                style="@style/PreferenceHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center"
+                android:text="@string/widget" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/WidgetPermission"
+                style="@style/Widget.MyApp.Chip.Suggestion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/permission"
+                app:chipIcon="@drawable/ic_info" />
+
+            <ImageView
+                android:id="@+id/WidgetInfo"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_info"
+                android:visibility="gone" />
+            <!--            </LinearLayout>-->
+
+        </FrameLayout>
+
+
+        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!--                <androidx.appcompat.widget.SwitchCompat-->
+                <!--                    android:id="@+id/AutoAttendance"-->
+                <!--                    style="@style/SwitchPreference"-->
+                <!--                    android:text="@string/skland_auto_attendance" />-->
+                <include
+                    android:id="@+id/AutoAttendance"
+                    layout="@layout/preference_switch" />
+
+                <include
+                    android:id="@+id/PowerSavingMode"
+                    layout="@layout/preference_sub_switch" />
+
+
+                <include
+                    android:id="@+id/WidgetAppearance"
+                    layout="@layout/preference_icon" />
+                <!--                <TextView-->
+                <!--                    android:id="@+id/WidgetAppearance"-->
+                <!--                    style="@style/Preference"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:text="@string/widget_appearance" />-->
+
+                <include
+                    android:id="@+id/WidgetRefresh"
+                    layout="@layout/preference"
+                    android:visibility="gone" />
+
+                <include
+                    android:id="@+id/TurnOffBatteryOptimization"
+                    layout="@layout/preference"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp">
+
+            <TextView
+                style="@style/PreferenceHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center"
+                android:text="@string/auto_attendance" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/AttdPermission"
+                style="@style/Widget.MyApp.Chip.Suggestion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/permission"
+                app:chipIcon="@drawable/ic_info" />
 
         </FrameLayout>
 
@@ -45,114 +205,17 @@
                 android:orientation="vertical">
 
                 <include
-                    android:id="@+id/RecruitMode"
-                    layout="@layout/preference" />
-
-                <include
-                    android:id="@+id/FloatWindowAppearance"
-                    layout="@layout/preference"
-                    android:visibility="gone" />
-
-                <include
-                    android:id="@+id/ScreenShotDelay"
-                    layout="@layout/preference_seekbar"
-                    android:visibility="gone" />
-
-                <include
-                    android:id="@+id/OverlayPermission"
-                    layout="@layout/preference" />
-
-                <include
-                    android:id="@+id/NotifyPermission"
-                    layout="@layout/preference" />
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            tools:ignore="UseCompoundDrawables">
-
-            <TextView
-                style="@style/PreferenceHeader"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:text="@string/widget" />
-
-            <ImageView
-                android:layout_marginTop="5dp"
-                android:id="@+id/WidgetInfo"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_info" />
-        </LinearLayout>
-
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/AutoAttendance"
-                    style="@style/SwitchPreference"
-                    android:text="@string/skland_auto_attendance" />
-
-                <include
-                    android:id="@+id/PowerSavingMode"
-                    layout="@layout/preference_switch" />
-
-
-                <TextView
-                    android:id="@+id/WidgetAppearance"
-                    style="@style/Preference"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/widget_appearance" />
-
-                <include
-                    android:id="@+id/WidgetRefresh"
-                    layout="@layout/preference"
-                    android:visibility="gone" />
-
-                <include
-                    android:id="@+id/TurnOffBatteryOptimization"
-                    layout="@layout/preference" />
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <TextView
-            style="@style/PreferenceHeader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/auto_attendance" />
-
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <include
                     android:id="@+id/BackAutoAtd"
-                    layout="@layout/preference_switch" />
+                    layout="@layout/preference_sub_switch" />
 
                 <include
                     android:id="@+id/SetAtdTime"
-                    layout="@layout/preference" />
+                    layout="@layout/preference_sub_value" />
 
                 <include
                     android:id="@+id/OpenAutoStartSettings"
-                    layout="@layout/preference" />
+                    layout="@layout/preference"
+                    android:visibility="gone" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>

@@ -1,7 +1,7 @@
 <resources>
     <!-- App Info -->
     <string name="app_name">公招助手</string>
-    <string name="version">2.0.2</string>
+    <string name="version">2.2.2</string>
     <string name="text_default">default text</string>
 
     <!-- Dialogs Action-->
@@ -26,7 +26,9 @@
     <!-- Fragment Title -->
     <string name="home">首页</string>
     <string name="function">功能</string>
+    <string name="config">配置</string>
     <string name="setting">设置</string>
+    <string name="more">更多</string>
 
     <!-- SubTitle -->
     <string name="tools">工具</string>
@@ -44,6 +46,7 @@
     <string name="edit">编辑</string>
     <string name="reset">重置</string>
     <string name="refresh">刷新</string>
+    <string name="statistic">统计</string>
 
     <!-- Home Page -->
     <string name="announcement">公告</string>
@@ -53,23 +56,28 @@
     <string name="no_account_warn">请先在 功能-游戏账号管理 添加账号</string>
 
     <!-- Settings Page -->
-    <string name="recruit_show_mode">公招识别结果展示</string>
+    <string name="recruit_show_mode">识别结果展示</string>
     <string name="float_win">悬浮窗</string>
     <string name="toast">Toast</string>
     <string name="auto">自动</string>
 
-    <string name="float_window_appearance">识别结果外观</string>
+    <string name="float_window_appearance">悬浮窗外观</string>
     <string name="colorful">彩色</string>
     <string name="simple">简洁</string>
 
-    <string name="screenshot_delay">截图延迟秒数</string>
+    <string name="screenshot_delay">截图延迟</string>
+    <string name="screenshot_delay_detail">提示“未获取有效信息”时尝试调整</string>
+    <string name="sec_1">1s</string>
+    <string name="sec_2">2s</string>
+    <string name="sec_3">3s</string>
 
-    <string name="overlay_permission">获取悬浮窗权限</string>
-    <string name="overlay_permission_detail">快速公招功能需要悬浮窗权限</string>
+    <string name="permission">权限</string>
+    <string name="overlay_permission">悬浮窗权限</string>
+    <string name="overlay_permission_detail">截图需要悬浮窗权限</string>
     <string name="acquire_overlay_permission_content">未授予悬浮窗权限，截屏公招功能无法正常使用。</string>
 
     <string name="notify_permission">通知权限</string>
-    <string name="notify_permission_detail">部分机型需要通知权限</string>
+    <string name="notify_permission_detail">部分机型截图需要通知权限</string>
 
     <string name="widget">桌面组件</string>
     <string name="widget_info">  - 刷新频率目前默认为30分钟一次。\n
@@ -111,23 +119,26 @@
 
     <string name="auto_attendance">自动签到</string>
     <string name="back_auto_attendance">后台自动签到</string>
-    <string name="back_auto_attendance_detail">提示：不稳定，建议开启通知观察签到情况</string>
+    <string name="back_auto_attendance_detail">提示：可能不稳定</string>
     <string name="open_auto_start_settings">允许应用自启动</string>
+    <string name="auto_start">自启动</string>
     <string name="open_auto_start_settings_detail">后台签到需要自启动权限</string>
-    <string name="set_auto_attendance_time">签到时间（尽量设置在手机活跃使用时间）</string>
+    <string name="attendance_time">签到时间</string>
+    <string name="attendance_time_detail">尽量设置在手机活跃使用时间</string>
     <string name="auto_attendance_time">当前设置为%1$s</string>
 
     <string name="skland_auto_attendance">森空岛自动签到</string>
     <string name="skland_auto_attendance_detail">桌面组件更新时触发，保证签到稳定</string>
+    <string name="battery_opt">电池优化</string>
     <string name="turn_off_battery_optimization">关闭电池优化</string>
     <string name="turn_off_battery_optimization_detail">自动刷新需关闭电池优化</string>
     <string name="power_saving_mode">省流模式</string>
-    <string name="power_saving_mode_detail">使用上次同步的缓存推算游戏数据，需要手动同步远端</string>
+    <string name="power_saving_mode_detail">每次从首页进入实时数据时刷新缓存</string>
 
     <string name="mess_option">杂项</string>
     <string name="show_home_announce">显示首页公告</string>
     <string name="use_inner_web">使用内置浏览器</string>
-    <string name="use_inner_web_detail">所有链接页面使用内置浏览器打开</string>
+    <string name="use_inner_web_detail">外部工具链接使用内置浏览器打开</string>
     <string name="auto_check_update">自动检查应用更新</string>
     <string name="manual">使用手册</string>
     <string name="about">关于</string>
@@ -142,8 +153,10 @@
     <string name="recruit_calc">公招计算</string>
     <string name="real_time_data">实时数据</string>
     <string name="operator_assets">干员资产</string>
+    <string name="not_own">暂未获取</string>
     <string name="attendance_click">一键签到</string>
     <string name="gacha_statistics">寻访统计</string>
+    <string name="game_starter">游戏启动</string>
 
     <!-- Account Page-->
     <string name="account_manager">账号管理</string>
@@ -189,6 +202,8 @@
     <string name="send_feedback">发送反馈</string>
     <string name="open_license">开源许可</string>
     <string name="logs_option">日志</string>
+    <string name="debug">调试</string>
+    <string name="debug_mode">调试模式</string>
     <string name="check_logs">查看日志</string>
     <string name="clean_logs">清除日志</string>
     <string name="open_license_content">
@@ -215,7 +230,7 @@
     <string name="donate_msg">如果软件有帮助到你的话，请开发者喝杯冰阔落吧:D</string>
 
     <string name="text_init">初始化</string>
-    <string name="recruit_video">演示视频</string>
+    <string name="recruit_video">演示</string>
 
     <string name="wrong_format">错误的格式</string>
     <string name="copied">已复制到剪贴板</string>
@@ -253,7 +268,7 @@
     <string name="set_default_account">默认账号设置为%1$s</string>
     <string name="gacha_count">%1$d抽</string>
     <string name="date_range">数据统计自 %1$s</string>
-    <string name="statistic">统计信息</string>
+    <string name="statistic_info">统计信息</string>
 
     <string name="announcement_content">\n庐山烟雨浙江潮，未至千般恨不消。\n到得还来别无事，庐山烟雨浙江潮。</string>
 </resources>

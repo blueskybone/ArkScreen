@@ -103,6 +103,10 @@ class RealTimeActivity : AppCompatActivity() {
         }
         binding.Ap.text = data.apNow
         binding.ApMax.text = data.apMax
+        binding.CircularProgressBar.apply {
+            progress = data.apNow.toFloat()
+            progressMax = data.apMax.substring(1).toFloat()
+        }
         binding.Avatar.load(data.avatarUrl)
         binding.Level.text = data.level
         binding.ApResTime.text = data.apResTime

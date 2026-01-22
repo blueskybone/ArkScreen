@@ -18,6 +18,7 @@ import com.blueskybone.arkscreen.room.Gacha
 import com.blueskybone.arkscreen.room.GachaWithNum
 import com.blueskybone.arkscreen.ui.model.GachaInfo
 import com.blueskybone.arkscreen.util.TimeUtils.getTimeStrYMD
+import com.blueskybone.arkscreen.util.toCate
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.Dispatchers
@@ -331,16 +332,16 @@ class GachaModel : ViewModel() {
     }
 
     //TODO:抽出成utils.func
-    private fun String.toCate(): String {
-        if (this.startsWith("LIMITED") || this.startsWith("LINKAGE")) return "LIMITED"
-        if (this.startsWith("CLASSIC")) return "CLASSIC"
-        if (this.startsWith("SINGLE") ||
-            this.startsWith("DOUBLE") ||
-            this.startsWith("SPECIAL") ||
-            this.startsWith("NORM")
-        ) return "NORMAL"
-        return "UN"
-    }
+//    private fun String.toCate(): String {
+//        if (this.startsWith("LIMITED") || this.startsWith("LINKAGE")) return "LIMITED"
+//        if (this.startsWith("CLASSIC")|| this.startsWith("FESCLASSIC")) return "CLASSIC"
+//        if (this.startsWith("SINGLE") ||
+//            this.startsWith("DOUBLE") ||
+//            this.startsWith("SPECIAL") ||
+//            this.startsWith("NORM")
+//        ) return "NORMAL"
+//        return "UN"
+//    }
 
     fun exportTxt(uri: Uri) {
         viewModelScope.launch {
