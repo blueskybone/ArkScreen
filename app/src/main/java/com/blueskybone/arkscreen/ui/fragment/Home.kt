@@ -46,8 +46,10 @@ import com.blueskybone.arkscreen.ui.bindinginfo.AccountManager
 import com.blueskybone.arkscreen.ui.bindinginfo.Attendance
 import com.blueskybone.arkscreen.ui.bindinginfo.FuncChipInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.GachaStat
+import com.blueskybone.arkscreen.ui.bindinginfo.GameStarter
 import com.blueskybone.arkscreen.ui.bindinginfo.OpeAssets
 import com.blueskybone.arkscreen.ui.bindinginfo.RecruitCal
+import com.blueskybone.arkscreen.ui.bindinginfo.UserManual
 import com.blueskybone.arkscreen.ui.recyclerview.AccountAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
 import com.blueskybone.arkscreen.ui.recyclerview.LinkGridAdapter
@@ -257,6 +259,8 @@ class Home : Fragment() {
         binding.GachaStat.setup(GachaStat)
         binding.Attendance.setup(Attendance)
         binding.AccountManager.setup(AccountManager)
+        binding.GameStarter.setup(GameStarter)
+        binding.UserManual.setup(UserManual)
 
         binding.RecruitCalc.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), RecruitActivity::class.java))
@@ -269,6 +273,25 @@ class Home : Fragment() {
         }
         binding.AccountManager.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), AccountMngActivity::class.java))
+        }
+        binding.GameStarter.Layout.setOnClickListener {
+            val currAcc = model.currentAccount.value
+            if(currAcc!=null && currAcc.official){
+                openAnotherApp("com.hypergryph.arknights")
+            }else{
+                openAnotherApp("com.hypergryph.arknights.bilibili")
+            }
+        }
+        binding.UserManual.Layout.setOnClickListener {
+            val cvId = "40623349"
+            try {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("bilibili://article/$cvId"))
+                startActivity(intent)
+            } catch (e: Exception) {
+                val intent =
+                    Intent(Intent.ACTION_VIEW, Uri.parse("https://www.bilibili.com/read/cv$cvId"))
+                startActivity(intent)
+            }
         }
         binding.AddLink.setOnClickListener {
             onAddButtonClick()
@@ -344,7 +367,7 @@ class Home : Fragment() {
             isOutsideTouchable = true
             animationStyle = R.style.PopupDownAnim
             setOnDismissListener {
-                activity.window?.attributes =  activity.window?.attributes?.apply {
+                activity.window?.attributes = activity.window?.attributes?.apply {
                     this.alpha = 1.0f
                 }
             }
@@ -558,4 +581,15 @@ class Home : Fragment() {
     }
 
     private val Int.dp: Int get() = (this * resources.displayMetrics.density).toInt()
+
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun openAnotherApp(packageName: String) {
+        val packageManager = requireActivity().packageManager
+        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
+        if (launchIntent != null) {
+            startActivity(launchIntent)
+        } else {
+            Toaster.show("未检测到游戏安装")
+        }
+    }
 }

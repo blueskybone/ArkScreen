@@ -18,7 +18,10 @@ import com.blueskybone.arkscreen.databinding.DialogTimepickerBinding
 import com.blueskybone.arkscreen.databinding.FragmentDashboardBinding
 import com.blueskybone.arkscreen.databinding.PreferenceBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSeekbarBinding
+import com.blueskybone.arkscreen.databinding.PreferenceSubSwitchBinding
+import com.blueskybone.arkscreen.databinding.PreferenceSubValueBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSwitchBinding
+import com.blueskybone.arkscreen.databinding.PreferenceValueBinding
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.preference.preference.Preference
 import com.blueskybone.arkscreen.ui.activity.MainActivity
@@ -31,7 +34,9 @@ import com.blueskybone.arkscreen.ui.bindinginfo.OpenAutoStartSettings
 import com.blueskybone.arkscreen.ui.bindinginfo.OverlayPermission
 import com.blueskybone.arkscreen.ui.bindinginfo.PowerSavingMode
 import com.blueskybone.arkscreen.ui.bindinginfo.RecruitMode
+import com.blueskybone.arkscreen.ui.bindinginfo.ScDelay
 import com.blueskybone.arkscreen.ui.bindinginfo.ScreenshotDelay
+//import com.blueskybone.arkscreen.ui.bindinginfo.ScreenshotDelay
 import com.blueskybone.arkscreen.ui.bindinginfo.SeekBarInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.SetAtdTime
 import com.blueskybone.arkscreen.ui.bindinginfo.TextInfo
@@ -64,23 +69,45 @@ class Function : Fragment() {
     }
 
     private fun setUpBinding() {
-        bindSwitchView(binding.AutoAttendance, prefManager.autoAttendance)
-        binding.RecruitMode.setUp(RecruitMode, prefManager.recruitMode, null)
+//        bindSwitchView(binding.AutoAttendance, prefManager.autoAttendance)
+        binding.AutoAttendance.setUp(
+            R.drawable.ic_skland,
+            R.string.auto_attendance,
+            prefManager.autoAttendance
+        )
+        binding.RecruitMode.setUp(R.drawable.ic_filter, RecruitMode, prefManager.recruitMode, null)
         binding.FloatWindowAppearance.setUp(
+            null,
             FloatWindowAppearance,
             prefManager.floatWindowAppearance, null
         )
 
-        binding.ScreenShotDelay.setUp(ScreenshotDelay, prefManager.screenShotDelay)
+        binding.ScreenShotDelay.setUp(
+            R.drawable.ic_delay,
+            ScreenshotDelay,
+            ScDelay,
+            prefManager.screenShotDelay,
+            null
+        )
         binding.TurnOffBatteryOptimization.setUp(TurnOffBatteryOptimization)
-        binding.WidgetAppearance.setOnClickListener {
+        binding.WidgetAppearance.apply {
+            this.Title.text = getString(R.string.widget_appearance)
+            this.Icon.setImageResource(R.drawable.ic_palette)
+        }
+        binding.WidgetAppearance.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), WidgetThemeActivity::class.java))
         }
-        binding.WidgetRefresh.setUp(WidgetUpdateFreq, prefManager.widgetUpdateFreq, null)
+        binding.WidgetRefresh.setUp(null, WidgetUpdateFreq, prefManager.widgetUpdateFreq, null)
 
         binding.OverlayPermission.setUp(OverlayPermission)
         binding.NotifyPermission.setUp(NotifyPermission)
-        binding.PowerSavingMode.setUp(PowerSavingMode, prefManager.powerSavingMode, null, null)
+        binding.PowerSavingMode.setUp(
+            R.drawable.ic_battery,
+            PowerSavingMode,
+            prefManager.powerSavingMode,
+            null,
+            null
+        )
         binding.OpenAutoStartSettings.setUp(OpenAutoStartSettings)
         binding.RecruitVideo.setOnClickListener {
             val bvid = "BV1624y1q7Cv"
@@ -100,6 +127,7 @@ class Function : Fragment() {
         }
 
         binding.BackAutoAtd.setUp(
+            R.drawable.ic_check,
             BackAutoAtd,
             prefManager.backAutoAtd,
             { APP.setDailyAlarm() },
@@ -129,6 +157,21 @@ class Function : Fragment() {
         switch.setOnCheckedChangeListener { _, isChecked -> pref.set(isChecked) }
     }
 
+    private fun PreferenceSwitchBinding.setUp(
+        icon: Int?,
+        text: Int,
+        pref: Preference<Boolean>
+    ) {
+        Switch.isChecked = pref.get()
+        Switch.setOnCheckedChangeListener { _, isChecked -> pref.set(isChecked) }
+        if (icon == null) {
+            Icon.visibility = View.GONE
+        } else {
+            Icon.setImageResource(icon)
+        }
+        Title.setText(text)
+    }
+
 
     private fun PreferenceSeekbarBinding.setUp(
         seekBarInfo: SeekBarInfo, pref: Preference<Int>
@@ -145,12 +188,48 @@ class Function : Fragment() {
         }
     }
 
-    private fun PreferenceSwitchBinding.setUp(
+    private fun PreferenceSubValueBinding.setUp(
+        icon: Int?,
+        textInfo: TextInfo,
+        listInfo: ListInfo,
+        pref: Preference<String>,
+        onClick: (() -> Unit)?
+    ) {
+        if (icon == null) {
+            Icon.visibility = View.GONE
+        } else Icon.setImageResource(icon)
+        Title.setText(textInfo.title)
+        SubTitle.setText(textInfo.subTitle)
+        val entries = listInfo.getEntries(requireContext())
+        val entryValues = listInfo.getEntryValues()
+        var checked = entryValues.indexOf(pref.get())
+        val displayValue = entries[checked]
+        Value.text = displayValue
+        root.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(listInfo.title)
+                .setSingleChoiceItems(entries, checked) { dialog, which ->
+                    dialog.cancel()
+                    pref.set(entryValues[which])
+                    Value.text = entries[which]
+                    checked = which
+                    onClick?.invoke()
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+        }
+    }
+
+    private fun PreferenceSubSwitchBinding.setUp(
+        icon: Int?,
         textInfo: TextInfo,
         pref: Preference<Boolean>,
         onCall: (() -> Unit)?,
         offCall: (() -> Unit)?,
     ) {
+        if (icon == null) {
+            Icon.visibility = View.GONE
+        } else Icon.setImageResource(icon)
         Title.setText(textInfo.title)
         Value.setText(textInfo.subTitle)
         this.Switch.isChecked = pref.get()
@@ -167,10 +246,45 @@ class Function : Fragment() {
     }
 
     private fun PreferenceBinding.setUp(
+        icon: Int?,
         listInfo: ListInfo,
         pref: Preference<String>,
         onClick: (() -> Unit)?
     ) {
+        if (icon == null) {
+            Icon.visibility = View.GONE
+        } else Icon.setImageResource(icon)
+        Title.setText(listInfo.title)
+        Title.setText(listInfo.title)
+        val entries = listInfo.getEntries(requireContext())
+        val entryValues = listInfo.getEntryValues()
+        var checked = entryValues.indexOf(pref.get())
+        val displayValue = entries[checked]
+        Value.text = displayValue
+        root.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(listInfo.title)
+                .setSingleChoiceItems(entries, checked) { dialog, which ->
+                    dialog.cancel()
+                    pref.set(entryValues[which])
+                    Value.text = entries[which]
+                    checked = which
+                    onClick?.invoke()
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+        }
+    }
+
+    private fun PreferenceValueBinding.setUp(
+        icon: Int?,
+        listInfo: ListInfo,
+        pref: Preference<String>,
+        onClick: (() -> Unit)?
+    ) {
+        if (icon == null) {
+            Icon.visibility = View.GONE
+        } else Icon.setImageResource(icon)
         Title.setText(listInfo.title)
         val entries = listInfo.getEntries(requireContext())
         val entryValues = listInfo.getEntryValues()
@@ -198,7 +312,9 @@ class Function : Fragment() {
     }
 
     private fun timePickerBinding() {
+        binding.SetAtdTime.Icon.setImageResource(R.drawable.ic_clock)
         binding.SetAtdTime.Title.setText(SetAtdTime.title)
+        binding.SetAtdTime.SubTitle.setText(SetAtdTime.subTitle)
         val hour = prefManager.alarmAtdHour.get()
         val min = prefManager.alarmAtdMin.get()
         binding.SetAtdTime.Value.text =
@@ -210,7 +326,7 @@ class Function : Fragment() {
             }
             MaterialAlertDialogBuilder(requireContext())
                 .setView(dialogBinding.root)
-                .setTitle(R.string.set_auto_attendance_time)
+                .setTitle(R.string.attendance_time)
                 .setNegativeButton(R.string.cancel, null)
                 .setPositiveButton(R.string.confirm) { _, _ ->
                     val newHour = dialogBinding.TimePicker.hour
