@@ -279,8 +279,21 @@ fun getTargetDrawableId(drawable: Int, pref: Preference<String>): Int {
             else -> R.drawable.ic_default
         }
     } else drawable
-
 }
+
+/**
+ * 生成设备ID (dId)
+ * 基于随机数据生成唯一的设备ID,格式模拟森空岛App的设备ID格式
+ * 格式: BL + Base64(32字节随机数据)
+ */
+fun generateDId(): String {
+    // 生成32字节随机数据
+    val randomBytes = java.security.SecureRandom().generateSeed(32)
+    // Base64编码
+    val base64String = android.util.Base64.encodeToString(randomBytes, android.util.Base64.NO_WRAP)
+    return "BL$base64String"
+}
+
 
 fun String.toCate(): String {
     if (this.startsWith("LIMITED") || this.startsWith("LINKAGE")) return "LIMITED"

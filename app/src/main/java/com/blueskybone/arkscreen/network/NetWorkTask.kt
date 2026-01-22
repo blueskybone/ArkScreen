@@ -13,6 +13,7 @@ import com.blueskybone.arkscreen.network.model.PlayerInfoResp
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Gacha
+import com.blueskybone.arkscreen.util.generateDId
 import com.blueskybone.arkscreen.util.toCate
 import retrofit2.Response
 
@@ -48,7 +49,8 @@ class NetWorkTask {
             val credAndToken = getCredCode(accountSk)
             return RetrofitUtils.getGameInfo(
                 credAndToken,
-                accountSk.uid
+                accountSk.uid,
+                accountSk.dId
             )
         }
 
@@ -59,20 +61,25 @@ class NetWorkTask {
                 credAndToken.cred,
                 credAndToken.token,
                 accountSk.uid,
-                accountSk.channelMasterId
+                accountSk.channelMasterId,
+                accountSk.dId
             )
         }
 
         @Throws(Exception::class)
         private suspend fun getCredCode(accountSk: AccountSk): CredAndToken {
-            val grant = getGrantByToken(accountSk.token)
-            return getCredByGrant(grant, accountSk.dId)
+            val dId1 = generateDId()
+            val grant = getGrantByToken(accountSk.token, dId1)
+            val dId2 = generateDId()
+            return getCredByGrant(grant, dId2)
         }
 
         @Throws(Exception::class)
         private suspend fun getCredCode(token: String, dId: String): CredAndToken {
-            val grant = getGrantByToken(token)
-            return getCredByGrant(grant, dId)
+            val dId1 = generateDId()
+            val grant = getGrantByToken(token, dId1)
+            val dId2 = generateDId()
+            return getCredByGrant(grant, dId2)
         }
 
         suspend fun pullNewRecords(
