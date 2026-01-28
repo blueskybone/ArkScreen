@@ -20,6 +20,13 @@ import com.blueskybone.arkscreen.network.skinCachePath
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.preference.preference.shared.SharedPreferenceStore
 import com.blueskybone.arkscreen.receiver.AtdAlarmReceiver
+import com.blueskybone.arkscreen.repository.AccountRepository
+import com.blueskybone.arkscreen.room.AccountEf
+import com.blueskybone.arkscreen.room.ArkDatabase
+import com.blueskybone.arkscreen.room.dao.AccountEfDao
+import com.blueskybone.arkscreen.room.dao.AccountGcDao
+import com.blueskybone.arkscreen.room.dao.AccountSkDao
+import com.blueskybone.arkscreen.room.dao.GachaDao
 import com.blueskybone.arkscreen.ui.bindinginfo.AppTheme
 import com.blueskybone.arkscreen.util.getDensityDpi
 import com.hjq.toast.Toaster
@@ -79,6 +86,30 @@ class App : Application() {
             single { PrefManager(get<SharedPreferenceStore>()) }
         }
 
+        val databaseModule = module {
+            // 1. 注册数据库单例：直接利用你写好的 getDatabase
+            // androidContext() 是 Koin 提供的，会自动拿到 Application Context
+            single { ArkDatabase.getDatabase(APP) }
+
+            // 2. 注册 DAO：从上面的数据库实例中获取
+            single { get<ArkDatabase>().getAccountSkDao() }
+            single { get<ArkDatabase>().getAccountGcDao() }
+            single { get<ArkDatabase>().getLinkDao() }
+            single { get<ArkDatabase>().getAccountEfDao() }
+            single { get<ArkDatabase>().getGachaDao() }
+        }
+
+        val appModule = module {
+            single {
+                AccountRepository(
+                    get<AccountSkDao>(),
+                    get<AccountGcDao>(),
+                    get<AccountEfDao>(),
+                    get<PrefManager>()
+                )
+            }
+        }
+
         Coil.setImageLoader(
             ImageLoader.Builder(this)
                 .logger(DebugLogger()) // 开启日志
@@ -87,7 +118,7 @@ class App : Application() {
 
         startKoin {
             androidLogger()
-            modules(preferenceModule)
+            modules(preferenceModule, databaseModule, appModule)
         }
         createFolder(skinCachePath)
         createFolder(equipCachePath)
@@ -173,11 +204,12 @@ class App : Application() {
             AppTheme.SYSTEM -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
     }
-    private fun setToaster(){
+
+    private fun setToaster() {
         val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
-        when(prefManager.appTheme.get()){
+        when (prefManager.appTheme.get()) {
             AppTheme.LIGHT -> Toaster.setStyle(BlackToastStyle())
-            AppTheme.DARK, AppTheme.SYSTEM-> Toaster.setStyle(WhiteToastStyle())
+            AppTheme.DARK, AppTheme.SYSTEM -> Toaster.setStyle(WhiteToastStyle())
         }
         Toaster.setGravity(Gravity.TOP, 0, 60 * screenDpi.toInt())
     }

@@ -1,18 +1,15 @@
 package com.blueskybone.arkscreen.network.model
 
-/**
- * 密码登录请求
- */
+
 data class LoginRequest(
     val phone: String,
     val password: String
 )
 
-/**
- * 密码登录响应
- */
 data class LoginResponse(
-    val data: LoginData
+    val code: Int,
+    val message: String?,
+    val data: LoginData?
 )
 
 data class LoginData(

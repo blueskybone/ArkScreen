@@ -1,14 +1,14 @@
 package com.blueskybone.arkscreen.network
 
 
-import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.createAccountSkList
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.doAttendance
-import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getBasicInfo
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getCredByGrant
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getFirstPageRecords
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getGachaCate
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getGrantByToken
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getMorePageRecords
+import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getPlayerBinding
+import com.blueskybone.arkscreen.network.model.BindingResponse
 import com.blueskybone.arkscreen.network.model.PlayerInfoResp
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
@@ -22,26 +22,20 @@ import retrofit2.Response
  *   Date: 2025/1/14
  */
 
+/*
+* 简单的对鹰角api的复杂流程进行封装，隐藏鉴权的细节，
+* 外部只需要调用对应的功能函数，在外部的范围处理返回
+* */
+
 class NetWorkTask {
     companion object {
-        @Throws(Exception::class)
-        suspend fun createAccountList(token: String, dId: String): List<AccountSk> {
-            val credAndToken = getCredCode(token, dId)
-            return createAccountSkList(
-                credAndToken.cred,
-                credAndToken.token,
-                token,
-                dId
-            )
-        }
 
-        suspend fun createGachaAccount(
-            channelMasterId: Int,
+        suspend fun getSklandUserBinding(
             token: String,
-            akUserCenter: String,
-            xrToken: String
-        ): AccountGc? {
-            return getBasicInfo(channelMasterId, token, akUserCenter, xrToken)
+            dId: String
+        ): Response<BindingResponse> {
+            val credAndToken = getCredCode(token, dId)
+            return getPlayerBinding(credAndToken.cred, credAndToken.token, dId)
         }
 
         @Throws(Exception::class)
@@ -53,7 +47,6 @@ class NetWorkTask {
                 accountSk.dId
             )
         }
-
 
         suspend fun sklandAttendance(accountSk: AccountSk): String {
             val credAndToken = getCredCode(accountSk)
@@ -115,5 +108,4 @@ class NetWorkTask {
             return records.toList()
         }
     }
-
 }

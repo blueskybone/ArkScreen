@@ -296,7 +296,7 @@ fun generateDId(): String {
 
 
 fun String.toCate(): String {
-    if (this.startsWith("LIMITED") || this.startsWith("LINKAGE")) return "LIMITED"
+    if (this.startsWith("LIMITED") || this.startsWith("LINKAGE") || this.startsWith("ATTAIN")) return "LIMITED"
     if (this.startsWith("CLASSIC")|| this.startsWith("FESCLASSIC")) return "CLASSIC"
     if (this.startsWith("SINGLE") ||
         this.startsWith("DOUBLE") ||

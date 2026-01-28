@@ -3,7 +3,7 @@
 agp = "8.5.2"        # Android Gradle Plugin
 gradle = "8.8"       # Gradle 包装器版本
 kotlin = "1.9.22"    # Kotlin 版本 (必须与Compose兼容)
-ksp = "1.9.20-1.0.14"
+ksp = "1.9.22-1.0.17"
 jvmTarget = "17"     # Java 目标版本
 
 

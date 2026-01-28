@@ -19,5 +19,16 @@ data class BindingDetail(
     val nickName: String,
     val channelMasterId: String,
     val uid: String,
-    val isOfficial: Boolean
+    val isOfficial: Boolean,
+    val gameId: Int,
+    val gameName: String,
+    val roles: List<Role>
+)
+data class Role(
+    val serverId: String,
+    val roleId: String,
+    val nickname: String,
+    val level: Int,
+    val serverType: String,
+    val serverName: String
 )

@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.blueskybone.arkscreen.room.dao.AccountEfDao
 import com.blueskybone.arkscreen.room.dao.AccountGcDao
 import com.blueskybone.arkscreen.room.dao.AccountSkDao
 import com.blueskybone.arkscreen.room.dao.GachaDao
@@ -15,10 +16,11 @@ import com.blueskybone.arkscreen.room.dao.LinkDao
  *   Created by blueskybone
  *   Date: 2025/1/8
  */
-@Database(entities = [AccountSk::class, AccountGc::class, Link::class, Gacha::class], version = 5)
+@Database(entities = [AccountSk::class, AccountGc::class, AccountEf::class, Link::class, Gacha::class], version = 6)
 abstract class ArkDatabase : RoomDatabase() {
     abstract fun getAccountSkDao(): AccountSkDao
     abstract fun getAccountGcDao(): AccountGcDao
+    abstract fun getAccountEfDao(): AccountEfDao
     abstract fun getLinkDao(): LinkDao
     abstract fun getGachaDao(): GachaDao
 
@@ -36,7 +38,7 @@ abstract class ArkDatabase : RoomDatabase() {
                     ArkDatabase::class.java,
                     DatabaseName
                 ).addMigrations(Migration2).addMigrations(Migration3).addMigrations(Migration4)
-                    .addMigrations(Migration5).build()
+                    .addMigrations(Migration5).addMigrations(Migration6).build()
                 INSTANCE = instance
                 instance
             }
@@ -77,7 +79,8 @@ abstract class ArkDatabase : RoomDatabase() {
                 db.execSQL("ALTER TABLE AccountGc ADD COLUMN xrToken TEXT NOT NULL DEFAULT ''")
 
                 db.execSQL("DROP TABLE Gacha")
-                db.execSQL("""
+                db.execSQL(
+                    """
             CREATE TABLE Gacha (
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                 poolId TEXT NOT NULL DEFAULT 'UN',
@@ -91,30 +94,52 @@ abstract class ArkDatabase : RoomDatabase() {
                 isNew INTEGER NOT NULL,
                 pos INTEGER NOT NULL DEFAULT 0
             )
-        """)
+        """
+                )
                 db.execSQL("CREATE UNIQUE INDEX index_Gacha_uid_ts_pos ON Gacha(uid, ts, pos)")
             }
         }
+
         object Migration6 : Migration(5, 6) {
             override fun migrate(db: SupportSQLiteDatabase) {
-                db.execSQL("DROP TABLE Gacha")
-                db.execSQL("""
-            CREATE TABLE Gacha (
-                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                poolId TEXT NOT NULL DEFAULT 'UN',
-                poolCate TEXT NOT NULL DEFAULT 'UN',
-                uid TEXT NOT NULL,
-                ts INTEGER NOT NULL,
-                pool TEXT NOT NULL,
-                charName TEXT NOT NULL,
-                charId TEXT NOT NULL,
-                rarity INTEGER NOT NULL,
-                isNew INTEGER NOT NULL,
-                pos INTEGER NOT NULL DEFAULT 0
+                db.execSQL(
+                    """
+            CREATE TABLE IF NOT EXISTS `AccountEf` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                `uid` TEXT NOT NULL, 
+                `channelMasterId` TEXT NOT NULL, 
+                `nickName` TEXT NOT NULL, 
+                `token` TEXT NOT NULL, 
+                `dId` TEXT NOT NULL, 
+                `official` INTEGER NOT NULL, 
+                `roleId` TEXT NOT NULL, 
+                `serverId` TEXT NOT NULL
             )
-        """)
-                db.execSQL("CREATE UNIQUE INDEX index_Gacha_uid_ts_pos ON Gacha(uid, ts, pos)")
+        """.trimIndent()
+                )
             }
         }
+
+//        object Migration6 : Migration(5, 6) {
+//            override fun migrate(db: SupportSQLiteDatabase) {
+//                db.execSQL("DROP TABLE Gacha")
+//                db.execSQL("""
+//            CREATE TABLE Gacha (
+//                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+//                poolId TEXT NOT NULL DEFAULT 'UN',
+//                poolCate TEXT NOT NULL DEFAULT 'UN',
+//                uid TEXT NOT NULL,
+//                ts INTEGER NOT NULL,
+//                pool TEXT NOT NULL,
+//                charName TEXT NOT NULL,
+//                charId TEXT NOT NULL,
+//                rarity INTEGER NOT NULL,
+//                isNew INTEGER NOT NULL,
+//                pos INTEGER NOT NULL DEFAULT 0
+//            )
+//        """)
+//                db.execSQL("CREATE UNIQUE INDEX index_Gacha_uid_ts_pos ON Gacha(uid, ts, pos)")
+//            }
+//        }
     }
 }

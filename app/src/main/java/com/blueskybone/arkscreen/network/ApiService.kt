@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.network
 
+import com.blueskybone.arkscreen.network.model.AttendanceEndfieldResponse
 import com.blueskybone.arkscreen.network.model.AttendanceRequest
 import com.blueskybone.arkscreen.network.model.AttendanceResponse
 import com.blueskybone.arkscreen.network.model.BasicInfoResponse
@@ -49,6 +50,11 @@ interface ApiService {
         @Body request: AttendanceRequest,
         @HeaderMap headers: Map<String, String>
     ): Response<AttendanceResponse>
+
+    @POST("/web/v1/game/endfield/attendance")
+    suspend fun attendanceEndfield(
+        @HeaderMap headers: Map<String, String>
+    ): Response<AttendanceEndfieldResponse>
 
     // 获取玩家信息
     @Streaming

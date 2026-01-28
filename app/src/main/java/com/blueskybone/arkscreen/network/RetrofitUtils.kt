@@ -1,16 +1,24 @@
 package com.blueskybone.arkscreen.network
 
 import com.blueskybone.arkscreen.network.auth.generateSign
+import com.blueskybone.arkscreen.network.model.AttendanceEndfieldResponse
 import com.blueskybone.arkscreen.network.model.AttendanceRequest
+import com.blueskybone.arkscreen.network.model.AttendanceResponse
+import com.blueskybone.arkscreen.network.model.BasicInfoResponse
+import com.blueskybone.arkscreen.network.model.BindingResponse
 import com.blueskybone.arkscreen.network.model.CredRequest
 import com.blueskybone.arkscreen.network.model.GachaResponse
 import com.blueskybone.arkscreen.network.model.GrantRequest
 import com.blueskybone.arkscreen.network.model.LoginRequest
+import com.blueskybone.arkscreen.network.model.LoginResponse
 import com.blueskybone.arkscreen.network.model.PlayerInfoResp
+import com.blueskybone.arkscreen.room.Account
+import com.blueskybone.arkscreen.room.AccountEf
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
 import com.blueskybone.arkscreen.util.getJsonContent
+import org.json.JSONObject
 import retrofit2.Response
 import timber.log.Timber
 
@@ -23,22 +31,21 @@ class RetrofitUtils {
     companion object {
         private const val APP_CODE = "4ca99fa6b56cc2ba"
 
-        suspend fun loginByPassword(phone: String, password: String, dId: String): String {
+        suspend fun loginByPassword(
+            phone: String,
+            password: String,
+            dId: String
+        ): Response<LoginResponse> {
             val request = LoginRequest(phone, password)
             val headers = createLoginHeaders().toMutableMap().apply {
                 put("dId", dId)
                 put("platform", "3")
                 put("vName", "1.0.0")
             }
-            val response = RetrofitClient.hypergryphService.loginByPassword(
+            return RetrofitClient.hypergryphService.loginByPassword(
                 request,
                 headers
             )
-            return if (response.isSuccessful) {
-                response.body()?.data?.token ?: throw Exception("Empty response data")
-            } else {
-                throw Exception("API error: ${response.errorBody()?.string()}")
-            }
         }
 
         suspend fun getGrantByToken(token: String, dId: String): String {
@@ -74,53 +81,82 @@ class RetrofitUtils {
             }
         }
 
-        suspend fun createAccountSkList(
+
+        suspend fun getPlayerBinding(
             cred: String,
             credToken: String,
-            token: String,
             dId: String
-        ): List<AccountSk> {
-            // 使用签名的请求头,参考 ZOOT 项目的实现
-            val timeStamp = getCurrentTs().toString()
-            val sign = generateSign(
-                "/api/v1/game/player/binding",
-                "",
-                credToken,
-                timeStamp,
-                dId
+        ): Response<BindingResponse> {
+            val api = "/api/v1/game/player/binding"
+            val ts = getCurrentTs().toString()
+            val sign = generateSign(api, "", credToken, ts, dId)
+            val headers = createSignHeaders(cred, sign, ts, dId)
+            return RetrofitClient.apiService.getPlayerBinding(headers)
+        }
+
+        suspend fun doAttendanceForArk(
+            cred: String,
+            credToken: String,
+            uid: String,
+            channelMasterId: String,
+            dId: String
+        ): Response<AttendanceResponse> {
+            val api = "/api/v1/game/attendance"
+            val ts = getCurrentTs().toString()
+            val json = "{\"gameId\":$channelMasterId,\"uid\":\"$uid\"}"
+            val sign = generateSign(api, json, credToken, ts, dId)
+            val headers = createSignHeaders(cred, sign, ts, dId)
+            return RetrofitClient.apiService.attendance(
+                AttendanceRequest(
+                    channelMasterId.toInt(),
+                    uid
+                ), headers
             )
-            val headers = mutableMapOf(
-                "cred" to cred,
-                "sign" to sign,
-                "timestamp" to timeStamp,
-                "dId" to dId,
-                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
-                "Connection" to "close",
-                "Content-Type" to "application/json",
-                "platform" to "",
-                "vName" to ""
-            )
-            val response = RetrofitClient.apiService.getPlayerBinding(headers)
-            return if (response.isSuccessful) {
-                Timber.i("getPlayerBinding response.isSuccessful")
-                response.body()?.data?.list?.flatMap { item ->
-                    if (item.appCode == "arknights") {
-                        item.bindingList.map { user ->
-                            AccountSk(
-                                token = token,
-                                dId = dId,
-                                nickName = user.nickName,
-                                channelMasterId = user.channelMasterId,
-                                uid = user.uid,
-                                official = user.isOfficial
-                            )
-                        }
-                    } else {
-                        emptyList()
-                    }
-                } ?: emptyList()
-            } else {
-                throw Exception("API error: ${response.errorBody()?.string()}")
+        }
+
+        suspend fun doAttendanceForEndfield(
+            cred: String,
+            credToken: String,
+            dId: String,
+            roleId: String,
+            serverId: String
+        ): Response<AttendanceEndfieldResponse> {
+            val api = "/web/v1/game/endfield/attendance"
+            val ts = getCurrentTs().toString()
+            val sign = generateSign(api, "", credToken, ts, dId)
+            val headers = createSignHeaders(cred, sign, ts, dId).toMutableMap().apply {
+                put("sk-game-role", "3_{$roleId}_{$serverId}")
+                put("referer", "https://game.skland.com/")
+                put("origin", "https://game.skland.com/")
+            }
+            return RetrofitClient.apiService.attendanceEndfield(headers)
+        }
+
+//        //通用的扩展函数
+//        fun <T> Response<T>.unwrap(): T {
+//            if (this.isSuccessful) {
+//                return this.body() ?: throw Exception("返回体为空")
+//            } else {
+//                // 在这里把 HTTP 错误码（401, 500等）转成人类能看懂的文字
+//                throw Exception("网络请求失败: ${this.code()}")
+//            }
+//        }
+
+        // 通用的解析错误返回的函数
+        fun <T> Response<T>.getErrorMessage(): String {
+            val errorBodyString = this.errorBody()?.string() ?: return "未知网络错误 (${this.code()})"
+
+            return try {
+                val json = JSONObject(errorBodyString)
+                // 依次尝试获取 message, msg
+                when {
+                    json.has("message") && !json.isNull("message") -> json.getString("message")
+                    json.has("msg") && !json.isNull("msg") -> json.getString("msg")
+                    else -> "请求失败 (${this.code()})"
+                }
+            } catch (e: Exception) {
+                // 如果不是 JSON 格式（比如返回了 HTML 报错页），回退到 HTTP 状态信息
+                this.message().ifEmpty { "HTTP Error: ${this.code()}" }
             }
         }
 
@@ -176,37 +212,6 @@ class RetrofitUtils {
                 throw Exception("API error: ${response.errorBody()?.string()}")
             }
         }
-
-//        suspend fun getGachaRecords(
-//            page: Int,
-//            token: String,
-//            channelMasterId: Int,
-//            uid: String
-//        ): List<Gacha>? {
-//            val encodedToken = withContext(Dispatchers.IO) {
-//                URLEncoder.encode(token, "UTF-8")
-//            }
-//            val response = RetrofitClient.akHypergryphService.getGachaRecords(
-//                page = page,
-//                token = encodedToken,
-//                channelId = channelMasterId,
-//                headers = createNormalHeaders()
-//            )
-//            return if (response.isSuccessful) {
-//                response.body()?.data?.recordList?.map { item ->
-//                    Gacha(
-//                        uid = uid,
-//                        ts = item.ts,
-//                        pool = item.pool,
-//                        record = item.charsList.joinToString("@") { char ->
-//                            "${char.name}-${char.rarity}-${char.isNew}"
-//                        }
-//                    )
-//                }
-//            } else {
-//                throw Exception("API error: ${response.errorBody()?.string()}")
-//            }
-//        }
 
         suspend fun doAttendance(
             cred: String,
@@ -272,36 +277,13 @@ class RetrofitUtils {
         }
 
         suspend fun getBasicInfo(
-            channelMasterId: Int,
             token: String,
             akUserCenter: String,
             xrToken: String
-        ): AccountGc? {
-            val response = RetrofitClient.akHypergryphService.getBasicInfo(
+        ): Response<BasicInfoResponse> {
+            return RetrofitClient.akHypergryphService.getBasicInfo(
                 "", "", "",
                 createAkHeader(akUserCenter, token, xrToken)
-            )
-            return if (response.isSuccessful) {
-                response.body()?.data?.let { item ->
-                    AccountGc(
-                        uid = item.uid,
-                        nickName = item.name,
-                        channelMasterId = item.channelId,
-                        token = token,
-                        official = channelMasterId == 1,
-                        akUserCenter = akUserCenter,
-                        xrToken = xrToken
-                    )
-                }
-            } else {
-                throw Exception("API error: ${response.errorBody()?.string()}")
-            }
-        }
-
-        private fun createNormalHeaders(): Map<String, String> {
-            return mapOf(
-                "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
-                "Connection" to "close"
             )
         }
 

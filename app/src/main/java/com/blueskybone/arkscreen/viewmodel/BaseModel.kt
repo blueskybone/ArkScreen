@@ -8,13 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.AppUpdateInfo
 import com.blueskybone.arkscreen.network.BiliVideo
-import com.blueskybone.arkscreen.network.NetWorkTask.Companion.createAccountList
-import com.blueskybone.arkscreen.network.NetWorkTask.Companion.createGachaAccount
-import com.blueskybone.arkscreen.network.RetrofitUtils
 import com.blueskybone.arkscreen.network.announceUrl
 import com.blueskybone.arkscreen.network.getVideoList
 import com.blueskybone.arkscreen.playerinfo.cache.ApCache
 import com.blueskybone.arkscreen.preference.PrefManager
+import com.blueskybone.arkscreen.repository.AccountRepository
 import com.blueskybone.arkscreen.room.Account
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
@@ -40,23 +38,20 @@ import java.net.URL
  */
 class BaseModel : ViewModel() {
     private val prefManager: PrefManager by getKoin().inject()
+    private val resp: AccountRepository by getKoin().inject()
+
+    val accountSkList: LiveData<List<AccountSk>> = resp.allSkAccounts
+    val accountGcList: LiveData<List<AccountGc>> = resp.allGcAccounts
+
 
     private val database = ArkDatabase.getDatabase(APP)
-    private val accountSkDao = database.getAccountSkDao()
-    private val accountGcDao = database.getAccountGcDao()
     private val linkDao = database.getLinkDao()
-
-    private val _accountSkList = MutableLiveData<List<AccountSk>>()
-    val accountSkList: LiveData<List<AccountSk>> get() = _accountSkList
 
     private val _links = MutableLiveData<List<Link>>()
     val links: LiveData<List<Link>> get() = _links
 
     private val _currentAccount = MutableLiveData<AccountSk?>()
     val currentAccount: LiveData<AccountSk?> get() = _currentAccount
-
-    private val _accountGcList = MutableLiveData<List<AccountGc>>()
-    val accountGcList: LiveData<List<AccountGc>> get() = _accountGcList
 
     private val _currentAccountGc = MutableLiveData<AccountGc?>()
     val currentAccountGc: LiveData<AccountGc?> get() = _currentAccountGc
@@ -120,44 +115,28 @@ class BaseModel : ViewModel() {
     private fun checkAppUpdate() {
         if (!prefManager.autoUpdateApp.get()) return
         executeAsync {
-            try {
-                val info = AppUpdateInfo.remoteInfo()
-                _appUpdateInfo.postValue(info)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            _appUpdateInfo.postValue(AppUpdateInfo.remoteInfo())
         }
     }
 
     private fun getBiliVideoList() {
         executeAsync {
-            try {
-                val list = getVideoList()
-                println("bili video list.size : ${list.size}")
-                _biliVideo.postValue(list)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            val list = getVideoList()
+            _biliVideo.postValue(list)
         }
     }
 
     private fun checkAnnounce() {
         if (!prefManager.showHomeAnnounce.get()) return
         executeAsync {
-            try {
-                val info = getAnnounce()
-                _announce.postValue(info)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                _announce.postValue(e.message)
-            }
+            _announce.postValue(getAnnounce())
         }
     }
 
     private fun initialize() {
         viewModelScope.launch {
-            _accountSkList.value = accountSkDao.getAll()
-            _accountGcList.value = accountGcDao.getAll()
+//            _accountSkList.value = accountSkDao.getAll()
+//            _accountGcList.value = accountGcDao.getAll()
             _links.value = linkDao.getAll().map { it.copy() }
             getDefaultAccountSk()
             getDefaultAccountGc()
@@ -207,114 +186,28 @@ class BaseModel : ViewModel() {
 
     fun accountSkLogin(token: String, dId: String) {
         executeAsync {
-            try {
-                val list = createAccountList(token, dId)
-                accountSkDao.insert(list)
-                _accountSkList.postValue(accountSkDao.getAll())
-                if (prefManager.baseAccountSk.get().uid == "")
-                    prefManager.baseAccountSk.set(list[0])
-                Toaster.show("登录成功：导入${list.size}条账号")
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            val accountCnt = resp.syncAccountsByToken(token, dId)
+            Toaster.show("登录成功：导入${accountCnt}条账号")
         }
     }
 
     fun accountGcLogin(token: String, channelMasterId: Int, akUserCenter: String, xrToken: String) {
         executeAsync {
-            try {
-                val account = createGachaAccount(channelMasterId, token, akUserCenter, xrToken)
-                    ?: return@executeAsync
-                accountGcDao.insert(account)
-                _accountGcList.postValue(accountGcDao.getAll())
-                if (prefManager.baseAccountGc.get().uid == "")
-                    prefManager.baseAccountGc.set(account)
-                Toaster.show("登录成功：" + account.nickName)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            resp.loginGachaAccount(token, channelMasterId, akUserCenter, xrToken)
+            Toaster.show("登录成功，已导入卡池账号")
         }
     }
 
-    /**
-     * 密码登录森空岛账号
-     * 参考 ZOOT 项目的登录流程
-     */
     fun accountSkLoginByPassword(phone: String, password: String) {
         executeAsync {
-            try {
-                // 1. 通过密码登录获取 hgToken (需要 dId)
-                val dId1 = com.blueskybone.arkscreen.util.generateDId()
-                val hgToken = RetrofitUtils.loginByPassword(phone, password, dId1)
-
-                // 2. 通过 hgToken 获取 grantCode (需要 dId)
-                val dId2 = com.blueskybone.arkscreen.util.generateDId()
-                val grantCode = RetrofitUtils.getGrantByToken(hgToken, dId2)
-
-                // 3. 通过 grantCode 获取 cred 和 credToken (需要 dId)
-                val dId3 = com.blueskybone.arkscreen.util.generateDId()
-                val credAndToken = RetrofitUtils.getCredByGrant(grantCode, dId3)
-
-                // 4. 获取账号列表 (使用签名,需要 dId)
-                val dId4 = com.blueskybone.arkscreen.util.generateDId()
-                val accountList = RetrofitUtils.createAccountSkList(
-                    credAndToken.cred,
-                    credAndToken.token,
-                    hgToken,
-                    dId4
-                )
-
-                // 5. 保存到数据库
-                accountSkDao.insert(accountList)
-                _accountSkList.postValue(accountSkDao.getAll())
-
-                // 6. 如果还没有默认账号，设置第一个为默认
-                if (prefManager.baseAccountSk.get().uid == "" && accountList.isNotEmpty()) {
-                    prefManager.baseAccountSk.set(accountList[0])
-                }
-
-                withContext(Dispatchers.Main) {
-                    Toaster.show("登录成功：导入${accountList.size}条账号")
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toaster.show("登录失败：${e.message}")
-                }
-                Timber.e("密码登录失败", e)
-            }
+            val accountCnt = resp.syncAccountsByPhone(phone, password)
+            Toaster.show("登录成功：导入${accountCnt}条账号")
         }
     }
 
-//    fun deleteAccountSk(account: AccountSk) {
-//        executeAsync {
-//            accountSkDao.delete(account.id)
-//            _accountSkList.postValue(accountSkDao.getAll())
-//        }
-//    }
-//
-//    fun deleteAccountGc(account: AccountGc) {
-//        executeAsync {
-//            accountGcDao.delete(account.id)
-//            _accountGcList.postValue(accountGcDao.getAll())
-//        }
-//    }
-
-    fun deleteAccount(account: Account){
+    fun deleteAccount(account: Account) {
         executeAsync {
-            when(account){
-                is AccountSk-> {
-                    accountSkDao.delete(account.id)
-                    _accountSkList.postValue(accountSkDao.getAll())
-                }
-                is AccountGc->{
-                    accountGcDao.delete(account.id)
-                    _accountGcList.postValue(accountGcDao.getAll())
-                }
-                else ->{
-                    Toaster.show("Account's data type unknown.")
-                    Timber.e("deleteAccount() error : Account's data type unknown.")
-                }
-            }
+            resp.deleteAccount(account)
         }
     }
 
@@ -338,8 +231,6 @@ class BaseModel : ViewModel() {
                 }
         } catch (e: Exception) {
             null
-        } finally {
-
         }
     }
 
@@ -362,7 +253,14 @@ class BaseModel : ViewModel() {
     }
 
     private fun executeAsync(function: suspend () -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) { function() }
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                function()
+            } catch (e: Exception) {
+                Toaster.show(e.message)
+                e.printStackTrace()
+            }
+        }
     }
 
     private suspend fun getAnnounce(): String {
