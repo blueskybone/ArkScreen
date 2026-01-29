@@ -132,19 +132,22 @@ class RetrofitUtils {
             return RetrofitClient.apiService.attendanceEndfield(headers)
         }
 
-//        //通用的扩展函数
-//        fun <T> Response<T>.unwrap(): T {
-//            if (this.isSuccessful) {
-//                return this.body() ?: throw Exception("返回体为空")
-//            } else {
-//                // 在这里把 HTTP 错误码（401, 500等）转成人类能看懂的文字
-//                throw Exception("网络请求失败: ${this.code()}")
-//            }
-//        }
+        //通用的扩展函数
+        //TODO：扔到外部工具类里
+        fun <T> Response<T>.unwrap(): T {
+            if (this.isSuccessful) {
+                return this.body() ?: throw Exception("返回体为空")
+            } else {
+                // 在这里把 HTTP 错误码（401, 500等）转成人类能看懂的文字
+                throw Exception("网络请求失败: ${this.code()}")
+            }
+        }
 
         // 通用的解析错误返回的函数
+        //TODO：扔到外部工具类里
         fun <T> Response<T>.getErrorMessage(): String {
-            val errorBodyString = this.errorBody()?.string() ?: return "未知网络错误 (${this.code()})"
+            val errorBodyString =
+                this.errorBody()?.string() ?: return "未知网络错误 (${this.code()})"
 
             return try {
                 val json = JSONObject(errorBodyString)
@@ -175,42 +178,56 @@ class RetrofitUtils {
             }
         }
 
+//        suspend fun getFirstPageRecords(
+//            accountGc: AccountGc,
+//            cate: String
+//        ): GachaResponse {
+//            val response = RetrofitClient.akHypergryphService.getGachaRecords(
+//                uid = accountGc.uid,
+//                category = cate,
+//                size = 10,
+//                createAkHeader(accountGc.akUserCenter, accountGc.token, accountGc.xrToken)
+//            )
+//            return if (response.isSuccessful) {
+//                response.body() ?: throw Exception("API error: ${response.errorBody()?.string()}")
+//            } else {
+//                throw Exception("API error: ${response.errorBody()?.string()}")
+//            }
+//        }
+
+
         suspend fun getFirstPageRecords(
-            accountGc: AccountGc,
+            uid: String,
+            akUserCenter: String,
+            token: String,
+            xrToken: String,
             cate: String
-        ): GachaResponse {
-            val response = RetrofitClient.akHypergryphService.getGachaRecords(
-                uid = accountGc.uid,
+        ): Response<GachaResponse> {
+            return RetrofitClient.akHypergryphService.getGachaRecords(
+                uid = uid,
                 category = cate,
                 size = 10,
-                createAkHeader(accountGc.akUserCenter, accountGc.token, accountGc.xrToken)
+                createAkHeader(akUserCenter, token, xrToken)
             )
-            return if (response.isSuccessful) {
-                response.body() ?: throw Exception("API error: ${response.errorBody()?.string()}")
-            } else {
-                throw Exception("API error: ${response.errorBody()?.string()}")
-            }
         }
 
         suspend fun getMorePageRecords(
-            accountGc: AccountGc,
+            uid: String,
+            akUserCenter: String,
+            token: String,
+            xrToken: String,
             cate: String,
             pos: Int,
             ts: Long,
-        ): GachaResponse {
-            val response = RetrofitClient.akHypergryphService.getGachaRecordsMore(
-                uid = accountGc.uid,
+        ): Response<GachaResponse> {
+            return RetrofitClient.akHypergryphService.getGachaRecordsMore(
+                uid = uid,
                 category = cate,
                 pos = pos,
                 gachaTs = ts,
                 size = 10,
-                createAkHeader(accountGc.akUserCenter, accountGc.token, accountGc.xrToken)
+                createAkHeader(akUserCenter, token, xrToken)
             )
-            return if (response.isSuccessful) {
-                response.body() ?: throw Exception("API error: ${response.errorBody()?.string()}")
-            } else {
-                throw Exception("API error: ${response.errorBody()?.string()}")
-            }
         }
 
         suspend fun doAttendance(

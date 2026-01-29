@@ -266,9 +266,9 @@ class GachaModel : ViewModel() {
 
     private fun processGachaCount(recordsDb: List<Gacha>): List<GachaWithNum> {
         val gachaList = mutableListOf<GachaWithNum>()
-        //先按照Gacha.poolId分类，然后在每一个list中倒序排序List<Gacha>.sortByTsAndPosDescending().reversed()。
+        // 先按照Gacha.poolId分类，然后在每一个list中倒序排序List<Gacha>.sortByTsAndPosDescending().reversed()。
         // 然后遍历，维护两个值countSum和countNum。具体规则：countSum每次+1；countNum每次+1,遇到rarity == 6时归零。然后创建GachaWithNum
-        //最后把所有的list再次收集起来,倒序排序返回
+        // 最后把所有的list再次收集起来,倒序排序返回
         recordsDb.groupBy { it.poolId }.map { (_, list) ->
             val newList = list.sortByTsAndPosDescending().reversed()
             var countSum = 0

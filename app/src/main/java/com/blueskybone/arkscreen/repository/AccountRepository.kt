@@ -69,7 +69,6 @@ class AccountRepository(
         }
     }
 
-
     suspend fun loginGachaAccount(
         token: String,
         channelMasterId: Int,
@@ -111,6 +110,7 @@ class AccountRepository(
         return cnt
     }
 
+    // 处理鹰角官网basic_info接口返回
     private suspend fun handleBasicResponse(
         body: BasicInfoResponse,
         token: String, channelMasterId: Int, akUserCenter: String, xrToken: String
