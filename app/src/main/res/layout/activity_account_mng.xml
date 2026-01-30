@@ -24,6 +24,7 @@
             android:orientation="vertical">
 
             <FrameLayout
+                android:id="@+id/SklandHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -58,13 +59,16 @@
                     android:text="@string/add" />
             </FrameLayout>
             <TextView
+                android:id="@+id/ArknightsHeader"
                 style="@style/PreferenceHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:text="@string/arknights" />
 
-            <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/ArknightsCard"
+                style="@style/CardViewContent">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/RecyclerView"
@@ -75,13 +79,16 @@
 
 
             <TextView
+                android:id="@+id/EndfieldHeader"
                 style="@style/PreferenceHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:text="@string/endfield" />
 
-            <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/EndfieldCard"
+                style="@style/CardViewContent">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/RecyclerViewEf"
@@ -92,6 +99,7 @@
 
 
             <FrameLayout
+                android:id="@+id/GachaHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -134,7 +142,9 @@
                 <!--                android:src="@drawable/ic_plus" />-->
             </FrameLayout>
 
-            <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/GachaCard"
+                style="@style/CardViewContent">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/RecyclerViewGc"
