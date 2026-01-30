@@ -125,7 +125,7 @@ class RetrofitUtils {
             val ts = getCurrentTs().toString()
             val sign = generateSign(api, "", credToken, ts, dId)
             val headers = createSignHeaders(cred, sign, ts, dId).toMutableMap().apply {
-                put("sk-game-role", "3_{$roleId}_{$serverId}")
+                put("sk-game-role", "3_${roleId}_${serverId}")
                 put("referer", "https://game.skland.com/")
                 put("origin", "https://game.skland.com/")
             }
@@ -178,57 +178,78 @@ class RetrofitUtils {
             }
         }
 
-//        suspend fun getFirstPageRecords(
-//            accountGc: AccountGc,
-//            cate: String
-//        ): GachaResponse {
-//            val response = RetrofitClient.akHypergryphService.getGachaRecords(
-//                uid = accountGc.uid,
-//                category = cate,
-//                size = 10,
-//                createAkHeader(accountGc.akUserCenter, accountGc.token, accountGc.xrToken)
-//            )
-//            return if (response.isSuccessful) {
-//                response.body() ?: throw Exception("API error: ${response.errorBody()?.string()}")
-//            } else {
-//                throw Exception("API error: ${response.errorBody()?.string()}")
-//            }
-//        }
-
-
         suspend fun getFirstPageRecords(
-            uid: String,
-            akUserCenter: String,
-            token: String,
-            xrToken: String,
+            accountGc: AccountGc,
             cate: String
-        ): Response<GachaResponse> {
-            return RetrofitClient.akHypergryphService.getGachaRecords(
-                uid = uid,
+        ): GachaResponse {
+            val response = RetrofitClient.akHypergryphService.getGachaRecords(
+                uid = accountGc.uid,
                 category = cate,
                 size = 10,
-                createAkHeader(akUserCenter, token, xrToken)
+                createAkHeader(accountGc.akUserCenter, accountGc.token, accountGc.xrToken)
             )
+            return if (response.isSuccessful) {
+                response.body() ?: throw Exception("API error: ${response.errorBody()?.string()}")
+            } else {
+                throw Exception("API error: ${response.errorBody()?.string()}")
+            }
         }
 
         suspend fun getMorePageRecords(
-            uid: String,
-            akUserCenter: String,
-            token: String,
-            xrToken: String,
+            accountGc: AccountGc,
             cate: String,
             pos: Int,
             ts: Long,
-        ): Response<GachaResponse> {
-            return RetrofitClient.akHypergryphService.getGachaRecordsMore(
-                uid = uid,
+        ): GachaResponse {
+            val response = RetrofitClient.akHypergryphService.getGachaRecordsMore(
+                uid = accountGc.uid,
                 category = cate,
                 pos = pos,
                 gachaTs = ts,
                 size = 10,
-                createAkHeader(akUserCenter, token, xrToken)
+                createAkHeader(accountGc.akUserCenter, accountGc.token, accountGc.xrToken)
             )
+            return if (response.isSuccessful) {
+                response.body() ?: throw Exception("API error: ${response.errorBody()?.string()}")
+            } else {
+                throw Exception("API error: ${response.errorBody()?.string()}")
+            }
         }
+
+
+//        suspend fun getFirstPageRecords(
+//            uid: String,
+//            akUserCenter: String,
+//            token: String,
+//            xrToken: String,
+//            cate: String
+//        ): Response<GachaResponse> {
+//            return RetrofitClient.akHypergryphService.getGachaRecords(
+//                uid = uid,
+//                category = cate,
+//                size = 10,
+//                createAkHeader(akUserCenter, token, xrToken)
+//            )
+//        }
+
+//        suspend fun getMorePageRecords(
+//            uid: String,
+//            akUserCenter: String,
+//            token: String,
+//            xrToken: String,
+//            cate: String,
+//            pos: Int,
+//            ts: Long,
+//        ): Response<GachaResponse> {
+//            return RetrofitClient.akHypergryphService.getGachaRecordsMore(
+//                uid = uid,
+//                category = cate,
+//                pos = pos,
+//                gachaTs = ts,
+//                size = 10,
+//                createAkHeader(akUserCenter, token, xrToken)
+//            )
+//        }
 
         suspend fun doAttendance(
             cred: String,

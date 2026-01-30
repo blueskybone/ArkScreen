@@ -14,6 +14,7 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.R
+import com.blueskybone.arkscreen.common.PreferenceDialog
 import com.blueskybone.arkscreen.databinding.DialogTimepickerBinding
 import com.blueskybone.arkscreen.databinding.FragmentDashboardBinding
 import com.blueskybone.arkscreen.databinding.PreferenceBinding
@@ -122,9 +123,6 @@ class Function : Fragment() {
             }
         }
 
-        binding.TurnOffBatteryOptimization.Layout.setOnClickListener {
-            (activity as MainActivity?)?.requestIgnoreBatteryOptimizations()
-        }
 
         binding.BackAutoAtd.setUp(
             R.drawable.ic_check,
@@ -133,15 +131,36 @@ class Function : Fragment() {
             { APP.setDailyAlarm() },
             { APP.cancelDailyAlarm() }
         )
-        binding.OpenAutoStartSettings.Layout.setOnClickListener {
-            openAutoStartSettings(requireContext())
+
+        binding.OverlayPermissionChip.setOnClickListener{
+            PreferenceDialog(requireContext()).add(R.string.overlay_permission, R.string.confirm){
+                (activity as MainActivity?)?.jumpToPermission(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+            }.add(R.string.notify_permission, R.string.notify_permission_detail){
+                (activity as MainActivity?)?.openNotificationSettings(requireContext())
+            }.show()
         }
-        binding.OverlayPermission.Layout.setOnClickListener {
-            (activity as MainActivity?)?.jumpToPermission(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+
+        binding.WidgetPermission.setOnClickListener{
+            PreferenceDialog(requireContext()).add(R.string.turn_off_battery_optimization, R.string.turn_off_battery_optimization_detail){
+                (activity as MainActivity?)?.requestIgnoreBatteryOptimizations()
+            }.show()
         }
-        binding.NotifyPermission.Layout.setOnClickListener {
-            (activity as MainActivity?)?.openNotificationSettings(requireContext())
+
+        binding.AttdPermission.setOnClickListener {
+            PreferenceDialog(requireContext()).add(R.string.open_auto_start_settings, R.string.open_auto_start_settings_detail){
+                openAutoStartSettings(requireContext())
+            }.show()
         }
+
+//        binding.OpenAutoStartSettings.Layout.setOnClickListener {
+//            openAutoStartSettings(requireContext())
+//        }
+//        binding.OverlayPermission.Layout.setOnClickListener {
+//            (activity as MainActivity?)?.jumpToPermission(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+//        }
+//        binding.NotifyPermission.Layout.setOnClickListener {
+//            (activity as MainActivity?)?.openNotificationSettings(requireContext())
+//        }
         binding.WidgetInfo.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.account_info)

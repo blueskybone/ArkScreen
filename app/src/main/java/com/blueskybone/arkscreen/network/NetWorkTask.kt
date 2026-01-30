@@ -2,6 +2,7 @@ package com.blueskybone.arkscreen.network
 
 
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.doAttendance
+import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.doAttendanceForEndfield
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getCredByGrant
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getFirstPageRecords
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getGachaCate
@@ -10,12 +11,14 @@ import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getMorePageReco
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getPlayerBinding
 import com.blueskybone.arkscreen.network.model.BindingResponse
 import com.blueskybone.arkscreen.network.model.PlayerInfoResp
+import com.blueskybone.arkscreen.room.AccountEf
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Gacha
 import com.blueskybone.arkscreen.util.generateDId
 import com.blueskybone.arkscreen.util.toCate
 import retrofit2.Response
+import timber.log.Timber
 
 /**
  *   Created by blueskybone
@@ -57,6 +60,24 @@ class NetWorkTask {
                 accountSk.channelMasterId,
                 accountSk.dId
             )
+        }
+
+
+        suspend fun endfieldAttendance(accountEf: AccountEf): String {
+            val credAndToken = getCredCode(accountEf.token, accountEf.dId)
+            try{
+                doAttendanceForEndfield(
+                    credAndToken.cred,
+                    credAndToken.token,
+                    accountEf.dId,
+                    accountEf.roleId,
+                    accountEf.serverId
+                )
+                return "成功"
+            }catch (e:Exception){
+                Timber.e(e.message)
+                return "签到失败"
+            }
         }
 
         @Throws(Exception::class)

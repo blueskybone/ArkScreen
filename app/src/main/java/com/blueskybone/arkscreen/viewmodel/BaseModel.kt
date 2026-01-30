@@ -14,6 +14,7 @@ import com.blueskybone.arkscreen.playerinfo.cache.ApCache
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.repository.AccountRepository
 import com.blueskybone.arkscreen.room.Account
+import com.blueskybone.arkscreen.room.AccountEf
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.ArkDatabase
@@ -42,6 +43,7 @@ class BaseModel : ViewModel() {
 
     val accountSkList: LiveData<List<AccountSk>> = resp.allSkAccounts
     val accountGcList: LiveData<List<AccountGc>> = resp.allGcAccounts
+    val accountEfList: LiveData<List<AccountEf>> = resp.allEfAccounts
 
 
     private val database = ArkDatabase.getDatabase(APP)

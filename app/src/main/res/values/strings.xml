@@ -17,6 +17,11 @@
     <string name="copy">复制</string>
     <string name="download">下载</string>
 
+    <!-- Game Name-->
+    <string name="arknights">明日方舟</string>
+    <string name="endfield">明日方舟：终末地</string>
+
+
     <!-- Dialogs Message-->
     <string name="confirm_delete">确定删除吗</string>
     <string name="confirm_clear_data">将清除当前账号的本地寻访记录</string>
@@ -266,6 +271,7 @@
     <string name="illegal_url">url解析错误</string>
 
     <string name="set_default_account">默认账号设置为%1$s</string>
+    <string name="not_support_set_default">暂不支持设置操作</string>
     <string name="gacha_count">%1$d抽</string>
     <string name="date_range">数据统计自 %1$s</string>
     <string name="statistic_info">统计信息</string>

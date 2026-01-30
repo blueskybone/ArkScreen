@@ -1,7 +1,6 @@
 package com.blueskybone.arkscreen.repository
 
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.pullNewRecords
-import com.blueskybone.arkscreen.playerinfo.GachaProcessor
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.Gacha
@@ -14,7 +13,7 @@ import com.blueskybone.arkscreen.room.dao.GachaDao
 
 class GachaRepository(
     private val gachaDao: GachaDao,
-    private val processor: GachaProcessor,
+//    private val processor: GachaProcessor,
     private val prefManager: PrefManager
     ) {
 
@@ -30,6 +29,4 @@ class GachaRepository(
         }
         return gachaDao.getByUid(account.uid)
     }
-
-
 }

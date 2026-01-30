@@ -8,6 +8,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.network.NetWorkTask
+import com.blueskybone.arkscreen.network.NetWorkTask.Companion.endfieldAttendance
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoTask
 import com.blueskybone.arkscreen.playerinfo.RealTimeData
 import com.blueskybone.arkscreen.playerinfo.geneRealTimeData
@@ -20,6 +21,7 @@ import com.blueskybone.arkscreen.util.updateNotification
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.getKoin
 import timber.log.Timber
 
@@ -46,6 +48,10 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
                         val accountList = accountSkDao.getAll()
                         val channelId = "atd_notify_channel"
                         val channelName = "签到通知"
+
+                        val accountEfList = database.getAccountEfDao().getAll()
+                        val size = accountEfList.size + accountList.size
+
                         for ((idx, account) in accountList.withIndex()) {
                             updateNotification(
                                 APP,
@@ -65,17 +71,38 @@ class SklandWorker(context: Context, workerParams: WorkerParameters) : Coroutine
                             )
                             Thread.sleep(500)
                         }
+
+                        for ((idx, account) in accountEfList.withIndex()) {
+                            updateNotification(
+                                APP,
+                                "正在签到中 (${idx + 1}/${accountList.size})",
+                                account.nickName,
+                                channelId,
+                                channelName
+                            )
+                            val msg = endfieldAttendance(account)
+                            Timber.i(account.nickName + " : " + msg)
+                            updateNotification(
+                                APP,
+                                "正在签到中 (${idx + 1}/${accountList.size})",
+                                account.nickName + " : " + msg,
+                                channelId,
+                                channelName
+                            )
+                            withContext(Dispatchers.IO) {
+                                Thread.sleep(500)
+                            }
+                        }
+
                         updateNotification(
                             APP,
-                            "签到完成 (${accountList.size}/${accountList.size})",
+                            "签到完成 (${size}/${size})",
                             "",
                             channelId,
                             channelName
                         )
                     }
-//                    for (account in accountList) {
-//                        NetWorkTask.sklandAttendance(account)
-//                    }
+
                     prefManager.lastAttendanceTs.set(currentTs)
                 }
             }

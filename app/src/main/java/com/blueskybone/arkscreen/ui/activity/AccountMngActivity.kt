@@ -38,6 +38,7 @@ class AccountMngActivity : AppCompatActivity() {
 
     private var adapter: AccountAdapter? = null
     private var adapterGc: AccountAdapter? = null
+    private var adapterEf: AccountAdapter? = null
     private lateinit var activityResultLauncherSk: ActivityResultLauncher<Intent>
     private lateinit var activityResultLauncherGc: ActivityResultLauncher<Intent>
 
@@ -55,6 +56,12 @@ class AccountMngActivity : AppCompatActivity() {
         binding.RecyclerView.adapter = adapter
         model.accountSkList.observe(this) { value ->
             adapter?.submitList(value as List<Account>?)
+        }
+
+        adapterEf = AccountAdapter(this, adapterEfListener)
+        binding.RecyclerViewEf.adapter = adapterEf
+        model.accountEfList.observe(this) { value ->
+            adapterEf?.submitList(value as List<Account>?)
         }
 
         adapterGc = AccountAdapter(this, adapterGcListener)
@@ -294,6 +301,23 @@ class AccountMngActivity : AppCompatActivity() {
             }
         }
     }
+
+
+    private val adapterEfListener = object : ItemListener {
+        @SuppressLint("NotifyDataSetChanged")
+        override fun onClick(position: Int) {
+            Toaster.show(getString(R.string.not_support_set_default))
+        }
+
+        override fun onLongClick(position: Int) {
+            adapterEf?.currentList?.get(position)?.let { value ->
+                MenuDialog(this@AccountMngActivity)
+                    .add(R.string.delete) { confirmDeletion(value) }
+                    .show()
+            }
+        }
+    }
+
 
     private fun displayExportDialog(key: String) {
         val dialogBinding = DialogInputBinding.inflate(layoutInflater)
