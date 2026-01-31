@@ -300,12 +300,10 @@ class AccountMngActivity : AppCompatActivity() {
 
         override fun onLongClick(position: Int) {
             adapter?.currentList?.get(position)?.let { value ->
-                MenuDialog(this@AccountMngActivity)
-                    .add(getString(R.string.export_cookie)) {
-                        displayExportDialog("${value.token}@${(value as com.blueskybone.arkscreen.room.AccountSk).dId}")
-                    }
-                    .add(R.string.delete) { confirmDeletion(value) }
-                    .show()
+                val account = value as com.blueskybone.arkscreen.room.AccountSk
+                buildAccountMenu(account) {
+                    displayExportDialog("${value.token}@${account.dId}")
+                }.show()
             }
         }
     }
@@ -322,13 +320,10 @@ class AccountMngActivity : AppCompatActivity() {
 
         override fun onLongClick(position: Int) {
             adapterGc?.currentList?.get(position)?.let { value ->
-                MenuDialog(this@AccountMngActivity)
-                    .add(getString(R.string.export_cookie)) {
-                        val account = value as com.blueskybone.arkscreen.room.AccountGc
-                        displayExportDialog("${account.token}@${account.akUserCenter}@${account.xrToken}")
-                    }
-                    .add(R.string.delete) { confirmDeletion(value) }
-                    .show()
+                val account = value as com.blueskybone.arkscreen.room.AccountGc
+                buildAccountMenu(account) {
+                    displayExportDialog("${account.token}@${account.akUserCenter}@${account.xrToken}")
+                }.show()
             }
         }
     }
@@ -342,9 +337,7 @@ class AccountMngActivity : AppCompatActivity() {
 
         override fun onLongClick(position: Int) {
             adapterEf?.currentList?.get(position)?.let { value ->
-                MenuDialog(this@AccountMngActivity)
-                    .add(R.string.delete) { confirmDeletion(value) }
-                    .show()
+                buildAccountMenu(value).show()
             }
         }
     }
@@ -370,6 +363,27 @@ class AccountMngActivity : AppCompatActivity() {
             .setNegativeButton(R.string.cancel, null)
             .show()
     }
+
+    private fun copyText(text: String, label: String) {
+        copyToClipboard(this, text)
+        Toaster.show("${label}已复制")
+    }
+
+    private fun buildAccountMenu(
+        account: Account,
+        exportCookie: (() -> Unit)? = null
+    ): MenuDialog {
+        return MenuDialog(this)
+            .add("复制UID") { copyText(account.uid, "UID") }
+            .add("复制昵称") { copyText(account.nickName, "昵称") }
+            .apply {
+                if (exportCookie != null) {
+                    add(getString(R.string.export_cookie)) { exportCookie() }
+                }
+            }
+            .add(R.string.delete) { confirmDeletion(account) }
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
