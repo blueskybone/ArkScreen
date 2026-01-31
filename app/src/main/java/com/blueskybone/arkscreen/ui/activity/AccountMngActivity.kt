@@ -5,7 +5,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
+import android.view.MenuItem
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -52,22 +54,49 @@ class AccountMngActivity : AppCompatActivity() {
     }
 
     private fun initialize() {
+        setSupportActionBar(binding.Toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        })
+
         adapter = AccountAdapter(this, adapterSkListener)
         binding.RecyclerView.adapter = adapter
         model.accountSkList.observe(this) { value ->
             adapter?.submitList(value as List<Account>?)
+
+            // 根据明日方舟账号数据控制显示/隐藏
+            // AccountSk 对应明日方舟账号
+            val hasArknights = !value.isNullOrEmpty()
+
+            binding.ArknightsHeader.visibility = if (hasArknights) View.VISIBLE else View.GONE
+            binding.ArknightsCard.visibility = if (hasArknights) View.VISIBLE else View.GONE
         }
 
         adapterEf = AccountAdapter(this, adapterEfListener)
         binding.RecyclerViewEf.adapter = adapterEf
         model.accountEfList.observe(this) { value ->
             adapterEf?.submitList(value as List<Account>?)
+
+            // 根据终末地账号数据控制显示/隐藏
+            // AccountEf 对应终末地账号
+            val hasEndfield = !value.isNullOrEmpty()
+
+            binding.EndfieldHeader.visibility = if (hasEndfield) View.VISIBLE else View.GONE
+            binding.EndfieldCard.visibility = if (hasEndfield) View.VISIBLE else View.GONE
         }
 
         adapterGc = AccountAdapter(this, adapterGcListener)
         binding.RecyclerViewGc.adapter = adapterGc
         model.accountGcList.observe(this) { value ->
             adapterGc?.submitList(value as List<Account>?)
+
+            // 游戏账号部分常驻显示
+            binding.GachaHeader.visibility = View.VISIBLE
+            binding.GachaCard.visibility = View.VISIBLE
         }
 
         activityResultLauncherSk = registerForActivityResult(
@@ -223,7 +252,9 @@ class AccountMngActivity : AppCompatActivity() {
         dialogBinding.EditText1.hint = getString(R.string.phone_number)
         dialogBinding.EditText2.visibility = View.VISIBLE
         dialogBinding.EditText2.hint = getString(R.string.password)
-        dialogBinding.EditText2.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        dialogBinding.EditText2.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT
+        // 强制使用英文键盘输入
+        dialogBinding.EditText2.keyListener = android.text.method.DigitsKeyListener.getInstance("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/")
 
         MaterialAlertDialogBuilder(this)
             .setView(dialogBinding.root)
@@ -338,5 +369,15 @@ class AccountMngActivity : AppCompatActivity() {
             .setPositiveButton(R.string.delete) { _, _ -> model.deleteAccount(value) }
             .setNegativeButton(R.string.cancel, null)
             .show()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }
