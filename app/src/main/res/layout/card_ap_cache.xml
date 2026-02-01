@@ -43,7 +43,7 @@
             android:layout_gravity="end|center"
             android:text="-"
             android:textStyle="bold"
-            android:textColor="?attr/colorOnBackground"
+            android:textColor="?attr/colorPrimary"
             android:textAppearance="?attr/textAppearanceHeadline3" />
         <TextView
             android:id="@+id/Max"
