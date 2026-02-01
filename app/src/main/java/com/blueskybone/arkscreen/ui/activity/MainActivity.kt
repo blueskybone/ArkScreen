@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpNavigation() {
         val viewPager = binding.ViewPager
+        viewPager.offscreenPageLimit = 2
         val bottomNavigationView: BottomNavigationView = binding.navView
         viewPager.adapter = ViewPagerFragmentAdapter(this)
 

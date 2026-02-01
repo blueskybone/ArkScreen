@@ -47,6 +47,7 @@ import com.blueskybone.arkscreen.util.TimeUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
 import org.koin.android.ext.android.getKoin
+import timber.log.Timber
 import java.util.Locale
 
 /**
@@ -64,9 +65,24 @@ class Function : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        _binding = FragmentDashboardBinding.inflate(inflater)
-        setUpBinding()
+        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+//        _binding = FragmentDashboardBinding.inflate(inflater)
+//        setUpBinding()
         return binding.root
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // 确保 context 不为空再执行
+        if (_binding != null && context != null) {
+            try{
+                setUpBinding()
+            }catch (e:Exception){
+                Timber.e(e.message)
+            }
+
+        }
     }
 
     private fun setUpBinding() {
@@ -221,9 +237,14 @@ class Function : Fragment() {
         SubTitle.setText(textInfo.subTitle)
         val entries = listInfo.getEntries(requireContext())
         val entryValues = listInfo.getEntryValues()
-        var checked = entryValues.indexOf(pref.get())
-        val displayValue = entries[checked]
+
+        var checked = entryValues.indexOf(pref.get()).coerceAtLeast(0)
+        val displayValue = if (checked < entries.size) entries[checked] else "未知"
         Value.text = displayValue
+//
+//        var checked = entryValues.indexOf(pref.get())
+//        val displayValue = entries[checked]
+//        Value.text = displayValue
         root.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(listInfo.title)
@@ -276,10 +297,17 @@ class Function : Fragment() {
         Title.setText(listInfo.title)
         Title.setText(listInfo.title)
         val entries = listInfo.getEntries(requireContext())
+
+
+
         val entryValues = listInfo.getEntryValues()
-        var checked = entryValues.indexOf(pref.get())
-        val displayValue = entries[checked]
+//        var checked = entryValues.indexOf(pref.get())
+//        val displayValue = entries[checked]
+//        Value.text = displayValue
+        var checked = entryValues.indexOf(pref.get()).coerceAtLeast(0)
+        val displayValue = if (checked < entries.size) entries[checked] else "未知"
         Value.text = displayValue
+
         root.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(listInfo.title)
@@ -301,15 +329,32 @@ class Function : Fragment() {
         pref: Preference<String>,
         onClick: (() -> Unit)?
     ) {
+//        val context = context ?: return // 防御 Context 为空
         if (icon == null) {
             Icon.visibility = View.GONE
         } else Icon.setImageResource(icon)
         Title.setText(listInfo.title)
         val entries = listInfo.getEntries(requireContext())
+
+
+
         val entryValues = listInfo.getEntryValues()
-        var checked = entryValues.indexOf(pref.get())
-        val displayValue = entries[checked]
-        Value.text = displayValue
+//        var checked = entryValues.indexOf(pref.get())
+
+        var checked = entryValues.indexOf(pref.get()).coerceAtLeast(0)
+        val displayValue = if (checked < entries.size) entries[checked] else "未知"
+//        Value.text = displayValue
+
+        if (checked == -1 || checked >= entries.size) {
+            checked = 0 // 或者给个默认值
+        }
+
+        if (entries.isNotEmpty()) {
+            Value.text = entries[checked]
+        }
+
+//        val displayValue = entries[checked]
+//        Value.text = displayValue
         root.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(listInfo.title)

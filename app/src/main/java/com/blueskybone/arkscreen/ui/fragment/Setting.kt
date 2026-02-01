@@ -260,20 +260,8 @@ class Setting : Fragment() {
         text: Int,
         pref: Preference<Boolean>
     ) {
-//        Switch.isSaveEnabled = false
-//        Switch.setOnCheckedChangeListener(null)
-//        Switch.isSaveEnabled = false
         Switch.isChecked = pref.get()
         Switch.setOnCheckedChangeListener { _, isChecked -> pref.set(isChecked) }
-//        Switch.setOnClickListener {
-//            val newState = (it as SwitchCompat).isChecked
-//            pref.set(newState)
-//        }
-//        Switch.post {
-//            Switch.setOnCheckedChangeListener(null)
-//            Switch.isChecked = pref.get()
-//            Switch.setOnCheckedChangeListener { _, isChecked -> pref.set(isChecked) }
-//        }
         if (icon == null) {
             Icon.visibility = View.GONE
         } else {
