@@ -43,7 +43,12 @@ val recruitScreenshotModule = module {
     single { ImageProcessor(context = androidContext(), textTranslator = get()) }
     single { RecruitTagRecognizer(context = androidContext(), imageProcessor = get()) }
     single { FloatWindowController(application = androidContext() as android.app.Application) }
-    single { RecruitResultDisplayer(floatWindowController = get()) }
+    single {
+        RecruitResultDisplayer(
+            context = androidContext(),
+            floatWindowController = get(),
+        )
+    }
 
     single {
         RecruitScreenshotFlow(

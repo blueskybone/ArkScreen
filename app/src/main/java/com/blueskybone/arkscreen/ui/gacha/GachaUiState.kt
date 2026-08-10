@@ -10,6 +10,11 @@ data class GachaUiState(
     val accList: List<AccountGc> = emptyList(),
     val gachaUiSnapshot: GachaUiSnapshot? = null,
     val selectedPoolId: String = "ALL",
+    val isSyncing: Boolean = false,
+    val lastSyncAt: Long? = null,
+    val filterSixStar: Boolean = false,
+    val filterNew: Boolean = false,
+    val expandedPoolIds: Set<String> = emptySet(),
 )
 
 sealed interface GachaEvent {

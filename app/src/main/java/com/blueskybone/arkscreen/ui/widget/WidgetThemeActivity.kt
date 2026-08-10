@@ -1,13 +1,12 @@
 package com.blueskybone.arkscreen.ui.widget
 
-import android.content.Intent
 import android.os.Bundle
+import android.content.Intent
 import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
-import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.data.local.pref.preference.Preference
@@ -56,15 +55,30 @@ class WidgetThemeActivity : AppCompatActivity() {
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        binding.WidgetAlpha.setUp(WidgetAlpha, prefManager.widgetAlpha)
+        binding.WidgetAlpha.setUp(
+            seekBarInfo = WidgetAlpha,
+            pref = prefManager.widgetAlpha,
+            onChange = ::updatePreview,
+        )
 
         bindImageRadioGroup()
 
         setUpBinding()
+        updatePreview()
 
     }
 
     private fun setUpBinding() {
+        binding.NewWidgetExperiment.apply {
+            Title.setText(R.string.widget_template_lab)
+            Icon.setImageResource(R.drawable.ic_widget_appearance)
+            Layout.setOnClickListener {
+                startActivity(
+                    Intent(this@WidgetThemeActivity, WidgetTemplateLabActivity::class.java)
+                )
+            }
+        }
+
         binding.TextSize1x1.setUp(null, WidgetSize, prefManager.widget1Size, null)
         binding.TextSize1x2.setUp(null, WidgetSize, prefManager.widget2Size, null)
         binding.TextSize2x2.setUp(null, WidgetSize, prefManager.widget3Size, null)
@@ -75,22 +89,25 @@ class WidgetThemeActivity : AppCompatActivity() {
         binding.Context2x21.setUp(null, WidgetContent, prefManager.widget3Content1, null)
         binding.Context2x22.setUp(null, WidgetContent, prefManager.widget3Content2, null)
 
-        binding.TextColor.setUp(WidgetTextColor, prefManager.widgetTextColor)
+        binding.TextColor.setUp(
+            listInfo = WidgetTextColor,
+            pref = prefManager.widgetTextColor,
+            onChange = ::updatePreview,
+        )
         binding.RecruitCheckBox.setup(prefManager.widget4ShowRecruit)
         binding.ApLaborCheckBox.setup(prefManager.widget4ShowDatabase)
         binding.TrainCheckBox.setup(prefManager.widget4ShowTrain)
         bindSwitchView(binding.ShowStarter, prefManager.widget4ShowStarter)
 
         binding.Apply.setOnClickListener {
-            val intent = Intent(APP, WidgetReceiver::class.java)
-            intent.action = WidgetReceiver.MANUAL_UPDATE
-            intent.putExtra("msg", "组件刷新中...")
-            APP.sendBroadcast(intent)
+            WidgetReceiver.renderCached(this)
         }
     }
 
     private fun PreferenceSeekbarBinding.setUp(
-        seekBarInfo: SeekBarInfo, pref: Preference<Int>
+        seekBarInfo: SeekBarInfo,
+        pref: Preference<Int>,
+        onChange: (() -> Unit)? = null,
     ) {
         Title.setText(seekBarInfo.title)
 
@@ -101,6 +118,7 @@ class WidgetThemeActivity : AppCompatActivity() {
         Slider.stepSize = seekBarInfo.step.toFloat()
         Slider.addOnChangeListener { _, value, _ ->
             pref.set(value.toInt())
+            onChange?.invoke()
         }
     }
 
@@ -121,6 +139,7 @@ class WidgetThemeActivity : AppCompatActivity() {
                 if (selectedButton != null) {
                     val bg = selectedButton.tag as? Int ?: R.drawable.widget_bg_black
                     prefManager.widgetBg.set(bg)
+                    updatePreview()
                 }
             }
         })
@@ -139,7 +158,7 @@ class WidgetThemeActivity : AppCompatActivity() {
         Title.setText(listInfo.title)
         val entries = listInfo.getEntries(this@WidgetThemeActivity)
         val entryValues = listInfo.getEntryValues()
-        var checked = entryValues.indexOf(pref.get())
+        var checked = entryValues.indexOf(pref.get()).coerceAtLeast(0)
         val displayValue = entries[checked]
         Value.text = displayValue
         root.setOnClickListener {
@@ -157,7 +176,11 @@ class WidgetThemeActivity : AppCompatActivity() {
         }
     }
 
-    private fun PreferenceRadioBinding.setUp(listInfo: ListInfo, pref: Preference<String>) {
+    private fun PreferenceRadioBinding.setUp(
+        listInfo: ListInfo,
+        pref: Preference<String>,
+        onChange: (() -> Unit)? = null,
+    ) {
         this.Title.text = getString(listInfo.title)
         val entries = listInfo.getEntries(this@WidgetThemeActivity)
         val entryValues = listInfo.getEntryValues()
@@ -174,8 +197,18 @@ class WidgetThemeActivity : AppCompatActivity() {
             val checkedIndex = group.indexOfChild(group.findViewById(checkedId))
             if (checkedIndex >= 0) {
                 pref.set(entryValues[checkedIndex])
+                onChange?.invoke()
             }
         }
+    }
+
+    private fun updatePreview() {
+        val textColor = WidgetTextColor.getColorInt(prefManager.widgetTextColor.get())
+        binding.PreviewBackground.setImageResource(prefManager.widgetBg.get())
+        binding.PreviewBackground.imageAlpha = prefManager.widgetAlpha.get()
+        binding.PreviewValue.setTextColor(textColor)
+        binding.PreviewSecondary.setTextColor(textColor)
+        binding.PreviewIcon.setColorFilter(textColor)
     }
 
     private fun CheckBox.setup(pref: Preference<Boolean>) {

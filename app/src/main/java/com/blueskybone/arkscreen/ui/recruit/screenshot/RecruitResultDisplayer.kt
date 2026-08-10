@@ -1,14 +1,21 @@
 package com.blueskybone.arkscreen.presentation.recruit.floating
 
 import android.content.Context
+import androidx.annotation.StringRes
 import com.blueskybone.arkscreen.domain.model.recruit.RecruitResult
 import com.blueskybone.arkscreen.platform.screenshot.ScreenshotStartSource
 import com.blueskybone.arkscreen.ui.recruit.screenshot.FloatWindowController
 import com.hjq.toast.Toaster
 
 class RecruitResultDisplayer(
+    context: Context,
     private val floatWindowController: FloatWindowController
 ) {
+    private val appContext = context.applicationContext
+
+    fun showError(@StringRes messageRes: Int) {
+        Toaster.show(appContext.getString(messageRes))
+    }
 
     fun showError(message: String) {
         Toaster.show(message)
@@ -19,16 +26,6 @@ class RecruitResultDisplayer(
         results: List<RecruitResult>,
         source: ScreenshotStartSource,
     ) {
-        if (tags.isEmpty()) {
-            Toaster.show("未识别到公招标签")
-            return
-        }
-
-        if (results.isEmpty()) {
-            Toaster.show("没有可用公招组合")
-            return
-        }
-
         floatWindowController.showResult(tags, results)
     }
 }

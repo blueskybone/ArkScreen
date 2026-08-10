@@ -99,13 +99,57 @@
         </receiver>
 
 
-        <receiver
-            android:name=".ui.widget.WidgetReceiver"
-            android:exported="false">
+          <receiver
+              android:name=".ui.widget.WidgetReceiver"
+              android:exported="false">
             <intent-filter>
                 <action android:name="com.blueskybone.arkscreen.MANUAL_UPDATE" />
             </intent-filter>
-        </receiver>
+          </receiver>
+
+          <receiver
+              android:name=".ui.widget.WidgetNext1"
+              android:exported="false">
+              <intent-filter>
+                  <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+              </intent-filter>
+              <meta-data
+                  android:name="android.appwidget.provider"
+                  android:resource="@xml/widget_next_1_info" />
+          </receiver>
+
+          <receiver
+              android:name=".ui.widget.WidgetNext2"
+              android:exported="false">
+              <intent-filter>
+                  <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+              </intent-filter>
+              <meta-data
+                  android:name="android.appwidget.provider"
+                  android:resource="@xml/widget_next_2_info" />
+          </receiver>
+
+          <receiver
+              android:name=".ui.widget.WidgetNext3"
+              android:exported="false">
+              <intent-filter>
+                  <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+              </intent-filter>
+              <meta-data
+                  android:name="android.appwidget.provider"
+                  android:resource="@xml/widget_next_3_info" />
+          </receiver>
+
+          <receiver
+              android:name=".ui.widget.WidgetNext4"
+              android:exported="false">
+              <intent-filter>
+                  <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+              </intent-filter>
+              <meta-data
+                  android:name="android.appwidget.provider"
+                  android:resource="@xml/widget_next_4_info" />
+          </receiver>
 
         <activity
             android:name=".ui.main.MainActivity"
@@ -120,12 +164,12 @@
 
         <activity
             android:name=".ui.realtime.RealTimeActivity"
-            android:exported="true"
+            android:exported="false"
             android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".ui.account.LoginWeb"
-            android:exported="true"
+            android:exported="false"
             android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
@@ -147,36 +191,40 @@
             android:parentActivityName=".ui.license.OpenSourceLicensesActivity" />
         <activity
             android:name=".ui.character.CharAssets"
-            android:exported="true"
+            android:exported="false"
             android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".ui.gacha.GachaActivity"
-            android:exported="true"
+            android:exported="false"
             android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".ui.recruit.RecruitActivity"
-            android:exported="true"
+            android:exported="false"
             android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".ui.account.AccountMngActivity"
-            android:exported="true"
+            android:exported="false"
             android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".ui.widget.WidgetThemeActivity"
-            android:exported="true"
+            android:exported="false"
             android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
+        <activity
+            android:name=".ui.widget.WidgetTemplateLabActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.widget.WidgetThemeActivity" />
 
         <activity android:name=".ui.common.WebViewActivity" />
 
         <activity
             android:name=".platform.screenshot.ScreenshotPermissionActivity"
             android:excludeFromRecents="true"
-            android:exported="true"
+            android:exported="false"
             android:launchMode="singleTask"
             android:taskAffinity=""
             android:theme="@style/TranslucentTheme"

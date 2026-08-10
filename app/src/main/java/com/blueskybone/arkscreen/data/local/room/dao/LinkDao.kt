@@ -13,12 +13,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface LinkDao {
     @Insert
-    suspend fun insert(link: Link)
+    suspend fun insert(link: Link): Long
 
-    @Query("SELECT * FROM Link")
-    suspend fun getAll(): List<Link>
-
-    @Query("SELECT * FROM Link")
+    @Query("SELECT * FROM Link ORDER BY id ASC")
     fun getAllFlow(): Flow<List<Link>>
 
     @Query("DELETE FROM Link WHERE id = :id")
@@ -26,14 +23,4 @@ interface LinkDao {
 
     @Query("UPDATE Link SET title = :title, url = :url, icon = :icon WHERE id = :id")
     suspend fun update(id: Long, title: String, url: String, icon: String)
-
-    @Query("SELECT * FROM Link WHERE url = :url")
-    suspend fun getByUrl(url: String): List<Link>
-
-    @Query("UPDATE Link SET title = :title, icon = :icon WHERE url = :url")
-    suspend fun updateByUrl(
-        title: String,
-        url: String,
-        icon: String
-    )
 }

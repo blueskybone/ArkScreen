@@ -3,6 +3,7 @@ package com.blueskybone.arkscreen.ui.common
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -11,6 +12,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.blueskybone.arkscreen.R
+import com.blueskybone.arkscreen.domain.model.link.LinkUrl
 
 /**
  *   Created by blueskybone
@@ -19,10 +21,6 @@ import com.blueskybone.arkscreen.R
 
 class WebViewActivity : AppCompatActivity() {
 
-    /*
-    * const favicon = document.querySelector('link[rel*="icon"]');
-      console.log(favicon ? favicon.href : "");
-    * */
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
     private lateinit var toolbar: Toolbar
@@ -39,22 +37,28 @@ class WebViewActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
-        // WebView设置
-        webView.webViewClient = WebViewClient()
-
         val settings = webView.settings
-        settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-        settings.cacheMode = WebSettings.LOAD_NO_CACHE // 默认缓存模式
-        settings.loadWithOverviewMode = true // 适应网页大小
+        settings.mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
+        settings.cacheMode = WebSettings.LOAD_DEFAULT
+        settings.loadWithOverviewMode = true
         settings.domStorageEnabled = true
         settings.useWideViewPort = true
         settings.javaScriptEnabled = true
         settings.displayZoomControls = false
         settings.builtInZoomControls = false
-        settings.allowFileAccess = true
+        settings.allowFileAccess = false
+        settings.allowContentAccess = false
         settings.loadsImagesAutomatically = true
 
         webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?,
+            ): Boolean {
+                val targetUrl = request?.url?.toString() ?: return true
+                return LinkUrl.normalize(targetUrl).isFailure
+            }
+
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 toolbar.title = view?.title
@@ -72,7 +76,13 @@ class WebViewActivity : AppCompatActivity() {
             }
         }
 
-        val url = intent.getStringExtra("url") ?: "https://prts.wiki/w/"
+        val url = intent.getStringExtra(EXTRA_URL)
+            ?.let(LinkUrl::normalize)
+            ?.getOrNull()
+            ?: run {
+                finish()
+                return
+            }
         webView.loadUrl(url)
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -88,7 +98,14 @@ class WebViewActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+        webView.stopLoading()
+        webView.loadUrl("about:blank")
+        webView.removeAllViews()
         webView.destroy()
+        super.onDestroy()
+    }
+
+    companion object {
+        const val EXTRA_URL = "url"
     }
 }

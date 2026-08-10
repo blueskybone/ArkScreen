@@ -1,10 +1,5 @@
 package com.blueskybone.arkscreen.domain
 
-import retrofit2.HttpException
-import java.io.IOException
-import java.net.ConnectException
-import java.net.UnknownHostException
-
 /**
  * Created by blueskybone
  * Date: 2026/3/10

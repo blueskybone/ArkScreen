@@ -5,7 +5,6 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,8 +20,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.databinding.CardApCacheBinding
@@ -31,6 +28,7 @@ import com.blueskybone.arkscreen.databinding.FragmentHomeBinding
 import com.blueskybone.arkscreen.domain.model.account.Account
 import com.blueskybone.arkscreen.domain.model.account.AccountSk
 import com.blueskybone.arkscreen.domain.model.cache.ApCache
+import com.blueskybone.arkscreen.domain.service.AppClock
 import com.blueskybone.arkscreen.domain.usecase.account.SyncAccountSkUseCase
 import com.blueskybone.arkscreen.ui.account.AccountMngActivity
 import com.blueskybone.arkscreen.ui.account.LoginWeb
@@ -45,7 +43,6 @@ import com.blueskybone.arkscreen.ui.common.bindinginfo.GachaStat
 import com.blueskybone.arkscreen.ui.common.bindinginfo.GameStarter
 import com.blueskybone.arkscreen.ui.common.bindinginfo.OpeAssets
 import com.blueskybone.arkscreen.ui.common.bindinginfo.RecruitCal
-import com.blueskybone.arkscreen.ui.common.bindinginfo.UserManual
 import com.blueskybone.arkscreen.ui.common.view.MenuDialog
 import com.blueskybone.arkscreen.ui.gacha.GachaActivity
 import com.blueskybone.arkscreen.ui.main.common.HomeBannerController
@@ -53,9 +50,9 @@ import com.blueskybone.arkscreen.ui.main.common.HomeDialogController
 import com.blueskybone.arkscreen.ui.realtime.RealTimeActivity
 import com.blueskybone.arkscreen.ui.recruit.RecruitActivity
 import com.blueskybone.arkscreen.platform.schedule.AttendanceWorkScheduler
-import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
-import com.blueskybone.arkscreen.util.TimeUtils.getLastUpdateStr
-import com.blueskybone.arkscreen.util.TimeUtils.getRemainTimeStr
+import com.blueskybone.arkscreen.platform.time.TimeUtils.getCurrentTs
+import com.blueskybone.arkscreen.platform.time.TimeUtils.getLastUpdateStr
+import com.blueskybone.arkscreen.platform.time.TimeUtils.getRemainTimeStr
 import com.blueskybone.arkscreen.util.launchApp
 import com.blueskybone.arkscreen.ui.common.openLink
 import com.hjq.toast.Toaster
@@ -71,6 +68,7 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 class Home : Fragment() {
 
     private val prefManager: SettingPrefManager by getKoin().inject()
+    private val appClock: AppClock by getKoin().inject()
     private val viewModel: MainModel by activityViewModel()
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -82,7 +80,9 @@ class Home : Fragment() {
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        if (!granted) Toaster.show("未授予通知权限，签到仍会继续")
+        if (!granted) {
+            Toaster.show(getString(R.string.notification_permission_denied_attendance_continues))
+        }
         enqueueManualAttendance()
     }
 
@@ -139,13 +139,14 @@ class Home : Fragment() {
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
                 val token = data?.getStringExtra("token")
-                if (!token.isNullOrBlank()) {
+                val dId = data?.getStringExtra("dId")
+                if (!token.isNullOrBlank() && !dId.isNullOrBlank()) {
                     Toaster.show(getString(R.string.getting_info))
                     viewModel.loginSkland(
-                        SyncAccountSkUseCase.LoginWay.Token(token)
+                        SyncAccountSkUseCase.LoginWay.Token(token, dId)
                     )
                 } else {
-                    Toaster.show("登录结果为空")
+                    Toaster.show(getString(R.string.login_result_empty))
                 }
             }
         }
@@ -161,6 +162,7 @@ class Home : Fragment() {
         return object : AccountItemAction {
             override fun onClick(account: Account) {
                 viewModel.setDefaultAccountSk(account as AccountSk)
+                dialogController.dismissPopup()
                 Toaster.show(getString(R.string.set_default_account, account.nickName))
             }
 
@@ -186,18 +188,9 @@ class Home : Fragment() {
     private fun renderAccount(state: MainUiState) {
         val currentAccount = state.currentAccountSk
         binding.CurrentAccount.text =
-            currentAccount?.nickName ?: getString(R.string.no_login)
-        binding.ApCacheCard.AccountName.text = currentAccount?.nickName.orEmpty()
-        binding.ApCacheCard.AccountName.visibility =
-            if (currentAccount == null) View.GONE else View.VISIBLE
-        binding.ApCacheCard.Server.visibility =
-            if (currentAccount == null) View.GONE else View.VISIBLE
-        currentAccount?.let { account ->
-            binding.ApCacheCard.Server.setText(
-                if (account.official) R.string.official_server else R.string.bilibili_server
-            )
-        }
-
+            currentAccount?.nickName ?: getString(R.string.login_account)
+        binding.LoginGuide.visibility =
+            if (currentAccount == null) View.VISIBLE else View.GONE
         accountAdapter.submitList(state.accountSkList)
     }
 
@@ -210,20 +203,52 @@ class Home : Fragment() {
 
     private fun renderLinks(state: MainUiState) {
         linkAdapter.submitList(state.links)
-        binding.LinkPreference.visibility =
+        binding.LinkCard.visibility =
             if (state.links.isEmpty()) View.GONE else View.VISIBLE
     }
 
     private fun renderBanner(state: MainUiState) {
         val videos = state.biliVideos
+        binding.BannerCard.visibility = View.VISIBLE
         if (videos.isEmpty()) return
         bannerController.submitList(videos)
     }
 
     private fun renderApCache(state: MainUiState) {
-        val value = state.apCache ?: return
-        if (!value.isnull) {
-            binding.ApCacheCard.bind(value)
+        val card = binding.ApCacheCard
+        val cacheOwner = state.cacheAccountInfo
+        card.AccountName.text = cacheOwner?.nickname.orEmpty()
+        card.AccountName.visibility = if (cacheOwner == null) View.GONE else View.VISIBLE
+        card.Server.visibility = if (cacheOwner == null) View.GONE else View.VISIBLE
+        cacheOwner?.let { owner ->
+            card.Server.setText(
+                if (owner.official) R.string.official_server else R.string.bilibili_server
+            )
+        }
+        val account = state.currentAccountSk
+        val value = state.apCache
+        when {
+            account == null -> {
+                card.RestTime.setText(R.string.home_realtime_login_required)
+                card.LastSync.setText(R.string.home_realtime_login_hint)
+                card.Current.visibility = View.GONE
+                card.Max.visibility = View.GONE
+                card.SanityProgress.visibility = View.GONE
+                card.Freshness.visibility = View.GONE
+            }
+            value == null || value.isnull -> {
+                card.RestTime.setText(R.string.home_realtime_not_synced)
+                card.LastSync.setText(R.string.home_realtime_sync_hint)
+                card.Current.visibility = View.GONE
+                card.Max.visibility = View.GONE
+                card.SanityProgress.visibility = View.GONE
+                card.Freshness.visibility = View.GONE
+            }
+            else -> {
+                card.Current.visibility = View.VISIBLE
+                card.Max.visibility = View.VISIBLE
+                card.bind(value)
+            }
         }
     }
 
@@ -251,21 +276,59 @@ class Home : Fragment() {
             }
         }
 
+        binding.LoginNow.setOnClickListener {
+            dialogController.launchWebLogin()
+        }
+
         binding.RecruitCalc.setup(RecruitCal)
-        binding.OpeAssets.setup(OpeAssets)
-        binding.GachaStat.setup(GachaStat)
         binding.Attendance.setup(Attendance)
         binding.AccountManager.setup(AccountManager)
         binding.GameStarter.setup(GameStarter)
-        binding.UserManual.setup(UserManual)
 
         binding.RecruitCalc.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), RecruitActivity::class.java))
         }
-        binding.OpeAssets.Layout.setOnClickListener {
+        binding.CoreAssets.apply {
+            Icon.setImageResource(OpeAssets.icon)
+            ImageViewCompat.setImageTintList(
+                Icon,
+                android.content.res.ColorStateList.valueOf(
+                    com.google.android.material.color.MaterialColors.getColor(
+                        Icon,
+                        com.google.android.material.R.attr.colorPrimary,
+                    )
+                ),
+            )
+            ViewCompat.setBackgroundTintList(
+                Icon,
+                ContextCompat.getColorStateList(requireContext(), R.color.sec_con),
+            )
+            Title.setText(OpeAssets.title)
+            Subtitle.setText(R.string.assets_entry_summary)
+        }
+        binding.CoreGacha.apply {
+            Icon.setImageResource(GachaStat.icon)
+            ImageViewCompat.setImageTintList(
+                Icon,
+                android.content.res.ColorStateList.valueOf(
+                    com.google.android.material.color.MaterialColors.getColor(
+                        Icon,
+                        com.google.android.material.R.attr.colorPrimary,
+                    )
+                ),
+            )
+            ViewCompat.setBackgroundTintList(
+                Icon,
+                ContextCompat.getColorStateList(requireContext(), R.color.sec_con),
+            )
+            Title.setText(GachaStat.title)
+            Subtitle.setText(R.string.gacha_entry_summary)
+        }
+
+        binding.CoreAssets.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), CharAssets::class.java))
         }
-        binding.GachaStat.Layout.setOnClickListener {
+        binding.CoreGacha.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), GachaActivity::class.java))
         }
         binding.AccountManager.Layout.setOnClickListener {
@@ -277,19 +340,10 @@ class Home : Fragment() {
                 Toaster.show(getString(R.string.no_login))
                 return@setOnClickListener
             }
-            this.requireContext().launchApp(packageName) { Toaster.show("未检测到游戏安装") }
-        }
-        binding.UserManual.Layout.setOnClickListener {
-            val cvId = "40623349"
-            try {
-                startActivity(Intent(Intent.ACTION_VIEW, "bilibili://article/$cvId".toUri()))
-            } catch (_: Exception) {
-                startActivity(
-                    Intent(Intent.ACTION_VIEW, "https://www.bilibili.com/read/cv$cvId".toUri())
-                )
+            this.requireContext().launchApp(packageName) {
+                Toaster.show(getString(R.string.game_not_found))
             }
         }
-
         binding.AddLink.setOnClickListener {
             dialogController.showAddLinkDialog()
         }
@@ -298,22 +352,7 @@ class Home : Fragment() {
             startManualAttendance()
         }
 
-        binding.ExLinks.layoutManager = GridLayoutManager(requireContext(), 4)
         binding.ExLinks.adapter = linkAdapter
-        if (binding.ExLinks.itemDecorationCount == 0) {
-            binding.ExLinks.addItemDecoration(object : RecyclerView.ItemDecoration() {
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    val params = view.layoutParams as RecyclerView.LayoutParams
-                    params.width = parent.width / 4
-                    view.layoutParams = params
-                }
-            })
-        }
     }
 
     private fun startManualAttendance() {
@@ -332,10 +371,9 @@ class Home : Fragment() {
     private fun enqueueManualAttendance() {
         AttendanceWorkScheduler.enqueue(
             context = requireContext(),
-            force = true,
             allowRepeatToday = true,
         )
-        Toaster.show("签到开始，可在通知栏查看进度")
+        Toaster.show(getString(R.string.attendance_started))
     }
 
     private val linkListener = object : ItemListener {
@@ -360,24 +398,45 @@ class Home : Fragment() {
     }
 
     private fun CardApCacheBinding.bind(value: ApCache) {
-        val now = getCurrentTs()
-        val lastSyncStr = getLastUpdateStr(now - value.lastSyncTs).let {
+        val now = getCurrentTs(appClock)
+        val cacheAge = (now - value.lastSyncTs).coerceAtLeast(0)
+        val lastSyncStr = getLastUpdateStr(cacheAge).let {
             if (it.isEmpty()) "刚刚" else "${it}前"
         }
 
         LastSync.text = lastSyncStr
 
-        if (value.current >= value.max || now > value.recoverTime) {
-            Current.text = value.max.toString()
-            RestTime.text = getString(R.string.recovered)
+        val current = when {
+            value.current >= value.max -> value.current
+            now >= value.recoverTime -> value.max
+            else -> value.max - ((value.recoverTime - now).toInt() / (60 * 6) + 1)
+        }.coerceAtLeast(0)
+
+        Current.text = current.toString()
+        RestTime.text = if (current >= value.max) {
+            getString(R.string.home_sanity_full)
         } else {
-            val currentStr =
-                (value.max - ((value.recoverTime - now).toInt() / (60 * 6) + 1)).toString()
-            Current.text = currentStr
-            RestTime.text = getRemainTimeStr(value.recoverTime - now)
+            getString(
+                R.string.home_sanity_recovery,
+                getRemainTimeStr(value.recoverTime - now),
+            )
         }
 
         Max.text = "/${value.max}"
+        SanityProgress.visibility = View.VISIBLE
+        SanityProgress.max = value.max.coerceAtLeast(1)
+        SanityProgress.setProgressCompat(current.coerceAtMost(SanityProgress.max), true)
+
+        val stale = cacheAge >= CACHE_STALE_SECONDS
+        Freshness.visibility = if (stale) View.VISIBLE else View.GONE
+        if (stale) {
+            Freshness.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                ContextCompat.getColor(requireContext(), R.color.status_warning_container)
+            )
+            Freshness.setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.status_warning_content)
+            )
+        }
     }
 
     private fun ChipRoundBinding.setup(funcChipInfo: FuncChipInfo) {
@@ -400,6 +459,10 @@ class Home : Fragment() {
         binding.ExLinks.adapter = null
         _binding = null
         super.onDestroyView()
+    }
+
+    private companion object {
+        const val CACHE_STALE_SECONDS = 24 * 60 * 60L
     }
 
 }

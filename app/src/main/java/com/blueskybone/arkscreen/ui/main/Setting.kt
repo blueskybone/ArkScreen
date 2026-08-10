@@ -99,7 +99,7 @@ class Setting : Fragment() {
         PreferenceBinder.bindPreference(
             binding = binding.AppTheme,
             context = requireContext(),
-            icon = R.drawable.ic_palette,
+            icon = R.drawable.ic_theme_mode,
             listInfo = AppTheme,
             pref = prefManager.appTheme,
             onClick = appThemeController::applySavedTheme
@@ -141,6 +141,11 @@ class Setting : Fragment() {
             text = R.string.donate
         )
 
+        binding.Manual.apply {
+            Title.setText(R.string.manual)
+            Icon.setImageResource(R.drawable.ic_manual_book)
+        }
+
         binding.CheckUpdate.Layout.setOnClickListener {
             model.checkAppUpdate(showNoUpdate = true)
         }
@@ -150,7 +155,7 @@ class Setting : Fragment() {
         }
 
         binding.GroupChat.Layout.setOnClickListener {
-            val groupId = "924153470"
+            val groupId = model.uiState.value.appRemoteConfig.qqGroupId
             try {
                 val url =
                     "mqqapi://card/show_pslcard?src_type=internal&card_type=group&uin=$groupId"
@@ -194,8 +199,8 @@ class Setting : Fragment() {
                 }
             }.show()
         }
-        binding.Manual.setOnClickListener {
-            val cvId = "40623349"
+        binding.Manual.Layout.setOnClickListener {
+            val cvId = model.uiState.value.appRemoteConfig.manualCvId
             try {
                 val intent = Intent(Intent.ACTION_VIEW, "bilibili://article/$cvId".toUri())
                 startActivity(intent)
@@ -218,7 +223,7 @@ class Setting : Fragment() {
                             saveDrawableToGallery(context, R.drawable.wechat)
                             saveDrawableToGallery(context, R.drawable.zfb)
                         }
-                        Toaster.show("已保存到本地")
+                        Toaster.show(getString(R.string.saved_to_local))
                     }
                 }.show()
         }
@@ -229,12 +234,12 @@ class Setting : Fragment() {
             serverTimeCalibrator.calibrate()
                 .onSuccess { offsetSeconds ->
                     val signedOffset = if (offsetSeconds >= 0) "+$offsetSeconds" else "$offsetSeconds"
-                    Toaster.show("时间校准完成：$signedOffset 秒")
+                    Toaster.show(getString(R.string.time_calibration_completed, signedOffset))
                 }
                 .onFailure { error ->
                     prefManager.timeCorrect.set(false)
                     binding.TimeCorrect.Switch.isChecked = false
-                    Toaster.show(error.message ?: "时间校准失败")
+                    Toaster.show(error.message ?: getString(R.string.time_calibration_failed))
                     Timber.w("Server time calibration failed: %s", error.message)
                 }
         }

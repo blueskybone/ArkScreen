@@ -52,18 +52,4 @@
     </style>
 
 
-    <style name="Theme.ChipOverlaySuggestion" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorOnSurface">@color/dark_on_surface</item>
-        <item name="colorOutline">@color/cyan_trans</item>
-        <item name="colorSurface">@color/cyan_trans</item>
-        <item name="chipIconTint">@color/dark_on_surface</item>
-    </style>
-
-    <style name="Widget.MyApp.Chip.Suggestion" parent="Widget.Material3.Chip.Assist">
-        <item name="android:theme">@style/Theme.ChipOverlaySuggestion</item>
-        <item name="chipStartPadding">4dp</item>
-        <item name="chipEndPadding">4dp</item>
-        <item name="textStartPadding">4dp</item>
-        <item name="textEndPadding">4dp</item>
-    </style>
 </resources>

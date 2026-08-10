@@ -1,6 +1,7 @@
 package com.blueskybone.arkscreen.ui.gacha
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ class GachaTextFragment : Fragment() {
     private var records: List<Record> = emptyList()
     private var pools: List<GachaPoolStats> = emptyList()
     private var selectedPoolId: String = "ALL"
+    private var pendingScrollState: Parcelable? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,6 +37,7 @@ class GachaTextFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         adapter = GachaTextAdapter(requireContext(), PAGE_SIZE)
+        pendingScrollState = savedInstanceState?.getParcelable(KEY_SCROLL_STATE)
         _binding = FragmentGachaTextBinding.inflate(inflater, container, false)
         setupBinding()
         collectUiState()
@@ -56,8 +59,12 @@ class GachaTextFragment : Fragment() {
                 model.selectPool(pool.poolId)
             }
         }
-        binding.FilterSixStar.setOnCheckedChangeListener { _, _ -> applyFilters() }
-        binding.FilterNew.setOnCheckedChangeListener { _, _ -> applyFilters() }
+        binding.FilterSixStar.setOnCheckedChangeListener { _, _ ->
+            updateFilters()
+        }
+        binding.FilterNew.setOnCheckedChangeListener { _, _ ->
+            updateFilters()
+        }
     }
 
     private fun collectUiState() {
@@ -68,12 +75,26 @@ class GachaTextFragment : Fragment() {
                         records = snapshot.records
                         pools = snapshot.gachaPoolStats
                         selectedPoolId = state.selectedPoolId
+                        if (binding.FilterSixStar.isChecked != state.filterSixStar) {
+                            binding.FilterSixStar.isChecked = state.filterSixStar
+                        }
+                        if (binding.FilterNew.isChecked != state.filterNew) {
+                            binding.FilterNew.isChecked = state.filterNew
+                        }
                         renderPoolDropdown()
                         applyFilters()
                     }
                 }
             }
         }
+    }
+
+    private fun updateFilters() {
+        model.setRawDataFilters(
+            sixStarOnly = binding.FilterSixStar.isChecked,
+            newOnly = binding.FilterNew.isChecked,
+        )
+        applyFilters()
     }
 
     private fun renderPoolDropdown() {
@@ -109,6 +130,18 @@ class GachaTextFragment : Fragment() {
 
         binding.ResultCount.text = getString(R.string.gacha_result_count, filtered.size)
         adapter.refreshData(filtered)
+        pendingScrollState?.let { state ->
+            binding.RecyclerView.layoutManager?.onRestoreInstanceState(state)
+            pendingScrollState = null
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable(
+            KEY_SCROLL_STATE,
+            binding.RecyclerView.layoutManager?.onSaveInstanceState(),
+        )
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
@@ -122,5 +155,6 @@ class GachaTextFragment : Fragment() {
     private companion object {
         const val PAGE_SIZE = 100
         const val SIX_STAR_RARITY = 5
+        const val KEY_SCROLL_STATE = "gacha_text_scroll_state"
     }
 }

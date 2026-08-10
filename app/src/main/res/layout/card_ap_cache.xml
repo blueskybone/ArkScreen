@@ -18,7 +18,6 @@
             android:ellipsize="end"
             android:maxWidth="160dp"
             android:maxLines="1"
-            android:textAppearance="?attr/textAppearanceBody2"
             android:textColor="?android:attr/textColorPrimary"
             android:textStyle="bold" />
 
@@ -52,24 +51,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <ImageView
-            android:layout_margin="5dp"
-            android:layout_gravity="start|center"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:padding="5dp"
-            android:src="@drawable/ic_time"/>
         <TextView
             android:id="@+id/RestTime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="start|center"
-            android:gravity="bottom"
             android:layout_weight="1"
-            android:text="暂无数据"
-            android:textAppearance="?attr/textAppearanceBody1" />
+            android:text="@string/home_realtime_not_synced"
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:textColor="?android:attr/textColorSecondary" />
 
         <TextView
             android:id="@+id/Current"
@@ -90,15 +83,45 @@
             android:textAppearance="?attr/textAppearanceBody1" />
     </LinearLayout>
 
-    <View
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/SanityProgress"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider" />
+        android:layout_height="4dp"
+        android:layout_marginTop="7dp"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="0"
+        android:visibility="gone"
+        app:trackCornerRadius="2dp"
+        app:trackThickness="4dp" />
 
-    <TextView
-        android:id="@+id/LastSync"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:padding="5dp" />
+        android:layout_marginTop="7dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/LastSync"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:textColor="?android:attr/textColorSecondary" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/Freshness"
+            style="@style/Widget.ArkScreen.StatusChip"
+            android:layout_height="20dp"
+            android:paddingStart="7dp"
+            android:paddingEnd="7dp"
+            android:text="@string/data_may_be_stale"
+            android:textSize="10sp"
+            android:visibility="gone" />
+    </LinearLayout>
 </LinearLayout>

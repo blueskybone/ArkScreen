@@ -31,7 +31,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -172,10 +173,6 @@ tasks.configureEach {
     }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    exclude("**/legacy/**")
-}
-
 dependencies {
 
     // AndroidX 核心
@@ -215,7 +212,6 @@ dependencies {
     implementation(libs.coil)
 
     // 其他工具库
-    implementation(libs.markwon.core)
     implementation(libs.flow.layout)
     implementation(libs.timber)
     implementation(libs.easy.window)

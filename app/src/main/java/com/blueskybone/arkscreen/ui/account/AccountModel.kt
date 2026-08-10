@@ -93,9 +93,9 @@ class AccountModel(
         }
     }
 
-    fun loginSklandByToken(token: String) {
+    fun loginSklandByToken(token: String, dId: String? = null) {
         execute {
-            val way = SyncAccountSkUseCase.LoginWay.Token(token)
+            val way = SyncAccountSkUseCase.LoginWay.Token(token, dId)
             val result = syncAccountSkUseCase(way)
             result.fold(
                 onSuccess = { cnt ->

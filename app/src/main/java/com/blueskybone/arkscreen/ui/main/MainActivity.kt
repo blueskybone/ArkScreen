@@ -13,6 +13,7 @@ import android.view.MenuItem
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
 import androidx.core.net.toUri
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
@@ -23,7 +24,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.data.local.pref.InnerPrefManager
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.databinding.ActivityMainBinding
 import com.blueskybone.arkscreen.platform.installer.ApkInstaller
@@ -32,8 +32,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import org.koin.java.KoinJavaComponent.getKoin
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 
 class MainActivity : AppCompatActivity() {
@@ -41,12 +44,14 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val KEY_PENDING_INSTALL_APK = "pending_install_apk"
         private const val KEY_CURRENT_PAGE = "current_page"
+        const val ACTION_INSTALL_DOWNLOADED_UPDATE =
+            "com.blueskybone.arkscreen.action.INSTALL_DOWNLOADED_UPDATE"
+        const val EXTRA_APK_PATH = "downloaded_update_apk_path"
     }
 
     private val model: MainModel by viewModel()
     private lateinit var binding: ActivityMainBinding
 
-    private val prefManager: InnerPrefManager by getKoin().inject()
     private val settingPrefManager: SettingPrefManager by getKoin().inject()
     private val apkInstaller: ApkInstaller by getKoin().inject()
     private val downloadNotificationController: DownloadNotificationController by getKoin().inject()
@@ -61,6 +66,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private var pendingInstallApkPath: String? = null
+    private var updateDialog: AlertDialog? = null
 
     override fun onResume() {
         super.onResume()
@@ -75,11 +81,25 @@ class MainActivity : AppCompatActivity() {
         pendingInstallApkPath = savedInstanceState?.getString(KEY_PENDING_INSTALL_APK)
         setContentView(binding.root)
         observeEvent()
+        observeUpdateState()
+        observeDownloadState()
         setUpNavigation(savedInstanceState?.getInt(KEY_CURRENT_PAGE) ?: 0)
         if (settingPrefManager.autoUpdateApp.get()) {
             model.checkAppUpdate()
         }
-        requestOverlayPermission(this)
+        handleInstallIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleInstallIntent(intent)
+    }
+
+    private fun handleInstallIntent(intent: Intent?) {
+        if (intent?.action != ACTION_INSTALL_DOWNLOADED_UPDATE) return
+        intent.getStringExtra(EXTRA_APK_PATH)?.let(::requestInstall)
+        intent.removeExtra(EXTRA_APK_PATH)
     }
 
 
@@ -88,27 +108,6 @@ class MainActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 model.event.collect { event ->
                     when (event) {
-                        is MainEvent.ShowUpdateDialog -> {
-                            showUpdateDialog(
-                                version = event.version,
-                                changelog = event.changelog,
-                                url = event.url
-                            )
-                        }
-
-                        MainEvent.DownloadStarted -> downloadNotificationController.showStarted()
-                        is MainEvent.DownloadProgress -> {
-                            downloadNotificationController.updateProgress(event.percent)
-                        }
-                        is MainEvent.DownloadCompleted -> {
-                            downloadNotificationController.showCompleted()
-                            requestInstall(event.filePath)
-                        }
-                        is MainEvent.DownloadFailed -> {
-                            downloadNotificationController.showFailed()
-                            Toaster.show(event.message)
-                        }
-
                         is MainEvent.ShowError -> {
                             Toaster.show(event.message)
                         }
@@ -122,11 +121,54 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun observeUpdateState() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                model.uiState
+                    .map { it.pendingUpdate }
+                    .distinctUntilChanged()
+                    .collect { update ->
+                        updateDialog?.dismiss()
+                        updateDialog = update?.let(::showUpdateDialog)
+                    }
+            }
+        }
+    }
+
+    private fun observeDownloadState() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                model.uiState
+                    .map { it.downloadState }
+                    .distinctUntilChanged()
+                    .collect { state ->
+                        when (state) {
+                            AppDownloadUiState.Idle -> Unit
+                            is AppDownloadUiState.Downloading -> {
+                                state.percent?.let(downloadNotificationController::updateProgress)
+                                    ?: downloadNotificationController.showStarted()
+                            }
+                            is AppDownloadUiState.Completed -> {
+                                downloadNotificationController.showCompleted(state.filePath)
+                                requestInstall(state.filePath)
+                                model.acknowledgeDownloadResult()
+                            }
+                            is AppDownloadUiState.Failed -> {
+                                downloadNotificationController.showFailed()
+                                Toaster.show(state.message)
+                                model.acknowledgeDownloadResult()
+                            }
+                        }
+                    }
+            }
+        }
+    }
+
     private fun requestInstall(filePath: String) {
         if (!apkInstaller.canInstallUnknownApps()) {
             pendingInstallApkPath = filePath
             apkInstaller.openUnknownAppSourcesSettings()
-            Toaster.show("请允许安装未知来源应用后继续安装")
+            Toaster.show(getString(R.string.unknown_sources_permission_required))
             return
         }
         installApk(filePath)
@@ -135,20 +177,28 @@ class MainActivity : AppCompatActivity() {
     private fun installApk(filePath: String) {
         runCatching { apkInstaller.install(filePath) }
             .onSuccess { pendingInstallApkPath = null }
-            .onFailure { Toaster.show(it.message ?: "安装包打开失败") }
+            .onFailure { Toaster.show(it.message ?: getString(R.string.open_apk_failed)) }
     }
 
-    private fun showUpdateDialog(version: String, changelog: String, url: String) {
-        MaterialAlertDialogBuilder(this).setTitle(version).setMessage(changelog)
+    private fun showUpdateDialog(update: PendingAppUpdate): AlertDialog {
+        return MaterialAlertDialogBuilder(this)
+            .setTitle(update.version)
+            .setMessage(update.changelog)
             .setNegativeButton(R.string.cancel, null)
             .setPositiveButton(getString(R.string.download)) { _, _ ->
-                try {
-                    model.downloadApp(url)
-                } catch (e: Exception) {
-                    Toaster.show(getString(R.string.illegal_url))
-                    e.printStackTrace()
+                model.downloadApp(update.url, update.versionCode)
+                Toaster.show(getString(R.string.download_started))
+            }
+            .create()
+            .also { dialog ->
+                dialog.setOnCancelListener { model.dismissPendingUpdate() }
+                dialog.setOnShowListener {
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
+                        model.dismissPendingUpdate()
+                    }
                 }
-            }.show()
+                dialog.show()
+            }
     }
 
     private fun setUpNavigation(initialPage: Int) {
@@ -209,18 +259,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun requestOverlayPermission(context: Context) {
-        if (Settings.canDrawOverlays(context)) return
-        if (!prefManager.warnOverlayPermission.get()) return
-        MaterialAlertDialogBuilder(this).setTitle(getString(R.string.overlay_permission))
-            .setMessage(getString(R.string.acquire_overlay_permission_content))
-            .setNegativeButton(R.string.no_more_warn) { _, _ ->
-                prefManager.warnOverlayPermission.set(false)
-            }
-            .setPositiveButton(getString(R.string.jump_to)) { _, _ -> jumpToPermission(Settings.ACTION_MANAGE_OVERLAY_PERMISSION) }
-            .show()
-    }
-
     fun jumpToPermission(permission: String) {
         try {
             val intent = Intent(
@@ -229,8 +267,8 @@ class MainActivity : AppCompatActivity() {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intentActivityResultLauncher.launch(intent)
         } catch (e: Exception) {
-            e.printStackTrace()
-            Toaster.show("无法打开页面，请手动设置")
+            Timber.w(e, "Failed to open permission settings")
+            Toaster.show(getString(R.string.open_settings_failed))
         }
     }
 
@@ -243,7 +281,7 @@ class MainActivity : AppCompatActivity() {
             }
             context.startActivity(intent)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.w(e, "Failed to open notification settings")
             try {
                 // 回退到应用详情页面
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
@@ -252,7 +290,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 context.startActivity(intent)
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.w(e, "Failed to open application details settings")
                 // 最终回退到系统设置主页
                 val intent = Intent(Settings.ACTION_SETTINGS).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -268,8 +306,8 @@ class MainActivity : AppCompatActivity() {
             intent.action = Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
             startActivity(intent)
         } catch (e: Exception) {
-            e.printStackTrace()
-            Toaster.show("无法打开电池优化设置页面")
+            Timber.w(e, "Failed to open battery optimization settings")
+            Toaster.show(getString(R.string.open_battery_optimization_failed))
         }
     }
 }

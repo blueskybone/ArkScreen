@@ -52,7 +52,13 @@ class CheckAppUpdateUseCaseTest {
     ) : AppUpdateRepository {
         override suspend fun checkAppUpdate(): Result<AppUpdateInfo> = result
 
-        override fun downloadApk(url: String, fileName: String): Flow<DownloadStatus> =
+        override fun downloadApk(
+            url: String,
+            expectedVersionCode: Long,
+            fileName: String,
+        ): Flow<DownloadStatus> =
             emptyFlow()
+
+        override fun resumeApkDownload(): Flow<DownloadStatus>? = null
     }
 }

@@ -14,14 +14,20 @@ class AttendanceNotificationController(context: Context) {
 
     init {
         manager.createNotificationChannel(
-            NotificationChannel(CHANNEL_ID, "签到通知", NotificationManager.IMPORTANCE_DEFAULT)
+            NotificationChannel(
+                CHANNEL_ID,
+                appContext.getString(R.string.attendance_notification_channel),
+                NotificationManager.IMPORTANCE_DEFAULT,
+            )
         )
     }
 
     fun showProgress(index: Int, total: Int, accountName: String) {
         val notification = NotificationCompat.Builder(appContext, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("正在签到 ($index/$total)")
+            .setContentTitle(
+                appContext.getString(R.string.attendance_notification_progress, index, total)
+            )
             .setContentText(accountName)
             .setProgress(total, index - 1, false)
             .setOnlyAlertOnce(true)
@@ -31,26 +37,47 @@ class AttendanceNotificationController(context: Context) {
     }
 
     fun showAccountResult(result: AttendanceAccountResult) {
-        val title = if (result.isSuccess) "签到成功" else "签到失败"
+        val title = appContext.getString(
+            if (result.isSuccess) R.string.attendance_success else R.string.attendance_failed
+        )
         notify(title, "${result.accountName}：${result.displayMessage()}")
     }
 
     fun showFailure(message: String) {
-        notify("签到失败", message.substringAfterLast(": ").ifBlank { "未知错误" })
+        notify(
+            appContext.getString(R.string.attendance_failed),
+            message.substringAfterLast(": ")
+                .ifBlank { appContext.getString(R.string.attendance_unknown_error) },
+        )
     }
 
     fun showNoAccounts() {
-        notify("未执行签到", "没有可签到的账号")
+        notify(
+            appContext.getString(R.string.attendance_not_run),
+            appContext.getString(R.string.attendance_no_accounts),
+        )
     }
 
     fun showSummary(summary: AttendanceSummary) {
-        val title = if (summary.isSuccess) "签到完成" else "签到部分失败"
-        val summaryText = "成功 ${summary.successCount}，失败 ${summary.failureCount}"
+        val title = appContext.getString(
+            if (summary.isSuccess) {
+                R.string.attendance_completed
+            } else {
+                R.string.attendance_partially_failed
+            }
+        )
+        val summaryText = appContext.getString(
+            R.string.attendance_summary,
+            summary.successCount,
+            summary.failureCount,
+        )
         val style = NotificationCompat.InboxStyle()
             .setBigContentTitle(title)
             .setSummaryText(summaryText)
         summary.results.forEach { result ->
-            val status = if (result.isSuccess) "成功" else "失败"
+            val status = appContext.getString(
+                if (result.isSuccess) R.string.status_success else R.string.status_failed
+            )
             val detail = result.displayMessage()
             style.addLine("${result.accountName}：$status $detail")
         }
@@ -72,7 +99,7 @@ class AttendanceNotificationController(context: Context) {
         return error?.message
             ?.substringAfterLast(": ")
             ?.takeIf { it.isNotBlank() }
-            ?: "签到失败"
+            ?: appContext.getString(R.string.attendance_failed)
     }
 
     private fun notify(title: String, message: String) {

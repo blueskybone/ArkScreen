@@ -8,7 +8,7 @@
     <item
         android:id="@+id/navigation_function"
         android:icon="@drawable/ic_layer"
-        android:title="@string/config" />
+        android:title="@string/function" />
 
     <item
         android:id="@+id/navigation_setting"

@@ -16,7 +16,7 @@ import com.blueskybone.arkscreen.databinding.ItemGachaCardBinding
 import com.blueskybone.arkscreen.databinding.ItemGachaRecordsBinding
 import com.blueskybone.arkscreen.ui.gacha.model.GachaPool
 import com.blueskybone.arkscreen.ui.gacha.model.Record
-import com.blueskybone.arkscreen.util.TimeUtils.getTimeStr
+import com.blueskybone.arkscreen.platform.time.TimeUtils.getTimeStr
 import com.google.android.material.color.MaterialColors
 import java.net.URLEncoder
 
@@ -25,6 +25,7 @@ import java.net.URLEncoder
  */
 class GachaAdapter(
     private val context: Context,
+    private val onExpandedChange: (String, Boolean) -> Unit = { _, _ -> },
 ) : ListAdapter<GachaPool, GachaAdapter.PoolViewHolder>(DiffCallback) {
 
     private val expandedPoolIds = mutableSetOf<String>()
@@ -91,6 +92,7 @@ class GachaAdapter(
                     if (!expandedPoolIds.add(pool.poolId)) {
                         expandedPoolIds.remove(pool.poolId)
                     }
+                    onExpandedChange(pool.poolId, pool.poolId in expandedPoolIds)
                     val position = bindingAdapterPosition
                     if (position != RecyclerView.NO_POSITION) notifyItemChanged(position)
                 }
@@ -120,6 +122,13 @@ class GachaAdapter(
                 com.google.android.material.R.attr.colorPrimary,
             )
         }
+    }
+
+    fun restoreExpandedPools(poolIds: Set<String>) {
+        if (expandedPoolIds == poolIds) return
+        expandedPoolIds.clear()
+        expandedPoolIds.addAll(poolIds)
+        notifyDataSetChanged()
     }
 
     private companion object {

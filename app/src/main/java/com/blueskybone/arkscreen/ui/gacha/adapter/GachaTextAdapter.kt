@@ -11,7 +11,7 @@ import com.blueskybone.arkscreen.databinding.ItemGachaRecordsTxtBinding
 import com.blueskybone.arkscreen.ui.character.rarityColorMap
 import com.blueskybone.arkscreen.ui.common.adapter.paging.PagingAdapter
 import com.blueskybone.arkscreen.ui.gacha.model.Record
-import com.blueskybone.arkscreen.util.TimeUtils
+import com.blueskybone.arkscreen.platform.time.TimeUtils
 
 class GachaTextAdapter(
     private val context: Context,

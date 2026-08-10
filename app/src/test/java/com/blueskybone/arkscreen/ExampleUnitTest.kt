@@ -1,8 +1,5 @@
 package com.blueskybone.arkscreen
 
-import com.blueskybone.arkscreen.util.TimeUtils.getRemainTimeMinStr
-import com.blueskybone.arkscreen.util.TimeUtils.getRemainTimeStr
-import com.blueskybone.arkscreen.util.TimeUtils.getTimeStr
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -18,16 +15,6 @@ class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
-    }
-
-    @Test
-    fun test(){
-
-        println(getRemainTimeStr(-1000))
-        println("getRemainTimeStr(-10)")
-        println(getRemainTimeStr(200))
-        println(getRemainTimeMinStr(-200))
-        println(getTimeStr(1747183889000, "MM-dd"))
     }
 
     @Test

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="12dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="12dp"
+    android:paddingBottom="4dp">
+
+    <ImageView
+        android:id="@+id/Poster"
+        android:layout_width="match_parent"
+        android:layout_height="360dp"
+        android:adjustViewBounds="true"
+        android:background="@color/black"
+        android:contentDescription="@string/operator_poster_preview"
+        android:scaleType="fitCenter" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="4dp"
+        android:text="@string/operator_poster_preview_hint"
+        android:textColor="@color/grey_500"
+        android:textSize="12sp" />
+
+</LinearLayout>

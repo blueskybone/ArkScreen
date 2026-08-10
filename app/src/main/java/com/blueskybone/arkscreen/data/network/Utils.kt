@@ -15,7 +15,7 @@ suspend fun <T> safeApiCall(
     val response = try {
         call()
     } catch (e: Exception) {
-        throw Exception("$errorMessage: ${e.message}")
+        throw Exception("$errorMessage: ${e.message}", e)
     }
     if (response.isSuccessful) {
         // 成功，返回 Body，如果 Body 为空，抛出异常

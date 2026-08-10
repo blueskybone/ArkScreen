@@ -42,7 +42,7 @@
                     android:layout_height="16dp"
                     android:layout_gravity="start|top"
                     android:background="@color/trans_grey"
-                    android:contentDescription="@string/text_default"
+                    android:contentDescription="@null"
                     android:padding="1dp" />
             </FrameLayout>
 

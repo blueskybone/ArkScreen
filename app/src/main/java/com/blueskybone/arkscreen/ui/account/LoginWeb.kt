@@ -104,7 +104,9 @@ class LoginWeb : AppCompatActivity() {
         webView.webViewClient = WebViewClient()
 
         val settings = webView.settings
-        settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        // Login pages and their credential APIs are HTTPS-only. Keep JavaScript enabled for the
+        // login bridge, but do not let a remote page load insecure HTTP or local app files.
+        settings.mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
         settings.cacheMode = WebSettings.LOAD_DEFAULT // 默认缓存模式
         settings.domStorageEnabled = true
         settings.loadWithOverviewMode = true // 适应网页大小
@@ -113,7 +115,8 @@ class LoginWeb : AppCompatActivity() {
         settings.javaScriptEnabled = true
         settings.displayZoomControls = false
         settings.builtInZoomControls = false
-        settings.allowFileAccess = true
+        settings.allowFileAccess = false
+        settings.allowContentAccess = false
         settings.loadsImagesAutomatically = true
 
         //cookie
@@ -286,7 +289,6 @@ class LoginWeb : AppCompatActivity() {
         @JavascriptInterface
         fun submitMetaJson(metaJson: String) {
             try {
-                println(metaJson)
                 val jsonNode = jacksonObjectMapper().readTree(metaJson)
                 val xrToken = jsonNode.get("token")?.asText()
                 val token = getCookie(ARK_API_OFFICIAL, "ACCOUNT")

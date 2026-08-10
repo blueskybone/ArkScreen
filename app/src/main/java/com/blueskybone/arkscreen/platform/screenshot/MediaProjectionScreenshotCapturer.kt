@@ -14,6 +14,7 @@ import android.os.Looper
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -81,6 +82,9 @@ class MediaProjectionScreenshotCapturer(
                 }
 
                 ScreenshotResult.Success(bitmap)
+            } catch (e: CancellationException) {
+                releaseSession(stopProjection = true)
+                throw e
             } catch (e: Throwable) {
                 releaseSession(stopProjection = true)
                 ScreenshotResult.Failure(ScreenshotError.SystemError(e))

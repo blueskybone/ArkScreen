@@ -14,10 +14,14 @@ class DownloadAppUpdateUseCase(
 
     operator fun invoke(
         url: String,
+        expectedVersionCode: Long,
     ): Flow<DownloadStatus> {
         return appUpdateRepository.downloadApk(
             url = url,
+            expectedVersionCode = expectedVersionCode,
             fileName = "ArkScreen.apk",
         )
     }
+
+    fun resume(): Flow<DownloadStatus>? = appUpdateRepository.resumeApkDownload()
 }

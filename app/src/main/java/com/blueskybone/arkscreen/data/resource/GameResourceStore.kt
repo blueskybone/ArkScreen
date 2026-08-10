@@ -5,7 +5,7 @@ package com.blueskybone.arkscreen.data.resource
  * Date: 2026/7/9
  */
 
-import com.blueskybone.arkscreen.data.repository.utils.safeResultSync
+import com.blueskybone.arkscreen.data.common.repositoryResultOf
 import com.blueskybone.arkscreen.domain.model.ConfigType
 import com.blueskybone.arkscreen.domain.model.ResourceSyncStatus
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,6 +17,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.concurrent.ConcurrentHashMap
 
 class GameResourceStore(
     private val fileStore: ResourceFileStore,
@@ -24,46 +25,56 @@ class GameResourceStore(
     private val dispatcher: CoroutineDispatcher,
 ) {
 
-    private val cache = mutableMapOf<ConfigType, Any>()
-    private val mutexMap = mutableMapOf<ConfigType, Mutex>()
+    private val cache = ConcurrentHashMap<ConfigType, Any>()
+    private val mutexMap = ConcurrentHashMap<ConfigType, Mutex>()
+    private val checkedTypes = ConcurrentHashMap.newKeySet<ConfigType>()
 
     fun sync(type: ConfigType): Flow<ResourceSyncStatus> = flow {
         emit(ResourceSyncStatus.Checking(type))
 
-        try {
-            val remoteInfo = updateChecker.fetchUpdateInfo(type.xmlUrl)
-            val localVersion = fileStore.getLocalVersion(type)
-
-            if (compareVersions(remoteInfo.version, localVersion) <= 0) {
+        val syncMutex = getMutex(type)
+        syncMutex.withLock {
+            if (type in checkedTypes) {
                 emit(ResourceSyncStatus.UpToDate(type))
-                return@flow
+                return@withLock
             }
 
-            emit(ResourceSyncStatus.Downloading(type))
+            try {
+                val remoteInfo = updateChecker.fetchUpdateInfo(type.xmlUrl)
+                val localVersion = fileStore.getLocalVersion(type)
 
-            fileStore.downloadConfig(
-                fileName = type.fileName,
-                link = remoteInfo.link,
-            )
+                if (compareVersions(remoteInfo.version, localVersion) <= 0) {
+                    checkedTypes += type
+                    emit(ResourceSyncStatus.UpToDate(type))
+                    return@withLock
+                }
 
-            clearCache(type)
+                emit(ResourceSyncStatus.Downloading(type))
 
-            emit(ResourceSyncStatus.Updated(type))
-        } catch (throwable: Throwable) {
-            if (throwable is CancellationException) throw throwable
-            emit(
-                ResourceSyncStatus.Failed(
+                fileStore.downloadConfig(
                     type = type,
-                    throwable = throwable,
+                    link = remoteInfo.link,
                 )
-            )
+
+                clearCache(type)
+                checkedTypes += type
+                emit(ResourceSyncStatus.Updated(type))
+            } catch (throwable: Throwable) {
+                if (throwable is CancellationException) throw throwable
+                emit(
+                    ResourceSyncStatus.Failed(
+                        type = type,
+                        throwable = throwable,
+                    )
+                )
+            }
         }
     }.flowOn(dispatcher)
 
     suspend fun <T : Any> load(
         type: ConfigType,
         parser: (File) -> T,
-    ): Result<T> = safeResultSync {
+    ): Result<T> = repositoryResultOf {
         withContext(dispatcher) {
             val cached = cache[type]
 
@@ -105,9 +116,7 @@ class GameResourceStore(
     }
 
     private fun getMutex(type: ConfigType): Mutex {
-        return mutexMap.getOrPut(type) {
-            Mutex()
-        }
+        return mutexMap.computeIfAbsent(type) { Mutex() }
     }
 
     private fun compareVersions(remote: String, local: String): Int {

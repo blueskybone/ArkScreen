@@ -15,18 +15,23 @@ val viewModelModule = module {
         MainModel(
             repoAcc = get(),
             homeContentRepository = get(),
+            remoteConfigRepository = get(),
             linkRepository = get(),
+            linkMetadataResolver = get(),
             repoSkland = get(),
             checkUpdateUseCase = get(),
             startAppUpdateDownloadUseCase = get(),
-            syncAccountSkUseCase = get()
+            syncAccountSkUseCase = get(),
+            innerPrefManager = get(),
         )
     }
     viewModel {
         GachaModel(
             repo = get(),
             repoAcc = get(),
-            syncRecordsUseCase = get()
+            syncRecordsUseCase = get(),
+            syncAccountGcUseCase = get(),
+            backupCodec = get(),
         )
     }
     viewModel {
@@ -36,14 +41,25 @@ val viewModelModule = module {
             calcResultUseCase = get(),
         )
     }
-    viewModel { RealTimeModel(getRealTimeUseCase = get(), repo = get()) }
+    viewModel {
+        RealTimeModel(
+            getRealTimeUseCase = get(),
+            repo = get(),
+            widgetUpdates = get(),
+            syncAccountSkUseCase = get(),
+            appClock = get(),
+        )
+    }
     viewModel {
         CharModel(
             repo = get(),
             repoAcc = get(),
             getCharAssetsUseCase = get(),
             getCharMissUseCase = get(),
+            buildOperatorPosterUseCase = get(),
             settings = get(),
+            syncAccountSkUseCase = get(),
+            textTranslator = get(),
         )
     }
 }

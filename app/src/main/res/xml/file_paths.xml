@@ -15,4 +15,7 @@
     <cache-path
         name="internal_network_logs"
         path="network_logs/" />
+    <cache-path
+        name="operator_posters"
+        path="operator_posters/" />
 </paths>

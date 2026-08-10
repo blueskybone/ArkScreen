@@ -6,6 +6,7 @@ import com.blueskybone.arkscreen.data.local.room.dao.AccountGcDao
 import com.blueskybone.arkscreen.data.local.room.dao.AccountSkDao
 import com.blueskybone.arkscreen.data.network.ApiService
 import com.blueskybone.arkscreen.data.network.auth.HeaderProvider
+import com.blueskybone.arkscreen.data.network.auth.SklandAuthRemoteDataSource
 import com.blueskybone.arkscreen.data.network.model.BasicInfoResponse
 import com.blueskybone.arkscreen.data.network.model.BindingResponse
 import com.blueskybone.arkscreen.data.network.safeApiCall
@@ -14,23 +15,23 @@ import com.blueskybone.arkscreen.data.repository.mapper.AccountMapper.toEfEntiti
 import com.blueskybone.arkscreen.data.repository.mapper.AccountMapper.toGcEntities
 import com.blueskybone.arkscreen.data.repository.mapper.AccountMapper.toSkEntities
 import com.blueskybone.arkscreen.data.repository.utils.AccountCodec
-import com.blueskybone.arkscreen.data.repository.utils.fetchCredInfo
-import com.blueskybone.arkscreen.data.repository.utils.fetchToken
-import com.blueskybone.arkscreen.data.repository.utils.safeResultSync
-import com.blueskybone.arkscreen.data.repository.utils.safeResultNormal
+import com.blueskybone.arkscreen.data.common.repositoryResult
+import com.blueskybone.arkscreen.data.common.repositoryResultOf
 import com.blueskybone.arkscreen.domain.model.account.AccountType
 import com.blueskybone.arkscreen.domain.repository.AccountRepository
 import com.blueskybone.arkscreen.data.repository.utils.generateDId
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import com.blueskybone.arkscreen.domain.model.account.Account as DomainAcc
 import com.blueskybone.arkscreen.domain.model.account.AccountEf as DomainAccEf
 import com.blueskybone.arkscreen.domain.model.account.AccountGc as DomainAccGc
@@ -41,9 +42,9 @@ class AccountRepositoryImpl(
     private val accountGcDao: AccountGcDao,
     private val accountEfDao: AccountEfDao,
     private val api: ApiService,
-    private val apiAs: ApiService,
     private val apiAk : ApiService,
     private val headerProvider: HeaderProvider,
+    private val authRemoteDataSource: SklandAuthRemoteDataSource,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val preference: InnerPrefManager
 ) : AccountRepository {
@@ -171,8 +172,10 @@ class AccountRepositoryImpl(
                         entity?.let { AccountMapper.toDomain(it) }
                     }
             }
-        }.catch { e ->
-            emit(null)
+        }.retryWhen { error, attempt ->
+            Timber.e(error, "Failed to observe current Skland account; retrying")
+            delay(accountFlowRetryDelay(attempt))
+            true
         }.flowOn(Dispatchers.IO) // 确保数据库操作在 IO 线程
     }
 
@@ -186,8 +189,10 @@ class AccountRepositoryImpl(
                         entity?.let { AccountMapper.toDomain(it) }
                     }
             }
-        }.catch { e ->
-            emit(null)
+        }.retryWhen { error, attempt ->
+            Timber.e(error, "Failed to observe current gacha account; retrying")
+            delay(accountFlowRetryDelay(attempt))
+            true
         }.flowOn(Dispatchers.IO) // 确保数据库操作在 IO 线程
     }
 
@@ -198,22 +203,24 @@ class AccountRepositoryImpl(
     override suspend fun loginByPhonePassword(
         phone: String,
         code: String
-    ): Result<Int> = safeResultSync {
+    ): Result<Int> = repositoryResultOf {
         withContext(Dispatchers.IO) {
             val dId = generateDId()
-            val token = fetchToken(phone, code, dId, headerProvider,  apiAs = apiAs)
-            val credInfo = fetchCredInfo(token, dId, headerProvider, api = api, apiAs= apiAs)
+            val token = authRemoteDataSource.loginByPassword(phone, code, dId)
+            val credInfo = authRemoteDataSource.fetchCredential(token, dId)
             val bindingResp = fetchPlayerBinding(credInfo.cred, credInfo.token, dId)
             handleBindingResponse(bindingResp, token, dId)
         }
     }
 
-    override suspend fun loginByToken(token: String): Result<Int> = safeResultSync {
+    override suspend fun loginByToken(token: String, dId: String?): Result<Int> = repositoryResultOf {
         withContext(Dispatchers.IO) {
-            val dId = generateDId()
-            val credInfo = fetchCredInfo(token, dId, headerProvider,  api = api, apiAs= apiAs)
-            val bindingResp = fetchPlayerBinding(credInfo.cred, credInfo.token, dId)
-            handleBindingResponse(bindingResp, token, dId)
+            val resolvedDId = dId?.takeIf(String::isNotBlank) ?: generateDId()
+            val credInfo =
+                authRemoteDataSource.fetchCredential(token, resolvedDId)
+            val bindingResp =
+                fetchPlayerBinding(credInfo.cred, credInfo.token, resolvedDId)
+            handleBindingResponse(bindingResp, token, resolvedDId)
         }
     }
 
@@ -222,7 +229,7 @@ class AccountRepositoryImpl(
         akUserCenter: String,
         xrToken: String,
         channelMasterId: Int
-    ): Result<Int> = safeResultSync {
+    ): Result<Int> = repositoryResultOf {
         withContext(Dispatchers.IO) {
             val resp = fetchBasicInfo(token, akUserCenter, xrToken)
             handleBindingResponse(resp, token, akUserCenter, xrToken, channelMasterId)
@@ -267,21 +274,31 @@ class AccountRepositoryImpl(
     }
 
 
-    override fun setCurrentAccountGc(account: DomainAccGc): Result<Unit> = safeResultNormal {
+    override fun setCurrentAccountGc(account: DomainAccGc): Result<Unit> = repositoryResult {
         preference.currentAccountGcUid.set(account.uid)
     }
 
 
-    override fun setCurrentAccountSk(account: DomainAccSk): Result<Unit> = safeResultNormal {
+    override fun setCurrentAccountSk(account: DomainAccSk): Result<Unit> = repositoryResult {
         preference.currentAccountSkUid.set(account.uid)
     }
 
-    override suspend fun deleteAccount(account: DomainAcc): Result<Unit> = safeResultSync {
+    private fun accountFlowRetryDelay(attempt: Long): Long =
+        ACCOUNT_FLOW_RETRY_DELAY_MS * (attempt + 1).coerceAtMost(
+            ACCOUNT_FLOW_MAX_RETRY_DELAY_MS / ACCOUNT_FLOW_RETRY_DELAY_MS
+        )
+
+    override suspend fun deleteAccount(account: DomainAcc): Result<Unit> = repositoryResultOf {
         //先识别一下类型。然后根据类型去删对应表单。
         when (account) {
             is DomainAccSk -> accountSkDao.deleteByUid(account.uid)
             is DomainAccGc -> accountGcDao.deleteByUid(account.uid)
             is DomainAccEf -> accountEfDao.deleteByUid(account.uid)
         }
+    }
+
+    private companion object {
+        const val ACCOUNT_FLOW_RETRY_DELAY_MS = 1_000L
+        const val ACCOUNT_FLOW_MAX_RETRY_DELAY_MS = 30_000L
     }
 }

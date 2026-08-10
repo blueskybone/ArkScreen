@@ -3,7 +3,6 @@ package com.blueskybone.arkscreen.ui.widget
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -12,257 +11,92 @@ import android.util.TypedValue
 import android.widget.RemoteViews
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
-import com.blueskybone.arkscreen.platform.widget.WidgetRefreshWorker
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.data.local.pref.CachePrefManager
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
+import com.blueskybone.arkscreen.domain.service.AppClock
 import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetContent
 import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetTextColor
-import com.blueskybone.arkscreen.ui.widget.WidgetReceiver.Companion.MANUAL_UPDATE
-import com.blueskybone.arkscreen.ui.widget.WidgetReceiver.Companion.WORKER_NAME
-import com.blueskybone.arkscreen.util.TimeUtils
-import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
 import com.blueskybone.arkscreen.util.dpToPx
-import org.koin.java.KoinJavaComponent
-import timber.log.Timber
-import java.util.concurrent.TimeUnit
-
-/**
- *   Created by blueskybone
- *   Date: 2024/8/7
- */
-
+import org.koin.java.KoinJavaComponent.getKoin
 
 class Widget2 : AppWidgetProvider() {
-
-    private val prefManager: SettingPrefManager by KoinJavaComponent.getKoin().inject()
-    private val cachePrefManager: CachePrefManager by KoinJavaComponent.getKoin().inject()
-
+    private val settings: SettingPrefManager by getKoin().inject()
+    private val cache: CachePrefManager by getKoin().inject()
+    private val appClock: AppClock by getKoin().inject()
 
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
-        appWidgetIds: IntArray
+        appWidgetIds: IntArray,
     ) {
-
+        val formatter = WidgetContentFormatter(cache, appClock)
         appWidgetIds.forEach { appWidgetId ->
-
-
             val views = RemoteViews(context.packageName, R.layout.widget_1x2)
+            val textColor = WidgetTextColor.getColorInt(settings.widgetTextColor.get())
+            val content = settings.widget2Content.get()
+            val drawable = WidgetContent.getDrawableIcon(content)
+            val display = formatter.format(content)
 
-
-            //layout
-            views.setImageViewResource(R.id.widget_bg, prefManager.widgetBg.get())
-            views.setInt(R.id.widget_bg, "setAlpha", prefManager.widgetAlpha.get())
-
-            //textColor
-            val textColor = WidgetTextColor.getColorInt(prefManager.widgetTextColor.get())
+            views.setImageViewResource(R.id.widget_bg, settings.widgetBg.get())
+            views.setInt(R.id.widget_bg, "setAlpha", settings.widgetAlpha.get())
             views.setInt(R.id.text, "setTextColor", textColor)
             views.setInt(R.id.rest, "setTextColor", textColor)
-
-            val drawable = WidgetContent.getDrawableIcon(prefManager.widget2Content.get())
+            views.setTextViewText(R.id.text, display.primary)
+            views.setTextViewText(R.id.rest, display.secondary)
             views.setImageViewResource(R.id.icon, drawable)
             views.setInt(R.id.icon, "setColorFilter", textColor)
 
-            //content
-            updateWidgetContent(prefManager.widget2Content.get(), R.id.text, R.id.rest, views)
-            //Size
-            val mainSize = WidgetSize.getTextSizeMain(prefManager.widget2Size.get())
-            val subSize = WidgetSize.getTextSizeSub(prefManager.widget2Size.get())
-            val iconSize = WidgetSize.getImageSize(prefManager.widget2Size.get())
-            val spType = TypedValue.COMPLEX_UNIT_SP
-            val dpType = TypedValue.COMPLEX_UNIT_DIP
-
-            views.setTextViewTextSize(R.id.text, spType, mainSize)
-            views.setTextViewTextSize(R.id.rest, spType, subSize)
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                views.setViewLayoutHeight(R.id.icon, iconSize.toFloat(), dpType)
-                views.setViewLayoutWidth(R.id.icon, iconSize.toFloat(), dpType)
-            } else {
-                val size = dpToPx(iconSize)
-                val bitmap = ResourcesCompat.getDrawable(
-                    context.resources,
-                    getTargetDrawableId(drawable, prefManager.widgetTextColor.get()),
-                    null
-                )?.toBitmap()!!
-                val scaledBitmap = Bitmap.createScaledBitmap(bitmap, size, size, true)
-                views.setImageViewBitmap(R.id.icon, scaledBitmap)
-            }
-
-            val intent = Intent(context, WidgetReceiver::class.java).apply {
-                action = MANUAL_UPDATE
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            }
-            val pendingIntent = PendingIntent.getBroadcast(
-                context,
-                appWidgetId, // 使用 widgetId 作为 requestCode 确保唯一性
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-            views.setOnClickPendingIntent(R.id.layout, pendingIntent)
-
+            val mainSize = WidgetSize.getTextSizeMain(settings.widget2Size.get())
+            val subSize = WidgetSize.getTextSizeSub(settings.widget2Size.get())
+            val iconSize = WidgetSize.getImageSize(settings.widget2Size.get())
+            views.setTextViewTextSize(R.id.text, TypedValue.COMPLEX_UNIT_SP, mainSize)
+            views.setTextViewTextSize(R.id.rest, TypedValue.COMPLEX_UNIT_SP, subSize)
+            resizeIcon(context, views, drawable, iconSize)
+            views.setOnClickPendingIntent(R.id.layout, refreshIntent(context, appWidgetId))
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }
 
     override fun onEnabled(context: Context?) {
-        val workRequest: PeriodicWorkRequest = PeriodicWorkRequest.Builder(
-            WidgetRefreshWorker::class.java,
-            PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS * 2, TimeUnit.MILLISECONDS
-        )
-            .build()
-        WorkManager.getInstance(context!!)
-            .enqueueUniquePeriodicWork(
-                WORKER_NAME,
-                ExistingPeriodicWorkPolicy.KEEP,
-                workRequest
-            )
-    }
-
-    private fun areAllWidgetsEmpty(
-        context: Context,
-        vararg widgetClasses: Class<out AppWidgetProvider>
-    ): Boolean {
-        val appWidgetManager = AppWidgetManager.getInstance(context)
-        return widgetClasses.all {
-            appWidgetManager.getAppWidgetIds(ComponentName(context, it)).isEmpty()
-        }
+        context?.let(WidgetWorkScheduler::onWidgetEnabled)
+        super.onEnabled(context)
     }
 
     override fun onDisabled(context: Context?) {
         context?.let(WidgetWorkScheduler::cancelIfNoWidgets)
+        super.onDisabled(context)
     }
 
-    private fun updateWidgetContent(
-        contentPref: String,
-        textViewId: Int,
-        restViewId: Int,
-        views: RemoteViews
-    ) {
-        when (contentPref) {
-            "ap" -> {
-                fun Long.toMinutes() = this / 60
-
-                val now = getCurrentTs()
-                val apCache = cachePrefManager.apCache.get()
-                val apMax = apCache.max
-
-                val current = when {
-                    apCache.current >= apMax -> apCache.current
-                    now > apCache.recoverTime -> apMax
-                    else -> apMax - (apCache.recoverTime - now).toMinutes() / 6 - 1
-                }
-                views.apply {
-                    setTextViewText(textViewId, "$current / $apMax")
-                    setTextViewText(
-                        restViewId,
-                        TimeUtils.getRemainTimeMinStr(apCache.recoverTime - now)
-                    )
-                }
-            }
-
-            "labor" -> {
-                val now = getCurrentTs()
-                val laborCache = cachePrefManager.laborCache.get()
-                val max = laborCache.max
-                val curr = run {
-                    if (laborCache.remainSec == 0L) {
-                        laborCache.max
-                    } else {
-                        val progress =
-                            (now - laborCache.lastSyncTs) * (laborCache.max - laborCache.current)
-                        val calculated =
-                            ((progress / laborCache.remainSec) + laborCache.current).toInt()
-                        calculated.coerceAtMost(laborCache.max)
-                    }
-                }
-                views.setTextViewText(textViewId, "$curr / $max")
-                views.setTextViewText(
-                    restViewId,
-                    TimeUtils.getRemainTimeMinStr(laborCache.remainSec - now + laborCache.lastSyncTs)
-                )
-            }
-
-            "train" -> {
-                val now = getCurrentTs()
-                val trainCache = cachePrefManager.trainCache.get()
-                if (trainCache.isnull) {
-                    views.setTextViewText(textViewId, "暂无数据")
-                } else {
-                    when (trainCache.status) {
-                        -1L -> {
-                            views.setTextViewText(textViewId, "空闲中")
-                            views.setTextViewText(restViewId, "idle")
-                        }
-
-                        0L -> {
-                            views.setTextViewText(textViewId, trainCache.trainee)
-                            views.setTextViewText(restViewId, "completed")
-                        }
-
-                        1L -> {
-                            views.setTextViewText(textViewId, trainCache.trainee)
-                            if (now > trainCache.completeTime) {
-                                views.setTextViewText(restViewId, "completed")
-                            } else {
-                                views.setTextViewText(
-                                    restViewId,
-                                    TimeUtils.getRemainTimeMinStr( trainCache.completeTime - now)
-                                )
-                            }
-                        }
-
-                        else -> {
-                            views.setTextViewText(textViewId, "status错误")
-                            Timber.e("trainCache.status ${trainCache.status}")
-                        }
-                    }
-                }
-            }
-
-            "meet" ->{
-                val now = getCurrentTs()
-                val meetCache = cachePrefManager.meetCache.get()
-                if (meetCache.isnull) {
-                    views.setTextViewText(R.id.value, "暂无数据")
-                } else {
-                    when (meetCache.stats) {
-                        0 -> {
-                            views.setTextViewText(R.id.value, "空闲中")
-                            views.setTextViewText(R.id.max, "idle")
-                        }
-                        2 -> {
-                            views.setTextViewText(R.id.value, "交流完成")
-                            views.setTextViewText(R.id.max, "completed")
-                        }
-                        1 -> {
-                            if (now > meetCache.completeTime) {
-                                views.setTextViewText(R.id.value, "交流完成")
-                                views.setTextViewText(R.id.max, "completed")
-                            } else {
-                                views.setTextViewText(R.id.value, "交流中")
-                                views.setTextViewText(
-                                    R.id.max,
-                                    TimeUtils.getRemainTimeMinStr( meetCache.completeTime - now)
-                                )
-                            }
-                        }
-                        else -> {
-                            views.setTextViewText(R.id.value, "status错误")
-                            Timber.e("trainCache.status ${meetCache.stats}")
-                        }
-                    }
-                }
-            }
-
-            else -> {
-                Timber.e("Unknown contentPref: $contentPref")
-            }
+    private fun resizeIcon(context: Context, views: RemoteViews, drawable: Int, sizeDp: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            views.setViewLayoutHeight(R.id.icon, sizeDp.toFloat(), TypedValue.COMPLEX_UNIT_DIP)
+            views.setViewLayoutWidth(R.id.icon, sizeDp.toFloat(), TypedValue.COMPLEX_UNIT_DIP)
+        } else {
+            val size = dpToPx(sizeDp)
+            val bitmap = ResourcesCompat.getDrawable(
+                context.resources,
+                getTargetDrawableId(drawable, settings.widgetTextColor.get()),
+                null,
+            )?.toBitmap() ?: return
+            views.setImageViewBitmap(
+                R.id.icon,
+                Bitmap.createScaledBitmap(bitmap, size, size, true),
+            )
         }
+    }
+
+    private fun refreshIntent(context: Context, appWidgetId: Int): PendingIntent {
+        val intent = Intent(context, WidgetReceiver::class.java).apply {
+            action = WidgetReceiver.MANUAL_UPDATE
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+        }
+        return PendingIntent.getBroadcast(
+            context,
+            appWidgetId,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
     }
 }

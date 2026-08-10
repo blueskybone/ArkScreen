@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.ItemCharHeaderBinding
 import com.blueskybone.arkscreen.domain.model.account.AccountSk
@@ -13,6 +14,7 @@ class CharHeaderAdapter : RecyclerView.Adapter<CharHeaderAdapter.HeaderViewHolde
 
     private var statistic = CharStatistic()
     private var account: AccountSk? = null
+    private var accountAvatarUrl: String? = null
     private var viewType = ViewType.GRID
 
     fun submitStatistic(value: CharStatistic) {
@@ -22,6 +24,11 @@ class CharHeaderAdapter : RecyclerView.Adapter<CharHeaderAdapter.HeaderViewHolde
 
     fun submitAccount(value: AccountSk?) {
         account = value
+        notifyItemChanged(0)
+    }
+
+    fun submitAccountAvatar(value: String?) {
+        accountAvatarUrl = value
         notifyItemChanged(0)
     }
 
@@ -41,7 +48,7 @@ class CharHeaderAdapter : RecyclerView.Adapter<CharHeaderAdapter.HeaderViewHolde
         )
 
     override fun onBindViewHolder(holder: HeaderViewHolder, position: Int) {
-        holder.bind(account, statistic, viewType)
+        holder.bind(account, accountAvatarUrl, statistic, viewType)
     }
 
     override fun getItemCount(): Int = 1
@@ -50,11 +57,28 @@ class CharHeaderAdapter : RecyclerView.Adapter<CharHeaderAdapter.HeaderViewHolde
         private val binding: ItemCharHeaderBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(account: AccountSk?, statistic: CharStatistic, viewType: ViewType) {
+        fun bind(
+            account: AccountSk?,
+            accountAvatarUrl: String?,
+            statistic: CharStatistic,
+            viewType: ViewType,
+        ) {
             val context = binding.root.context
             binding.AccountNickName.text = account?.nickName.orEmpty()
             if (account == null) {
                 binding.AccountIcon.setImageDrawable(null)
+            } else if (!accountAvatarUrl.isNullOrBlank()) {
+                binding.AccountIcon.load(accountAvatarUrl) {
+                    crossfade(true)
+                    fallback(
+                        if (account.official) R.drawable.hg_icon_80x80
+                        else R.drawable.bili_icon_75x71
+                    )
+                    error(
+                        if (account.official) R.drawable.hg_icon_80x80
+                        else R.drawable.bili_icon_75x71
+                    )
+                }
             } else {
                 binding.AccountIcon.setImageResource(
                     if (account.official) R.drawable.hg_icon_80x80

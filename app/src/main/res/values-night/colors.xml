@@ -12,8 +12,8 @@
     <color name="tool_attendance_container">#273F2D</color>
     <color name="tool_account_icon">#BEC5FF</color>
     <color name="tool_account_container">#303653</color>
-    <color name="tool_game_icon">#FFE16B</color>
-    <color name="tool_game_container">#4A4020</color>
+    <color name="tool_game_icon">#FFB27A</color>
+    <color name="tool_game_container">#4A2C1B</color>
     <color name="tool_manual_icon">#83D8D1</color>
     <color name="tool_manual_container">#23413F</color>
     <color name="recruit_metadata_chip_background">#424242</color>
@@ -22,4 +22,13 @@
     <!-- Secondary containers must not fall back to the bright day palette. -->
     <color name="sec_con">#292D38</color>
     <color name="on_sec_con">#C5CAD8</color>
+    <color name="widget_content_slot_ripple">#30C5CAD8</color>
+    <color name="status_success_container">#263D2D</color>
+    <color name="status_success_content">#A7DDB4</color>
+    <color name="status_warning_container">#42391F</color>
+    <color name="status_warning_content">#E8D184</color>
+    <color name="status_error_container">#472B2B</color>
+    <color name="status_error_content">#F2B2AE</color>
+    <color name="status_neutral_container">#30333C</color>
+    <color name="status_neutral_content">#C5C8D1</color>
 </resources>

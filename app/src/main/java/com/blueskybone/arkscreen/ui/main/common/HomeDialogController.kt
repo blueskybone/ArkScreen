@@ -13,6 +13,7 @@ import com.blueskybone.arkscreen.ui.common.view.configurePasswordLogin
 import com.blueskybone.arkscreen.ui.common.view.configureSingleInput
 import com.blueskybone.arkscreen.ui.main.MainModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.blueskybone.arkscreen.ui.common.showDestructiveConfirmation
 import com.hjq.toast.Toaster
 
 /**
@@ -73,7 +74,7 @@ class HomeDialogController(
                 val password = dialogBinding.EditText2.text.toString()
 
                 if (phone.isEmpty() || password.isEmpty()) {
-                    Toaster.show("请输入手机号和密码")
+                    Toaster.show(fragment.getString(R.string.enter_phone_and_password))
                     return@setPositiveButton
                 }
 
@@ -109,13 +110,12 @@ class HomeDialogController(
     }
 
     fun showDeleteConfirm(link: Link) {
-        MaterialAlertDialogBuilder(fragment.requireContext())
-            .setMessage(R.string.confirm_delete)
-            .setPositiveButton(R.string.delete) { _, _ ->
-                viewModel.deleteLink(link)
-            }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
+        fragment.requireContext().showDestructiveConfirmation(
+            titleRes = R.string.delete,
+            message = fragment.getString(R.string.confirm_delete_link_detail),
+        ) {
+            viewModel.deleteLink(link)
+        }
     }
 
     fun showAddLinkDialog() {

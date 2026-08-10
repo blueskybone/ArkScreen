@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.Flow
 class StartAppUpdateDownloadUseCase(
     private val downloadAppUpdateUseCase: DownloadAppUpdateUseCase,
 ) {
-    operator fun invoke(url: String): Flow<DownloadStatus> =
-        downloadAppUpdateUseCase(url)
+    operator fun invoke(url: String, expectedVersionCode: Long): Flow<DownloadStatus> =
+        downloadAppUpdateUseCase(url, expectedVersionCode)
+
+    fun resume(): Flow<DownloadStatus>? = downloadAppUpdateUseCase.resume()
 }

@@ -6,6 +6,7 @@ import androidx.work.WorkerParameters
 import com.blueskybone.arkscreen.data.local.pref.InnerPrefManager
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.domain.usecase.attendance.RunAttendanceUseCase
+import com.blueskybone.arkscreen.domain.repository.AttendanceStateRepository
 import com.blueskybone.arkscreen.platform.notification.AttendanceNotificationController
 import kotlinx.coroutines.CancellationException
 import org.koin.java.KoinJavaComponent.getKoin
@@ -18,11 +19,12 @@ class AttendanceWorker(context: Context, params: WorkerParameters) : CoroutineWo
     private val innerPrefs: InnerPrefManager by getKoin().inject()
     private val runAttendance: RunAttendanceUseCase by getKoin().inject()
     private val notifications: AttendanceNotificationController by getKoin().inject()
+    private val attendanceStates: AttendanceStateRepository by getKoin().inject()
 
     override suspend fun doWork(): Result {
-        val force = inputData.getBoolean(FORCE, false)
         val allowRepeatToday = inputData.getBoolean(ALLOW_REPEAT_TODAY, false)
-        if (!force && !settings.autoAttendance.get()) return Result.success()
+        val requireAutoEnabled = inputData.getBoolean(REQUIRE_AUTO_ENABLED, false)
+        if (requireAutoEnabled && !settings.backAutoAtd.get()) return Result.success()
         if (!allowRepeatToday && hasRunToday()) return Result.success()
 
         return try {
@@ -34,6 +36,10 @@ class AttendanceWorker(context: Context, params: WorkerParameters) : CoroutineWo
                     name,
                 )
                 notifications.showProgress(index, total, name)
+            }
+            val attemptedAt = Instant.now().epochSecond
+            summary.results.forEach { result ->
+                attendanceStates.record(result, attemptedAt)
             }
             if (summary.results.isEmpty()) {
                 notifications.showNoAccounts()
@@ -87,8 +93,8 @@ class AttendanceWorker(context: Context, params: WorkerParameters) : CoroutineWo
     }
 
     companion object {
-        const val FORCE = "force_attendance"
         const val ALLOW_REPEAT_TODAY = "allow_repeat_attendance_today"
+        const val REQUIRE_AUTO_ENABLED = "require_auto_attendance_enabled"
         private const val MAX_RETRIES = 3
     }
 }

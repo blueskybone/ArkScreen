@@ -182,8 +182,8 @@ fun profImageButton(
 fun bgImageButton(
     context: Context,
     drawableResId: Int,
-    layoutWidth: Int = dpToPx(100),
-    layoutHeight: Int = dpToPx(140)
+    layoutWidth: Int = dpToPx(84),
+    layoutHeight: Int = dpToPx(112)
 ): ImageButton {
     return ImageButton(context).apply {
         // 设置尺寸
@@ -198,11 +198,10 @@ fun bgImageButton(
         cropToPadding = true
 
         // 设置内边距
-        val padding = (dpToPx(2))
+        val padding = dpToPx(4)
         setPadding(padding, padding, padding, padding)
 
-        // 设置背景
-        background = ContextCompat.getDrawable(context, R.drawable.button_tag)
+        background = ContextCompat.getDrawable(context, R.drawable.widget_background_option)
         // 设置图片资源
         setImageResource(drawableResId)
         tag = drawableResId

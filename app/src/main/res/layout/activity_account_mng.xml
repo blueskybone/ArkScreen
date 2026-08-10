@@ -25,17 +25,19 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="16dp"
-                android:paddingTop="16dp"
-                android:paddingEnd="16dp"
-                android:paddingBottom="4dp"
-                android:text="@string/account_manager_summary"
-                android:textAppearance="?attr/textAppearanceBody2" />
-
             <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="@string/account_manager_summary"
+                    android:textAppearance="@style/TextAppearance.Body2" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/CardViewContent"
+                android:layout_marginTop="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -59,14 +61,27 @@
                             android:contentDescription="@null"
                             android:src="@drawable/ic_skland" />
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
                             android:layout_weight="1"
-                            android:text="@string/skland_account_manage"
-                            android:textAppearance="?attr/textAppearanceHeadline6"
-                            android:textStyle="bold" />
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/skland_account_manage"
+                                android:textAppearance="?attr/textAppearanceHeadline6"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/skland_account_summary"
+                                android:textAppearance="?attr/textAppearanceCaption" />
+                        </LinearLayout>
 
                         <ImageButton
                             android:id="@+id/SkInfo"
@@ -191,14 +206,27 @@
                             android:padding="4dp"
                             android:src="@drawable/ic_gacha" />
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
                             android:layout_weight="1"
-                            android:text="@string/gacha_account_manage"
-                            android:textAppearance="?attr/textAppearanceHeadline6"
-                            android:textStyle="bold" />
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/gacha_account_manage"
+                                android:textAppearance="?attr/textAppearanceHeadline6"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/gacha_account_summary"
+                                android:textAppearance="?attr/textAppearanceCaption" />
+                        </LinearLayout>
 
                         <ImageButton
                             android:id="@+id/GcInfo"

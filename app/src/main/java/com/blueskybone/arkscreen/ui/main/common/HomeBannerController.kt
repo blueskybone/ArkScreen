@@ -105,9 +105,12 @@ class HomeBannerController(
     }
 
     private fun updateIndicators(position: Int) {
-        for (i in 0 until indicatorLayout.childCount) {
+        val indicatorCount = indicatorLayout.childCount
+        if (indicatorCount == 0) return
+        val selectedIndex = position % indicatorCount
+        for (i in 0 until indicatorCount) {
             (indicatorLayout.getChildAt(i) as ImageView).setImageResource(
-                if (i == position) R.drawable.dot_selected else R.drawable.dot_unselected
+                if (i == selectedIndex) R.drawable.dot_selected else R.drawable.dot_unselected
             )
         }
     }

@@ -119,13 +119,9 @@
             android:id="@+id/FeedBack"
             layout="@layout/preference" />
 
-        <TextView
+        <include
             android:id="@+id/Manual"
-            style="@style/Preference"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/manual"
-            android:visibility="gone" />
+            layout="@layout/preference_icon" />
 
         <include
             android:id="@+id/Donate"

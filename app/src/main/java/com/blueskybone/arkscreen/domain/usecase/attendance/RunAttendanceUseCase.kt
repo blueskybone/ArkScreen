@@ -3,6 +3,7 @@ package com.blueskybone.arkscreen.domain.usecase.attendance
 import com.blueskybone.arkscreen.domain.model.account.Account
 import com.blueskybone.arkscreen.domain.model.account.AccountEf
 import com.blueskybone.arkscreen.domain.model.account.AccountSk
+import com.blueskybone.arkscreen.domain.model.account.AccountType
 import com.blueskybone.arkscreen.domain.model.attendance.AttendanceAccountResult
 import com.blueskybone.arkscreen.domain.model.attendance.AttendanceSummary
 import com.blueskybone.arkscreen.domain.repository.AccountRepository
@@ -26,9 +27,18 @@ class RunAttendanceUseCase(
                 else -> account.nickName
             }
             onProgress?.invoke(index + 1, accounts.size, label)
+            val accountType = when (account) {
+                is AccountSk -> AccountType.SK
+                is AccountEf -> AccountType.EF
+                else -> error("Unsupported attendance account: ${account::class.simpleName}")
+            }
             getAttendanceResult(account).fold(
-                onSuccess = { message -> AttendanceAccountResult(label, message, null) },
-                onFailure = { error -> AttendanceAccountResult(label, null, error) },
+                onSuccess = { message ->
+                    AttendanceAccountResult(accountType, account.uid, label, message, null)
+                },
+                onFailure = { error ->
+                    AttendanceAccountResult(accountType, account.uid, label, null, error)
+                },
             )
         }
         return AttendanceSummary(results)

@@ -2,6 +2,7 @@ package com.blueskybone.arkscreen.ui.recruit.screenshot
 
 import android.content.Context
 import android.provider.Settings
+import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.platform.screenshot.ScreenshotCaptureService
 import com.blueskybone.arkscreen.platform.screenshot.ScreenshotPermissionActivity
 import com.blueskybone.arkscreen.platform.screenshot.ScreenshotSession
@@ -20,7 +21,7 @@ class RecruitScreenshotStarter(
         source: ScreenshotStartSource
     ) {
         if (!Settings.canDrawOverlays(context)) {
-            Toaster.show("未授予悬浮窗权限")
+            Toaster.show(context.getString(R.string.floating_permission_denied))
             return
         }
 

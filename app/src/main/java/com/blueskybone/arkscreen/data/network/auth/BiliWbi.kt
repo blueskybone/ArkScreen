@@ -2,7 +2,7 @@ package com.blueskybone.arkscreen.data.remote.network.auth
 
 import com.blueskybone.arkscreen.data.network.auth.hmacSha256
 import com.blueskybone.arkscreen.data.network.auth.toMD5
-import com.blueskybone.arkscreen.util.getJsonContent
+import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.FormBody
@@ -24,9 +24,15 @@ private val mixinKeyEncTab = intArrayOf(
 //getBiliWbi()全局调用一次，获取WbiParams对象（令牌有效时间3天）
 suspend fun getBiliWbi(): WbiParams {
     val response = getWebTicket()
-    val img = extractImageId(getJsonContent(response, "img"))
-    val sub = extractImageId(getJsonContent(response, "sub"))
+    val img = extractImageId(getWbiField(response, "img"))
+    val sub = extractImageId(getWbiField(response, "sub"))
     return WbiParams(img, sub)
+}
+
+private fun getWbiField(response: String, field: String): String {
+    val value = ObjectMapper().readTree(response).findValue(field)?.asText()
+    return value?.takeIf(String::isNotBlank)
+        ?: throw IllegalStateException("B站 WBI 响应缺少字段：$field")
 }
 
 data class WbiParams(

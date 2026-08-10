@@ -24,7 +24,7 @@ interface AccountRepository {
     suspend fun loginByPhonePassword(phone: String, code: String): Result<Int>
 
     //token登入（森空岛）
-    suspend fun loginByToken(token: String): Result<Int>
+    suspend fun loginByToken(token: String, dId: String? = null): Result<Int>
 
     //token akUserCenter xrToken 登录官网
     suspend fun loginOfficialWeb(

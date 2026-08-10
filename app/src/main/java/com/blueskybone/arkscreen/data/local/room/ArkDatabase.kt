@@ -9,6 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.blueskybone.arkscreen.data.local.room.dao.AccountEfDao
 import com.blueskybone.arkscreen.data.local.room.dao.AccountGcDao
 import com.blueskybone.arkscreen.data.local.room.dao.AccountSkDao
+import com.blueskybone.arkscreen.data.local.room.dao.AttendanceRecordDao
 import com.blueskybone.arkscreen.data.local.room.dao.GachaDao
 import com.blueskybone.arkscreen.data.local.room.dao.LinkDao
 
@@ -16,13 +17,24 @@ import com.blueskybone.arkscreen.data.local.room.dao.LinkDao
  *   Created by blueskybone
  *   Date: 2025/1/8
  */
-@Database(entities = [AccountSk::class, AccountGc::class, AccountEf::class, Link::class, Gacha::class], version = 6)
+@Database(
+    entities = [
+        AccountSk::class,
+        AccountGc::class,
+        AccountEf::class,
+        Link::class,
+        Gacha::class,
+        AttendanceRecord::class,
+    ],
+    version = 7,
+)
 abstract class ArkDatabase : RoomDatabase() {
     abstract fun getAccountSkDao(): AccountSkDao
     abstract fun getAccountGcDao(): AccountGcDao
     abstract fun getAccountEfDao(): AccountEfDao
     abstract fun getLinkDao(): LinkDao
     abstract fun getGachaDao(): GachaDao
+    abstract fun getAttendanceRecordDao(): AttendanceRecordDao
 
     companion object {
 
@@ -38,7 +50,8 @@ abstract class ArkDatabase : RoomDatabase() {
                     ArkDatabase::class.java,
                     DatabaseName
                 ).addMigrations(Migration2).addMigrations(Migration3).addMigrations(Migration4)
-                    .addMigrations(Migration5).addMigrations(Migration6).build()
+                    .addMigrations(Migration5).addMigrations(Migration6).addMigrations(Migration7)
+                    .build()
                 INSTANCE = instance
                 instance
             }
@@ -116,6 +129,23 @@ abstract class ArkDatabase : RoomDatabase() {
                 `serverId` TEXT NOT NULL
             )
         """.trimIndent()
+                )
+            }
+        }
+
+        object Migration7 : Migration(6, 7) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `AttendanceRecord` (
+                        `accountType` TEXT NOT NULL,
+                        `accountUid` TEXT NOT NULL,
+                        `lastAttemptTs` INTEGER NOT NULL,
+                        `lastSuccessTs` INTEGER NOT NULL,
+                        `lastError` TEXT NOT NULL,
+                        PRIMARY KEY(`accountType`, `accountUid`)
+                    )
+                    """.trimIndent()
                 )
             }
         }

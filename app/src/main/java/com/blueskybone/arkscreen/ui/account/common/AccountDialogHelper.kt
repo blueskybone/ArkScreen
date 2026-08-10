@@ -8,6 +8,7 @@ import com.blueskybone.arkscreen.domain.model.account.Account
 import com.blueskybone.arkscreen.ui.common.view.MenuDialog
 import com.blueskybone.arkscreen.ui.common.view.configurePasswordLogin
 import com.blueskybone.arkscreen.ui.common.view.configureSingleInput
+import com.blueskybone.arkscreen.ui.common.showDestructiveConfirmation
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 /**
@@ -28,11 +29,11 @@ class AccountDialogHelper(
     }
 
     fun showDeleteConfirm(onConfirm: () -> Unit) {
-        MaterialAlertDialogBuilder(context)
-            .setMessage(R.string.confirm_delete)
-            .setPositiveButton(R.string.delete) { _, _ -> onConfirm() }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
+        context.showDestructiveConfirmation(
+            titleRes = R.string.delete,
+            message = context.getString(R.string.confirm_delete_account_detail),
+            onConfirm = onConfirm,
+        )
     }
 
     fun showExportDialog(content: String, onCopy: () -> Unit) {

@@ -1,6 +1,7 @@
 package com.blueskybone.arkscreen.ui.gacha
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,11 +35,13 @@ class GachaFragment : Fragment() {
     private var gachaPools: List<GachaPool> = emptyList()
     private var _binding: FragmentGachaBinding? = null
     private val binding get() = _binding!!
+    private var pendingScrollState: Parcelable? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentGachaBinding.inflate(inflater)
+        pendingScrollState = savedInstanceState?.getParcelable(KEY_SCROLL_STATE)
         adapterAccount = AccountAdapter(createItemAction())
         setupBinding()
         return binding.root
@@ -54,6 +57,7 @@ class GachaFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 model.uiState.collect { state ->
                     renderAccount(state)
+                    adapter?.restoreExpandedPools(state.expandedPoolIds)
                     state.gachaUiSnapshot?.let{
                         renderGachaOverview(it)
                         renderGachaPool(it)
@@ -107,6 +111,10 @@ class GachaFragment : Fragment() {
     private fun renderGachaPool(gachaUi: GachaUiSnapshot) {
         gachaPools = gachaUi.gachaPools
         submitVisiblePools()
+        pendingScrollState?.let { state ->
+            binding.RecyclerView.layoutManager?.onRestoreInstanceState(state)
+            pendingScrollState = null
+        }
     }
 
     private fun submitVisiblePools() {
@@ -131,7 +139,7 @@ class GachaFragment : Fragment() {
 
 
     private fun setupBinding() {
-        adapter = GachaAdapter(requireContext())
+        adapter = GachaAdapter(requireContext(), model::setPoolExpanded)
         binding.RecyclerView.adapter = adapter
         binding.ShowEmptyPools.isChecked = settingPrefManager.showEmptyGachaPools.get()
         binding.RecyclerView.apply {
@@ -170,5 +178,17 @@ class GachaFragment : Fragment() {
         gachaPools = emptyList()
         _binding = null
         super.onDestroyView()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable(
+            KEY_SCROLL_STATE,
+            binding.RecyclerView.layoutManager?.onSaveInstanceState(),
+        )
+        super.onSaveInstanceState(outState)
+    }
+
+    private companion object {
+        const val KEY_SCROLL_STATE = "gacha_overview_scroll_state"
     }
 }

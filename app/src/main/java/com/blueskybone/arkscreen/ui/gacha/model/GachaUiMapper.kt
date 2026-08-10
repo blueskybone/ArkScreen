@@ -1,6 +1,6 @@
 package com.blueskybone.arkscreen.ui.gacha.model
 
-import com.blueskybone.arkscreen.util.TimeUtils.getTimeStrYMD
+import com.blueskybone.arkscreen.platform.time.TimeUtils.getTimeStrYMD
 import com.blueskybone.arkscreen.domain.model.gacha.Record as DomainRecord
 
 

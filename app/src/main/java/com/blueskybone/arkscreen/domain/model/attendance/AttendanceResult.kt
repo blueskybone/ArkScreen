@@ -1,6 +1,10 @@
 package com.blueskybone.arkscreen.domain.model.attendance
 
+import com.blueskybone.arkscreen.domain.model.account.AccountType
+
 data class AttendanceAccountResult(
+    val accountType: AccountType,
+    val accountUid: String,
     val accountName: String,
     val message: String?,
     val error: Throwable?,

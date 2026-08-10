@@ -175,6 +175,27 @@ data object WidgetSize : ListInfo {
         return getWidthBasedTextSize(baseSize.toFloat()).toInt()
     }
 
+    fun getCompactTextSizeMain(size: String): Float = when (size) {
+        SMALL -> 16f
+        MEDIUM -> 18f
+        LARGE -> 20f
+        else -> throw IllegalArgumentException("Invalid : $size")
+    }
+
+    fun getCompactTextSizeSub(size: String): Float = when (size) {
+        SMALL -> 8f
+        MEDIUM -> 9f
+        LARGE -> 10f
+        else -> throw IllegalArgumentException("Invalid : $size")
+    }
+
+    fun getCompactIconSize(size: String): Int = when (size) {
+        SMALL -> 8
+        MEDIUM -> 9
+        LARGE -> 10
+        else -> throw IllegalArgumentException("Invalid : $size")
+    }
+
     /**
      * 基于屏幕宽度的百分比缩放
      */
@@ -287,6 +308,5 @@ data object WidgetUpdateFreq : ListInfo {
         }
     }
 }
-
 
 

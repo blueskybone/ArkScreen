@@ -23,8 +23,6 @@ class SettingPrefManager() {
         powerSavingMode = preferenceStore.getBoolean("power_saving_mode", false)
 
 
-        autoAttendance = preferenceStore.getBoolean("auto_attendance", true)
-
         autoUpdateApp = preferenceStore.getBoolean("auto_app_update", true)
         timeCorrect = preferenceStore.getBoolean("time_correct", false)
         showHomeAnnounce = preferenceStore.getBoolean("show_home_announce", true)
@@ -95,8 +93,6 @@ class SettingPrefManager() {
     lateinit var floatWindowAppearance: Preference<String>  //快速公招结果显示风格（未实装）
     lateinit var screenShotDelay: Preference<String>       //快速公招截图延迟选项
     lateinit var powerSavingMode: Preference<Boolean>   //桌面组件省流模式
-    lateinit var autoAttendance: Preference<Boolean>    //桌面组件自动签到
-
     /*
     * 森空岛时间校准选项
     * */

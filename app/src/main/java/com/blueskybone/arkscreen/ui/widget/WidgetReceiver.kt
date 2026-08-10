@@ -6,7 +6,9 @@ import android.content.Intent
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.platform.widget.WidgetRefreshWorker
+import com.blueskybone.arkscreen.platform.widget.WidgetUpdateDispatcher
 import com.hjq.toast.Toaster
 import timber.log.Timber
 
@@ -29,16 +31,21 @@ class WidgetReceiver : BroadcastReceiver() {
                 request
             )
         }
+
+        fun renderCached(context: Context) {
+            WidgetUpdateDispatcher(context).renderAll()
+        }
     }
 
     override fun onReceive(context: Context?, intent: Intent) {
         if (intent.action == MANUAL_UPDATE) {
+            val receiverContext = context ?: return
             intent.getStringExtra("msg")?.let { msg ->
                 Toaster.show(msg)
             }
-            Toaster.show("更新中...")
+            Toaster.show(receiverContext.getString(R.string.widget_updating))
             Timber.i("WidgetReceiver onReceive")
-            enqueueUpdate(context!!)
+            enqueueUpdate(receiverContext)
         }
     }
 }

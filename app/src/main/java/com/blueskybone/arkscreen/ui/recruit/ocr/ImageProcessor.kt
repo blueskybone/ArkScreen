@@ -3,8 +3,8 @@ package com.blueskybone.arkscreen.ui.recruit.ocr
 import android.content.Context
 import android.graphics.Bitmap
 import com.blueskybone.arkscreen.domain.service.TextTranslator
+import com.blueskybone.arkscreen.util.cacheAssetFile
 import timber.log.Timber
-import java.io.File
 
 /**
  *   Created by blueskybone
@@ -43,7 +43,12 @@ class ImageProcessor(
     suspend fun getRecruitTags(bitmap: Bitmap, screenWidth: Int, screenHeight: Int): ImageRecruitData {
         val roiBitmap = getRoiBitmap(bitmap, screenWidth, screenHeight)
         val scale: Int = getScale(screenWidth)
-        val stdTagFilepath = getAssetsFilepath("target_std.dat")
+        val stdTagFilepath = cacheAssetFile(context, "target_std.dat")
+            .getOrElse { error ->
+                Timber.tag("RecruitOCR").e(error, "Failed to prepare OCR asset")
+                return ImageRecruitData(ERROR_REC, "识别资源准备失败", emptyList())
+            }
+            .absolutePath
 
         val rawOutput = getTagText(roiBitmap, stdTagFilepath, scale)
         Timber.tag("RecruitOCR").d(
@@ -87,27 +92,18 @@ class ImageProcessor(
 
     private suspend fun getTagsList(raw: String): List<String> {
         val rawTags = raw.split("_")
-        val tags = mutableListOf<String>()
-        for (rawTag in rawTags) {
-            val translated = textTranslator.translate(rawTag, rawTag)
+            .map(String::trim)
+            .filter(String::isNotBlank)
+        val translations = textTranslator.translateAll(rawTags)
+        return rawTags.map { rawTag ->
+            val translated = translations[rawTag] ?: rawTag
             Timber.tag("RecruitOCR").d(
                 "Translate tag: raw=%s translated=%s",
                 rawTag,
                 translated,
             )
-            tags.add(translated)
+            translated
         }
-        return tags
-    }
-
-    private fun getAssetsFilepath(filename: String): String {
-        val cacheFile = File(context.externalCacheDir, filename)
-        if (!cacheFile.exists()) {
-            context.assets.open(filename).use { input ->
-                cacheFile.outputStream().use { output -> input.copyTo(output) }
-            }
-        }
-        return cacheFile.absolutePath
     }
 
     private fun getRoiBitmap(source: Bitmap, width: Int, height: Int): Bitmap {

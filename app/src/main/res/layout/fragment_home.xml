@@ -36,8 +36,65 @@
                 app:drawableTint="?attr/colorOnBackground" />
         </FrameLayout>
 
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/LoginGuide"
+            style="@style/CardViewContent"
+            android:clickable="false"
+            android:focusable="false"
+            android:visibility="gone">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_asset_stat_chip"
+                    android:contentDescription="@null"
+                    android:padding="9dp"
+                    android:src="@drawable/ic_user"
+                    app:tint="?attr/colorPrimary" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_login_guide_title"
+                        android:textAppearance="?attr/textAppearanceSubtitle1"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="@string/home_login_guide_summary"
+                        android:textAppearance="?attr/textAppearanceBody2" />
+                </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/LoginNow"
+                    style="@style/Widget.ArkScreen.SectionAction.Tonal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/login_now" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/BannerCard"
+            style="@style/CardViewContent"
+            android:layout_height="120dp">
 
             <com.blueskybone.arkscreen.ui.common.view.NestedScrollableHost
                 android:layout_width="match_parent"
@@ -56,9 +113,7 @@
                 android:layout_gravity="center|bottom"
                 android:gravity="center"
                 android:orientation="horizontal" />
-
         </com.google.android.material.card.MaterialCardView>
-
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -119,6 +174,40 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:text="@string/core_data" />
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/CardViewContent"
+            android:clickable="false"
+            android:focusable="false">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/CoreAssets"
+                    layout="@layout/home_core_entry" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="70dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="?android:attr/listDivider" />
+
+                <include
+                    android:id="@+id/CoreGacha"
+                    layout="@layout/home_core_entry" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            style="@style/PreferenceHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="@string/tools" />
 
         <com.google.android.material.card.MaterialCardView
@@ -145,14 +234,7 @@
                     android:layout_columnWeight="1" />
 
                 <include
-                    android:id="@+id/OpeAssets"
-                    layout="@layout/chip_round"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1" />
-
-                <include
-                    android:id="@+id/GachaStat"
+                    android:id="@+id/GameStarter"
                     layout="@layout/chip_round"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -172,19 +254,6 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1" />
 
-                <include
-                    android:id="@+id/GameStarter"
-                    layout="@layout/chip_round"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1" />
-
-                <include
-                    android:id="@+id/UserManual"
-                    layout="@layout/chip_round"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1" />
             </GridLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -213,9 +282,11 @@
         </FrameLayout>
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/LinkCard"
             style="@style/CardViewContent"
             android:clickable="false"
-            android:focusable="false">
+            android:focusable="false"
+            android:visibility="gone">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/ExLinks"
@@ -223,12 +294,14 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
-                android:visibility="visible"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                android:scrollbars="none"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="4" />
         </com.google.android.material.card.MaterialCardView>
-
 
         <TextView
             android:id="@+id/AnnounceTitle"

@@ -13,7 +13,6 @@ retrofit = "2.9.0"
 okhttp = "4.12.0"
 jackson = "2.15.0"
 coil = "2.5.0"
-markwon = "4.2.0"
 
 
 # SDK 版本
@@ -113,7 +112,6 @@ jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackso
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 
 # Other
-markwon-core = { group = "io.noties.markwon", name = "core", version.ref = "markwon" }
 flow-layout = { group = "com.nex3z", name = "flow-layout", version = "1.3.3" }
 timber = { group = "com.jakewharton.timber", name = "timber", version = "5.0.1" }
 easy-window = { group = "com.github.getActivity", name = "EasyWindow", version = "10.62" }

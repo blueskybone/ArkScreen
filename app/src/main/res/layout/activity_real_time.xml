@@ -116,6 +116,14 @@
                                 android:textAppearance="?attr/textAppearanceCaption"
                                 android:textColor="?android:attr/textColorSecondary" />
                         </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/account_source_skland"
+                            android:textAppearance="?attr/textAppearanceCaption"
+                            android:textColor="?android:attr/textColorSecondary" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -382,12 +390,42 @@
         android:layout_below="@id/Toolbar"
         android:visibility="visible">
 
-        <TextView
-            android:id="@+id/Message"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            app:drawableTopCompat="@mipmap/ic_rosm" />
+            android:orientation="vertical"
+            android:padding="@dimen/empty_content_padding">
+
+            <ImageView
+                android:id="@+id/StatusIllustration"
+                style="@style/Widget.ArkScreen.EmptyIllustration"
+                android:src="@mipmap/ic_rosm" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/StatusProgress"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:indeterminate="true"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/Message"
+                style="@style/Widget.ArkScreen.EmptyTitle" />
+
+            <TextView
+                android:id="@+id/EmptySummary"
+                style="@style/Widget.ArkScreen.EmptySummary"
+                android:text="@string/realtime_empty_summary"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/EmptyAction"
+                style="@style/Widget.ArkScreen.EmptyAction"
+                android:text="@string/go_add_account"
+                android:visibility="gone"
+                app:icon="@drawable/ic_add" />
+        </LinearLayout>
     </FrameLayout>
 </RelativeLayout>

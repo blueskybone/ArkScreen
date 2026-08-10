@@ -29,3 +29,6 @@
 -keep class android.media.projection.** { *; }
 -keep class com.blueskybone.arkscreen.common.** { *; }
 
+# JNI exports use the fully-qualified ImageProcessor class and method names.
+-keep class com.blueskybone.arkscreen.ui.recruit.ocr.ImageProcessor { *; }
+

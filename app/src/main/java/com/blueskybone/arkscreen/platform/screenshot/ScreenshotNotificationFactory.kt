@@ -17,8 +17,8 @@ class ScreenshotNotificationFactory(
 
         return NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_rosm_tile) // 换成你的通知图标
-            .setContentTitle("正在截图识别")
-            .setContentText("正在进行屏幕截图，请稍候")
+            .setContentTitle(context.getString(R.string.screenshot_recognizing))
+            .setContentText(context.getString(R.string.screenshot_in_progress))
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
@@ -32,7 +32,7 @@ class ScreenshotNotificationFactory(
 
         val channel = NotificationChannel(
             CHANNEL_ID,
-            "截图服务",
+            context.getString(R.string.screenshot_notification_channel),
             NotificationManager.IMPORTANCE_LOW
         )
 

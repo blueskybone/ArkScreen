@@ -1,6 +1,6 @@
 package com.blueskybone.arkscreen.domain.usecase.operator
 
-import com.blueskybone.arkscreen.domain.common.safeResultSync
+import com.blueskybone.arkscreen.domain.common.domainResultOf
 import com.blueskybone.arkscreen.domain.model.operator.Operator
 import com.blueskybone.arkscreen.domain.repository.GameResourceRepository
 
@@ -16,7 +16,7 @@ class GetCharMissUseCase(
 
     suspend operator fun invoke(
         charOwnList: List<Operator>,
-    ): Result<List<Operator>> = safeResultSync {
+    ): Result<List<Operator>> = domainResultOf {
         val ownCharIds = charOwnList
             .map { it.charId }
             .toSet()

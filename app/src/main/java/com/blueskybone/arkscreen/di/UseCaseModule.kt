@@ -11,6 +11,7 @@ import com.blueskybone.arkscreen.domain.usecase.attendance.RunAttendanceUseCase
 import com.blueskybone.arkscreen.domain.usecase.gacha.SyncRecordsUseCase
 import com.blueskybone.arkscreen.domain.usecase.operator.GetCharAssetsUseCase
 import com.blueskybone.arkscreen.domain.usecase.operator.GetCharMissUseCase
+import com.blueskybone.arkscreen.domain.usecase.operator.BuildOperatorPosterUseCase
 import com.blueskybone.arkscreen.domain.usecase.realtime.GetRealTimeUseCase
 import com.blueskybone.arkscreen.domain.usecase.recruit.CalcResultUseCase
 import org.koin.dsl.module
@@ -35,6 +36,7 @@ val useCaseModule = module {
     // Operator
     factory { GetCharAssetsUseCase(get()) }
     factory { GetCharMissUseCase(get()) }
+    factory { BuildOperatorPosterUseCase() }
 
     // RealTime
     factory { GetRealTimeUseCase(get()) }

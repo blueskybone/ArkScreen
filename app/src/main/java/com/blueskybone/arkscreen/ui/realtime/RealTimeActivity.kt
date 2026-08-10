@@ -1,8 +1,15 @@
 package com.blueskybone.arkscreen.ui.realtime
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.Menu
+import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.Lifecycle
 import coil.load
 import com.blueskybone.arkscreen.util.launchApp
 import com.blueskybone.arkscreen.databinding.ActivityRealTimeBinding
@@ -18,9 +25,15 @@ import com.blueskybone.arkscreen.ui.common.bindinginfo.RecruitRefresh
 import com.blueskybone.arkscreen.ui.common.bindinginfo.Tired
 import com.blueskybone.arkscreen.ui.common.bindinginfo.Trading
 import com.blueskybone.arkscreen.ui.common.bindinginfo.Train
+import com.blueskybone.arkscreen.ui.account.AccountMngActivity
+import com.blueskybone.arkscreen.ui.common.LogManagerActivity
+import com.blueskybone.arkscreen.ui.common.formatSyncTime
+import com.blueskybone.arkscreen.ui.common.renderSyncing
+import com.blueskybone.arkscreen.ui.account.LoginWeb
 import com.blueskybone.arkscreen.ui.realtime.model.RealTimeUi
 import com.hjq.toast.Toaster
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlinx.coroutines.launch
 
 /**
  *   Created by blueskybone
@@ -33,13 +46,29 @@ class RealTimeActivity : AppCompatActivity() {
     private val binding get() = _binding!!
 
     private val model: RealTimeModel by viewModel()
+    private var refreshMenuItem: MenuItem? = null
     private var currentOfficial = true
+    private val reauthLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode != RESULT_OK) return@registerForActivityResult
+        val token = result.data?.getStringExtra("token")
+        val dId = result.data?.getStringExtra("dId")
+        if (!token.isNullOrBlank() && !dId.isNullOrBlank()) {
+            model.reauthenticate(token, dId)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityRealTimeBinding.inflate(layoutInflater)
         setUpBinding()
         setupObserver()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                model.event.collect(Toaster::show)
+            }
+        }
         setContentView(binding.root)
     }
 
@@ -86,31 +115,106 @@ class RealTimeActivity : AppCompatActivity() {
                 RealTimeScreenState.Loading -> displayLoadingView()
                 RealTimeScreenState.Empty ->
                     displayWarningView(getString(com.blueskybone.arkscreen.R.string.realtime_no_account))
-                is RealTimeScreenState.Error -> displayErrorView(
-                    state.message
-                        ?: getString(com.blueskybone.arkscreen.R.string.realtime_load_failed)
-                )
-                is RealTimeScreenState.Content -> displayView(state.data)
+                is RealTimeScreenState.Error -> displayErrorView(state.kind)
+                is RealTimeScreenState.Content -> {
+                    binding.Toolbar.subtitle =
+                        getString(com.blueskybone.arkscreen.R.string.last_synced_at, formatSyncTime(state.syncedAt))
+                    displayView(state.data)
+                }
+            }
+        }
+        model.syncingState.observe(this) { syncing ->
+            refreshMenuItem?.renderSyncing(this, syncing)
+            if (syncing) {
+                binding.Toolbar.subtitle = getString(com.blueskybone.arkscreen.R.string.syncing)
             }
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(com.blueskybone.arkscreen.R.menu.toolbar_sync_menu, menu)
+        refreshMenuItem = menu.findItem(com.blueskybone.arkscreen.R.id.menu_refresh)
+        refreshMenuItem?.renderSyncing(this, model.syncingState.value == true)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            com.blueskybone.arkscreen.R.id.menu_refresh -> {
+                binding.Toolbar.subtitle = getString(com.blueskybone.arkscreen.R.string.syncing)
+                model.refresh()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     private fun displayLoadingView() {
+        binding.StatusProgress.visibility = View.VISIBLE
+        binding.StatusIllustration.visibility = View.GONE
         binding.Page.visibility = View.VISIBLE
         binding.ScrollView.visibility = View.GONE
+        binding.EmptySummary.visibility = View.GONE
+        binding.EmptyAction.visibility = View.GONE
         binding.Message.setText(com.blueskybone.arkscreen.R.string.loading)
     }
 
-    private fun displayErrorView(msg: String) {
+    private fun displayErrorView(kind: RealTimeFailureKind) {
+        binding.StatusProgress.visibility = View.GONE
+        binding.StatusIllustration.visibility = View.VISIBLE
         binding.Page.visibility = View.VISIBLE
         binding.ScrollView.visibility = View.GONE
-        binding.Message.text = msg
+        binding.EmptySummary.visibility = View.GONE
+        configureRecoveryAction(kind)
+        binding.Message.setText(
+            when (kind) {
+                RealTimeFailureKind.NETWORK -> com.blueskybone.arkscreen.R.string.realtime_network_failed
+                RealTimeFailureKind.TIMEOUT -> com.blueskybone.arkscreen.R.string.realtime_timeout
+                RealTimeFailureKind.AUTH_EXPIRED -> com.blueskybone.arkscreen.R.string.realtime_login_expired
+                RealTimeFailureKind.OTHER -> com.blueskybone.arkscreen.R.string.realtime_load_failed
+            }
+        )
     }
 
     private fun displayWarningView(msg: String) {
+        binding.StatusProgress.visibility = View.GONE
+        binding.StatusIllustration.visibility = View.VISIBLE
         binding.Page.visibility = View.VISIBLE
         binding.ScrollView.visibility = View.GONE
+        binding.EmptySummary.visibility = View.VISIBLE
+        binding.EmptyAction.visibility = View.VISIBLE
+        binding.EmptyAction.setText(com.blueskybone.arkscreen.R.string.add_skland_account)
+        binding.EmptyAction.setIconResource(com.blueskybone.arkscreen.R.drawable.ic_add)
+        binding.EmptyAction.setOnClickListener {
+            startActivity(Intent(this, AccountMngActivity::class.java))
+        }
         binding.Message.text = msg
+    }
+
+    private fun configureRecoveryAction(kind: RealTimeFailureKind) {
+        binding.EmptyAction.visibility = View.VISIBLE
+        when (kind) {
+            RealTimeFailureKind.NETWORK,
+            RealTimeFailureKind.TIMEOUT -> {
+                binding.EmptyAction.setText(com.blueskybone.arkscreen.R.string.retry)
+                binding.EmptyAction.setIconResource(com.blueskybone.arkscreen.R.drawable.ic_refresh)
+                binding.EmptyAction.setOnClickListener { model.refresh() }
+            }
+            RealTimeFailureKind.AUTH_EXPIRED -> {
+                binding.EmptyAction.setText(com.blueskybone.arkscreen.R.string.relogin)
+                binding.EmptyAction.setIconResource(com.blueskybone.arkscreen.R.drawable.ic_user)
+                binding.EmptyAction.setOnClickListener {
+                    reauthLauncher.launch(LoginWeb.startIntent(this, LoginWeb.Companion.LoginType.SKLAND))
+                }
+            }
+            RealTimeFailureKind.OTHER -> {
+                binding.EmptyAction.setText(com.blueskybone.arkscreen.R.string.view_logs)
+                binding.EmptyAction.setIconResource(com.blueskybone.arkscreen.R.drawable.ic_log)
+                binding.EmptyAction.setOnClickListener {
+                    startActivity(Intent(this, LogManagerActivity::class.java))
+                }
+            }
+        }
     }
 
     private fun displayView(data: RealTimeUi) {

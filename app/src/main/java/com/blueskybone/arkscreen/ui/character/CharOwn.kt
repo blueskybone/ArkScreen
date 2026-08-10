@@ -1,12 +1,19 @@
 package com.blueskybone.arkscreen.ui.character
 
+import android.content.ClipData
+import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Parcelable
 import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -19,25 +26,30 @@ import androidx.recyclerview.widget.ConcatAdapter
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.databinding.DialogCharBinding
+import com.blueskybone.arkscreen.databinding.DialogOperatorPosterPreviewBinding
 import com.blueskybone.arkscreen.databinding.FragmentCharBinding
-import com.blueskybone.arkscreen.domain.service.TextTranslator
 import com.blueskybone.arkscreen.ui.character.adapter.CharAdapter
 import com.blueskybone.arkscreen.ui.character.adapter.CharHeaderAdapter
 import com.blueskybone.arkscreen.ui.character.adapter.ViewType
+import com.blueskybone.arkscreen.ui.character.export.OperatorPosterRenderer
+import com.blueskybone.arkscreen.ui.character.export.OperatorPosterProgress
 import com.blueskybone.arkscreen.ui.common.adapter.ItemListener
 import com.blueskybone.arkscreen.ui.common.view.FlowRadioGroup
 import com.blueskybone.arkscreen.ui.common.view.getFlowRadioGroup
 import com.blueskybone.arkscreen.ui.common.view.profImageButton
 import com.blueskybone.arkscreen.ui.common.view.tagButton
-import com.blueskybone.arkscreen.util.TimeUtils.getTimeStrYMD
+import com.blueskybone.arkscreen.platform.time.TimeUtils.getTimeStrYMD
 import com.blueskybone.arkscreen.ui.common.openLink
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import java.io.File
 import java.net.URLEncoder
 
 
@@ -66,13 +78,38 @@ class CharOwn : Fragment() {
                         } ?: error("无法创建导出文件")
                     }
                 }
-                result.onSuccess { Toaster.show("导出完成") }
-                    .onFailure { Toaster.show("导出失败：${it.message}") }
+                result.onSuccess {
+                    Toaster.show(getString(R.string.operation_export_completed))
+                }.onFailure {
+                    Toaster.show(getString(R.string.operation_export_failed, it.message))
+                }
+            }
+        }
+    private val launcherForPng =
+        registerForActivityResult(ActivityResultContracts.CreateDocument("image/png")) { uri ->
+            val context = context ?: return@registerForActivityResult
+            val bitmap = pendingPoster ?: return@registerForActivityResult
+            uri ?: return@registerForActivityResult
+            lifecycleScope.launch {
+                val result = runCatching {
+                    withContext(Dispatchers.IO) {
+                        context.contentResolver.openOutputStream(uri)?.use { output ->
+                            check(bitmap.compress(Bitmap.CompressFormat.PNG, 100, output)) {
+                                "图片编码失败"
+                            }
+                        } ?: error("无法创建导出文件")
+                    }
+                }
+                pendingPoster = null
+                result.onSuccess {
+                    Toaster.show(getString(R.string.operation_export_completed))
+                }.onFailure {
+                    Toaster.show(getString(R.string.operation_export_failed, it.message))
+                }
             }
         }
 
     private val prefManager: SettingPrefManager by getKoin().inject()
-    private val textTranslator: TextTranslator by getKoin().inject()
 
     private val profList =
         listOf("PIONEER", "WARRIOR", "TANK", "SNIPER", "CASTER", "MEDIC", "SUPPORT", "SPECIAL")
@@ -93,6 +130,12 @@ class CharOwn : Fragment() {
     private lateinit var levelRadioGroup: FlowRadioGroup
     private lateinit var rarityRadioGroup: FlowRadioGroup
     private var currentViewType: ViewType? = null
+    private var generatedPoster: Bitmap? = null
+    private var pendingPoster: Bitmap? = null
+    private var posterJob: Job? = null
+    private var posterLoadingDialog: AlertDialog? = null
+    private var scrollToTopOnNextData = false
+    private var pendingScrollState: Parcelable? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -106,10 +149,12 @@ class CharOwn : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        pendingScrollState = savedInstanceState?.getParcelable(KEY_SCROLL_STATE)
         adapter = CharAdapter(requireContext(), 24, adapterListener)
         setupBinding()
         setUpObserver()
         setButtonLayout()
+        restoreFilterSelection()
         setupListener()
     }
 
@@ -215,9 +260,7 @@ class CharOwn : Fragment() {
 
 
         binding.Export.setOnClickListener {
-            val accountName = model.exportFileBaseName()
-            launcherForTxt.launch("${accountName}_char_assets")
-
+            showExportOptions()
         }
         binding.FrameDialog.setOnClickListener {
             binding.ButtonLayout.visibility = View.GONE
@@ -230,6 +273,152 @@ class CharOwn : Fragment() {
         }
     }
 
+    private fun showExportOptions() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.export)
+            .setItems(
+                arrayOf(
+                    getString(R.string.export_text),
+                    getString(R.string.export_operator_poster),
+                )
+            ) { _, index ->
+                when (index) {
+                    0 -> launcherForTxt.launch("${safeFileName()}_char_assets.txt")
+                    1 -> generateOperatorPoster()
+                }
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun generateOperatorPoster() {
+        if (posterJob?.isActive == true) return
+        val poster = model.buildOperatorPoster()
+        if (poster == null) {
+            Toaster.show(getString(R.string.no_login))
+            return
+        }
+        if (poster.operatorCount == 0) {
+            Toaster.show(getString(R.string.operator_poster_empty))
+            return
+        }
+
+        binding.Export.isEnabled = false
+        val appContext = requireContext().applicationContext
+        val progressView = layoutInflater.inflate(R.layout.dialog_operator_poster_loading, null)
+        val progressText = progressView.findViewById<TextView>(R.id.PosterProgress)
+        val loadingDialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.operator_poster_loading_title)
+            .setView(progressView)
+            .setNegativeButton(R.string.cancel) { _, _ ->
+                posterJob?.cancel()
+            }
+            .create()
+            .also { dialog ->
+                dialog.setCanceledOnTouchOutside(false)
+                dialog.setOnCancelListener { posterJob?.cancel() }
+                dialog.show()
+            }
+        posterLoadingDialog = loadingDialog
+
+        posterJob = viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val bitmap = withContext(Dispatchers.Default) {
+                    OperatorPosterRenderer(appContext).render(poster) { progress ->
+                        withContext(Dispatchers.Main.immediate) {
+                            if (_binding != null) {
+                                progressText.text = when (progress) {
+                                    is OperatorPosterProgress.LoadingResources -> getString(
+                                        R.string.operator_poster_loading_progress,
+                                        progress.completed,
+                                        progress.total,
+                                    )
+                                    OperatorPosterProgress.Drawing ->
+                                        getString(R.string.operator_poster_drawing)
+                                }
+                            }
+                        }
+                    }
+                }
+                if (_binding == null || !isAdded) return@launch
+                generatedPoster = bitmap
+                showPosterPreview(bitmap)
+            } catch (error: CancellationException) {
+                throw error
+            } catch (error: Exception) {
+                Toaster.show(
+                    getString(R.string.operator_poster_generation_failed, error.message)
+                )
+            } finally {
+                posterJob = null
+                posterLoadingDialog?.dismiss()
+                posterLoadingDialog = null
+                _binding?.Export?.isEnabled = true
+            }
+        }
+    }
+
+    private fun showPosterPreview(bitmap: Bitmap) {
+        val previewBinding = DialogOperatorPosterPreviewBinding.inflate(layoutInflater)
+        previewBinding.Poster.setImageBitmap(bitmap)
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.operator_poster_preview)
+            .setView(previewBinding.root)
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton(R.string.save) { _, _ ->
+                pendingPoster = bitmap
+                launcherForPng.launch("${safeFileName()}_six_star_e2.png")
+            }
+            .setNeutralButton(R.string.share) { _, _ ->
+                sharePoster(bitmap)
+            }
+            .show()
+    }
+
+    private fun sharePoster(bitmap: Bitmap) {
+        val context = requireContext()
+        viewLifecycleOwner.lifecycleScope.launch {
+            val uri = runCatching {
+                withContext(Dispatchers.IO) {
+                    val directory = File(context.cacheDir, "operator_posters")
+                    check(directory.exists() || directory.mkdirs()) { "无法创建分享缓存" }
+                    val file = File(directory, "${safeFileName()}_six_star_e2.png")
+                    file.outputStream().use { output ->
+                        check(bitmap.compress(Bitmap.CompressFormat.PNG, 100, output)) {
+                            "图片编码失败"
+                        }
+                    }
+                    FileProvider.getUriForFile(
+                        context,
+                        "${context.packageName}.fileprovider",
+                        file,
+                    )
+                }
+            }.getOrElse { error ->
+                Toaster.show(
+                    getString(R.string.operator_poster_share_prepare_failed, error.message)
+                )
+                return@launch
+            }
+
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "image/png"
+                putExtra(Intent.EXTRA_STREAM, uri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                clipData = ClipData.newUri(context.contentResolver, "operator poster", uri)
+            }
+            startActivity(
+                Intent.createChooser(
+                    shareIntent,
+                    getString(R.string.operator_poster_share),
+                )
+            )
+        }
+    }
+
+    private fun safeFileName(): String =
+        model.exportFileBaseName().replace(Regex("""[\\/:*?"<>|]"""), "_")
+
     private fun createGridLayoutManager() =
         GridLayoutManager(requireContext(), 2).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -241,13 +430,23 @@ class CharOwn : Fragment() {
     private fun setUpObserver() {
         model.charsList.observe(viewLifecycleOwner) { value ->
             adapter.refreshData(value)
-            binding.RecyclerView.scrollToPosition(0)
+            val scrollState = pendingScrollState
+            if (scrollState != null) {
+                binding.RecyclerView.layoutManager?.onRestoreInstanceState(scrollState)
+                pendingScrollState = null
+            } else if (scrollToTopOnNextData) {
+                binding.RecyclerView.scrollToPosition(0)
+                scrollToTopOnNextData = false
+            }
         }
         model.statistic.observe(viewLifecycleOwner) { statistic ->
             headerAdapter.submitStatistic(statistic)
         }
         model.currentAccount.observe(viewLifecycleOwner) { account ->
             headerAdapter.submitAccount(account)
+        }
+        model.accountAvatarUrl.observe(viewLifecycleOwner) { avatarUrl ->
+            headerAdapter.submitAccountAvatar(avatarUrl)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -280,7 +479,33 @@ class CharOwn : Fragment() {
             ?.let { CharModel.RarityFilter.entries.getOrNull(it + 1) }
             ?: CharModel.RarityFilter.ALL
 
+        scrollToTopOnNextData = true
         model.applyFilter(filter1, filter2, filter3)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable(
+            KEY_SCROLL_STATE,
+            binding.RecyclerView.layoutManager?.onSaveInstanceState(),
+        )
+        super.onSaveInstanceState(outState)
+    }
+
+    private fun restoreFilterSelection() {
+        val filter = model.currentFilter
+        filter.profession?.let { profession ->
+            profList.indexOf(profession).takeIf { it >= 0 }?.let { index ->
+                profRadioGroup.getChildAt(index)?.let { profRadioGroup.check(it.id) }
+            }
+        }
+        if (filter.evolve != CharModel.EvolveFilter.ALL) {
+            levelRadioGroup.getChildAt(filter.evolve.ordinal - 1)
+                ?.let { levelRadioGroup.check(it.id) }
+        }
+        if (filter.rarity != CharModel.RarityFilter.ALL) {
+            rarityRadioGroup.getChildAt(filter.rarity.ordinal - 1)
+                ?.let { rarityRadioGroup.check(it.id) }
+        }
     }
 
     private val adapterListener = object : ItemListener {
@@ -308,16 +533,13 @@ class CharOwn : Fragment() {
                 bindAvatarView(binding.Avatar, item.skinId)
 
                 binding.Rarity.text = "★".repeat(item.rarity + 1)
-                binding.GetTime.text = "获取时间：" + getTimeStrYMD(item.gainTime)
-                binding.SubProf.text = "· ${item.subProfessionId}"
-                viewLifecycleOwner.lifecycleScope.launch {
-                    binding.SubProf.text = "· " + textTranslator.translate(
-                        item.subProfessionId,
-                        item.subProfessionId
-                    )
-                }
+                binding.GetTime.text = getString(
+                    R.string.operator_gain_time,
+                    getTimeStrYMD(item.gainTime),
+                )
+                binding.SubProf.text = "· ${model.translatedSubProfession(item.subProfessionId)}"
 
-                binding.Love.text = "信赖值：" + item.favorPercent + "%"
+                binding.Love.text = getString(R.string.operator_trust, item.favorPercent)
 
                 binding.Skill1.Icon.alpha = 0.0F
                 binding.Skill2.Icon.alpha = 0.0F
@@ -386,10 +608,24 @@ class CharOwn : Fragment() {
         }
     }
 
+    private companion object {
+        const val KEY_SCROLL_STATE = "char_scroll_state"
+    }
+
     override fun onDestroyView() {
+        posterJob?.cancel()
+        posterJob = null
+        posterLoadingDialog?.dismiss()
+        posterLoadingDialog = null
         binding.RecyclerView.adapter = null
         _binding = null
         currentViewType = null
         super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        generatedPoster = null
+        pendingPoster = null
+        super.onDestroy()
     }
 }

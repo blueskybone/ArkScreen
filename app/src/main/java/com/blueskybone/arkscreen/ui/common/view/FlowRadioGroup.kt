@@ -155,7 +155,7 @@ class FlowRadioGroup @JvmOverloads constructor(
         }
     }
 
-    private fun check(id: Int) {
+    fun check(id: Int) {
         if (id != -1 && id == checkedId) {
             return
         }

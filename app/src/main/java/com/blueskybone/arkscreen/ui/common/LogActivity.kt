@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.core.logger.LogRepository
 import com.blueskybone.arkscreen.databinding.ActivityLogBinding
 import kotlinx.coroutines.Dispatchers
@@ -25,14 +26,16 @@ class LogActivity : AppCompatActivity() {
 
         val file = resolveLogFile()
         if (file == null) {
-            binding.LogText.text = "无效的日志文件"
+            binding.LogText.setText(R.string.invalid_log_file)
             return
         }
         title = file.name
         lifecycleScope.launch {
             binding.LogText.text = runCatching {
                 withContext(Dispatchers.IO) { readTail(file, MAX_DISPLAY_BYTES) }
-            }.getOrElse { error -> "读取日志失败：${error.message.orEmpty()}" }
+            }.getOrElse { error ->
+                getString(R.string.read_log_failed, error.message.orEmpty())
+            }
         }
     }
 

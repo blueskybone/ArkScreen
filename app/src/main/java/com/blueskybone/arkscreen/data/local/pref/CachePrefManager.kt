@@ -3,12 +3,15 @@ package com.blueskybone.arkscreen.data.local.pref
 import com.blueskybone.arkscreen.data.local.pref.preference.Preference
 import com.blueskybone.arkscreen.data.local.pref.preference.PreferenceStore
 import com.blueskybone.arkscreen.domain.model.cache.ApCache
+import com.blueskybone.arkscreen.domain.model.cache.CacheAccountInfo
 import com.blueskybone.arkscreen.domain.model.cache.LaborCache
 import com.blueskybone.arkscreen.domain.model.cache.MeetCache
 import com.blueskybone.arkscreen.domain.model.cache.RecruitCache
 import com.blueskybone.arkscreen.domain.model.cache.RefreshCache
 import com.blueskybone.arkscreen.domain.model.cache.TrainCache
 import java.util.function.Function
+import android.util.Base64
+import timber.log.Timber
 
 /**
  * Created by blueskybone
@@ -43,6 +46,12 @@ class CachePrefManager() {
             "meet_cache",
             MeetCache.default(), serializerMeet(), deserializerMeet()
         )
+        accountInfo = preferenceStore.getObject(
+            "realtime_cache_account",
+            CacheAccountInfo.empty(),
+            serializerAccountInfo(),
+            deserializerAccountInfo(),
+        )
     }
 
     lateinit var apCache: Preference<ApCache>
@@ -51,6 +60,30 @@ class CachePrefManager() {
     lateinit var recruitCache: Preference<RecruitCache>
     lateinit var refreshCache: Preference<RefreshCache>
     lateinit var meetCache: Preference<MeetCache>
+    lateinit var accountInfo: Preference<CacheAccountInfo>
+
+    private fun serializerAccountInfo(): (CacheAccountInfo) -> String = { info ->
+        val nickname = Base64.encodeToString(
+            info.nickname.toByteArray(Charsets.UTF_8),
+            Base64.NO_WRAP or Base64.URL_SAFE,
+        )
+        "${info.uid}@$nickname@${info.official}"
+    }
+
+    private fun deserializerAccountInfo(): Function<String, CacheAccountInfo> =
+        Function { value ->
+            runCatching {
+                val fields = value.split("@", limit = 3)
+                CacheAccountInfo(
+                    uid = fields[0],
+                    nickname = String(
+                        Base64.decode(fields[1], Base64.NO_WRAP or Base64.URL_SAFE),
+                        Charsets.UTF_8,
+                    ),
+                    official = fields[2].toBooleanStrict(),
+                )
+            }.getOrElse { CacheAccountInfo.empty() }
+        }
 
 
     private fun serializerAp(): (ApCache) -> String {
@@ -74,7 +107,7 @@ class CachePrefManager() {
                     list[5].toBoolean()
                 )
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.w(e, "Failed to decode AP cache")
                 return@Function ApCache.default()
             }
         }
@@ -100,7 +133,7 @@ class CachePrefManager() {
                     list[4].toBoolean()
                 )
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.w(e, "Failed to decode drone cache")
                 return@Function LaborCache.default()
             }
         }
@@ -127,7 +160,7 @@ class CachePrefManager() {
                     list[4].toBoolean()
                 )
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.w(e, "Failed to decode training cache")
                 return@Function TrainCache.default()
             }
         }
@@ -153,7 +186,7 @@ class CachePrefManager() {
                     list[4].toBoolean()
                 )
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.w(e, "Failed to decode recruitment cache")
                 return@Function RecruitCache.default()
             }
         }
@@ -179,7 +212,7 @@ class CachePrefManager() {
                     list[4].toBoolean()
                 )
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.w(e, "Failed to decode recruitment refresh cache")
                 return@Function RefreshCache.default()
             }
         }
@@ -204,7 +237,7 @@ class CachePrefManager() {
                     list[3].toBoolean()
                 )
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.w(e, "Failed to decode meeting cache")
                 return@Function MeetCache.default()
             }
         }

@@ -3,7 +3,6 @@ package com.blueskybone.arkscreen.ui.recruit.screenshot
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Application
-import android.content.res.TypedArray
 import android.graphics.PixelFormat
 import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
@@ -66,13 +65,14 @@ class FloatWindowController(
     private val rareText: TextView =
         contentView.findViewById(R.id.result_rare)
 
-    private val rarityValues: List<String> by lazy {
-        context.resources.getStringArray(R.array.rarity_value).toList()
-    }
-
-    private val rarityColorIds: List<Int> by lazy {
-        loadRarityColorIds()
-    }
+    private val rarityColorIds = intArrayOf(
+        R.color.rare_1,
+        R.color.rare_2,
+        R.color.rare_3,
+        R.color.rare_4,
+        R.color.rare_5,
+        R.color.rare_6,
+    )
 
     init {
         setupCloseButton()
@@ -126,12 +126,12 @@ class FloatWindowController(
         resultContainer.removeAllViews()
 
         if (results.isEmpty()) {
-            rareText.text = "无4★以上组合"
+            rareText.setText(R.string.recruit_no_high_rarity_result)
             return
         }
 
         val maxRarity = results.maxOf { it.rare }
-        rareText.text = "可锁$maxRarity★"
+        rareText.text = context.getString(R.string.recruit_guaranteed_rarity, maxRarity)
 
         results.forEach { result ->
             val tagGroup = FlowLayout(context, null)
@@ -303,26 +303,7 @@ class FloatWindowController(
     }
 
     private fun getRarityColorId(rarity: Int): Int {
-        val rarityIndex = rarityValues.indexOf(rarity.toString())
-
-        return if (rarityIndex in rarityColorIds.indices) {
-            rarityColorIds[rarityIndex]
-        } else {
-            R.color.grey_500
-        }
-    }
-
-    private fun loadRarityColorIds(): List<Int> {
-        val typedArray: TypedArray =
-            context.resources.obtainTypedArray(R.array.rarity_draw)
-
-        return try {
-            List(typedArray.length()) { index ->
-                typedArray.getResourceId(index, R.color.grey_500)
-            }
-        } finally {
-            typedArray.recycle()
-        }
+        return rarityColorIds.getOrElse(rarity - 1) { R.color.grey_500 }
     }
 
     private fun dpToPx(dp: Int): Int {

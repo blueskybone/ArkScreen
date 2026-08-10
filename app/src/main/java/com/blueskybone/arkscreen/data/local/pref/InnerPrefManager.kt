@@ -19,9 +19,11 @@ class InnerPrefManager() {
 
         lastCheckTs = preferenceStore.getLong("last_check_ts", 0L)
         lastAttendanceTs = preferenceStore.getLong("last_attendance_ts", 0L)
+        lastWidgetRefreshTs = preferenceStore.getLong("last_widget_refresh_ts", 0L)
         timeCorrectSec = preferenceStore.getLong("time_correct_sec", 0L)
 
         insertLink = preferenceStore.getBoolean("insert_link", false)
+        functionExpandedGroup = preferenceStore.getInt("function_expanded_groups", -1)
 
     }
 
@@ -30,6 +32,8 @@ class InnerPrefManager() {
     lateinit var currentAccountGcUid: Preference<String>        //不再deepcopy，只记录uid，自己去找
     lateinit var lastCheckTs: Preference<Long>     //记录签到时间，避免同一天重复签到
     lateinit var lastAttendanceTs: Preference<Long> //最后一次自动签到时间
+    lateinit var lastWidgetRefreshTs: Preference<Long>
     lateinit var timeCorrectSec: Preference<Long>  //时间校正
     lateinit var insertLink: Preference<Boolean>  //用于link预输入数据标识，一次有效
+    lateinit var functionExpandedGroup: Preference<Int>
 }

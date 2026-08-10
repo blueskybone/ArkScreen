@@ -5,5 +5,7 @@ package com.blueskybone.arkscreen.domain.service
  * Date: 2026/7/9
  */
 interface TextTranslator {
-    suspend fun translate(key: String, fallback: String = "fallback"): String
+    suspend fun translate(key: String, fallback: String = key): String
+
+    suspend fun translateAll(keys: Collection<String>): Map<String, String>
 }

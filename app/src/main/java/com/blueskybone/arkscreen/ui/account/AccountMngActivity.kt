@@ -22,6 +22,7 @@ import com.blueskybone.arkscreen.ui.account.common.AccountDialogHelper
 import com.blueskybone.arkscreen.ui.account.model.AccountItemAction
 import com.blueskybone.arkscreen.ui.UiStatus
 import com.blueskybone.arkscreen.ui.common.view.MenuDialog
+import com.blueskybone.arkscreen.ui.common.setDebouncedClickListener
 import com.blueskybone.arkscreen.util.copyToClipboard
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
@@ -136,9 +137,12 @@ class AccountMngActivity : AppCompatActivity() {
     }
 
     private fun toggleLoading(isOperating: Boolean) {
+        binding.AddAccountSk.isEnabled = !isOperating
+        binding.AddAccountGc.isEnabled = !isOperating
         if (isOperating) {
             if (loadingDialog == null) {
                 loadingDialog = MaterialAlertDialogBuilder(this)
+                    .setView(R.layout.dialog_operation_loading)
                     .setCancelable(false)
                     .create()
             }
@@ -183,11 +187,11 @@ class AccountMngActivity : AppCompatActivity() {
                     account = account,
                     onCopyUid = {
                         copyToClipboard(this@AccountMngActivity, account.uid)
-                        Toaster.show("UID已复制")
+                        Toaster.show(getString(R.string.uid_copied))
                     },
                     onCopyNickname = {
                         copyToClipboard(this@AccountMngActivity, account.nickName)
-                        Toaster.show("昵称已复制")
+                        Toaster.show(getString(R.string.nickname_copied))
                     },
                     onExportCookie = buildExportAction(account),
                     onDelete = {
@@ -242,11 +246,11 @@ class AccountMngActivity : AppCompatActivity() {
     }
 
     private fun initClicks() {
-        binding.AddAccountSk.setOnClickListener {
+        binding.AddAccountSk.setDebouncedClickListener {
             showAddAccountMenu(AccountType.SK)
         }
 
-        binding.AddAccountGc.setOnClickListener {
+        binding.AddAccountGc.setDebouncedClickListener {
             showAddAccountMenu(AccountType.GC)
         }
 
@@ -332,10 +336,10 @@ class AccountMngActivity : AppCompatActivity() {
         val dId = data?.getStringExtra("dId")
 
         if (token.isNullOrBlank() || dId.isNullOrBlank()) {
-            Toaster.show("failed：获取token失败")
+            Toaster.show(getString(R.string.token_fetch_failed))
             return
         }
-        model.loginSklandByToken(token)
+        model.loginSklandByToken(token, dId)
     }
 
     private fun handleGcLoginResult(data: Intent?) {
@@ -345,7 +349,7 @@ class AccountMngActivity : AppCompatActivity() {
         val channelMasterId = data?.getIntExtra("channelMasterId", 1) ?: 1
 
         if (xrToken.isNullOrBlank() || userCenter.isNullOrBlank()) {
-            Toaster.show("failed：获取token失败")
+            Toaster.show(getString(R.string.token_fetch_failed))
             return
         }
 

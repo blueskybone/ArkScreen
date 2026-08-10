@@ -14,6 +14,9 @@ interface AppUpdateRepository {
 
     fun downloadApk(
         url: String,
+        expectedVersionCode: Long,
         fileName: String = "ArkScreen.apk",
     ): Flow<DownloadStatus>
+
+    fun resumeApkDownload(): Flow<DownloadStatus>?
 }

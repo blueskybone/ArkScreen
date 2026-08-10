@@ -2,7 +2,7 @@ package com.blueskybone.arkscreen.data.time
 
 import com.blueskybone.arkscreen.data.local.pref.InnerPrefManager
 import com.blueskybone.arkscreen.data.network.ApiService
-import com.blueskybone.arkscreen.data.repository.utils.safeResultSync
+import com.blueskybone.arkscreen.data.common.repositoryResultOf
 import com.blueskybone.arkscreen.domain.service.ServerTimeCalibrator
 import com.fasterxml.jackson.databind.ObjectMapper
 import java.time.ZonedDateTime
@@ -14,7 +14,7 @@ class SklandServerTimeCalibrator(
     private val objectMapper: ObjectMapper,
 ) : ServerTimeCalibrator {
 
-    override suspend fun calibrate(): Result<Long> = safeResultSync {
+    override suspend fun calibrate(): Result<Long> = repositoryResultOf {
         val requestStartedAt = System.currentTimeMillis()
         val response = api.getServerTimestamp()
         val requestFinishedAt = System.currentTimeMillis()

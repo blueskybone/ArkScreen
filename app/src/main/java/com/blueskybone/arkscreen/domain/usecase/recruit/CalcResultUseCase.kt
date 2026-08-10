@@ -1,6 +1,6 @@
 package com.blueskybone.arkscreen.domain.usecase.recruit
 
-import com.blueskybone.arkscreen.domain.common.safeResultSync
+import com.blueskybone.arkscreen.domain.common.domainResultOf
 import com.blueskybone.arkscreen.domain.model.recruit.RecruitDatabase
 import com.blueskybone.arkscreen.domain.model.recruit.RecruitOpe
 import com.blueskybone.arkscreen.domain.model.recruit.RecruitResult
@@ -17,9 +17,9 @@ class CalcResultUseCase(
     suspend operator fun invoke(
         tags: List<String>,
         filter: Boolean = false,
-    ): Result<List<RecruitResult>> = safeResultSync {
+    ): Result<List<RecruitResult>> = domainResultOf {
         if (tags.isEmpty()) {
-            return@safeResultSync emptyList()
+            return@domainResultOf emptyList()
         }
 
         val db = databaseProvider.getDatabase().getOrThrow()

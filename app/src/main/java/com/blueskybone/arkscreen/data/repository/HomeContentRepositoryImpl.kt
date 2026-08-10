@@ -4,7 +4,7 @@ import com.blueskybone.arkscreen.data.network.ApiService
 import com.blueskybone.arkscreen.data.network.safeApiCall
 import com.blueskybone.arkscreen.data.repository.utils.appSign
 import com.blueskybone.arkscreen.data.repository.utils.createBiliHeader
-import com.blueskybone.arkscreen.data.repository.utils.safeResultSync
+import com.blueskybone.arkscreen.data.common.repositoryResultOf
 import com.blueskybone.arkscreen.domain.model.BiliVideo
 import com.blueskybone.arkscreen.domain.repository.HomeContentRepository
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -17,7 +17,7 @@ class HomeContentRepositoryImpl(
     private val objectMapper: ObjectMapper,
     private val dispatcher: CoroutineDispatcher,
 ) : HomeContentRepository {
-    override suspend fun fetchAnnouncement(): Result<String> = safeResultSync {
+    override suspend fun fetchAnnouncement(): Result<String> = repositoryResultOf {
         withContext(dispatcher) {
             URL(ANNOUNCEMENT_URL).openConnection()
                 .getInputStream()
@@ -29,7 +29,7 @@ class HomeContentRepositoryImpl(
         }
     }
 
-    override suspend fun fetchBiliVideos(): Result<List<BiliVideo>> = safeResultSync {
+    override suspend fun fetchBiliVideos(): Result<List<BiliVideo>> = repositoryResultOf {
         withContext(dispatcher) {
             val params = mutableMapOf(
                 "vmid" to "161775300",

@@ -21,6 +21,6 @@ interface GachaRepository {
 
     suspend fun syncRecords(account: AccountGc): Result<Unit>
 
-    suspend fun correctUnCateRecord(account: Account): Result<Unit>
+    suspend fun correctUnCateRecord(account: Account): Result<Int>
 
 }

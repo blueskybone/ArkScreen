@@ -5,13 +5,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
+import com.blueskybone.arkscreen.data.network.resolveUrl
 import com.blueskybone.arkscreen.domain.model.ConfigType
 import com.blueskybone.arkscreen.domain.model.account.AccountSk
 import com.blueskybone.arkscreen.domain.model.operator.Operator
 import com.blueskybone.arkscreen.domain.repository.AccountRepository
 import com.blueskybone.arkscreen.domain.repository.GameResourceRepository
+import com.blueskybone.arkscreen.domain.service.TextTranslator
 import com.blueskybone.arkscreen.domain.usecase.operator.GetCharAssetsUseCase
 import com.blueskybone.arkscreen.domain.usecase.operator.GetCharMissUseCase
+import com.blueskybone.arkscreen.domain.usecase.operator.BuildOperatorPosterUseCase
+import com.blueskybone.arkscreen.domain.usecase.operator.OperatorPoster
+import com.blueskybone.arkscreen.domain.usecase.account.SyncAccountSkUseCase
 import com.blueskybone.arkscreen.ui.UiStatus
 import com.blueskybone.arkscreen.ui.character.adapter.ViewType
 import com.blueskybone.arkscreen.ui.character.model.CharStatistic
@@ -22,6 +27,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -34,8 +41,16 @@ class CharModel(
     private val repoAcc: AccountRepository,
     private val getCharAssetsUseCase: GetCharAssetsUseCase,
     private val getCharMissUseCase: GetCharMissUseCase,
+    private val buildOperatorPosterUseCase: BuildOperatorPosterUseCase,
     private val settings: SettingPrefManager,
+    private val syncAccountSkUseCase: SyncAccountSkUseCase,
+    private val textTranslator: TextTranslator,
 ) : ViewModel() {
+    data class FilterSelection(
+        val profession: String? = null,
+        val evolve: EvolveFilter = EvolveFilter.ALL,
+        val rarity: RarityFilter = RarityFilter.ALL,
+    )
 
     enum class EvolveFilter(val phase: Int?) {
         ALL(null),
@@ -59,6 +74,9 @@ class CharModel(
     val charsList: LiveData<List<Operator>> get() = _charsList
 
     private var sourceCharsList: List<Operator> = emptyList()
+    private var subProfessionNames: Map<String, String> = emptyMap()
+    var currentFilter = FilterSelection()
+        private set
 
     private val _charsNotOwnList = MutableLiveData<List<Operator>>()
     val charsNotOwnList: LiveData<List<Operator>> get() = _charsNotOwnList
@@ -83,7 +101,18 @@ class CharModel(
     private var currentAccountSk: AccountSk? = null
     private val _currentAccount = MutableLiveData<AccountSk?>()
     val currentAccount: LiveData<AccountSk?> get() = _currentAccount
+    private val _accountAvatarUrl = MutableLiveData<String?>()
+    val accountAvatarUrl: LiveData<String?> get() = _accountAvatarUrl
     private var loadJob: Job? = null
+    private var loadRequestId = 0L
+    private var syncing = false
+    private var loadedUid: String? = null
+    private val _lastSyncAt = MutableLiveData<Long?>()
+    val lastSyncAt: LiveData<Long?> get() = _lastSyncAt
+    private val _syncingState = MutableLiveData(false)
+    val syncingState: LiveData<Boolean> get() = _syncingState
+    private val _event = MutableSharedFlow<String>(extraBufferCapacity = 1)
+    val event = _event.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -94,16 +123,44 @@ class CharModel(
     }
 
     fun refresh() {
+        if (syncing) return
         viewModelScope.launch {
             startLoad(repoAcc.observeCurrentSkAcc().first())
         }
     }
 
+    fun reauthenticate(token: String, dId: String) {
+        if (syncing) return
+        viewModelScope.launch {
+            syncAccountSkUseCase(SyncAccountSkUseCase.LoginWay.Token(token, dId))
+                .onSuccess {
+                    _event.emit("登录成功，正在重新同步")
+                    refresh()
+                }
+                .onFailure { error ->
+                    _event.emit(com.blueskybone.arkscreen.ui.common.userFacingError(error.message ?: "登录失败"))
+                }
+        }
+    }
+
     private fun startLoad(account: AccountSk?) {
+        if (syncing && loadedUid == account?.uid) return
+        val requestId = ++loadRequestId
         loadJob?.cancel()
         loadJob = viewModelScope.launch {
+            val accountChanged = loadedUid != account?.uid
+            if (accountChanged) {
+                sourceCharsList = emptyList()
+                subProfessionNames = emptyMap()
+                _accountAvatarUrl.value = null
+                loadedUid = account?.uid
+            }
+            syncing = true
+            _syncingState.value = true
             try {
-                _uiState.value = UiStatus.Loading()
+                if (sourceCharsList.isEmpty()) {
+                    _uiState.value = UiStatus.Loading("正在加载账号数据…")
+                }
                 currentAccountSk = account
                 _currentAccount.value = account
                 if (account == null) {
@@ -114,36 +171,57 @@ class CharModel(
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                _uiState.value = UiStatus.Error(e.message ?: "未知错误")
+                handleFailure(e.message ?: "未知错误")
+            } finally {
+                if (requestId == loadRequestId) {
+                    syncing = false
+                    _syncingState.value = false
+                }
             }
         }
     }
 
     private suspend fun loadAll(account: AccountSk) {
-        val ownList = getCharAssetsUseCase(account).getOrElse { error ->
-            _uiState.postValue(UiStatus.Error(error.message ?: "加载干员资产失败：请查看日志"))
+        val assets = getCharAssetsUseCase(account).getOrElse { error ->
+            handleFailure(error.message ?: "加载干员资产失败：请查看日志")
             return
         }
+        val ownList = assets.operators
+        _accountAvatarUrl.value = assets.avatar.resolveUrl().takeIf(String::isNotBlank)
+        subProfessionNames = textTranslator.translateAll(
+            ownList.map(Operator::subProfessionId)
+        )
 
         sourceCharsList = ownList
-        _charsList.postValue(ownList)
+        _charsList.value = ownList
 
         // Refresh the complete operator map before calculating the difference. If the network
         // update fails, GameResourceRepository keeps the last valid local/bundled resource.
         repo.syncResource(ConfigType.CHAR_MAP).lastOrNull()
 
         val notOwnList = getCharMissUseCase(ownList).getOrElse { error ->
-            _uiState.postValue(UiStatus.Error(error.message ?: "加载未持有干员失败：请查看日志"))
+            handleFailure(error.message ?: "加载未持有干员失败：请查看日志")
             return
         }
 
-        _charsNotOwnList.postValue(notOwnList)
+        _charsNotOwnList.value = notOwnList
 
         repo.getResourceDate(ConfigType.CHAR_MAP)
-            .onSuccess { date -> _update.postValue(date) }
+            .onSuccess { date -> _update.value = date }
 
-        _statistic.postValue(calculateStatistic(ownList, notOwnList))
-        _uiState.postValue(UiStatus.Success())
+        _statistic.value = calculateStatistic(ownList, notOwnList)
+        _lastSyncAt.value = System.currentTimeMillis()
+        _uiState.value = UiStatus.Success()
+    }
+
+    private suspend fun handleFailure(message: String) {
+        val userMessage = com.blueskybone.arkscreen.ui.common.userFacingError(message)
+        if (sourceCharsList.isNotEmpty()) {
+            _uiState.value = UiStatus.Success()
+            _event.emit(userMessage)
+        } else {
+            _uiState.value = UiStatus.Error(userMessage)
+        }
     }
 
 
@@ -162,11 +240,14 @@ class CharModel(
     fun exportFileBaseName(): String =
         currentAccountSk?.nickName?.takeIf { it.isNotBlank() } ?: "arknights"
 
+    fun translatedSubProfession(id: String): String = subProfessionNames[id] ?: id
+
     fun applyFilter(
         profession: String? = null,
         level: EvolveFilter = EvolveFilter.ALL,
         rarity: RarityFilter = RarityFilter.ALL,
     ) {
+        currentFilter = FilterSelection(profession, level, rarity)
         _charsList.value = sourceCharsList.filter { operator ->
             (profession == null || operator.profession == profession) &&
                 (level.phase == null || operator.evolvePhase == level.phase) &&
@@ -188,6 +269,11 @@ class CharModel(
                 data.skills.joinToString("@") { it.specializeLevel.toString() } + "," +
                 data.equips.joinToString("@") { "${it.typeName2}-${it.stage}" }
         }
+
+    fun buildOperatorPoster(): OperatorPoster? {
+        val account = currentAccountSk ?: return null
+        return buildOperatorPosterUseCase(account, sourceCharsList, _accountAvatarUrl.value)
+    }
 
     private fun calculateStatistic(
         ownList: List<Operator>,
@@ -248,40 +334,4 @@ class CharModel(
             r4Module3 = module3ByRarity[3]
         )
     }
-
-    fun generateStatisticMarkDownText(): String {
-        val stat = _statistic.value ?: return ""
-
-        return buildString {
-            appendLine("### 全部干员")
-            appendLine()
-            appendLine("* 干员总数  **${stat.totalOwn}/${stat.totalOwn + stat.totalMiss}**")
-            appendLine("* 精二  **${stat.totalE2}**")
-            appendLine("* 专三  **${stat.totalM3}**")
-            appendLine("* Stage3模组  **${stat.totalModule3}**")
-            appendLine()
-            appendLine("### 6★干员")
-            appendLine()
-            appendLine("* 干员总数  **${stat.r6Own}/${stat.r6Own + stat.r6Miss}**")
-            appendLine("* 精二  **${stat.r6E2}**")
-            appendLine("* 专三  **${stat.r6M3}**")
-            appendLine("* Stage3模组  **${stat.r6Module3}**")
-            appendLine()
-            appendLine("### 5★干员")
-            appendLine()
-            appendLine("* 干员总数  **${stat.r5Own}/${stat.r5Own + stat.r5Miss}**")
-            appendLine("* 精二  **${stat.r5E2}**")
-            appendLine("* 专三  **${stat.r5M3}**")
-            appendLine("* Stage3模组  **${stat.r5Module3}**")
-            appendLine()
-            appendLine("### 4★干员")
-            appendLine()
-            appendLine("* 干员总数  **${stat.r4Own}/${stat.r4Own + stat.r4Miss}**")
-            appendLine("* 精二  **${stat.r4E2}**")
-            appendLine("* 专三  **${stat.r4M3}**")
-            appendLine("* Stage3模组  **${stat.r4Module3}**")
-        }
-    }
-
-
 }

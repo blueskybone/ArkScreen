@@ -12,7 +12,7 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.data.network.avatarUrl
 import com.blueskybone.arkscreen.databinding.ItemGachaRecordsBinding
 import com.blueskybone.arkscreen.ui.gacha.model.Record
-import com.blueskybone.arkscreen.util.TimeUtils.getTimeStr
+import com.blueskybone.arkscreen.platform.time.TimeUtils.getTimeStr
 import java.net.URLEncoder
 
 

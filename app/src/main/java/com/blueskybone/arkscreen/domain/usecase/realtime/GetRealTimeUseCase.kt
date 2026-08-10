@@ -19,7 +19,7 @@ class GetRealTimeUseCase(
             result.exceptionOrNull() ?: IllegalStateException("实时数据为空")
         )
         // Cache updates remain part of this refresh so widgets observe the same snapshot.
-        repo.setRealTimeCache(data)
+        repo.setRealTimeCache(account, data)
         return result
     }
 }

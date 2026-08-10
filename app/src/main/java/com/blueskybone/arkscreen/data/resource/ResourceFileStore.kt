@@ -25,8 +25,7 @@ class ResourceFileStore(
                 assetName = type.fileName,
                 targetFile = targetFile,
             )
-        } else if (type == ConfigType.I18N_DB && !hasCurrentI18nSchema(targetFile)) {
-            // Replace the obsolete bundled schema left in cache by older app versions.
+        } else if (type == ConfigType.I18N_DB && shouldReplaceI18nWithBundled(targetFile)) {
             copyAssetToCache(
                 assetName = type.fileName,
                 targetFile = targetFile,
@@ -36,9 +35,19 @@ class ResourceFileStore(
         return targetFile
     }
 
-    private fun hasCurrentI18nSchema(file: File): Boolean = runCatching {
-        jsonReader.readNode(file).has("mapInfo")
-    }.getOrDefault(false)
+    private fun shouldReplaceI18nWithBundled(cachedFile: File): Boolean {
+        val cachedNode = runCatching { jsonReader.readNode(cachedFile) }.getOrNull()
+            ?: return true
+        if (!isValidI18n(cachedNode)) return true
+
+        val bundledNode = runCatching {
+            context.assets.open(ConfigType.I18N_DB.fileName).use(jsonReader::readNode)
+        }.getOrNull() ?: return false
+        return compareVersions(
+            versionOf(bundledNode),
+            versionOf(cachedNode),
+        ) > 0
+    }
 
     fun getLocalVersion(type: ConfigType): String {
         return runCatching {
@@ -65,9 +74,10 @@ class ResourceFileStore(
     }
 
     fun downloadConfig(
-        fileName: String,
+        type: ConfigType,
         link: String,
     ) {
+        val fileName = type.fileName
         val targetFile = getTargetFile(fileName)
         val tempFile = getTempFile(fileName)
 
@@ -80,6 +90,7 @@ class ResourceFileStore(
         if (!tempFile.exists()) {
             throw IllegalStateException("Temp file does not exist: ${tempFile.absolutePath}")
         }
+        validateDownloadedResource(type, tempFile)
 
         if (targetFile.exists()) {
             targetFile.delete()
@@ -92,6 +103,37 @@ class ResourceFileStore(
         }
 
         Timber.d("Downloaded and updated file: $fileName")
+    }
+
+    private fun validateDownloadedResource(type: ConfigType, file: File) {
+        val root = jsonReader.readNode(file)
+        if (type == ConfigType.I18N_DB) {
+            require(isValidI18n(root)) { "i18n resource has an invalid schema" }
+        }
+    }
+
+    private fun isValidI18n(root: com.fasterxml.jackson.databind.JsonNode): Boolean {
+        val version = versionOf(root)
+        val mapInfo = root["mapInfo"]
+        if (version == "0" || mapInfo == null || !mapInfo.isObject || mapInfo.isEmpty) return false
+        val entriesValid = mapInfo.fields().asSequence().all { (key, value) ->
+            key.isNotBlank() && value.isTextual && value.asText().isNotBlank()
+        }
+        return entriesValid && REQUIRED_RECRUIT_KEYS.all(mapInfo::has)
+    }
+
+    private fun versionOf(root: com.fasterxml.jackson.databind.JsonNode): String =
+        root["update"]?.get("version")?.asText() ?: "0"
+
+    private fun compareVersions(left: String, right: String): Int {
+        val leftParts = left.trim().split('.').map { it.toLongOrNull() ?: 0L }
+        val rightParts = right.trim().split('.').map { it.toLongOrNull() ?: 0L }
+        repeat(maxOf(leftParts.size, rightParts.size)) { index ->
+            val result = (leftParts.getOrNull(index) ?: 0L)
+                .compareTo(rightParts.getOrNull(index) ?: 0L)
+            if (result != 0) return result
+        }
+        return 0
     }
 
     private fun getTargetFile(fileName: String): File {
@@ -119,5 +161,15 @@ class ResourceFileStore(
         }
 
         Timber.d("Copied asset $assetName to cache.")
+    }
+
+    private companion object {
+        val REQUIRED_RECRUIT_KEYS = setOf(
+            "medic", "supporter", "caster", "guard", "vanguard", "defender",
+            "sniper", "specialist", "top-ope", "sen-ope", "starter", "melee",
+            "ranged", "dps", "robot", "defense", "survival", "healing",
+            "dp-recovery", "aoe", "slow", "support", "fast-redeploy", "debuff",
+            "shift", "nuker", "summon", "crowed-control", "elemental",
+        )
     }
 }

@@ -5,9 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.domain.model.account.Account
 import com.blueskybone.arkscreen.domain.model.account.AccountGc
 import com.blueskybone.arkscreen.domain.model.gacha.Record
+import com.blueskybone.arkscreen.data.gacha.GachaBackupCodec
+import com.blueskybone.arkscreen.data.gacha.GachaImportPayload
 import com.blueskybone.arkscreen.domain.repository.AccountRepository
 import com.blueskybone.arkscreen.domain.repository.GachaRepository
 import com.blueskybone.arkscreen.domain.usecase.gacha.SyncRecordsUseCase
+import com.blueskybone.arkscreen.domain.usecase.account.SyncAccountGcUseCase
+import com.blueskybone.arkscreen.ui.common.userFacingError
 import com.blueskybone.arkscreen.ui.gacha.model.GachaUiMapper
 import com.blueskybone.arkscreen.ui.UiStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,9 +24,12 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
 
 /**
@@ -32,9 +39,10 @@ import kotlin.coroutines.cancellation.CancellationException
 class GachaModel(
     private val repo: GachaRepository,
     private val repoAcc: AccountRepository,
-    private val syncRecordsUseCase: SyncRecordsUseCase
+    private val syncRecordsUseCase: SyncRecordsUseCase,
+    private val syncAccountGcUseCase: SyncAccountGcUseCase,
+    private val backupCodec: GachaBackupCodec,
 ) : ViewModel() {
-
     private val currentGcFlow = repoAcc.observeCurrentGcAcc() // 当前账号
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -53,6 +61,8 @@ class GachaModel(
 
     private val _event = Channel<GachaEvent>(Channel.BUFFERED)
     val event = _event.receiveAsFlow()
+    private var observedUid: String? = null
+    private var domainRecords: List<Record> = emptyList()
 
     private fun observeAccounts() {
         viewModelScope.launch {
@@ -75,6 +85,7 @@ class GachaModel(
     private fun observeRecords() {
         viewModelScope.launch {
             recordsFlow.collect { records ->
+                domainRecords = records
                 _uiState.update {
                     val snapshot = GachaUiMapper.map(records)
                     val selectedPoolStillExists = snapshot.gachaPoolStats.any { pool ->
@@ -101,49 +112,221 @@ class GachaModel(
                 .distinctUntilChangedBy { it?.uid }
                 .collectLatest { account ->
                     if (account == null) {
-                        _uiState.update { it.copy(status = UiStatus.Empty("请在卡池账号管理中添加账号")) }
+                        observedUid = null
+                        _uiState.update {
+                            it.copy(
+                                status = UiStatus.Empty("请在卡池账号管理中添加账号"),
+                                gachaUiSnapshot = null,
+                                lastSyncAt = null,
+                            )
+                        }
                         return@collectLatest
                     }
-
-                    _uiState.update { it.copy(status = UiStatus.Loading("正在同步寻访记录")) }
-                    syncRecordsUseCase(account).fold(
-                        onSuccess = {
-                            _uiState.update { it.copy(status = UiStatus.Success()) }
-                        },
-                        onFailure = { error ->
-                            val message = error.message ?: "同步寻访记录失败"
-                            _uiState.update { it.copy(status = UiStatus.Error(message)) }
-                            _event.send(GachaEvent.ShowError(message))
-                        },
-                    )
+                    if (observedUid != account.uid) {
+                        observedUid = account.uid
+                        _uiState.update {
+                            it.copy(
+                                gachaUiSnapshot = null,
+                                lastSyncAt = null,
+                                status = UiStatus.Loading("正在加载账号数据…"),
+                            )
+                        }
+                    }
+                    syncAccount(account)
                 }
+        }
+    }
+
+    fun retrySync() {
+        execute {
+            if (_uiState.value.isSyncing) return@execute
+            val account = requireCurrentAccount() ?: return@execute
+            syncAccount(account)
+        }
+    }
+
+    private suspend fun syncAccount(
+        account: AccountGc,
+        continueOperation: Boolean = false,
+    ) {
+        if (_uiState.value.isSyncing && !continueOperation) return
+        val hasCachedRecords = _uiState.value.gachaUiSnapshot?.records?.isNotEmpty() == true
+        _uiState.update {
+            it.copy(
+                isSyncing = true,
+                status = if (hasCachedRecords) it.status
+                else UiStatus.Loading("正在加载账号数据…")
+            )
+        }
+        try {
+            syncRecordsUseCase(account).fold(
+                onSuccess = {
+                    _uiState.update {
+                        it.copy(
+                            status = UiStatus.Success(),
+                            lastSyncAt = System.currentTimeMillis(),
+                            isSyncing = false,
+                        )
+                    }
+                },
+                onFailure = { error ->
+                    val message = userFacingError(error.message ?: "同步寻访记录失败")
+                    _uiState.update {
+                        it.copy(
+                            status = if (hasCachedRecords) UiStatus.Success()
+                            else UiStatus.Error(message),
+                            isSyncing = false,
+                        )
+                    }
+                    if (hasCachedRecords) {
+                        _event.send(GachaEvent.ShowError(message))
+                    }
+                },
+            )
+        } finally {
+            if (_uiState.value.isSyncing) {
+                _uiState.update { it.copy(isSyncing = false) }
+            }
+        }
+    }
+
+    fun reauthenticate(
+        token: String,
+        akUserCenter: String,
+        xrToken: String,
+        channelMasterId: Int,
+    ) {
+        execute {
+            if (_uiState.value.isSyncing) return@execute
+            _uiState.update { it.copy(isSyncing = true) }
+            syncAccountGcUseCase(
+                SyncAccountGcUseCase.LoginWay.Token(
+                    token = token,
+                    akUserCenter = akUserCenter,
+                    xrToken = xrToken,
+                    channelMasterId = channelMasterId,
+                )
+            ).fold(
+                onSuccess = {
+                    _event.send(GachaEvent.ShowMessage("登录成功，正在重新同步"))
+                    val account = repoAcc.observeCurrentGcAcc().first()
+                    if (account != null) {
+                        syncAccount(account, continueOperation = true)
+                    } else {
+                        _uiState.update { it.copy(isSyncing = false) }
+                    }
+                },
+                onFailure = { error ->
+                    val message = userFacingError(error.message ?: "重新登录失败")
+                    _uiState.update { it.copy(isSyncing = false) }
+                    _event.send(GachaEvent.ShowError(message))
+                },
+            )
         }
     }
 
     fun deleteRecords() {
         execute {
+            if (_uiState.value.isSyncing) return@execute
             val account = requireCurrentAccount() ?: return@execute
-            _uiState.update { it.copy(status = UiStatus.Loading()) }
-            repo.deleteRecords(account).fold(
-                onSuccess = { _uiState.update { it.copy(status = UiStatus.Success()) } },
-                onFailure = { error -> reportError(error.message ?: "删除寻访记录失败") },
-            )
+            _uiState.update { it.copy(status = UiStatus.Loading(), isSyncing = true) }
+            try {
+                repo.deleteRecords(account).fold(
+                    onSuccess = {
+                        _uiState.update {
+                            it.copy(status = UiStatus.Success(), isSyncing = false)
+                        }
+                    },
+                    onFailure = { error -> reportError(error.message ?: "删除寻访记录失败") },
+                )
+            } finally {
+                if (_uiState.value.isSyncing) {
+                    _uiState.update { it.copy(isSyncing = false) }
+                }
+            }
         }
     }
 
     fun correctUnCateRecord() {
         execute {
+            if (_uiState.value.isSyncing) return@execute
             val account = requireCurrentAccount() ?: return@execute
-            _uiState.update { it.copy(status = UiStatus.Loading()) }
-            repo.correctUnCateRecord(account).fold(
-                onSuccess = { _uiState.update { it.copy(status = UiStatus.Success()) } },
-                onFailure = { error -> reportError(error.message ?: "修复卡池分类失败") },
-            )
+            _uiState.update { it.copy(status = UiStatus.Loading(), isSyncing = true) }
+            try {
+                repo.correctUnCateRecord(account).fold(
+                    onSuccess = { correctedCount ->
+                        _uiState.update {
+                            it.copy(status = UiStatus.Success(), isSyncing = false)
+                        }
+                        _event.send(
+                            GachaEvent.ShowMessage(
+                                if (correctedCount == 0) "没有发现需要修正的记录"
+                                else "已修正 $correctedCount 条卡池分类"
+                            )
+                        )
+                    },
+                    onFailure = { error -> reportError(error.message ?: "修复卡池分类失败") },
+                )
+            } finally {
+                if (_uiState.value.isSyncing) {
+                    _uiState.update { it.copy(isSyncing = false) }
+                }
+            }
         }
     }
 
     fun exportFileBaseName(): String =
         "${_uiState.value.currAccount?.uid ?: "gacha"}_gacha_records"
+
+    suspend fun buildExportJson(): Result<String> = encodeExport(backupCodec::encodeJson)
+
+    suspend fun buildExportText(): Result<String> = encodeExport(backupCodec::encodeText)
+
+    private suspend fun encodeExport(
+        encoder: (AccountGc, List<Record>) -> String,
+    ): Result<String> {
+        return try {
+            val account = _uiState.value.currAccount
+                ?: return Result.failure(IllegalStateException("请先选择寻访记录账号"))
+            val records = domainRecords
+            if (records.isEmpty()) {
+                return Result.failure(IllegalStateException("当前账号没有可导出的寻访记录"))
+            }
+            Result.success(withContext(Dispatchers.Default) { encoder(account, records) })
+        } catch (error: CancellationException) {
+            throw error
+        } catch (error: Exception) {
+            Result.failure(error)
+        }
+    }
+
+    suspend fun prepareImport(content: String): Result<GachaImportPayload> = try {
+        Result.success(withContext(Dispatchers.Default) { backupCodec.decode(content) })
+    } catch (error: CancellationException) {
+        throw error
+    } catch (error: Exception) {
+        Result.failure(error)
+    }
+
+    fun importRecords(payload: GachaImportPayload) {
+        execute {
+            if (_uiState.value.isSyncing) return@execute
+            val account = requireCurrentAccount() ?: return@execute
+            _uiState.update { it.copy(isSyncing = true) }
+            repo.importRecords(account, payload.records).fold(
+                onSuccess = {
+                    _uiState.update { it.copy(isSyncing = false) }
+                    _event.send(
+                        GachaEvent.ShowMessage("成功导入 ${payload.records.size} 条寻访记录")
+                    )
+                },
+                onFailure = { error ->
+                    _uiState.update { it.copy(isSyncing = false) }
+                    _event.send(GachaEvent.ShowError(error.message ?: "导入寻访记录失败"))
+                },
+            )
+        }
+    }
 
     fun checkoutAccount(account: Account) {
         execute {
@@ -160,6 +343,24 @@ class GachaModel(
     fun selectPool(poolId: String) {
         _uiState.update { state ->
             if (state.selectedPoolId == poolId) state else state.copy(selectedPoolId = poolId)
+        }
+    }
+
+    fun setRawDataFilters(sixStarOnly: Boolean, newOnly: Boolean) {
+        _uiState.update {
+            it.copy(filterSixStar = sixStarOnly, filterNew = newOnly)
+        }
+    }
+
+    fun setPoolExpanded(poolId: String, expanded: Boolean) {
+        _uiState.update { state ->
+            state.copy(
+                expandedPoolIds = if (expanded) {
+                    state.expandedPoolIds + poolId
+                } else {
+                    state.expandedPoolIds - poolId
+                }
+            )
         }
     }
 
@@ -184,8 +385,9 @@ class GachaModel(
     }
 
     private suspend fun reportError(message: String) {
-        _uiState.update { it.copy(status = UiStatus.Error(message)) }
-        _event.send(GachaEvent.ShowError(message))
+        val readable = userFacingError(message)
+        _uiState.update { it.copy(status = UiStatus.Error(readable)) }
+        _event.send(GachaEvent.ShowError(readable))
     }
 
 }

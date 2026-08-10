@@ -29,9 +29,18 @@
 
     <color name="sec_con">#DEE6EF</color>
     <color name="on_sec_con">#575e71</color>
+    <color name="widget_content_slot_ripple">#24575E71</color>
 
     <color name="error_con">#FFE8E6</color>
     <color name="on_error">#BC6262</color>
+    <color name="status_success_container">#DDF3E3</color>
+    <color name="status_success_content">#27633A</color>
+    <color name="status_warning_container">#FFF0C7</color>
+    <color name="status_warning_content">#735B00</color>
+    <color name="status_error_container">#FFE1DE</color>
+    <color name="status_error_content">#9B3D3D</color>
+    <color name="status_neutral_container">#E8EAF0</color>
+    <color name="status_neutral_content">#555B68</color>
     <!--    <color name="grey_900">#202020</color>-->
     <color name="grey_900">#1E1F25</color>
     <color name="red">#FF0000</color>
@@ -105,8 +114,8 @@
     <color name="tool_attendance_container">#D8F3DF</color>
     <color name="tool_account_icon">#4554A4</color>
     <color name="tool_account_container">#E0E4FF</color>
-    <color name="tool_game_icon">#725C00</color>
-    <color name="tool_game_container">#38F8DE05</color>
+    <color name="tool_game_icon">#C2410C</color>
+    <color name="tool_game_container">#FFEDD5</color>
     <color name="tool_manual_icon">#006A67</color>
     <color name="tool_manual_container">#C9F1EC</color>
     <color name="recruit_metadata_chip_background">#E6E6E6</color>

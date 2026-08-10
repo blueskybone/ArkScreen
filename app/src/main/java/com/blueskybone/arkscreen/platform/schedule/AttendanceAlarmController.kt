@@ -37,6 +37,7 @@ class AttendanceAlarmController(
             AlarmManager.INTERVAL_DAY,
             pendingIntent(),
         )
+        AttendanceWorkScheduler.ensureRecovery(appContext)
     }
 
     fun cancel() {
@@ -44,6 +45,7 @@ class AttendanceAlarmController(
             alarmManager.cancel(it)
             it.cancel()
         }
+        AttendanceWorkScheduler.cancelRecovery(appContext)
     }
 
     private fun pendingIntent(): PendingIntent = PendingIntent.getBroadcast(

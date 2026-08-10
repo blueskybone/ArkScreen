@@ -105,31 +105,29 @@ class LogManagerActivity : AppCompatActivity() {
     }
 
     private fun confirmDelete(entry: LogRepository.Entry) {
-        MaterialAlertDialogBuilder(this)
-            .setMessage(getString(R.string.confirm_delete_log, entry.file.name))
-            .setNegativeButton(R.string.cancel, null)
-            .setPositiveButton(R.string.delete) { _, _ ->
-                lifecycleScope.launch {
-                    withContext(Dispatchers.IO) { repository.delete(entry) }
-                    loadLogs()
-                }
+        showDestructiveConfirmation(
+            titleRes = R.string.delete,
+            message = getString(R.string.confirm_delete_log, entry.file.name),
+        ) {
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) { repository.delete(entry) }
+                loadLogs()
             }
-            .show()
+        }
     }
 
     private fun confirmClear() {
         if (entries.isEmpty()) return
-        MaterialAlertDialogBuilder(this)
-            .setMessage(R.string.confirm_clear_logs)
-            .setNegativeButton(R.string.cancel, null)
-            .setPositiveButton(R.string.delete) { _, _ ->
-                lifecycleScope.launch {
-                    val count = withContext(Dispatchers.IO) { repository.clear() }
-                    Toaster.show(getString(R.string.logs_cleared_count, count))
-                    loadLogs()
-                }
+        showDestructiveConfirmation(
+            titleRes = R.string.clear_logs,
+            message = getString(R.string.confirm_clear_logs),
+        ) {
+            lifecycleScope.launch {
+                val count = withContext(Dispatchers.IO) { repository.clear() }
+                Toaster.show(getString(R.string.logs_cleared_count, count))
+                loadLogs()
             }
-            .show()
+        }
     }
 
     private fun onToolbarMenuItem(item: MenuItem): Boolean = when (item.itemId) {

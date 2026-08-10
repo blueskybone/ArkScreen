@@ -10,6 +10,11 @@ import com.blueskybone.arkscreen.domain.model.account.AccountSk
  */
 object AccountCodec {
 
+    /*
+     * 当前账号导入格式有意保持简单。GC 凭证使用固定四段的 “@” 分隔格式，
+     * 默认各字段本身不包含 “@”。如果以后需要增加字段、兼容包含分隔符的值，
+     * 或长期保存跨版本数据，应先引入带版本号的结构化格式，再保留旧格式迁移。
+     */
     fun decodeSk(raw: String): SkCredential {
         return SkCredential(token = raw)
     }

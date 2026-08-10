@@ -9,13 +9,16 @@ import com.blueskybone.arkscreen.domain.service.AppClock
 class HeaderProvider(
     private val clock: AppClock,
 ) {
+    private companion object {
+        const val USER_AGENT =
+            "Skland/1.5.1 (com.hypergryph.skland; build:100501001; Android 33; ) Okhttp/4.11.0"
+    }
+
     // 基础 Header，通常是固定的
     private fun createBaseHeaders(): Map<String, String> {
         return mapOf(
-            "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
+            "User-Agent" to USER_AGENT,
             "Content-Type" to "application/json",
-            "Connection" to "close",
-            "Content-Type" to "application/json"
         )
     }
 
@@ -28,8 +31,6 @@ class HeaderProvider(
     fun createGrantHeaders(dId: String): Map<String, String>{
         return createBaseHeaders().toMutableMap().apply {
             put("dId", dId)
-            put("platform", "3")
-            put("vName", "1.0.0")
         }
     }
 
@@ -44,8 +45,7 @@ class HeaderProvider(
         val sign = calculateSign(api, params, token, timestamp, dId)
         return mapOf(
             "cred" to cred,
-            "User-Agent" to "Skland/1.0.1 (com.hypergryph.skland; build:100001014; Android 31; ) Okhttp/4.11.0",
-            "Connection" to "close",
+            "User-Agent" to USER_AGENT,
             "Content-Type" to "application/json",
             "sign" to sign,
             "platform" to "",

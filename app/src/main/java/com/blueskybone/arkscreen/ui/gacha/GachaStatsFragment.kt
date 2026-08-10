@@ -152,21 +152,21 @@ class GachaStatsFragment : Fragment() {
             val countSum = info.rare3 + info.rare4 + info.rare5 + info.rare6
             binding.RecordsCount.text = getString(R.string.gacha_result_count, countSum)
 
-            binding.Rare6Count.text = "共 ${info.rare6} 个"
+            binding.Rare6Count.text = getString(R.string.gacha_stat_count, info.rare6)
             binding.Rare6Percent.text = formatPercent(info.rare6, countSum)
-            binding.Rare6Ave.text = if (info.rare6 == 0) "-" else "${countSum / info.rare6}抽/个"
+            binding.Rare6Ave.text = formatAverage(countSum, info.rare6)
 
-            binding.Rare5Count.text = "共 ${info.rare5} 个"
+            binding.Rare5Count.text = getString(R.string.gacha_stat_count, info.rare5)
             binding.Rare5Percent.text = formatPercent(info.rare5, countSum)
-            binding.Rare5Ave.text = if (info.rare5 == 0) "-" else "${countSum / info.rare5}抽/个"
+            binding.Rare5Ave.text = formatAverage(countSum, info.rare5)
 
-            binding.Rare4Count.text = "共 ${info.rare4} 个"
+            binding.Rare4Count.text = getString(R.string.gacha_stat_count, info.rare4)
             binding.Rare4Percent.text = formatPercent(info.rare4, countSum)
-            binding.Rare4Ave.text = if (info.rare4 == 0) "-" else "${countSum / info.rare4}抽/个"
+            binding.Rare4Ave.text = formatAverage(countSum, info.rare4)
 
-            binding.Rare3Count.text = "共 ${info.rare3} 个"
+            binding.Rare3Count.text = getString(R.string.gacha_stat_count, info.rare3)
             binding.Rare3Percent.text = formatPercent(info.rare3, countSum)
-            binding.Rare3Ave.text = if (info.rare3 == 0) "-" else "${countSum / info.rare3}抽/个"
+            binding.Rare3Ave.text = formatAverage(countSum, info.rare3)
         } catch (error: Exception) {
             Toaster.show(error.message)
             Timber.e(error)
@@ -174,7 +174,13 @@ class GachaStatsFragment : Fragment() {
     }
 
     private fun formatPercent(count: Int, total: Int): String =
-        if (total == 0) "占 0.0%" else "占 " + "%.1f%%".format(count.toFloat() / total * 100)
+        getString(
+            R.string.gacha_stat_percent,
+            if (total == 0) 0f else count.toFloat() / total * 100,
+        )
+
+    private fun formatAverage(total: Int, count: Int): String =
+        if (count == 0) "-" else getString(R.string.gacha_stat_average, total / count)
 
     private fun setupSimpleBarChart() {
 

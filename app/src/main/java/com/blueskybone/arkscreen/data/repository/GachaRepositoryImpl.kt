@@ -9,7 +9,7 @@ import com.blueskybone.arkscreen.data.network.model.GachaResponse
 import com.blueskybone.arkscreen.data.network.safeApiCall
 import com.blueskybone.arkscreen.data.repository.mapper.AccountMapper
 import com.blueskybone.arkscreen.data.repository.mapper.GachaMapper
-import com.blueskybone.arkscreen.data.repository.utils.safeResultSync
+import com.blueskybone.arkscreen.data.common.repositoryResultOf
 import com.blueskybone.arkscreen.domain.model.account.Account
 import com.blueskybone.arkscreen.domain.model.gacha.Record
 import com.blueskybone.arkscreen.domain.repository.GachaRepository
@@ -85,7 +85,7 @@ class GachaRepositoryImpl(
     override suspend fun importRecords(
         account: DomainAccGc,
         records: List<Record>
-    ): Result<Unit> = safeResultSync {
+    ): Result<Unit> = repositoryResultOf {
         withContext(Dispatchers.IO) {
             val importGachas = records.map { record ->
                 GachaMapper.toEntity(account.uid, record)
@@ -97,15 +97,15 @@ class GachaRepositoryImpl(
         }
     }
 
-    override suspend fun deleteRecords(account: DomainAccGc): Result<Unit> = safeResultSync {
+    override suspend fun deleteRecords(account: DomainAccGc): Result<Unit> = repositoryResultOf {
         gachaDao.deleteByUid(account.uid)
     }
 
-    override suspend fun deleteRecordsByUid(uid: String): Result<Unit> = safeResultSync {
+    override suspend fun deleteRecordsByUid(uid: String): Result<Unit> = repositoryResultOf {
         gachaDao.deleteByUid(uid)
     }
 
-    override suspend fun fixGachaCate(): Result<Unit> = safeResultSync {
+    override suspend fun fixGachaCate(): Result<Unit> = repositoryResultOf {
         val gachaList = gachaDao.getByCate("UN")
         val updatedRecords = gachaList.map { gachaEntity ->
             gachaEntity.copy(
@@ -115,7 +115,7 @@ class GachaRepositoryImpl(
         gachaDao.updateGachas(updatedRecords)
     }
 
-    override suspend fun syncRecords(account: DomainAccGc): Result<Unit> = safeResultSync {
+    override suspend fun syncRecords(account: DomainAccGc): Result<Unit> = repositoryResultOf {
         withContext(Dispatchers.IO) {
             val acc = AccountMapper.toEntity(account)
             val localRecords = gachaDao.getByUid(acc.uid)
@@ -154,15 +154,20 @@ class GachaRepositoryImpl(
         }
     }
 
-    override suspend fun correctUnCateRecord(account: Account): Result<Unit> {
-        return safeResultSync {
+    override suspend fun correctUnCateRecord(account: Account): Result<Int> {
+        return repositoryResultOf {
             val records = gachaDao.getByUid(account.uid)
             val corrected = records
                 .filter { it.poolCate == "UN" }
-                .map { it.copy(poolCate = it.poolId.toCate()) }
+                .mapNotNull { record ->
+                    record.poolId.toCate()
+                        .takeIf { it != "UN" }
+                        ?.let { record.copy(poolCate = it) }
+                }
             if (corrected.isNotEmpty()) {
                 gachaDao.updateGachas(corrected)
             }
+            corrected.size
         }
     }
 

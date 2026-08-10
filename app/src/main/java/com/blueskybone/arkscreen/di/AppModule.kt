@@ -5,6 +5,7 @@ import com.blueskybone.arkscreen.domain.model.AppVersion
 import com.blueskybone.arkscreen.platform.notification.AttendanceNotificationController
 import com.blueskybone.arkscreen.platform.schedule.AttendanceAlarmController
 import com.blueskybone.arkscreen.platform.theme.AppThemeController
+import com.blueskybone.arkscreen.platform.widget.WidgetUpdateDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -32,4 +33,5 @@ val appModule = module {
     single { AttendanceNotificationController(androidContext()) }
     single { AttendanceAlarmController(androidContext(), get()) }
     single { AppThemeController(get()) }
+    single { WidgetUpdateDispatcher(androidContext()) }
 }

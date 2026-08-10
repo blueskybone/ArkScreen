@@ -1,27 +1,19 @@
 package com.blueskybone.arkscreen.ui.realtime.model
 
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.data.network.avatarUrl
+import com.blueskybone.arkscreen.data.network.resolveUrl
 import com.blueskybone.arkscreen.domain.model.realtime.RealTimeData
-import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
-import com.blueskybone.arkscreen.util.TimeUtils.getDayNum
-import com.blueskybone.arkscreen.util.TimeUtils.getRemainTimeStr
-import com.blueskybone.arkscreen.util.TimeUtils.getTimeStr
-import java.net.URLEncoder
+import com.blueskybone.arkscreen.platform.time.TimeUtils.getDayNum
+import com.blueskybone.arkscreen.platform.time.TimeUtils.getRemainTimeStr
+import com.blueskybone.arkscreen.platform.time.TimeUtils.getTimeStr
 
 object RealTimeMapper {
 
-    fun toUi(data: RealTimeData, official: Boolean): RealTimeUi {
-        val avatar = when (data.avatar.type) {
-            "ASSISTANT" -> {
-                val skinUrl = URLEncoder.encode(data.avatar.id, "UTF-8")
-                "$avatarUrl$skinUrl.png"
-            }
-            else -> data.avatar.url
-        }
+    fun toUi(data: RealTimeData, official: Boolean, nowEpochSeconds: Long): RealTimeUi {
+        val avatar = data.avatar.resolveUrl()
 
         val lastLoginValue = when (
-            getDayNum(getCurrentTs()) - getDayNum(data.playerStatus.lastOnlineTs)
+            getDayNum(nowEpochSeconds) - getDayNum(data.playerStatus.lastOnlineTs)
         ) {
             0L -> UiText.Resource(
                 R.string.realtime_last_login_today,

@@ -1,7 +1,6 @@
 package com.blueskybone.arkscreen.data.network
 
 import com.blueskybone.arkscreen.APP
-import com.blueskybone.arkscreen.util.getJsonContent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -19,6 +18,7 @@ import java.util.TreeMap
  *   Date: 2025/1/21
  */
 const val avatarUrl = "https://web.hycdn.cn/arknights/game/assets/char_skin/avatar/"
+const val portraitUrl = "https://web.hycdn.cn/arknights/game/assets/char_skin/portrait/"
 val skinCachePath = "${APP.externalCacheDir}/skin_avatar"
 const val equipUrl = "https://cdn.jsdelivr.net/gh/blueskybone/ArkScreenResource@master/equip/"
 val equipCachePath = "${APP.externalCacheDir}/equip_icon"
