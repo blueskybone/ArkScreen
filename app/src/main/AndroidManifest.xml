@@ -31,7 +31,7 @@
 
 
         <receiver
-            android:name=".widget.Widget1"
+            android:name=".ui.widget.Widget1"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -43,7 +43,7 @@
         </receiver>
 
         <receiver
-            android:name=".widget.Widget2"
+            android:name=".ui.widget.Widget2"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -56,7 +56,7 @@
 
 
         <receiver
-            android:name=".widget.Widget3"
+            android:name=".ui.widget.Widget3"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -68,7 +68,7 @@
         </receiver>
 
         <receiver
-            android:name=".widget.Widget4"
+            android:name=".ui.widget.Widget4"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -80,7 +80,7 @@
         </receiver>
 
         <receiver
-            android:name=".receiver.AtdAlarmReceiver"
+            android:name=".platform.schedule.AtdAlarmReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -89,7 +89,7 @@
 
 
         <receiver
-            android:name=".receiver.WidgetReceiver"
+            android:name=".ui.widget.WidgetReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.blueskybone.arkscreen.MANUAL_UPDATE" />
@@ -97,7 +97,7 @@
         </receiver>
 
         <activity
-            android:name=".ui.activity.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:launchMode="singleTask">
@@ -108,58 +108,50 @@
         </activity>
 
         <activity
-            android:name=".ui.activity.RealTimeActivity"
+            android:name=".ui.realtime.RealTimeActivity"
             android:exported="true"
-            android:parentActivityName=".ui.activity.MainActivity"
+            android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".ui.activity.LoginWeb"
+            android:name=".ui.account.LoginWeb"
             android:exported="true"
-            android:parentActivityName=".ui.activity.MainActivity"
+            android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".ui.activity.LogActivity"
+            android:name=".ui.common.LogActivity"
             android:exported="true"
-            android:parentActivityName=".ui.activity.MainActivity"
+            android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".ui.activity.CharAssets"
+            android:name=".ui.character.CharAssets"
             android:exported="true"
-            android:parentActivityName=".ui.activity.MainActivity"
+            android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".ui.activity.GachaActivity"
+            android:name=".ui.gacha.GachaActivity"
             android:exported="true"
-            android:parentActivityName=".ui.activity.MainActivity"
+            android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".ui.activity.RecruitActivity"
+            android:name=".ui.recruit.RecruitActivity"
             android:exported="true"
-            android:parentActivityName=".ui.activity.MainActivity"
+            android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".ui.activity.AccountMngActivity"
+            android:name=".ui.account.AccountMngActivity"
             android:exported="true"
-            android:parentActivityName=".ui.activity.MainActivity"
+            android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".ui.activity.WidgetThemeActivity"
+            android:name=".ui.widget.WidgetThemeActivity"
             android:exported="true"
-            android:parentActivityName=".ui.activity.MainActivity"
+            android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
 
-        <activity android:name=".ui.activity.WebViewActivity" />
+        <activity android:name=".ui.common.WebViewActivity" />
 
         <activity
-            android:name=".task.screenshot.AcquireCapturePermission"
-            android:excludeFromRecents="true"
-            android:exported="true"
-            android:launchMode="singleTask"
-            android:taskAffinity=""
-            android:theme="@style/TranslucentTheme"
-            android:windowSoftInputMode="adjustNothing" />
-        <activity
-            android:name=".task.screenshot.TransActivity"
+            android:name=".platform.screenshot.ScreenshotPermissionActivity"
             android:excludeFromRecents="true"
             android:exported="true"
             android:launchMode="singleTask"
@@ -168,13 +160,13 @@
             android:windowSoftInputMode="adjustNothing" />
 
         <service
-            android:name=".task.screenshot.RecruitService"
+            android:name=".platform.screenshot.ScreenshotCaptureService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="mediaProjection" />
 
         <service
-            android:name=".service.QuickTileService"
+            android:name=".platform.tile.QuickRecruitTileService"
             android:enabled="true"
             android:exported="true"
             android:icon="@drawable/ic_rosm_trans"
@@ -186,7 +178,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".service.FloatTileService"
+            android:name=".platform.tile.FloatRecruitTileService"
             android:enabled="true"
             android:exported="true"
             android:icon="@drawable/ic_rosm_trans"

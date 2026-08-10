@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.util
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.ClipData
@@ -17,10 +18,10 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getString
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.preference.PrefManager
-import com.blueskybone.arkscreen.preference.preference.Preference
-import com.blueskybone.arkscreen.ui.activity.WebViewActivity
-import com.blueskybone.arkscreen.ui.bindinginfo.WidgetTextColor
+import com.blueskybone.arkscreen.data.local.pref.PrefManager
+import com.blueskybone.arkscreen.data.local.pref.preference.Preference
+import com.blueskybone.arkscreen.ui.common.WebViewActivity
+import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetTextColor
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.hjq.toast.Toaster
@@ -31,7 +32,15 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URLDecoder
 
-
+@SuppressLint("QueryPermissionsNeeded")
+fun Context.launchApp(packageName: String, onAppNotFound: () -> Unit = {}) {
+    val intent = packageManager.getLaunchIntentForPackage(packageName)
+    if (intent != null) {
+        startActivity(intent)
+    } else {
+        onAppNotFound()
+    }
+}
 fun getRealScreenSize(context: Context): Point {
     val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -48,6 +57,7 @@ fun getRealScreenSize(context: Context): Point {
     }
 }
 
+//TODO：？
 fun getJsonContent(jsonStr: String?, key: String): String {
     try {
         val om = ObjectMapper()
@@ -64,6 +74,8 @@ fun readFileAsJsonNode(path: String): JsonNode {
     val om = ObjectMapper()
     return om.readTree(inputStream)
 }
+
+
 
 fun dpToPx(context: Context, dp: Float): Float {
     return TypedValue.applyDimension(
@@ -138,6 +150,7 @@ fun getScreenInfo(context: Context): String {
     """.trimIndent()
 }
 
+//TODO: 你过关
 private fun getDensityLevel(dpi: Int): String {
     return when {
         dpi <= 120 -> "ldpi"
@@ -178,6 +191,7 @@ fun getAssetsFilepath(filename: String): String {
     }
 }
 
+//TODO:移动到usecase
 fun getEleCombination(list: List<String>, range: Int = 3): List<List<String>> {
     val combList = mutableListOf<List<String>>()
     for (idx in range downTo 1) {
@@ -186,6 +200,7 @@ fun getEleCombination(list: List<String>, range: Int = 3): List<List<String>> {
     return combList
 }
 
+//TODO：移动到repo
 fun getOneCombination(list: List<String>, range: Int): List<List<String>> {
     val comList: MutableList<List<String>> = ArrayList()
     val size = list.size
@@ -235,6 +250,8 @@ fun copyToClipboard(context: Context, text: String) {
     Toaster.show(getString(context, R.string.copied))
 }
 
+
+//TODO： ？
 fun updateNotification(
     context: Context,
     title: String,
@@ -258,7 +275,7 @@ fun updateNotification(
     notificationManager.notify(notificationId, notificationBuilder.build())
 }
 
-
+//TODO：移动到UI
 fun openLink(context: Context, url: String, prefManager: PrefManager) {
     if (prefManager.useInnerWeb.get()) {
         val intent = Intent(context, WebViewActivity::class.java)
@@ -269,6 +286,7 @@ fun openLink(context: Context, url: String, prefManager: PrefManager) {
     }
 }
 
+//TODO： 移动到UI
 fun getTargetDrawableId(drawable: Int, pref: Preference<String>): Int {
     return if (pref.get() == WidgetTextColor.BLACK) {
         when (drawable) {
@@ -286,6 +304,7 @@ fun getTargetDrawableId(drawable: Int, pref: Preference<String>): Int {
  * 基于随机数据生成唯一的设备ID,格式模拟森空岛App的设备ID格式
  * 格式: BL + Base64(32字节随机数据)
  */
+//TODO: 移动到repo里
 fun generateDId(): String {
     // 生成32字节随机数据
     val randomBytes = java.security.SecureRandom().generateSeed(32)
@@ -294,7 +313,7 @@ fun generateDId(): String {
     return "BL$base64String"
 }
 
-
+//移动到gacha repo 部分
 fun String.toCate(): String {
     if (this.startsWith("LIMITED") || this.startsWith("LINKAGE") || this.startsWith("ATTAIN")) return "LIMITED"
     if (this.startsWith("CLASSIC")|| this.startsWith("FESCLASSIC")) return "CLASSIC"

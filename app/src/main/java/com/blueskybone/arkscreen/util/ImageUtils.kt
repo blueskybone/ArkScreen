@@ -14,6 +14,8 @@ import com.blueskybone.arkscreen.APP
  *   Created by blueskybone
  *   Date: 2024/2/21
  */
+
+//TODO：全都移走
 fun convertImageToBitmap(image: Image, config: Bitmap.Config?): Bitmap {
     val width = image.width
     val height = image.height

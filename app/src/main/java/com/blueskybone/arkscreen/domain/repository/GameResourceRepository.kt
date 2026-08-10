@@ -1,0 +1,28 @@
+package com.blueskybone.arkscreen.domain.repository
+
+/**
+ * Created by blueskybone
+ * Date: 2026/7/9
+ */
+
+import com.blueskybone.arkscreen.domain.model.ConfigType
+import com.blueskybone.arkscreen.domain.model.ResourceSyncStatus
+import com.blueskybone.arkscreen.domain.model.operator.OperatorBasicInfo
+import com.blueskybone.arkscreen.domain.model.recruit.RecruitDatabase
+import com.fasterxml.jackson.databind.JsonNode
+import kotlinx.coroutines.flow.Flow
+
+interface GameResourceRepository {
+
+    fun syncResource(type: ConfigType): Flow<ResourceSyncStatus>
+
+    suspend fun getRecruitDb(): Result<RecruitDatabase>
+
+    suspend fun getI18nMap(): Result<Map<String, String>>
+
+    suspend fun getOperatorBasicInfoMap(): Result<Map<String, OperatorBasicInfo>>
+
+    suspend fun getResourceDate(type: ConfigType): Result<String>
+
+    fun clearResourceCache(type: ConfigType)
+}

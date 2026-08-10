@@ -1,0 +1,212 @@
+package com.blueskybone.arkscreen.data.local.pref
+
+import com.blueskybone.arkscreen.data.local.pref.preference.Preference
+import com.blueskybone.arkscreen.data.local.pref.preference.PreferenceStore
+import com.blueskybone.arkscreen.domain.model.cache.ApCache
+import com.blueskybone.arkscreen.domain.model.cache.LaborCache
+import com.blueskybone.arkscreen.domain.model.cache.MeetCache
+import com.blueskybone.arkscreen.domain.model.cache.RecruitCache
+import com.blueskybone.arkscreen.domain.model.cache.RefreshCache
+import com.blueskybone.arkscreen.domain.model.cache.TrainCache
+import java.util.function.Function
+
+/**
+ * Created by blueskybone
+ * Date: 2026/3/20
+ */
+
+/*专门用于游戏数据缓存的preference*/
+class CachePrefManager() {
+    constructor(preferenceStore: PreferenceStore) : this() {
+        apCache = preferenceStore.getObject(
+            "ap_cache",
+            ApCache.default(), serializerAp(), deserializerAp()
+        )
+        laborCache = preferenceStore.getObject(
+            "labor_cache",
+            LaborCache.default(), serializerLabor(), deserializerLabor()
+        )
+        trainCache = preferenceStore.getObject(
+            "train_cache",
+            TrainCache.default(), serializerTrain(), deserializerTrain()
+        )
+        recruitCache = preferenceStore.getObject(
+            "recruit_cache",
+            RecruitCache.default(), serializerRecruit(), deserializerRecruit()
+        )
+        refreshCache = preferenceStore.getObject(
+            "refresh_cache",
+            RefreshCache.default(), serializerRefresh(), deserializerRefresh()
+        )
+        meetCache = preferenceStore.getObject(
+            "meet_cache",
+            MeetCache.default(), serializerMeet(), deserializerMeet()
+        )
+    }
+
+    lateinit var apCache: Preference<ApCache>
+    lateinit var laborCache: Preference<LaborCache>
+    lateinit var trainCache: Preference<TrainCache>
+    lateinit var recruitCache: Preference<RecruitCache>
+    lateinit var refreshCache: Preference<RefreshCache>
+    lateinit var meetCache: Preference<MeetCache>
+
+
+    private fun serializerAp(): (ApCache) -> String {
+        return { cache ->
+            "${cache.lastSyncTs}@${cache.remainSec}@${cache.recoverTime}@${cache.max}@${cache.current}@${cache.isnull}"
+        }
+    }
+
+    private fun deserializerAp(): java.util.function.Function<String, ApCache> {
+        return Function { string: String ->
+            try {
+                val list =
+                    string.split("@".toRegex()).dropLastWhile { it.isEmpty() }
+                        .toTypedArray()
+                return@Function ApCache(
+                    list[0].toLong(),
+                    list[1].toLong(),
+                    list[2].toLong(),
+                    list[3].toInt(),
+                    list[4].toInt(),
+                    list[5].toBoolean()
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@Function ApCache.default()
+            }
+        }
+    }
+
+    private fun serializerLabor(): (LaborCache) -> String {
+        return { cache ->
+            "${cache.lastSyncTs}@${cache.remainSec}@${cache.max}@${cache.current}@${cache.isnull}"
+        }
+    }
+
+    private fun deserializerLabor(): Function<String, LaborCache> {
+        return Function { string: String ->
+            try {
+                val list =
+                    string.split("@".toRegex()).dropLastWhile { it.isEmpty() }
+                        .toTypedArray()
+                return@Function LaborCache(
+                    list[0].toLong(),
+                    list[1].toLong(),
+                    list[2].toInt(),
+                    list[3].toInt(),
+                    list[4].toBoolean()
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@Function LaborCache.default()
+            }
+        }
+    }
+
+
+    private fun serializerTrain(): (TrainCache) -> String {
+        return { cache ->
+            "${cache.lastSyncTs}@${cache.trainee}@${cache.status}@${cache.completeTime}@${cache.isnull}"
+        }
+    }
+
+    private fun deserializerTrain(): Function<String, TrainCache> {
+        return Function { string: String ->
+            try {
+                val list =
+                    string.split("@".toRegex()).dropLastWhile { it.isEmpty() }
+                        .toTypedArray()
+                return@Function TrainCache(
+                    list[0].toLong(),
+                    list[1],
+                    list[2].toLong(),
+                    list[3].toLong(),
+                    list[4].toBoolean()
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@Function TrainCache.default()
+            }
+        }
+    }
+
+    private fun serializerRecruit(): (RecruitCache) -> String {
+        return { cache ->
+            "${cache.lastSyncTs}@${cache.max}@${cache.complete}@${cache.completeTime}@${cache.isNull}"
+        }
+    }
+
+    private fun deserializerRecruit(): Function<String, RecruitCache> {
+        return Function { string: String ->
+            try {
+                val list =
+                    string.split("@".toRegex()).dropLastWhile { it.isEmpty() }
+                        .toTypedArray()
+                return@Function RecruitCache(
+                    list[0].toLong(),
+                    list[1].toInt(),
+                    list[2].toInt(),
+                    list[3].toLong(),
+                    list[4].toBoolean()
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@Function RecruitCache.default()
+            }
+        }
+    }
+
+    private fun serializerRefresh(): (RefreshCache) -> String {
+        return { cache ->
+            "${cache.lastSyncTs}@${cache.max}@${cache.count}@${cache.completeTime}@${cache.isNull}"
+        }
+    }
+
+    private fun deserializerRefresh(): Function<String, RefreshCache> {
+        return Function { string: String ->
+            try {
+                val list =
+                    string.split("@".toRegex()).dropLastWhile { it.isEmpty() }
+                        .toTypedArray()
+                return@Function RefreshCache(
+                    list[0].toLong(),
+                    list[1].toInt(),
+                    list[2].toInt(),
+                    list[3].toLong(),
+                    list[4].toBoolean()
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@Function RefreshCache.default()
+            }
+        }
+    }
+
+    private fun serializerMeet(): (MeetCache) -> String {
+        return { cache ->
+            "${cache.lastSyncTs}@${cache.completeTime}@${cache.stats}@${cache.isnull}"
+        }
+    }
+
+    private fun deserializerMeet(): Function<String, MeetCache> {
+        return Function { string: String ->
+            try {
+                val list =
+                    string.split("@".toRegex()).dropLastWhile { it.isEmpty() }
+                        .toTypedArray()
+                return@Function MeetCache(
+                    list[0].toLong(),
+                    list[1].toLong(),
+                    list[2].toInt(),
+                    list[3].toBoolean()
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@Function MeetCache.default()
+            }
+        }
+    }
+
+}

@@ -1,10 +1,3 @@
-//plugins {
-//    id("com.android.application")
-//    id("org.jetbrains.kotlin.android")
-//    id("com.google.devtools.ksp")
-//    id("kotlin-parcelize")
-//}
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -19,8 +12,8 @@ android {
         applicationId = "com.blueskybone.arkscreen"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 13
-        versionName = "2.2.3"
+        versionCode = 14
+        versionName = "2.2.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
@@ -175,5 +168,12 @@ dependencies {
     implementation(libs.androidx.webkit)
     implementation(libs.mp.android.chart)
     implementation(libs.circular.progressbar)
+
+    implementation(libs.recyclerview)
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.coroutines.android)
+    implementation(libs.flexbox)
+    implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.fragment.ktx)
 
 }

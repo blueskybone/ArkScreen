@@ -1,7 +1,7 @@
 package com.blueskybone.arkscreen.util
 
 import android.annotation.SuppressLint
-import com.blueskybone.arkscreen.preference.PrefManager
+import com.blueskybone.arkscreen.data.local.pref.PrefManager
 import org.koin.java.KoinJavaComponent.getKoin
 import java.text.SimpleDateFormat
 import java.time.Instant

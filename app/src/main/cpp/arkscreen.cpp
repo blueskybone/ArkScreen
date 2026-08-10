@@ -10,19 +10,19 @@
 #include "core.h"
 
 using namespace std;
-#ifndef _Included_com_blueskybone_arkscreen_task_screenshot_ImageProcessor
+#ifndef _Included_com_blueskybone_arkscreen_ui_recruit_ocr_ImageProcessor_getTagText
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 /*
-* Class:     com_blueskybone_arkscreen_task_screenshot_ImageProcessor
+* Class:     com_blueskybone_arkscreen_ui_recruit_ocr_ImageProcessor_getTagText
 * Method:    getTagText
 * Signature: (Landroid/graphics/Bitmap;)[Ljava/lang/String;
 */
 extern "C"
 JNIEXPORT jstring
-Java_com_blueskybone_arkscreen_task_screenshot_ImageProcessor_getTagText(JNIEnv *env,
+Java_com_blueskybone_arkscreen_ui_recruit_ocr_ImageProcessor_getTagText(JNIEnv *env,
                                                                          jobject clazz,
                                                                          jobject jBitmap,
                                                                          jstring jDataPath,
