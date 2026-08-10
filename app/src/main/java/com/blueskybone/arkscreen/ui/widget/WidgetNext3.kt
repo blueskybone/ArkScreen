@@ -8,7 +8,7 @@ import com.blueskybone.arkscreen.ui.widget.model.WidgetInfoItem
 import com.blueskybone.arkscreen.ui.widget.model.WidgetInfoType
 import com.blueskybone.arkscreen.ui.widget.model.WidgetBackgroundSize
 
-/** Experimental 2x2 widget composed of two stacked standard information rows. */
+/** 由两行标准信息组成的 2x2 桌面组件。 */
 class WidgetNext3 : BaseNextWidgetProvider() {
     override val pendingIntentOffset = 30_000
     override val defaultTypes = listOf(WidgetInfoType.SANITY, WidgetInfoType.TRAINING)

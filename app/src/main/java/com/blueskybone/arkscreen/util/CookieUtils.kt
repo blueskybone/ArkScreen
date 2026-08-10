@@ -14,7 +14,7 @@ fun getCookie(url: String, name: String): String? {
         ?: return null
 
     return try {
-        // Cookie values are not form data; converting '+' to a space corrupts tokens.
+        // Cookie 值不是表单数据，将“+”转换为空格会破坏令牌内容。
         Uri.decode(rawValue)
     } catch (error: Exception) {
         Timber.e(error, "Failed to decode cookie value")

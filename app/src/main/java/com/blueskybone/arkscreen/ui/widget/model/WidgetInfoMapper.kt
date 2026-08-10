@@ -8,7 +8,7 @@ import com.blueskybone.arkscreen.domain.model.attendance.AccountAttendanceState
 import com.blueskybone.arkscreen.domain.service.AppClock
 import com.blueskybone.arkscreen.platform.time.TimeUtils
 
-/** Maps the current cached snapshot into display-ready widget information. */
+/** 将当前缓存快照映射为可直接展示的桌面组件信息。 */
 class WidgetInfoMapper(
     private val context: Context,
     private val cache: CachePrefManager,

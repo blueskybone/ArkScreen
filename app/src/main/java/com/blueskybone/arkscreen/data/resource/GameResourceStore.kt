@@ -18,6 +18,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
+import timber.log.Timber
 
 class GameResourceStore(
     private val fileStore: ResourceFileStore,
@@ -61,6 +62,7 @@ class GameResourceStore(
                 emit(ResourceSyncStatus.Updated(type))
             } catch (throwable: Throwable) {
                 if (throwable is CancellationException) throw throwable
+                Timber.tag("GameResource").w(throwable, "Resource sync failed: type=%s", type)
                 emit(
                     ResourceSyncStatus.Failed(
                         type = type,
@@ -105,10 +107,6 @@ class GameResourceStore(
 
     fun clearCache(type: ConfigType) {
         cache.remove(type)
-    }
-
-    fun clearAllCache() {
-        cache.clear()
     }
 
     fun getResourceDate(type: ConfigType): String {

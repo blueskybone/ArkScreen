@@ -25,8 +25,7 @@ class SyncAccountSkUseCase(private val repo: AccountRepository) {
 
         if (loginResult.isFailure) return loginResult
 
-        // A first import must also establish the current account. Otherwise consumers that
-        // observe only the selected account continue to behave as logged out.
+        // 首次导入必须同时设置当前账号，否则只监听已选账号的页面仍会认为用户未登录。
         if (repo.observeCurrentSkAcc().first() == null) {
             val firstAccount = repo.observeSkAcc().first().firstOrNull()
             if (firstAccount != null) {

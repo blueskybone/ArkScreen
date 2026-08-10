@@ -9,7 +9,8 @@ object LogSanitizer {
         "(?i)(\\\"(?:password|phone|token|cred|cookie|did|ak-user-center|xr-token)\\\"\\s*:\\s*\\\")[^\\\"]*(\\\")",
     )
     private val sensitiveQuery = Regex(
-        "(?i)([?&](?:password|phone|token|cred|cookie|did)=)[^&\\s]*",
+        "(?i)([?&](?:password|phone|token|cred|cookie|did|uid|roleid|serverid|" +
+            "sign|signature|w_rid|ak-user-center|xr-token)=)[^&\\s]*",
     )
 
     fun sanitize(message: String): String = message

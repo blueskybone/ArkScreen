@@ -3,7 +3,7 @@ package com.blueskybone.arkscreen.data.local.pref
 import com.blueskybone.arkscreen.data.local.pref.preference.Preference
 import com.blueskybone.arkscreen.data.local.pref.preference.PreferenceStore
 
-/** Isolated preferences for the experimental widget template system. */
+/** 桌面组件模板系统独立使用的偏好设置。 */
 class WidgetTemplatePrefManager() {
     constructor(store: PreferenceStore) : this() {
         style = store.getString("widget_template_style", STYLE_TRANSPARENT)

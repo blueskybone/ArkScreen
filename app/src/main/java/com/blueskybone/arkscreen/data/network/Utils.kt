@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.data.network
 
+import com.blueskybone.arkscreen.data.common.HttpStatusException
 import org.json.JSONObject
 import retrofit2.Response
 
@@ -22,7 +23,10 @@ suspend fun <T> safeApiCall(
         return response.body() ?: throw Exception("$errorMessage: 返回数据为空")
     } else {
         // HTTP 报错（401, 500等）
-        throw Exception("$errorMessage: ${response.code()}: ${response.getErrorMessage()}")
+        throw HttpStatusException(
+            statusCode = response.code(),
+            message = "$errorMessage: ${response.code()}: ${response.getErrorMessage()}",
+        )
     }
 }
 
@@ -31,7 +35,7 @@ fun <T> Response<T>.unwrap(): T {
     if (this.isSuccessful) {
         return this.body() ?: throw Exception("返回体为空")
     } else {
-        throw Exception("网络请求失败: ${this.code()}")
+        throw HttpStatusException(this.code(), "网络请求失败: ${this.code()}")
     }
 }
 

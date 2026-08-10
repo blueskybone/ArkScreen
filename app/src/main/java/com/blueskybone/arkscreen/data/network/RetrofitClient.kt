@@ -1,7 +1,6 @@
 package com.blueskybone.arkscreen.data.network
 
 import com.blueskybone.arkscreen.APP
-import com.blueskybone.arkscreen.BuildConfig
 import com.blueskybone.arkscreen.core.logger.FileLoggingInterceptor
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -25,15 +24,12 @@ object RetrofitClient {
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
         .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
-        .apply {
-            if (BuildConfig.DEBUG) {
-                addInterceptor(
-                    HttpLoggingInterceptor(FileLoggingInterceptor(APP)).apply {
-                        level = HttpLoggingInterceptor.Level.BASIC
-                    }
-                )
+        .addInterceptor(
+            HttpLoggingInterceptor(FileLoggingInterceptor(APP)).apply {
+                // BASIC 不记录请求头和正文，仅保留请求耗时与状态码，避免泄露凭证。
+                level = HttpLoggingInterceptor.Level.BASIC
             }
-        }
+        )
         .build()
 
     // 森空岛api

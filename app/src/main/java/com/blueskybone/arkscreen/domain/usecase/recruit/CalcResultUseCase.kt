@@ -34,12 +34,12 @@ class CalcResultUseCase(
                     .thenBy { it.name }
             )
             if (operators.isEmpty()) return@mapNotNull null
-            if (filter && !isUsefulQuickResult(operators)) return@mapNotNull null
-
-            RecruitResult(
+            val result = RecruitResult(
                 tags = tagCombination,
                 operators = operators,
             )
+            if (filter && result.rare in LOW_RARITY_RANGE) return@mapNotNull null
+            result
         }.sortedWith(
             compareByDescending<RecruitResult> { it.rankingScore }
                 .thenByDescending { it.tags.size }
@@ -159,9 +159,7 @@ class CalcResultUseCase(
             }
     }
 
-    private fun isUsefulQuickResult(operators: List<RecruitOpe>): Boolean {
-        val guaranteesFourStarsOrHigher = operators.all { it.rare >= 4 }
-        val guaranteesRobot = operators.all { it.rare == 1 }
-        return guaranteesFourStarsOrHigher || guaranteesRobot
+    private companion object {
+        val LOW_RARITY_RANGE = 2..3
     }
 }

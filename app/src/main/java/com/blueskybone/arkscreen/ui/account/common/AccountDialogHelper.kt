@@ -88,7 +88,6 @@ class AccountDialogHelper(
     }
 
     fun buildAccountMenu(
-        account: Account,
         onCopyUid: () -> Unit,
         onCopyNickname: () -> Unit,
         onExportCookie: (() -> Unit)?,

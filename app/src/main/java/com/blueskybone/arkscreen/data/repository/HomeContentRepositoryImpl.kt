@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.data.repository
 
+import com.blueskybone.arkscreen.data.common.HttpStatusException
 import com.blueskybone.arkscreen.data.network.ApiService
 import com.blueskybone.arkscreen.data.network.safeApiCall
 import com.blueskybone.arkscreen.data.repository.utils.appSign
@@ -10,6 +11,7 @@ import com.blueskybone.arkscreen.domain.repository.HomeContentRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import java.net.HttpURLConnection
 import java.net.URL
 
 class HomeContentRepositoryImpl(
@@ -19,13 +21,19 @@ class HomeContentRepositoryImpl(
 ) : HomeContentRepository {
     override suspend fun fetchAnnouncement(): Result<String> = repositoryResultOf {
         withContext(dispatcher) {
-            URL(ANNOUNCEMENT_URL).openConnection()
-                .getInputStream()
-                .bufferedReader()
-                .use { reader ->
+            val connection = URL(ANNOUNCEMENT_URL).openConnection() as HttpURLConnection
+            try {
+                val statusCode = connection.responseCode
+                if (statusCode !in 200..299) {
+                    throw HttpStatusException(statusCode, "公告请求失败：HTTP $statusCode")
+                }
+                connection.inputStream.bufferedReader().use { reader ->
                     objectMapper.readTree(reader)["content"]?.asText()
                         ?: throw IllegalStateException("公告内容为空")
                 }
+            } finally {
+                connection.disconnect()
+            }
         }
     }
 

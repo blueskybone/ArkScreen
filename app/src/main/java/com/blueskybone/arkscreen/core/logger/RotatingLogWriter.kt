@@ -12,6 +12,7 @@ class RotatingLogWriter(
     private val maxFileBytes: Long = 1024L * 1024L,
     private val maxFiles: Int = 5,
 ) {
+    private val writeLock = Any()
     private val executor: ExecutorService = Executors.newSingleThreadExecutor { task ->
         Thread(task, "ArkScreen-$filePrefix-logger").apply { isDaemon = true }
     }
@@ -25,6 +26,17 @@ class RotatingLogWriter(
 
     fun write(message: String) {
         executor.execute {
+            append(message)
+        }
+    }
+
+    /** 仅用于致命异常，防止进程在异步日志队列写完前终止而丢失崩溃信息。 */
+    fun writeBlocking(message: String) {
+        append(message)
+    }
+
+    private fun append(message: String) {
+        synchronized(writeLock) {
             runCatching {
                 directory.mkdirs()
                 val now = LocalDateTime.now()

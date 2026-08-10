@@ -24,8 +24,20 @@ class AttendanceWorker(context: Context, params: WorkerParameters) : CoroutineWo
     override suspend fun doWork(): Result {
         val allowRepeatToday = inputData.getBoolean(ALLOW_REPEAT_TODAY, false)
         val requireAutoEnabled = inputData.getBoolean(REQUIRE_AUTO_ENABLED, false)
-        if (requireAutoEnabled && !settings.backAutoAtd.get()) return Result.success()
-        if (!allowRepeatToday && hasRunToday()) return Result.success()
+        Timber.tag("Attendance").i(
+            "Attendance task started: allowRepeatToday=%s requireAutoEnabled=%s attempt=%d",
+            allowRepeatToday,
+            requireAutoEnabled,
+            runAttemptCount + 1,
+        )
+        if (requireAutoEnabled && !settings.backAutoAtd.get()) {
+            Timber.tag("Attendance").i("Attendance skipped: automatic attendance is disabled")
+            return Result.success()
+        }
+        if (!allowRepeatToday && hasRunToday()) {
+            Timber.tag("Attendance").i("Attendance skipped: already completed today")
+            return Result.success()
+        }
 
         return try {
             val summary = runAttendance { index, total, name ->
@@ -42,6 +54,7 @@ class AttendanceWorker(context: Context, params: WorkerParameters) : CoroutineWo
                 attendanceStates.record(result, attemptedAt)
             }
             if (summary.results.isEmpty()) {
+                Timber.tag("Attendance").i("Attendance completed without accounts")
                 notifications.showNoAccounts()
                 return Result.success()
             }
@@ -62,6 +75,12 @@ class AttendanceWorker(context: Context, params: WorkerParameters) : CoroutineWo
             }
             summary.results.forEach(notifications::showAccountResult)
             notifications.showSummary(summary)
+            Timber.tag("Attendance").i(
+                "Attendance summary: total=%d succeeded=%d failed=%d",
+                summary.results.size,
+                summary.results.count { it.isSuccess },
+                summary.results.count { !it.isSuccess },
+            )
 
             if (summary.isSuccess) {
                 innerPrefs.lastAttendanceTs.set(Instant.now().epochSecond)
@@ -74,7 +93,7 @@ class AttendanceWorker(context: Context, params: WorkerParameters) : CoroutineWo
         } catch (error: CancellationException) {
             throw error
         } catch (error: Exception) {
-            Timber.tag("Attendance").w("Attendance task failed: %s", error.message)
+            Timber.tag("Attendance").e(error, "Attendance task failed")
             notifications.showFailure(error.message ?: "未知错误")
             if (!allowRepeatToday && runAttemptCount < MAX_RETRIES) {
                 Result.retry()

@@ -30,7 +30,7 @@ object RealTimeMapper {
         return RealTimeData().apply {
             this.currentTs = currentTs
 
-            // Player Status
+            // 玩家状态
             dataTree.status.let { status ->
                 playerStatus.apply {
                     uid = status.uid
@@ -41,44 +41,44 @@ object RealTimeMapper {
                 }
             }
 
-            // AP Info
+            // 理智信息
             dataTree.status.ap?.let { ap ->
                 apInfo = calculateApInfo(ap, currentTs)
             }
 
-            //avatar
+            // 头像
             dataTree.status.avatar.let { avatarInfo ->
                 this.avatar.type = avatarInfo.type
                 this.avatar.id = avatarInfo.id
                 avatarInfo.url?.let { this.avatar.url = it }
             }
 
-            // Training
+            // 训练室
             dataTree.building.training?.let { train ->
                 this.train = calculateTrainInfo(train, dataTree.charInfoMap, currentTs)
             }
 
-            // Recruit
+            // 公开招募
             dataTree.recruit?.let { recruits ->
                 this.recruits = calculateRecruitInfo(recruits, currentTs)
             }
 
-            // Hire
+            // 公招刷新
             dataTree.building.hire?.let { hire ->
                 this.hire = calculateHireInfo(hire, currentTs)
             }
 
-            // Meeting
+            // 会客室
             dataTree.building.meeting?.let { meeting ->
                 this.meeting = calculateMeetingInfo(meeting, currentTs)
             }
 
-            // Tradings
+            // 贸易站
             dataTree.building.tradings?.let { tradings ->
                 this.tradings = calculateTradingsInfo(tradings, currentTs)
             }
 
-            // Manufactures
+            // 制造站
             dataTree.building.manufactures?.let { manufactures ->
                 dataTree.manufactureFormulaInfoMap.let { formulaMap ->
                     this.manufactures =
@@ -86,22 +86,22 @@ object RealTimeMapper {
                 }
             }
 
-            // Labor
+            // 无人机
             dataTree.building.labor.let { labor ->
                 this.labor = calculateLaborInfo(labor, currentTs)
             }
 
-            // Dormitories
+            // 宿舍
             dataTree.building.dormitories?.let { dormitories ->
                 this.dormitories = calculateDormitoriesInfo(dormitories, currentTs)
             }
 
-            // Tired
+            // 疲劳干员
             dataTree.building.let { building ->
                 this.tired = calculateTiredInfo(building, currentTs)
             }
 
-            //Campaign
+            // 剿灭作战
             dataTree.campaign?.let { campaign ->
                 this.routine.campaignTotal = campaign.reward.total
                 this.routine.campaignCurrent = campaign.reward.current
@@ -109,7 +109,7 @@ object RealTimeMapper {
         }
     }
 
-// ========== Helper Functions ==========
+// ========== 辅助函数 ==========
 
     private fun calculateApInfo(ap: Ap, currentTs: Long): RealTimeData.Ap {
         return RealTimeData.Ap().apply {

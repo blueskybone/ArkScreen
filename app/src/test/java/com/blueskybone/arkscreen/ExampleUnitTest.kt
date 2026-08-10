@@ -7,9 +7,9 @@ import java.io.ByteArrayOutputStream
 import java.util.zip.GZIPOutputStream
 
 /**
- * Example local unit test, which will execute on the development machine (host).
+ * 在开发机上执行的本地单元测试示例。
  *
- * See [testing documentation](http://d.android.com/tools/testing).
+ * 参见 [测试文档](http://d.android.com/tools/testing)。
  */
 class ExampleUnitTest {
     @Test

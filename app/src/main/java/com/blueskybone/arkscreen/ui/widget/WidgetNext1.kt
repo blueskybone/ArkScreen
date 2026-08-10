@@ -6,7 +6,7 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.ui.widget.model.WidgetInfoType
 import com.blueskybone.arkscreen.ui.widget.model.WidgetBackgroundSize
 
-/** Experimental 1x1 widget backed by the next-generation template model. */
+/** 使用新版模板模型渲染的 1x1 桌面组件。 */
 class WidgetNext1 : BaseNextWidgetProvider() {
     override val pendingIntentOffset = 10_000
     override val defaultTypes = listOf(WidgetInfoType.SANITY)

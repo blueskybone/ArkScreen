@@ -176,8 +176,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun installApk(filePath: String) {
         runCatching { apkInstaller.install(filePath) }
-            .onSuccess { pendingInstallApkPath = null }
-            .onFailure { Toaster.show(it.message ?: getString(R.string.open_apk_failed)) }
+            .onSuccess {
+                Timber.tag("AppUpdate").i("APK installer opened")
+                pendingInstallApkPath = null
+            }
+            .onFailure { error ->
+                Timber.tag("AppUpdate").e(error, "Failed to open APK installer")
+                Toaster.show(error.message ?: getString(R.string.open_apk_failed))
+            }
     }
 
     private fun showUpdateDialog(update: PendingAppUpdate): AlertDialog {

@@ -1,9 +1,11 @@
 package com.blueskybone.arkscreen.data.resource
 
 import android.content.Context
+import com.blueskybone.arkscreen.data.common.HttpStatusException
 import com.blueskybone.arkscreen.domain.model.ConfigType
 import timber.log.Timber
 import java.io.File
+import java.net.HttpURLConnection
 import java.net.URL
 
 /**
@@ -81,10 +83,23 @@ class ResourceFileStore(
         val targetFile = getTargetFile(fileName)
         val tempFile = getTempFile(fileName)
 
-        URL(link).openStream().use { input ->
-            tempFile.outputStream().use { output ->
-                input.copyTo(output)
+        val connection = (URL(link).openConnection() as HttpURLConnection).apply {
+            connectTimeout = 10_000
+            readTimeout = 10_000
+            requestMethod = "GET"
+        }
+        try {
+            val statusCode = connection.responseCode
+            if (statusCode !in 200..299) {
+                throw HttpStatusException(statusCode, "资源下载失败：HTTP $statusCode")
             }
+            connection.inputStream.use { input ->
+                tempFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+        } finally {
+            connection.disconnect()
         }
 
         if (!tempFile.exists()) {

@@ -21,7 +21,7 @@ import com.google.android.material.color.MaterialColors
 import java.net.URLEncoder
 
 /**
- * Keeps each pool rendered as one card without nesting another RecyclerView.
+ * 每个卡池直接渲染为一张卡片，避免再嵌套一层 RecyclerView。
  */
 class GachaAdapter(
     private val context: Context,

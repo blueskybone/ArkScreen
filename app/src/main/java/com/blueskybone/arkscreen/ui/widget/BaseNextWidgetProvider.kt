@@ -42,10 +42,9 @@ data class NextWidgetRenderData(
 )
 
 /**
- * Shared data and interaction pipeline for the experimental widget providers.
+ * 新版桌面组件共用的数据与交互管线。
  *
- * Subclasses only select their configured slot and render their size-specific
- * RemoteViews hierarchy.
+ * 子类只负责选择已配置的信息槽位，并渲染对应尺寸的 RemoteViews 层级。
  */
 abstract class BaseNextWidgetProvider : AppWidgetProvider() {
     private val cache: CachePrefManager by getKoin().inject()

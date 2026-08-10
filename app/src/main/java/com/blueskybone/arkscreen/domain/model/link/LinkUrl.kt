@@ -3,7 +3,7 @@ package com.blueskybone.arkscreen.domain.model.link
 import java.net.URI
 
 /**
- * Validates user links before they reach persistence or a browser.
+ * 在用户链接写入数据库或交给浏览器前统一校验。
  */
 object LinkUrl {
     private val allowedSchemes = setOf("http", "https")

@@ -42,7 +42,7 @@ class BottomDialog(context: Context) : BottomSheetDialog(context) {
             )
         }
 
-        // NestedScrollView
+        // 滚动容器
         val scrollView = NestedScrollView(context).apply {
             layoutParams = CoordinatorLayout.LayoutParams(
                 CoordinatorLayout.LayoutParams.MATCH_PARENT,
@@ -53,7 +53,7 @@ class BottomDialog(context: Context) : BottomSheetDialog(context) {
             setPadding(dpToPx(16), dpToPx(16), dpToPx(16), dpToPx(64))
         }
 
-        // TextView
+        // 说明文本
         textView = TextView(context).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -61,7 +61,7 @@ class BottomDialog(context: Context) : BottomSheetDialog(context) {
             )
         }
 
-        // Button
+        // 操作按钮
         button = Button(context).apply {
             layoutParams = CoordinatorLayout.LayoutParams(
                 CoordinatorLayout.LayoutParams.MATCH_PARENT,
@@ -96,18 +96,6 @@ class BottomDialog(context: Context) : BottomSheetDialog(context) {
     // 设置文本内容
     fun setText(text: String): BottomDialog {
         textView.text = text
-        return this
-    }
-
-    // 设置按钮文本
-    fun setButtonText(text: String): BottomDialog {
-        button.text = text
-        return this
-    }
-
-    // 设置按钮点击事件
-    fun setButtonOnclick(listener: View.OnClickListener): BottomDialog {
-        buttonClickListener = listener
         return this
     }
 

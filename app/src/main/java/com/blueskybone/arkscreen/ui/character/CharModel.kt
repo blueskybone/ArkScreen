@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
+import timber.log.Timber
 
 /**
  * Created by blueskybone
@@ -138,6 +139,7 @@ class CharModel(
                     refresh()
                 }
                 .onFailure { error ->
+                    Timber.tag("Character").e(error, "Character account reauthentication failed")
                     _event.emit(com.blueskybone.arkscreen.ui.common.userFacingError(error.message ?: "登录失败"))
                 }
         }
@@ -171,7 +173,7 @@ class CharModel(
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                handleFailure(e.message ?: "未知错误")
+                handleFailure(e, e.message ?: "未知错误")
             } finally {
                 if (requestId == loadRequestId) {
                     syncing = false
@@ -183,7 +185,7 @@ class CharModel(
 
     private suspend fun loadAll(account: AccountSk) {
         val assets = getCharAssetsUseCase(account).getOrElse { error ->
-            handleFailure(error.message ?: "加载干员资产失败：请查看日志")
+            handleFailure(error, error.message ?: "加载干员资产失败：请查看日志")
             return
         }
         val ownList = assets.operators
@@ -195,12 +197,12 @@ class CharModel(
         sourceCharsList = ownList
         _charsList.value = ownList
 
-        // Refresh the complete operator map before calculating the difference. If the network
-        // update fails, GameResourceRepository keeps the last valid local/bundled resource.
+        // 计算未持有干员前先刷新完整干员表；网络更新失败时，仓库仍保留最近一次有效的
+        // 本地文件或安装包内置资源，页面因此可以继续计算。
         repo.syncResource(ConfigType.CHAR_MAP).lastOrNull()
 
         val notOwnList = getCharMissUseCase(ownList).getOrElse { error ->
-            handleFailure(error.message ?: "加载未持有干员失败：请查看日志")
+            handleFailure(error, error.message ?: "加载未持有干员失败：请查看日志")
             return
         }
 
@@ -214,7 +216,8 @@ class CharModel(
         _uiState.value = UiStatus.Success()
     }
 
-    private suspend fun handleFailure(message: String) {
+    private suspend fun handleFailure(error: Throwable, message: String) {
+        Timber.tag("Character").e(error, "Character assets operation failed")
         val userMessage = com.blueskybone.arkscreen.ui.common.userFacingError(message)
         if (sourceCharsList.isNotEmpty()) {
             _uiState.value = UiStatus.Success()
@@ -254,11 +257,6 @@ class CharModel(
                 (rarity.range == null || operator.rarity in rarity.range)
         }
     }
-
-    fun resetFilter() {
-        _charsList.value = sourceCharsList
-    }
-
 
     fun generateExportText(): String =
         sourceCharsList.joinToString("\n") { data ->

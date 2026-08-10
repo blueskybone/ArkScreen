@@ -6,11 +6,13 @@ package com.blueskybone.arkscreen.data.resource
  */
 
 import android.util.Xml
+import com.blueskybone.arkscreen.data.common.HttpStatusException
 import com.blueskybone.arkscreen.domain.model.ResourceUpdateInfo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import org.xmlpull.v1.XmlPullParser
 import java.io.StringReader
+import java.net.HttpURLConnection
 import java.net.URL
 
 class ResourceUpdateChecker(
@@ -24,14 +26,21 @@ class ResourceUpdateChecker(
         }
 
     private fun fetchText(url: String): String {
-        val connection = URL(url).openConnection().apply {
+        val connection = (URL(url).openConnection() as HttpURLConnection).apply {
             connectTimeout = 10_000
             readTimeout = 10_000
+            requestMethod = "GET"
         }
 
-        return connection.getInputStream()
-            .bufferedReader()
-            .use { it.readText() }
+        return try {
+            val statusCode = connection.responseCode
+            if (statusCode !in 200..299) {
+                throw HttpStatusException(statusCode, "资源请求失败：HTTP $statusCode")
+            }
+            connection.inputStream.bufferedReader().use { it.readText() }
+        } finally {
+            connection.disconnect()
+        }
     }
 
     private fun parseResourceXml(xmlText: String): ResourceUpdateInfo {

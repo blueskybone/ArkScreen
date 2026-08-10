@@ -13,7 +13,7 @@ import timber.log.Timber
 
 
 /*
-* From bitmap to tags
+* 将位图识别为公招标签
 * */
 class ImageProcessor(
     private val context: Context,

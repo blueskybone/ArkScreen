@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.ui.common.bindinginfo.AppTheme
 
-/** Applies the persisted theme choice to AppCompat and active activities. */
+/** 将持久化的主题选择同时应用到 AppCompat 和当前活动的 Activity。 */
 class AppThemeController(
     private val settings: SettingPrefManager,
 ) {

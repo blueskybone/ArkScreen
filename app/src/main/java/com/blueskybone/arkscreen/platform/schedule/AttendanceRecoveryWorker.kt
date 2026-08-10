@@ -6,7 +6,7 @@ import androidx.work.WorkerParameters
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import org.koin.java.KoinJavaComponent.getKoin
 
-/** Periodic, failure-proof trigger for attendance missed while the device was unavailable. */
+/** 定期补偿设备关机或不可用期间错过的签到任务。 */
 class AttendanceRecoveryWorker(
     context: Context,
     params: WorkerParameters,

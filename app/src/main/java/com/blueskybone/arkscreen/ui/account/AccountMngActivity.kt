@@ -184,7 +184,6 @@ class AccountMngActivity : AppCompatActivity() {
 
             override fun onLongClick(account: Account) {
                 dialogHelper.buildAccountMenu(
-                    account = account,
                     onCopyUid = {
                         copyToClipboard(this@AccountMngActivity, account.uid)
                         Toaster.show(getString(R.string.uid_copied))

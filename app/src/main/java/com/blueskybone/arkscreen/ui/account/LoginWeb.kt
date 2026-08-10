@@ -104,8 +104,8 @@ class LoginWeb : AppCompatActivity() {
         webView.webViewClient = WebViewClient()
 
         val settings = webView.settings
-        // Login pages and their credential APIs are HTTPS-only. Keep JavaScript enabled for the
-        // login bridge, but do not let a remote page load insecure HTTP or local app files.
+        // 登录页及凭证接口只允许 HTTPS。登录桥接需要 JavaScript，但远端页面不得加载
+        // 不安全的 HTTP 内容或应用本地文件。
         settings.mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
         settings.cacheMode = WebSettings.LOAD_DEFAULT // 默认缓存模式
         settings.domStorageEnabled = true

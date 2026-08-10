@@ -37,15 +37,6 @@
             layout="@layout/preference" />
 
 
-        <!--        <androidx.appcompat.widget.SwitchCompat-->
-        <!--            android:id="@+id/ShowHomeAnnounce"-->
-        <!--            style="@style/SwitchPreference"-->
-        <!--            android:text="@string/show_home_announce" />-->
-
-        <!--        <androidx.appcompat.widget.SwitchCompat-->
-        <!--            android:id="@+id/AutoUpdateApp"-->
-        <!--            style="@style/SwitchPreference"-->
-        <!--            android:text="@string/auto_check_update" />-->
         <include
             android:id="@+id/ShowHomeAnnounce"
             layout="@layout/preference_switch" />

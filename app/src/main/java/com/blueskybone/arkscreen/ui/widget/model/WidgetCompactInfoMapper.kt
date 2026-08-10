@@ -5,9 +5,8 @@ import com.blueskybone.arkscreen.domain.service.AppClock
 import com.blueskybone.arkscreen.ui.widget.WidgetContentFormatter
 
 /**
- * Projects the shared widget state into the deliberately smaller two-line 1x1
- * representation. Text is calculated from source caches rather than parsed
- * from [WidgetInfoItem.value].
+ * 将共享的组件状态投影为 1x1 使用的两行紧凑信息。文本直接由源缓存计算，
+ * 不从 [WidgetInfoItem.value] 反向解析，避免展示格式变化影响业务数据。
  */
 class WidgetCompactInfoMapper(
     cache: CachePrefManager,

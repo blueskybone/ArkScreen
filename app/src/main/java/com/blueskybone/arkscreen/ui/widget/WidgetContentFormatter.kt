@@ -11,7 +11,7 @@ data class WidgetContentText(
     val secondary: String,
 )
 
-/** Converts cached game state into a consistent text model shared by compact widgets. */
+/** 将缓存的游戏状态转换为紧凑型桌面组件共用的统一文本模型。 */
 class WidgetContentFormatter(
     private val cache: CachePrefManager,
     private val appClock: AppClock,

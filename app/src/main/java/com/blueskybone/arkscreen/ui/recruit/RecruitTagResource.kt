@@ -35,13 +35,4 @@ object RecruitTagSource {
         "召唤",
         "元素"
     )
-
-    const val TAG_MAX = 6
-
-    fun buildAllTags(): List<TagItem> {
-        val groups = listOf(buttonList1, buttonList2, buttonList3, buttonList4)
-        return groups.flatMapIndexed { index, list ->
-            list.map { TagItem(name = it, group = index) }
-        }
-    }
 }

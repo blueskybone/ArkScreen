@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
+import timber.log.Timber
 
 /**
  * Created by blueskybone
@@ -38,6 +39,9 @@ class RecruitModel(
 
     //标签选中状态
     private val selectedTagsFlow = MutableStateFlow<List<String>>(emptyList())
+
+    //允许最大选择tag数目
+    private val maxSelectTagNum = 6
 
     init {
         observeTags()
@@ -64,7 +68,7 @@ class RecruitModel(
         val newTags = if (tag in state.selectedTags) {
             state.selectedTags - tag
         } else {
-            if (state.selectedTags.size >= 6) return
+            if (state.selectedTags.size >= maxSelectTagNum) return
             state.selectedTags + tag
         }
 
@@ -75,6 +79,7 @@ class RecruitModel(
         // 不直接算，而是发给 Flow
         selectedTagsFlow.value = newTags
     }
+
     private fun loadData() {
         execute {
             _uiState.update { it.copy(status = UiStatus.Loading()) }
@@ -82,8 +87,10 @@ class RecruitModel(
             repo.syncResource(ConfigType.RECRUIT_DB).collect { status ->
                 when (status) {
                     is ResourceSyncStatus.Updated -> databaseProvider.clearCache()
-                    // A bundled resource remains available when online refresh fails.
-                    is ResourceSyncStatus.Failed -> Unit
+                    // 在线更新失败时仍可继续使用安装包内置或本地缓存的公招数据。
+                    is ResourceSyncStatus.Failed -> {
+                        Timber.tag("Recruit").w(status.throwable, "Recruit database refresh failed; using local data")
+                    }
                     else -> Unit
                 }
             }
@@ -96,7 +103,8 @@ class RecruitModel(
                         newOpe = db.newOpe.name
                     ) }
                 }
-                .onFailure {
+                .onFailure { error ->
+                    Timber.tag("Recruit").e(error, "Recruit database parsing failed")
                     _uiState.update { it.copy(status = UiStatus.Error("json解析错误")) }
                     _event.send(RecruitEvent.ShowError("公招数据解析失败"))
                 }
@@ -110,6 +118,7 @@ class RecruitModel(
                     _uiState.value = _uiState.value.copy(result = result)
                 }
                 .onFailure { error ->
+                    Timber.tag("Recruit").e(error, "Recruit calculation failed")
                     _uiState.update { it.copy(status = UiStatus.Error(error.message ?: "发生未知错误")) }
                     _event.send(RecruitEvent.ShowError(error.message ?: "公招计算失败"))
                 }

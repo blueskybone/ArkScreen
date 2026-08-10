@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
+import timber.log.Timber
 
 class AccountModel(
     private val repo: AccountRepository,
@@ -87,6 +88,7 @@ class AccountModel(
                     _event.emit(UiEvent.ShowToast("成功导入${cnt}条账号"))
                 },
                 onFailure = { error ->
+                    logLoginFailure("Skland phone/password", error)
                     _event.emit(UiEvent.ShowError(error.message ?: "登录失败"))
                 }
             )
@@ -102,6 +104,7 @@ class AccountModel(
                     _event.emit(UiEvent.ShowToast("成功导入${cnt}条账号"))
                 },
                 onFailure = { error ->
+                    logLoginFailure("Skland token", error)
                     _event.emit(UiEvent.ShowError(error.message ?: "登录失败"))
                 }
             )
@@ -117,6 +120,7 @@ class AccountModel(
                     _event.emit(UiEvent.ShowToast("成功导入${cnt}条账号"))
                 },
                 onFailure = { error ->
+                    logLoginFailure("Skland cookie", error)
                     _event.emit(UiEvent.ShowError(error.message ?: "登录失败"))
                 }
             )
@@ -139,6 +143,7 @@ class AccountModel(
                     _event.emit(UiEvent.ShowToast("成功导入${cnt}条账号"))
                 },
                 onFailure = { error ->
+                    logLoginFailure("game token", error)
                     _event.emit(UiEvent.ShowError(error.message ?: "登录失败"))
                 }
             )
@@ -154,6 +159,7 @@ class AccountModel(
                     _event.emit(UiEvent.ShowToast("成功导入${cnt}条账号"))
                 },
                 onFailure = { error ->
+                    logLoginFailure("game cookie", error)
                     _event.emit(UiEvent.ShowError(error.message ?: "登录失败"))
                 }
             )
@@ -184,6 +190,7 @@ class AccountModel(
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
+                Timber.tag("Account").e(e, "Account operation failed")
                 _event.emit(UiEvent.ShowError(e.message ?: "发生未知错误"))
             } finally {
                 _operationStatus.value = UiStatus.Idle
@@ -193,4 +200,8 @@ class AccountModel(
 
     fun generateAccountCookie(account: Account): Result<String> =
         runCatching { repo.accountCookieEncode(account) }
+
+    private fun logLoginFailure(method: String, error: Throwable) {
+        Timber.tag("Account").e(error, "Account login failed: method=%s", method)
+    }
 }

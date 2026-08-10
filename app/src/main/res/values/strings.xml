@@ -5,8 +5,6 @@
 
     <!-- Dialogs Action-->
     <string name="cancel">取消</string>
-    <string name="jump_to">跳转</string>
-    <string name="no_more_warn">不再提示</string>
     <string name="confirm">确定</string>
     <string name="save">保存</string>
     <string name="save_code">保存二维码</string>
@@ -17,21 +15,15 @@
     <string name="download">下载</string>
 
     <!-- Game Name-->
-    <string name="arknights">明日方舟</string>
-    <string name="endfield">明日方舟：终末地</string>
 
 
     <!-- Dialogs Message-->
-    <string name="confirm_delete">确定删除吗</string>
-    <string name="confirm_clear_data">将清除当前账号的本地寻访记录</string>
     <string name="gacha_correct_detail">修复当前账号历史记录中未正确识别的卡池分类。</string>
     <string name="thank_for_donate">感谢支持！</string>
 
     <!-- Fragment Title -->
     <string name="home">首页</string>
     <string name="function">功能</string>
-    <string name="config">配置</string>
-    <string name="setting">设置</string>
     <string name="more">更多</string>
 
     <!-- SubTitle -->
@@ -43,9 +35,6 @@
     <string name="home_login_guide_title">添加森空岛账号</string>
     <string name="home_login_guide_summary">用于实时数据、干员资产和自动签到</string>
     <string name="login_now">立即登录</string>
-    <string name="no_network">无网络</string>
-    <string name="checking_update">检查更新中…</string>
-    <string name="checking_update_failed">检查更新失败</string>
     <string name="loading">加载中</string>
 
     <!-- Action -->
@@ -61,16 +50,11 @@
     <string name="sync_now">同步</string>
     <string name="operation_in_progress">正在处理，请稍候…</string>
     <string name="last_synced_at">最后同步：%1$s</string>
-    <string name="loading_account_data">正在加载账号数据…</string>
-    <string name="login_expired">登录状态已过期</string>
-    <string name="relogin_success">登录成功，正在重新同步</string>
-    <string name="statistic">统计</string>
 
     <!-- Home Page -->
     <string name="announcement">公告</string>
     <string name="last_update">最后更新：%1$s</string>
     <string name="tools_3rd">外部工具</string>
-    <string name="no_account_warn">请先在首页的账号管理中添加森空岛账号</string>
 
     <!-- Settings Page -->
     <string name="recruit_show_mode">识别结果展示</string>
@@ -88,7 +72,6 @@
     <string name="sec_2">2s</string>
     <string name="sec_3">3s</string>
 
-    <string name="permission">权限</string>
     <string name="check_permission">检查权限</string>
     <string name="runtime_settings">运行保障</string>
     <string name="status_ready">可用</string>
@@ -98,7 +81,6 @@
     <string name="status_restricted">可能受限</string>
     <string name="overlay_permission">悬浮窗权限</string>
     <string name="overlay_permission_detail">截图需要悬浮窗权限</string>
-    <string name="acquire_overlay_permission_content">未授予悬浮窗权限，截屏公招功能无法正常使用。</string>
 
     <string name="notify_permission">通知权限</string>
     <string name="notify_permission_detail">部分机型截图需要通知权限</string>
@@ -117,7 +99,6 @@
     <string name="widget_next_2_description">新版组件 · 1×2 单信息</string>
     <string name="widget_next_3_description">新版组件 · 2×2 双信息</string>
     <string name="widget_next_4_description">新版组件 · 2×3</string>
-    <string name="widget_template_lab_entry_summary">统一设置新版组件的风格、布局与显示内容</string>
     <string name="widget_template_lab_summary">这里的修改会立即应用到所有新版组件。不同尺寸可以分别选择显示内容，2×3 组件还可以切换布局。</string>
     <string name="widget_style">整体风格</string>
     <string name="widget_style_transparent">轻透</string>
@@ -136,7 +117,6 @@
     <string name="widget_layout_full">全信息</string>
     <string name="widget_layout_four">四信息</string>
     <string name="widget_content_slots">显示内容</string>
-    <string name="widget_slot_title">信息 %1$d · %2$s</string>
     <string name="widget_slot_index">信息 %1$d</string>
     <string name="widget_choose_content">选择显示内容</string>
     <string name="widget_full_layout_fixed">全信息布局内容固定，无需选择槽位。</string>
@@ -152,43 +132,14 @@
     <string name="widget_attendance_pending">今日待签到</string>
     <string name="widget_attendance_disabled">未开启</string>
     <string name="widget_attendance_failed">签到失败</string>
-    <string name="base_setting">基础设置</string>
-    <string name="setting_1x1">1×1组件</string>
-    <string name="setting_1x2">1×2组件</string>
-    <string name="setting_2x2">2×2组件</string>
-    <string name="setting_2x3">2×3组件</string>
-    <string name="setting_1x1_detail">1×1组件 · 单项数据</string>
-    <string name="setting_1x2_detail">1×2组件 · 单项详情</string>
-    <string name="setting_2x2_detail">2×2组件 · 双项数据</string>
-    <string name="setting_2x3_detail">2×3组件 · 完整面板</string>
-    <string name="text_color">文字颜色</string>
-    <string name="background">背景</string>
-    <string name="black_on_white">黑底白字</string>
-    <string name="white_on_black">白底黑字</string>
-    <string name="white">白</string>
-    <string name="black">黑</string>
-    <string name="widget_size">文字大小</string>
-    <string name="small">小</string>
-    <string name="medium">中</string>
-    <string name="large">大</string>
-    <string name="widget_content">显示内容</string>
-    <string name="widget_show_starter">显示启动按钮</string>
     <string name="widget_update_freq">更新频率</string>
-    <string name="widget_setting_info">调整外观后，点击底部按钮应用到桌面组件。桌面上的组件仍可按系统支持的尺寸缩放。</string>
-    <string name="widget_apply_changes">应用到桌面组件</string>
-    <string name="widget_preview_remaining">预计 2 小时 15 分恢复</string>
     <string name="widget_start_game">启动游戏</string>
-    <string name="widget_last_update_label">上次更新：</string>
     <string name="widget_last_update_time_empty">—</string>
     <string name="widget_footer_refresh">更新 %1$s</string>
     <string name="widget_meeting_idle">空闲</string>
     <string name="widget_meeting_sharing">交流中</string>
     <string name="widget_meeting_ended">交流结束</string>
     <string name="widget_meeting_ends_after">%1$s后结束</string>
-
-    <string name="widget_alpha">不透明度</string>
-    <string name="widget_refresh">刷新桌面组件</string>
-    <string name="widget_refresh_detail">更改外观后点此刷新组件</string>
 
     <string name="app_theme">主题</string>
     <string name="theme_light">浅色</string>
@@ -199,19 +150,16 @@
     <string name="back_auto_attendance">后台自动签到</string>
     <string name="back_auto_attendance_detail">定时执行，错过后会在联网时自动补签</string>
     <string name="open_auto_start_settings">允许应用自启动</string>
-    <string name="auto_start">自启动</string>
     <string name="open_auto_start_settings_detail">后台签到需要自启动权限</string>
     <string name="attendance_time">签到时间</string>
     <string name="attendance_time_detail">尽量设置在手机活跃使用时间</string>
     <string name="auto_attendance_time">当前设置为%1$s</string>
 
-    <string name="battery_opt">电池优化</string>
     <string name="turn_off_battery_optimization">关闭电池优化</string>
     <string name="turn_off_battery_optimization_detail">自动刷新需关闭电池优化</string>
     <string name="power_saving_mode">省流模式</string>
     <string name="power_saving_mode_detail">桌面组件仅使用缓存，进入实时数据页面时再同步</string>
 
-    <string name="mess_option">杂项</string>
     <string name="show_home_announce">显示首页公告</string>
     <string name="use_inner_web">使用内置浏览器</string>
     <string name="use_inner_web_detail">外部工具链接使用内置浏览器打开</string>
@@ -241,7 +189,6 @@
     <string name="skland_account_summary">用于同步实时数据、干员资产和森空岛签到</string>
     <string name="arknights_accounts">明日方舟</string>
     <string name="endfield_accounts">明日方舟：终末地</string>
-    <string name="endfield_account_summary">随森空岛账号同步，目前仅用于签到</string>
     <string name="gacha_account_manage">寻访记录账号</string>
     <string name="gacha_account_summary">独立于森空岛账号，仅同步明日方舟寻访记录</string>
     <string name="add_skland_account">添加森空岛账号</string>
@@ -255,8 +202,6 @@
     <string name="sk_account_info">森空岛账号用于同步关联的明日方舟和终末地角色。明日方舟角色可用于查询游戏数据与签到；终末地角色目前仅用于签到。\n\n登录可能会使森空岛 App 的登录状态失效。</string>
     <string name="gc_account_info">寻访记录账号独立于森空岛账号，仅用于同步和统计明日方舟寻访记录。</string>
     <string name="account_info">说明</string>
-    <string name="add_account">添加账号</string>
-    <string name="add_icon">+</string>
     <string name="add_site">添加网址</string>
     <string name="edit_site">编辑网址</string>
     <string name="prefix">https://</string>
@@ -277,15 +222,9 @@
     <string name="labor">无人机</string>
     <string name="ap">理智</string>
     <string name="campaign">剿灭</string>
-    <string name="routine_day">日常</string>
-    <string name="routine_week">周常</string>
-    <string name="low_item">数据增补条</string>
-    <string name="high_item">数据增补仪</string>
-    <string name="recovered">已恢复</string>
 
     <!-- About Page -->
     <string name="check_update">检查更新</string>
-    <string name="newest_update">当前是最新版本</string>
     <string name="send_feedback">发送反馈</string>
     <string name="open_license">开源许可</string>
     <string name="open_license_summary">本应用使用的第三方开源软件</string>
@@ -311,18 +250,13 @@
     <string name="confirm_clear_logs">确定清除全部应用日志和网络日志吗？</string>
     <string name="clear_logs">清空日志</string>
     <string name="logs_cleared_count">已清除 %1$d 个日志文件</string>
-    <string name="debug">调试</string>
-    <string name="debug_mode">调试模式</string>
     <string name="check_logs">查看日志</string>
     <string name="clean_logs">清除日志</string>
-    <string name="update_log">更新日志</string>
     <string name="qq_group">QQ群聊</string>
     <string name="qq_group_content">意见反馈，聊天吹水</string>
     <string name="donate">赞助开发者</string>
-    <string name="donate_detail">感谢每一位博士的支持</string>
     <string name="donate_msg">如果软件有帮助到你的话，请开发者喝杯冰阔落吧:D</string>
 
-    <string name="text_init">初始化</string>
     <string name="recruit_video">演示</string>
 
     <string name="wrong_format">错误的格式</string>
@@ -335,7 +269,6 @@
     <string name="export_operator_poster">六星精二资产图片</string>
     <string name="operator_poster_preview">干员资产图片预览</string>
     <string name="operator_poster_preview_hint">预览已缩放，保存和分享时使用原始分辨率</string>
-    <string name="operator_poster_generating">正在准备头像资源并生成图片…</string>
     <string name="operator_poster_loading_title">正在生成资产图片</string>
     <string name="operator_poster_preparing">正在准备图片资源…</string>
     <string name="operator_poster_loading_progress">正在准备图片资源 %1$d/%2$d</string>
@@ -346,7 +279,6 @@
     <string name="change_view">切换列表显示方式</string>
     <string name="assets_overview">资产概览</string>
     <string name="current_operator_account">当前账号角色</string>
-    <string name="realtime_ap_recovered">已恢复</string>
     <string name="realtime_last_login_today">上次登录 今天 %1$s</string>
     <string name="realtime_last_login_yesterday">上次登录 昨天</string>
     <string name="realtime_last_login_date">上次登录 %1$s</string>
@@ -390,7 +322,6 @@
     <string name="realtime_load_failed">加载失败，请查看日志</string>
     <string name="official_game_not_found">未检测到官服游戏安装</string>
     <string name="bilibili_game_not_found">未检测到B服游戏安装</string>
-    <string name="realtime_current_role">当前角色</string>
     <string name="realtime_immediate_status">即时状态</string>
     <string name="realtime_base_overview">基建概览</string>
     <string name="realtime_sanity">理智</string>
@@ -409,7 +340,6 @@
     <string name="assets_rarity_progress">%1$d★  %2$d/%3$d</string>
     <string name="export_cookie">导出Cookie（包含登录凭证，请勿告知他人）</string>
     <string name="import_cookie">导入Cookie</string>
-    <string name="input_cookie">输入Cookie</string>
 
     <string name="import_data">导入数据</string>
     <string name="import_data_detail">目前仅支持公招助手的导入导出格式。</string>
@@ -460,9 +390,7 @@
     <string name="no_six_star_records">暂无六星记录</string>
     <string name="expand_gacha_records">展开全部 %1$d 条</string>
     <string name="collapse_gacha_records">收起记录</string>
-    <string name="statistic_info">统计信息</string>
 
-    <string name="announcement_content">\n庐山烟雨浙江潮，未至千般恨不消。\n到得还来别无事，庐山烟雨浙江潮。</string>
     <string name="duration_week_short">%1$d周</string>
     <string name="duration_day_short">%1$d天</string>
     <string name="duration_hour_short">%1$d时</string>

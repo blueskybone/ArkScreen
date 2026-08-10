@@ -1,38 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="cyan_50">#C8FFF4</color>
-    <color name="cyan_200">#91DCD3</color>
     <color name="cyan_500">#1FD5E6</color>
     <color name="cyan_700">#0E9EA3</color>
     <color name="cyan_trans">#4685BDBD</color>
     <!--    <color name="light_cyan">#0E9EA3</color>-->
-    <color name="cyan_bg">#151919</color>
-    <color name="blue_200">#D2EBF6</color>
     <color name="blue_400">#3B538E</color>
     <color name="blue_500">#2196F3</color>
     <color name="blue_600">#2879BA</color>
-    <color name="dark_blue">#191c20</color>
 
     <color name="trans_blue">#3C80B0E3</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="grey">#555555</color>
-    <color name="grey_200">#F3F3F3</color>
-    <color name="grey_300">#E6E6E6</color>
     <color name="grey_500">#BFBFBF</color>
     <color name="grey_600">#787878</color>
     <color name="grey_700">#424242</color>
-    <!--chip -->
-    <color name="sec_container">#70CCD6EA</color>
     <color name="out_line">#6f797a</color>
-    <color name="on_sec_container">#4a6365</color>
 
     <color name="sec_con">#DEE6EF</color>
     <color name="on_sec_con">#575e71</color>
     <color name="widget_content_slot_ripple">#24575E71</color>
 
-    <color name="error_con">#FFE8E6</color>
-    <color name="on_error">#BC6262</color>
     <color name="status_success_container">#DDF3E3</color>
     <color name="status_success_content">#27633A</color>
     <color name="status_warning_container">#FFF0C7</color>
@@ -44,33 +32,20 @@
     <!--    <color name="grey_900">#202020</color>-->
     <color name="grey_900">#1E1F25</color>
     <color name="red">#FF0000</color>
-    <color name="yellow">#D6BF29</color>
     <color name="purple">#8959C8</color>
 
-    <!--    <color name="purple_50">#E9EDFF</color>-->
-    <color name="purple_50">#F0F5FA</color>
-    <color name="purple_bg">#F7F9FF</color>
-    <color name="day_bg">#F6F6F6</color>
     <!-- cyan theme color-->
     <color name="dark_on_surface">#dde4e3</color>
-    <color name="dark_on_surface_var">#bec8c8</color>
 
     <color name="day_surface">#F0F0F2</color>
     <!--    <color name="day_surface">#f9f9ff</color>-->
-    <color name="surface_container">#ffffff</color>
     <color name="day_text_primary">#292c33</color>
 
-    <color name="LightBlue500">#79B8EA</color>
     <color name="LightBlue200">#65C9DDED</color>
 
     <color name="trans_grey">#77494F55</color>
 
     <color name="transparent">#00000000</color>
-    <color name="chip_background">#7592B5D1</color>
-    <!--    <color name="day_background">#FFFFFF</color>-->
-    <color name="day_background">#F5FAFD</color>
-    <!--    <color name="night_background">#15191A</color>-->
-    <color name="night_background">#121318</color>
 
     <color name="rare_6">#FF2600</color>
     <color name="rare_5">#FF9800</color>
@@ -78,10 +53,6 @@
     <color name="rare_3">#2196F3</color>
     <color name="rare_2">#4CAF50</color>
     <color name="rare_1">#595959</color>
-
-    <color name="trans_green">#ADADCFB7</color>
-    <color name="trans_yellow">#A4D3CBA5</color>
-    <color name="trans_red">#A4DD7979</color>
 
     <color name="theme_yellow">#F8DE05</color>
     <color name="theme_orig">#FF6801</color>

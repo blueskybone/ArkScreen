@@ -7,7 +7,7 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.ui.widget.model.WidgetInfoType
 import com.blueskybone.arkscreen.ui.widget.model.WidgetBackgroundSize
 
-/** 1x2 widget supporting a selectable single-information or fixed dense layout. */
+/** 支持单信息布局和固定紧凑布局切换的 1x2 桌面组件。 */
 class WidgetNext2 : BaseNextWidgetProvider() {
     override val pendingIntentOffset = 20_000
     override val defaultTypes: List<WidgetInfoType>

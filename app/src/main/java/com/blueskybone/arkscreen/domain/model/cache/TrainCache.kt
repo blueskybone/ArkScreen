@@ -4,9 +4,8 @@ package com.blueskybone.arkscreen.domain.model.cache
  *   Created by blueskybone
  *   Date: 2025/9/17
  */
-//缓存存储上一次的状态 -1L: 空闲中  0L:专精完成 else: 专精中
-//if isnull == true -> 暂无数据
-//if 空闲中 -> idle 专精完成 -> completed  专精中: 计算是否已完成：if 未完成：计算completeTime 和 currentTs差距，显示时间。
+// 缓存保存上次状态：-1L 表示空闲，0L 表示专精完成，其他值表示专精中。
+// 数据为空时展示“暂无数据”。专精中需要比较 completeTime 与 currentTs，并展示剩余时间。
 
 data class TrainCache(
     var lastSyncTs: Long,

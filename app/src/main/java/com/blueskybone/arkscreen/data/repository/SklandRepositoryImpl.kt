@@ -33,6 +33,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.net.SocketTimeoutException
+import timber.log.Timber
 
 /**
  * Created by blueskybone
@@ -241,8 +242,8 @@ class SklandRepositoryImpl(
                     )
                     handleAttendanceEfResp(resp)
                 } catch (error: Exception) {
-                    // Endfield reports an already completed attendance as HTTP 403 with
-                    // business code 10001, so safeApiCall throws before the body handler.
+                    // 终末地重复签到会返回 HTTP 403 和业务码 10001，safeApiCall 会在响应体
+                    // 处理前抛出异常，因此需要在这里识别并转换为“已签到”。
                     if (isAlreadyAttended(null, error.message.orEmpty())) {
                         ALREADY_ATTENDED_MESSAGE
                     } else {
@@ -265,6 +266,12 @@ class SklandRepositoryImpl(
                 if (attempt == ATTENDANCE_MAX_ATTEMPTS - 1 || !error.isTransientNetworkError()) {
                     throw error
                 }
+                Timber.tag("Attendance").w(
+                    "Transient attendance failure, retrying: attempt=%d/%d message=%s",
+                    attempt + 1,
+                    ATTENDANCE_MAX_ATTEMPTS,
+                    error.message,
+                )
                 delay(ATTENDANCE_RETRY_DELAY_MS)
             }
         }
@@ -332,7 +339,7 @@ class SklandRepositoryImpl(
         prefManager.recruitCache.set(recruitCache)
         prefManager.refreshCache.set(refreshCache)
         prefManager.meetCache.set(meetCache)
-        // Written last: consumers only switch the displayed owner after the snapshot is complete.
+        // 最后写入缓存所属账号，确保消费者只在完整快照落盘后切换展示对象。
         prefManager.accountInfo.set(
             CacheAccountInfo(
                 uid = account.uid,

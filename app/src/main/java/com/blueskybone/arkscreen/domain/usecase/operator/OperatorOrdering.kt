@@ -4,7 +4,7 @@ import com.blueskybone.arkscreen.domain.model.operator.Operator
 import java.text.Collator
 import java.util.Locale
 
-/** Ordering shared by owned and missing operator lists. */
+/** 已持有和未持有干员列表共用的排序规则。 */
 object OperatorOrdering {
 
     private val professionOrder = listOf(

@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.data.repository
 
+import com.blueskybone.arkscreen.data.common.HttpStatusException
 import com.blueskybone.arkscreen.domain.model.AppRemoteConfig
 import com.blueskybone.arkscreen.domain.repository.RemoteConfigRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -22,7 +23,10 @@ class RemoteConfigRepositoryImpl(
             }
             try {
                 if (connection.responseCode !in 200..299) {
-                    throw IllegalStateException("远端配置请求失败：${connection.responseCode}")
+                    throw HttpStatusException(
+                        connection.responseCode,
+                        "远端配置请求失败：HTTP ${connection.responseCode}",
+                    )
                 }
                 connection.inputStream.bufferedReader().use { reader ->
                     parser.parse(reader.readText())

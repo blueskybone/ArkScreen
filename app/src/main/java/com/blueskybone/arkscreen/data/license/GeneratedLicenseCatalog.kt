@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 
 /**
- * Reads the dependency metadata generated from Maven POM files during the Gradle build.
+ * 读取 Gradle 构建期间由 Maven POM 文件生成的依赖许可元数据。
  */
 class GeneratedLicenseCatalog(
     private val context: Context,

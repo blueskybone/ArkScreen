@@ -7,7 +7,7 @@ import android.content.Intent
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import java.util.Calendar
 
-/** Owns the single daily attendance alarm and its stable PendingIntent identity. */
+/** 统一管理每日唯一签到闹钟及其稳定的 PendingIntent 标识。 */
 class AttendanceAlarmController(
     context: Context,
     private val settings: SettingPrefManager,

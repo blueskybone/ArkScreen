@@ -49,7 +49,7 @@ class MediaProjectionScreenshotCapturer(
                         ScreenshotError.PermissionMissing
                     )
 
-                // Let the persistent virtual display publish a fresh frame.
+                // 给持续存在的虚拟显示器留出时间发布最新画面。
                 delay(150)
 
                 val image = reader.acquireLatestImage()

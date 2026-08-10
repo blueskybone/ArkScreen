@@ -60,17 +60,8 @@
 <!--        <item name="cardBackgroundColor">?attr/android:colorBackground</item>-->
         <item name="cardBackgroundColor">@color/white</item>
         <item name="strokeWidth">1dp</item>
-<!--        <item name="strokeColor">@color/grey_300</item>-->
     </style>
 
-
-    <style name="SwitchPreference">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">16dp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textAppearance">@style/PreferenceTitle</item>
-    </style>
 
     <style name="TextAppearance.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
         <item name="android:textColor">?attr/colorPrimary</item>
@@ -162,9 +153,6 @@
     </style>
 
 <!--    <style name="Theme.ChipOverlayError" parent="Theme.Material3.DayNight.NoActionBar">-->
-<!--        <item name="colorOnSurface">@color/on_error</item>-->
-<!--        <item name="colorOutline">@color/error_con</item>-->
-<!--        <item name="colorSurface">@color/error_con</item>-->
 <!--    </style>-->
 
 <!--    <style name="Widget.MyApp.Chip.Error" parent="Widget.Material3.Chip.Assist">-->
@@ -298,22 +286,6 @@
         <item name="chipBackgroundColor">@color/recruit_metadata_chip_background</item>
     </style>
 
-
-    <style name="Theme.ChipOverlayRare3" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="chipStyle">@style/Widget.MyApp.Chip.Rare3</item>
-
-        <item name="colorOnSurface">@color/rare_3_line</item>
-        <item name="colorOutline">@color/rare_3_line</item>
-        <item name="colorSurface">@color/rare_3_surface</item>
-    </style>
-
-    <style name="Widget.MyApp.Chip.Rare3" parent="Widget.Material3.Chip.Assist">
-        <item name="android:theme">@style/Theme.ChipOverlayRare3</item>
-        <item name="chipStartPadding">4dp</item>
-        <item name="chipEndPadding">4dp</item>
-        <item name="textStartPadding">4dp</item>
-        <item name="textEndPadding">4dp</item>
-    </style>
 
     <style name="WidgetDenseSummaryText">
         <item name="android:layout_height">wrap_content</item>

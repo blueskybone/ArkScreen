@@ -25,7 +25,7 @@ namespace arkscreen {
         }
     }
 
-    //faster, less accurate
+    // 速度更快，但精度较低。
     void ResizeNearest(Bitmap8 &src, Bitmap8 &dst, Size size) {
         size_t src_x = 0, src_y = 0;
         size_t dst_width = size.width, dst_height = size.height;
@@ -43,7 +43,7 @@ namespace arkscreen {
     }
 
 
-    //more accurate
+    // 精度更高。
     void ResizeLiner(Bitmap8 &src, Bitmap8 &dst, Size size) {
 
         if ( size.width <= 0 || size.height <= 0) {
@@ -104,7 +104,7 @@ namespace arkscreen {
             red = (src_color & 0x00ff0000) >> 16;
             green = (src_color & 0x0000ff00) >> 8;
             blue = src_color & 0x000000ff;
-            //opencv use BGR to Gray
+            // OpenCV 按 BGR 顺序转换为灰度。
             src_color = (uint) (red * 0.114 + green * 0.587 + blue * 0.299);
             //src_color = (uint) (red * 0.299 + green * 0.587 + blue * 0.114);
             if (src_color <= 120) {

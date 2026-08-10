@@ -69,16 +69,6 @@ private fun Button.setTagLayout(text: String) {
     this.setTextColor(Color.WHITE)
 }
 
-fun getFlowLayout(context: Context): FlowLayout {
-    val flowLayout = FlowLayout(context)
-    flowLayout.childSpacingForLastRow = FlowLayout.SPACING_ALIGN
-    val layoutParams = LinearLayout.LayoutParams(
-        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
-    )
-    flowLayout.layoutParams = layoutParams
-    return flowLayout
-}
-
 fun getFlowRadioGroup(context: Context): FlowRadioGroup {
     val flowRadioGroup = FlowRadioGroup(context).apply {
         layoutParams = LinearLayout.LayoutParams(
@@ -134,27 +124,6 @@ fun tagButton(context: Context, text: String): Button {
     return button
 }
 
-
-fun getCustomRadioGroup(context: Context): CustomRadioGroup {
-    val customRadioGroup = CustomRadioGroup(context).apply {
-        layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        // 设置可聚焦
-        isFocusable = true
-        // 设置内边距
-        setPadding(
-            dpToPx(16), // 左
-            dpToPx(16), // 上
-            dpToPx(16), // 右
-            dpToPx(16)  // 下
-        )
-    }
-    return customRadioGroup
-}
-
-
 fun profImageButton(
     context: Context,
     drawableResId: Int,
@@ -176,62 +145,4 @@ fun profImageButton(
         scaleType = ImageView.ScaleType.FIT_XY
         setImageResource(drawableResId)
     }
-}
-
-
-fun bgImageButton(
-    context: Context,
-    drawableResId: Int,
-    layoutWidth: Int = dpToPx(84),
-    layoutHeight: Int = dpToPx(112)
-): ImageButton {
-    return ImageButton(context).apply {
-        // 设置尺寸
-        layoutParams = FrameLayout.LayoutParams(layoutWidth, layoutHeight).apply {
-            // 转换dp为px
-            val margin = dpToPx(8)
-            // 设置margin方法1：统一设置
-            setMargins(margin, margin, margin, margin)
-        }
-        // 设置图片缩放方式
-        scaleType = ImageView.ScaleType.CENTER_CROP
-        cropToPadding = true
-
-        // 设置内边距
-        val padding = dpToPx(4)
-        setPadding(padding, padding, padding, padding)
-
-        background = ContextCompat.getDrawable(context, R.drawable.widget_background_option)
-        // 设置图片资源
-        setImageResource(drawableResId)
-        tag = drawableResId
-    }
-}
-
-fun getRadioButton(context: Context): RadioButton {
-    return RadioButton(context).apply {
-        layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        // 设置 margin（需要转换为 MarginLayoutParams）
-        val margin = (dpToPx(5))
-        (layoutParams as? ViewGroup.MarginLayoutParams)?.setMargins(margin, margin, margin, margin)
-    }
-}
-
-
-fun getChip(context: Context, text: String, theme: Int = R.style.Theme_ChipOverlayRare3): Chip {
-    val themedContext = ContextThemeWrapper(context, theme)
-    val dynamicChip =
-        Chip(themedContext, null, com.google.android.material.R.attr.chipStyle).apply {
-            this.text = text
-            id = View.generateViewId()
-        }
-    val layoutParams = LinearLayout.LayoutParams(
-        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
-    )
-    layoutParams.setMargins(dpToPx(context, 5F).toInt(), 0, 0, 0)
-    dynamicChip.layoutParams = layoutParams
-    return dynamicChip
 }

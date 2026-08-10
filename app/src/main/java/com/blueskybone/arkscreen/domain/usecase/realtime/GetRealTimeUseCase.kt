@@ -18,7 +18,7 @@ class GetRealTimeUseCase(
         val data = result.getOrNull() ?: return Result.failure(
             result.exceptionOrNull() ?: IllegalStateException("实时数据为空")
         )
-        // Cache updates remain part of this refresh so widgets observe the same snapshot.
+        // 缓存必须和本次刷新一并更新，确保首页与桌面组件读取的是同一份快照。
         repo.setRealTimeCache(account, data)
         return result
     }

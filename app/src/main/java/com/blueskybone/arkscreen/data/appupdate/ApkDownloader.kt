@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import timber.log.Timber
 import java.io.File
 
 class ApkDownloader(
@@ -29,14 +30,26 @@ class ApkDownloader(
         fileName: String,
     ): Flow<DownloadStatus> {
         val pendingId = state.getLong(KEY_DOWNLOAD_ID, NO_DOWNLOAD)
-        if (pendingId != NO_DOWNLOAD) return observe(pendingId)
+        if (pendingId != NO_DOWNLOAD) {
+            Timber.tag(LOG_TAG).i("Reuse APK download: id=%d", pendingId)
+            return observe(pendingId)
+        }
 
         return flow {
             val uri = Uri.parse(url)
             require(uri.scheme == "https") { "更新地址必须使用 HTTPS" }
+            Timber.tag(LOG_TAG).i(
+                "Prepare APK download: source=%s%s expectedVersionCode=%d file=%s",
+                uri.host,
+                uri.path.orEmpty(),
+                expectedVersionCode,
+                fileName,
+            )
 
             val targetFile = targetFile(fileName)
-            targetFile.delete()
+            if (targetFile.exists() && !targetFile.delete()) {
+                Timber.tag(LOG_TAG).w("Unable to delete stale APK: %s", targetFile.absolutePath)
+            }
             val request = DownloadManager.Request(uri)
                 .setTitle(context.getString(R.string.app_update_download_title))
                 .setDescription(context.getString(R.string.app_update_download_description))
@@ -49,6 +62,7 @@ class ApkDownloader(
                 .setAllowedOverRoaming(false)
 
             val id = downloadManager.enqueue(request)
+            Timber.tag(LOG_TAG).i("APK download enqueued: id=%d", id)
             state.edit()
                 .putLong(KEY_DOWNLOAD_ID, id)
                 .putLong(KEY_EXPECTED_VERSION, expectedVersionCode)
@@ -60,6 +74,7 @@ class ApkDownloader(
 
     fun resume(): Flow<DownloadStatus>? {
         val id = state.getLong(KEY_DOWNLOAD_ID, NO_DOWNLOAD)
+        if (id != NO_DOWNLOAD) Timber.tag(LOG_TAG).i("Resume APK download: id=%d", id)
         return id.takeIf { it != NO_DOWNLOAD }?.let(::observe)
     }
 
@@ -72,7 +87,9 @@ class ApkDownloader(
         id: Long,
     ) {
         emit(DownloadStatus.Started)
+        Timber.tag(LOG_TAG).i("Observe APK download: id=%d", id)
         var lastPercent = -1
+        var lastLoggedProgressBucket = -1
         while (true) {
             val snapshot = query(id) ?: error("系统下载任务不存在")
             when (snapshot.status) {
@@ -93,15 +110,33 @@ class ApkDownloader(
                             )
                         )
                     }
+                    val progressBucket = percent / 10
+                    if (progressBucket != lastLoggedProgressBucket) {
+                        lastLoggedProgressBucket = progressBucket
+                        Timber.tag(LOG_TAG).i(
+                            "APK download progress: id=%d percent=%d bytes=%d/%d",
+                            id,
+                            percent,
+                            snapshot.downloadedBytes,
+                            snapshot.totalBytes,
+                        )
+                    }
                     delay(QUERY_INTERVAL_MS)
                 }
 
                 DownloadManager.STATUS_SUCCESSFUL -> {
                     val file = targetFile(state.getString(KEY_FILE_NAME, DEFAULT_FILE_NAME)!!)
+                    Timber.tag(LOG_TAG).i(
+                        "APK download completed, validating: id=%d file=%s size=%d",
+                        id,
+                        file.absolutePath,
+                        file.length(),
+                    )
                     validator.validate(
                         file = file,
                         expectedVersionCode = state.getLong(KEY_EXPECTED_VERSION, Long.MAX_VALUE),
                     )
+                    Timber.tag(LOG_TAG).i("APK validation succeeded: id=%d", id)
                     clearState()
                     emit(DownloadStatus.Success(file.absolutePath))
                     return
@@ -136,6 +171,7 @@ class ApkDownloader(
         error: Throwable,
     ) {
         if (error is CancellationException) throw error
+        Timber.tag(LOG_TAG).e(error, "APK download failed")
         clearState()
         emit(DownloadStatus.Failed(error))
     }
@@ -168,5 +204,6 @@ class ApkDownloader(
         const val APK_DIRECTORY = "apk"
         const val DEFAULT_FILE_NAME = "ArkScreen.apk"
         const val APK_MIME_TYPE = "application/vnd.android.package-archive"
+        const val LOG_TAG = "AppUpdate"
     }
 }

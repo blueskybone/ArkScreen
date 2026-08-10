@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.ui.widget
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
@@ -8,13 +9,22 @@ import android.view.View
 import android.widget.RemoteViews
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.data.local.pref.WidgetTemplatePrefManager
+import com.blueskybone.arkscreen.domain.repository.AccountRepository
 import com.blueskybone.arkscreen.ui.widget.model.WidgetInfoItem
 import com.blueskybone.arkscreen.ui.widget.model.WidgetInfoState
 import com.blueskybone.arkscreen.ui.widget.model.WidgetInfoType
 import com.blueskybone.arkscreen.ui.widget.model.WidgetBackgroundSize
+import com.hjq.toast.Toaster
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent
 
-/** Experimental 2x3 widget with fixed full-information and selectable compact layouts. */
+/** 支持固定全信息布局和可选紧凑布局的 2x3 桌面组件。 */
 class WidgetNext4 : BaseNextWidgetProvider() {
+    private val accountRepository: AccountRepository by KoinJavaComponent.getKoin().inject()
     override val pendingIntentOffset = 40_000
     override val defaultTypes: List<WidgetInfoType>
         get() = if (usesFullLayout()) FULL_DEFAULTS else FOUR_DEFAULTS
@@ -171,8 +181,8 @@ class WidgetNext4 : BaseNextWidgetProvider() {
     }
 
     private fun startGameIntent(context: Context, appWidgetId: Int): PendingIntent {
-        val intent = Intent(context, Widget4::class.java).apply {
-            action = Widget4.START_GAME
+        val intent = Intent(context, WidgetNext4::class.java).apply {
+            action = START_GAME
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
         }
         return PendingIntent.getBroadcast(
@@ -186,7 +196,40 @@ class WidgetNext4 : BaseNextWidgetProvider() {
     private fun usesFullLayout(): Boolean =
         templatePrefs.layout2x3.get() == WidgetTemplatePrefManager.LAYOUT_FULL
 
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
+        if (intent.action != START_GAME) return
+        val appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
+        if (appWidgetId == -1) return
+        val pendingResult = goAsync()
+        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+            try {
+                val account = accountRepository.observeCurrentSkAcc().first()
+                val packageName = if (account?.official != false) {
+                    "com.hypergryph.arknights"
+                } else {
+                    "com.hypergryph.arknights.bilibili"
+                }
+                openGame(context, packageName)
+            } finally {
+                pendingResult.finish()
+            }
+        }
+    }
+
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun openGame(context: Context, packageName: String) {
+        val launchIntent = context.packageManager.getLaunchIntentForPackage(packageName)
+        if (launchIntent == null) {
+            Toaster.show(context.getString(R.string.game_not_found))
+            return
+        }
+        launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(launchIntent)
+    }
+
     private companion object {
+        const val START_GAME = "com.blueskybone.arkscreen.START_GAME"
         const val START_GAME_REQUEST_CODE_OFFSET = 50_000
         val FOUR_DEFAULTS = listOf(
             WidgetInfoType.SANITY,

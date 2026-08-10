@@ -21,26 +21,26 @@ val useCaseModule = module {
     factory { DownloadAppUpdateUseCase(get()) }
     factory { StartAppUpdateDownloadUseCase(get()) }
 
-    // Account
+    // 账号
     factory { LoadCookieUseCase(get()) }
     factory { SyncAccountGcUseCase(get()) }
     factory { SyncAccountSkUseCase(get()) }
 
-    // Attendance
+    // 签到
     factory { GetAttdResultUseCase(get()) }
     factory { RunAttendanceUseCase(get(), get()) }
 
-    // Gacha
+    // 寻访
     factory { SyncRecordsUseCase(get()) }
 
-    // Operator
+    // 干员
     factory { GetCharAssetsUseCase(get()) }
     factory { GetCharMissUseCase(get()) }
     factory { BuildOperatorPosterUseCase() }
 
-    // RealTime
+    // 实时数据
     factory { GetRealTimeUseCase(get()) }
 
-    // Recruit
+    // 公招
     factory { CalcResultUseCase(get()) }
 }

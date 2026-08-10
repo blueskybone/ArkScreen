@@ -1,6 +1,6 @@
 package com.blueskybone.arkscreen.ui
 
-/** Stable screen or action status. Transient messages belong in UI events. */
+/** 页面或操作的持久状态；一次性提示应通过 UI 事件传递。 */
 sealed interface UiStatus {
     data object Idle : UiStatus
     data class Loading(val message: String? = null) : UiStatus

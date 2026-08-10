@@ -7,13 +7,11 @@ import android.widget.TextView
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.data.local.pref.preference.Preference
 import com.blueskybone.arkscreen.databinding.PreferenceBinding
-import com.blueskybone.arkscreen.databinding.PreferenceSeekbarBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSubSwitchBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSubValueBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSwitchBinding
 import com.blueskybone.arkscreen.databinding.PreferenceValueBinding
 import com.blueskybone.arkscreen.ui.common.bindinginfo.ListInfo
-import com.blueskybone.arkscreen.ui.common.bindinginfo.SeekBarInfo
 import com.blueskybone.arkscreen.ui.common.bindinginfo.TextInfo
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -28,14 +26,6 @@ object PreferenceBinder {
         pref: Preference<Boolean>
     ) {
         binding.setUp(icon, text, pref)
-    }
-
-    fun bindSeekbar(
-        binding: PreferenceSeekbarBinding,
-        seekBarInfo: SeekBarInfo,
-        pref: Preference<Int>
-    ) {
-        binding.setUp(seekBarInfo, pref)
     }
 
     fun bindSubValue(
@@ -192,23 +182,6 @@ object PreferenceBinder {
         Switch.isChecked = pref.get()
         Switch.setOnCheckedChangeListener { _, isChecked ->
             pref.set(isChecked)
-        }
-    }
-
-    private fun PreferenceSeekbarBinding.setUp(
-        seekBarInfo: SeekBarInfo,
-        pref: Preference<Int>
-    ) {
-        Title.setText(seekBarInfo.title)
-
-        Slider.clearOnChangeListeners()
-        Slider.valueFrom = seekBarInfo.min.toFloat()
-        Slider.valueTo = seekBarInfo.max.toFloat()
-        Slider.stepSize = seekBarInfo.step.toFloat()
-        Slider.value = pref.get().toFloat()
-
-        Slider.addOnChangeListener { _, value, _ ->
-            pref.set(value.toInt())
         }
     }
 

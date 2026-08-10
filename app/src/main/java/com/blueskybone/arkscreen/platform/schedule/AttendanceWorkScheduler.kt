@@ -41,7 +41,7 @@ object AttendanceWorkScheduler {
         )
     }
 
-    /** Checks again later when the configured alarm was missed or the device was offline. */
+    /** 配置的闹钟错过或设备离线时，在稍后再次检查签到任务。 */
     fun ensureRecovery(context: Context) {
         val request = PeriodicWorkRequestBuilder<AttendanceRecoveryWorker>(
             RECOVERY_INTERVAL_HOURS,

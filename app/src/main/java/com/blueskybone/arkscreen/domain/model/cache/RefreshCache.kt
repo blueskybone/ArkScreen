@@ -4,7 +4,7 @@ package com.blueskybone.arkscreen.domain.model.cache
  *   Created by blueskybone
  *   Date: 2025/9/17
  */
-//if completeTime == -1, count == count, else check if now > completeTime true + 1
+// completeTime 为 -1 时保持当前计数；否则在当前时间超过完成时间后将计数加一。
 data class RefreshCache(
     val lastSyncTs: Long,
     val max: Int = 3,

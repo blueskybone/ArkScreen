@@ -33,7 +33,7 @@ class WidgetRefreshWorker(context: Context, params: WorkerParameters) : Coroutin
         } catch (error: CancellationException) {
             throw error
         } catch (error: Exception) {
-            // Rendering cached values must not depend on network availability.
+            // 缓存内容的渲染不能依赖当前网络是否可用。
             Timber.w(error, "Widget 实时数据同步失败，继续使用本地缓存")
         } finally {
             innerPrefs.lastWidgetRefreshTs.set(TimeUtils.getCurrentTs(appClock))

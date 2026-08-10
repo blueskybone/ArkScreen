@@ -15,29 +15,29 @@ fun Throwable.toAppError(): AppError {
     return when {
         causes.any { it is SocketTimeoutException } -> AppError.Timeout
 
+        causes.any { it is HttpStatusException } -> {
+            val httpError = causes.filterIsInstance<HttpStatusException>().first()
+            mapHttpStatus(httpError.statusCode, httpError.message)
+        }
+
+        causes.any { it is HttpException } -> {
+            val httpError = causes.filterIsInstance<HttpException>().first()
+            mapHttpStatus(httpError.code(), httpError.message())
+        }
+
         causes.any {
             it is UnknownHostException ||
                 it is ConnectException ||
                 it is IOException
         } -> AppError.NetworkUnavailable
 
-        causes.any { it is HttpException } -> {
-            val httpError = causes.filterIsInstance<HttpException>().first()
-            when (val code = httpError.code()) {
-                401, 403 -> AppError.AuthExpired
-                in 500..599 -> AppError.Server(
-                    code = code,
-                    msg = "服务器异常，请稍后再试",
-                )
-
-                else -> AppError.Server(
-                    code = code,
-                    msg = httpError.message(),
-                )
-            }
-        }
-
         causes.any { it is JsonProcessingException } -> AppError.DataParse
         else -> AppError.Unknown(this)
     }
+}
+
+private fun mapHttpStatus(code: Int, message: String?): AppError = when (code) {
+    401, 403 -> AppError.AuthExpired
+    in 500..599 -> AppError.Server(code, "服务器异常，请稍后再试")
+    else -> AppError.Server(code, message ?: "HTTP $code")
 }

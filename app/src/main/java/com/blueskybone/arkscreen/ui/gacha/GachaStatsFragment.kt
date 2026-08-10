@@ -182,62 +182,6 @@ class GachaStatsFragment : Fragment() {
     private fun formatAverage(total: Int, count: Int): String =
         if (count == 0) "-" else getString(R.string.gacha_stat_average, total / count)
 
-    private fun setupSimpleBarChart() {
-
-        val barChart = binding.BarChart
-        // 数据
-        val entries = listOf(
-            BarEntry(0f, 120f),
-            BarEntry(1f, 85f),
-            BarEntry(2f, 150f),
-            BarEntry(3f, 65f),
-            BarEntry(4f, 180f)
-        )
-
-        val labels = arrayOf("2025.05", "2025.06", "2025.07", "2025.08", "2025.09")
-
-        val dataSet = BarDataSet(entries, "寻访次数")
-        val themeColor = requireContext().getColor(R.color.rare_3)
-        dataSet.color = themeColor
-        dataSet.valueTextSize = 12f
-
-
-        val barData = BarData(dataSet)
-        barData.barWidth = 0.4f
-
-        barChart.apply {
-            data = barData
-            description.isEnabled = false
-            xAxis.valueFormatter = IndexAxisValueFormatter(labels)
-            axisRight.isEnabled = false
-            animateY(1000)
-
-
-            // X轴配置（横向柱状图中X轴在左侧）
-            xAxis.apply {
-                position = XAxis.XAxisPosition.BOTTOM // 标签显示在底部
-                valueFormatter = IndexAxisValueFormatter(labels) // 设置标签
-                granularity = 1f
-                setDrawGridLines(false)
-                textSize = 12f
-            }
-
-            // 左侧Y轴配置
-            axisLeft.apply {
-                setDrawGridLines(true)
-                granularity = 50f // 最小间隔50
-                axisMinimum = 0f // 从0开始
-                textSize = 12f
-            }
-
-            // 右侧Y轴配置
-            axisRight.isEnabled = false // 禁用右侧Y轴
-
-            invalidate()
-
-        }
-    }
-
     override fun onDestroyView() {
         binding.PieChart.clear()
         binding.BarChart.clear()

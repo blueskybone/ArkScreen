@@ -42,55 +42,6 @@
 
 
         <receiver
-            android:name=".ui.widget.Widget1"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_1_info" />
-        </receiver>
-
-        <receiver
-            android:name=".ui.widget.Widget2"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_2_info" />
-        </receiver>
-
-
-        <receiver
-            android:name=".ui.widget.Widget3"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_3_info" />
-        </receiver>
-
-        <receiver
-            android:name=".ui.widget.Widget4"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.blueskybone.arkscreen.START_GAME" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_4_info" />
-        </receiver>
-
-        <receiver
             android:name=".platform.schedule.AttendanceAlarmReceiver"
             android:exported="false">
             <intent-filter>
@@ -145,6 +96,7 @@
               android:exported="false">
               <intent-filter>
                   <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                  <action android:name="com.blueskybone.arkscreen.START_GAME" />
               </intent-filter>
               <meta-data
                   android:name="android.appwidget.provider"
@@ -210,14 +162,9 @@
             android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".ui.widget.WidgetThemeActivity"
-            android:exported="false"
-            android:parentActivityName=".ui.main.MainActivity"
-            android:windowSoftInputMode="adjustNothing" />
-        <activity
             android:name=".ui.widget.WidgetTemplateLabActivity"
             android:exported="false"
-            android:parentActivityName=".ui.widget.WidgetThemeActivity" />
+            android:parentActivityName=".ui.main.MainActivity" />
 
         <activity android:name=".ui.common.WebViewActivity" />
 

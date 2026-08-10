@@ -31,6 +31,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
+import timber.log.Timber
 
 /**
  * Created by blueskybone
@@ -170,6 +171,7 @@ class GachaModel(
                     }
                 },
                 onFailure = { error ->
+                    Timber.tag("Gacha").e(error, "Gacha record synchronization failed")
                     val message = userFacingError(error.message ?: "同步寻访记录失败")
                     _uiState.update {
                         it.copy(
@@ -217,6 +219,7 @@ class GachaModel(
                     }
                 },
                 onFailure = { error ->
+                    Timber.tag("Gacha").e(error, "Gacha account reauthentication failed")
                     val message = userFacingError(error.message ?: "重新登录失败")
                     _uiState.update { it.copy(isSyncing = false) }
                     _event.send(GachaEvent.ShowError(message))
@@ -321,6 +324,7 @@ class GachaModel(
                     )
                 },
                 onFailure = { error ->
+                    Timber.tag("Gacha").e(error, "Gacha record import failed")
                     _uiState.update { it.copy(isSyncing = false) }
                     _event.send(GachaEvent.ShowError(error.message ?: "导入寻访记录失败"))
                 },
@@ -379,6 +383,7 @@ class GachaModel(
                 block()
             } catch (_: CancellationException) {
             } catch (error: Exception) {
+                Timber.tag("Gacha").e(error, "Gacha operation failed")
                 reportError(error.message ?: "操作失败")
             }
         }

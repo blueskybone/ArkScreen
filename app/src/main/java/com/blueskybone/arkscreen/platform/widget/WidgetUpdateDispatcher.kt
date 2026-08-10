@@ -4,16 +4,12 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import com.blueskybone.arkscreen.ui.widget.Widget1
-import com.blueskybone.arkscreen.ui.widget.Widget2
-import com.blueskybone.arkscreen.ui.widget.Widget3
-import com.blueskybone.arkscreen.ui.widget.Widget4
 import com.blueskybone.arkscreen.ui.widget.WidgetNext1
 import com.blueskybone.arkscreen.ui.widget.WidgetNext2
 import com.blueskybone.arkscreen.ui.widget.WidgetNext3
 import com.blueskybone.arkscreen.ui.widget.WidgetNext4
 
-/** Redraws every installed widget from the latest local cache. */
+/** 使用最新本地缓存重绘所有已安装的桌面组件。 */
 class WidgetUpdateDispatcher(context: Context) {
     private val appContext = context.applicationContext
 
@@ -41,10 +37,6 @@ class WidgetUpdateDispatcher(context: Context) {
 
     companion object {
         val PROVIDERS = listOf(
-            Widget1::class.java,
-            Widget2::class.java,
-            Widget3::class.java,
-            Widget4::class.java,
             WidgetNext1::class.java,
             WidgetNext2::class.java,
             WidgetNext3::class.java,

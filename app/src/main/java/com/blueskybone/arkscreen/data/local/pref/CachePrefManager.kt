@@ -19,7 +19,7 @@ import timber.log.Timber
  */
 
 /*专门用于游戏数据缓存的preference*/
-/** Short-lived API snapshots used by home cards and widgets. */
+/** 首页卡片和桌面组件共用的短期接口快照。 */
 class CachePrefManager() {
     constructor(preferenceStore: PreferenceStore) : this() {
         apCache = preferenceStore.getObject(

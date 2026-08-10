@@ -1,19 +1,14 @@
 package com.blueskybone.arkscreen.data.local.pref
 
-import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.data.local.pref.preference.Preference
 import com.blueskybone.arkscreen.data.local.pref.preference.PreferenceStore
 import com.blueskybone.arkscreen.ui.common.bindinginfo.AppTheme
 import com.blueskybone.arkscreen.ui.common.bindinginfo.FloatWindowAppearance
 import com.blueskybone.arkscreen.ui.common.bindinginfo.RecruitMode
 import com.blueskybone.arkscreen.ui.common.bindinginfo.ScDelay
-import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetAlpha
-import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetContent
-import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetSize
-import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetTextColor
 import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetUpdateFreq
 
-/** User-visible settings. Runtime state and cached responses do not belong here. */
+/** 用户可见的设置；运行状态和接口缓存不应存放在这里。 */
 class SettingPrefManager() {
     constructor(preferenceStore: PreferenceStore) : this() {
         recruitMode = preferenceStore.getString(RecruitMode.key, RecruitMode.FLOATWINDOW)
@@ -37,55 +32,10 @@ class SettingPrefManager() {
         showEmptyGachaPools = preferenceStore.getBoolean("show_empty_gacha_pools", true)
 
 
-        widgetAlpha = preferenceStore.getInt(WidgetAlpha.key, WidgetAlpha.defaultValue)
         widgetUpdateFreq = preferenceStore.getString(
             WidgetUpdateFreq.key,
             WidgetUpdateFreq.defaultValue
         )  //更新频率：15min 30min 1h
-
-        widgetTextColor =
-            preferenceStore.getString(WidgetTextColor.key, WidgetTextColor.defaultValue)
-        widgetBg = preferenceStore.getInt("widget_bg", R.drawable.widget_bg_black)
-        // Widget 1 初始化
-        widget1Size = preferenceStore.getString(WidgetSize.key + "_1", WidgetSize.defaultValue)
-        widget1Content = preferenceStore.getString(
-            WidgetContent.key + "_1",
-            WidgetContent.defaultValue
-        )
-        // Widget 2 初始化
-        widget2Size = preferenceStore.getString(WidgetSize.key + "_2", WidgetSize.defaultValue)
-        widget2Content = preferenceStore.getString(
-            WidgetContent.key + "_2",
-            WidgetContent.defaultValue
-        )
-        // Widget 3 初始化
-        widget3Size = preferenceStore.getString(WidgetSize.key + "_3", WidgetSize.defaultValue)
-        widget3Content1 = preferenceStore.getString(
-            WidgetContent.key + "_3_1",
-            WidgetContent.defaultValue
-        )
-        widget3Content2 = preferenceStore.getString(
-            WidgetContent.key + "_3_2",
-            WidgetContent.defaultValue2
-        )
-        // Widget 4 初始化
-        widget4Size = preferenceStore.getString(WidgetSize.key + "_4", WidgetSize.defaultValue)
-        widget4ShowRecruit = preferenceStore.getBoolean(
-            "widget_4_show_recruit",
-            true // 默认显示
-        )
-        widget4ShowDatabase = preferenceStore.getBoolean(
-            "widget_4_show_db",
-            true // 默认显示
-        )
-        widget4ShowTrain = preferenceStore.getBoolean(
-            "widget_4_show_train",
-            true // 默认显示
-        )
-        widget4ShowStarter = preferenceStore.getBoolean(
-            "widget_4_show_starter",
-            true
-        )
     }
 
 
@@ -115,32 +65,6 @@ class SettingPrefManager() {
     lateinit var assetsViewType: Preference<Int>        //干员资产列表展示模式
     lateinit var showEmptyGachaPools: Preference<Boolean>
 
-    /*
-    * 桌面组件相关设置
-    * 遵守高度定制化的方案，对每一个widget单独做一套配置
-    * 目前有4个widget
-    * */
-    lateinit var widgetAlpha: Preference<Int>
-    lateinit var widgetUpdateFreq: Preference<String>  //更新频率：15min 30min 1h  (目前该选项未启用)
-
-    //统一配置：文字颜色，背景不透明度，背景图片，
-    //单独配置：文字大小，显示内容。
-    lateinit var widgetTextColor: Preference<String>
-    lateinit var widgetBg: Preference<Int>
-    lateinit var widget1Size: Preference<String>
-    lateinit var widget1Content: Preference<String>   //4选一
-
-    lateinit var widget2Size: Preference<String>
-    lateinit var widget2Content: Preference<String>   //4选一
-
-    lateinit var widget3Size: Preference<String>
-    lateinit var widget3Content1: Preference<String>
-    lateinit var widget3Content2: Preference<String>
-
-    lateinit var widget4Size: Preference<String>
-    lateinit var widget4ShowRecruit: Preference<Boolean>
-    lateinit var widget4ShowDatabase: Preference<Boolean>
-    lateinit var widget4ShowTrain: Preference<Boolean>
-    lateinit var widget4ShowStarter: Preference<Boolean>
+    lateinit var widgetUpdateFreq: Preference<String>  // 更新频率：15 分钟、30 分钟或 1 小时
 
 }

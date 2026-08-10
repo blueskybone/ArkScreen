@@ -4,10 +4,9 @@ import androidx.annotation.DrawableRes
 import com.blueskybone.arkscreen.R
 
 /**
- * Stable identity used by content selection, persistence and template slot rules.
+ * 用于内容选择、持久化和模板槽位规则的稳定标识。
  *
- * A type does not describe the current API status. For example, training remains
- * [TRAINING] whether it is idle, running or completed.
+ * 类型不描述当前接口状态。例如训练室无论空闲、进行中还是已完成，都保持为 [TRAINING]。
  */
 enum class WidgetInfoType(
     val defaultIcon: WidgetInfoIcon,
@@ -22,10 +21,9 @@ enum class WidgetInfoType(
 }
 
 /**
- * Semantic presentation state after raw game data has been interpreted.
+ * 原始游戏数据解释完成后的语义化展示状态。
  *
- * Styles map this state to color and emphasis. Raw Skland status codes must be
- * converted before reaching this model.
+ * 样式层根据该状态决定颜色和强调方式；森空岛原始状态码必须先转换再进入本模型。
  */
 enum class WidgetInfoState {
     NORMAL,
@@ -42,10 +40,9 @@ data class WidgetInfoIcon(
 )
 
 /**
- * Display-ready widget information shared by previews and RemoteViews renderers.
+ * 预览和 RemoteViews 渲染器共用的、可直接展示的桌面组件信息。
  *
- * [value] and [restTime] are nullable because some types, such as meeting,
- * may only have a meaningful remaining time.
+ * [value] 和 [restTime] 可空，因为会客室等类型可能只有剩余时间具备展示意义。
  */
 data class WidgetInfoItem(
     val type: WidgetInfoType,
@@ -56,7 +53,7 @@ data class WidgetInfoItem(
     val icon: WidgetInfoIcon = type.defaultIcon,
 )
 
-/** Two-line projection used by the space-constrained 1x1 template. */
+/** 空间受限的 1x1 模板使用的两行投影数据。 */
 data class WidgetCompactItem(
     val type: WidgetInfoType,
     val primary: String,

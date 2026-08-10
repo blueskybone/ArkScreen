@@ -9,6 +9,7 @@ import coil.disk.DiskCache
 import coil.request.CachePolicy
 import coil.util.DebugLogger
 import com.blueskybone.arkscreen.core.logger.FileLoggingTree
+import com.blueskybone.arkscreen.core.logger.CrashLogger
 import com.blueskybone.arkscreen.data.network.equipCachePath
 import com.blueskybone.arkscreen.data.network.skillCachePath
 import com.blueskybone.arkscreen.data.network.skinCachePath
@@ -80,18 +81,27 @@ class App : Application() {
                 recruitScreenshotModule,
             )
         }
-        // Set the saved mode before the first activity is created.
+        // 必须在首个 Activity 创建前恢复主题，否则启动页会先使用错误主题再重建。
         koinApplication.koin.get<AppThemeController>().applySavedTheme()
         val screenDensityDpi = getDensityDpi(this)
         setScreenDpi(screenDensityDpi)
 
-        //Initialize Logger
+        // 初始化日志系统
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
-        Timber.plant(
-            FileLoggingTree(
-                context = this,
-                minimumPriority = if (BuildConfig.DEBUG) Log.DEBUG else Log.WARN,
-            )
+        val fileLoggingTree = FileLoggingTree(
+            context = this,
+            minimumPriority = if (BuildConfig.DEBUG) Log.DEBUG else Log.WARN,
+        )
+        Timber.plant(fileLoggingTree)
+        CrashLogger.install(fileLoggingTree)
+        Timber.tag("AppStartup").i(
+            "App started: version=%s versionCode=%d sdk=%d device=%s/%s debug=%s",
+            BuildConfig.VERSION_NAME,
+            BuildConfig.VERSION_CODE,
+            Build.VERSION.SDK_INT,
+            Build.MANUFACTURER,
+            Build.MODEL,
+            BuildConfig.DEBUG,
         )
 
         createFolder(skinCachePath)

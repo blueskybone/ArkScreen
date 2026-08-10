@@ -33,18 +33,49 @@ class RecruitResultTest {
     }
 
     @Test
+    fun `one star does not lower four star guarantee`() {
+        val result = RecruitResult(
+            operators = listOf(operator("four", 4), operator("robot", 1))
+        )
+
+        assertEquals(4, result.rare)
+    }
+
+    @Test
+    fun `one star does not lower five star guarantee`() {
+        val result = RecruitResult(
+            operators = listOf(operator("five", 5), operator("robot", 1))
+        )
+
+        assertEquals(5, result.rare)
+    }
+
+    @Test
+    fun `pure robot result has one star guarantee`() {
+        assertEquals(1, RecruitResult(operators = listOf(operator("robot", 1))).rare)
+    }
+
+    @Test
     fun `rare is zero only when operator list is empty`() {
         assertEquals(0, RecruitResult().rare)
     }
 
     @Test
-    fun `one star result ranks ahead of four star result`() {
-        val robot = RecruitResult(operators = listOf(operator("robot", 1)))
-        val fourStar = RecruitResult(operators = listOf(operator("four", 4)))
-        val threeStar = RecruitResult(operators = listOf(operator("three", 3)))
+    fun `display ranking keeps robot between four and three stars`() {
+        val orderedRarities = listOf(2, 3, 1, 4, 5, 6)
+            .map { rarity -> RecruitResult(operators = listOf(operator("ope", rarity))) }
+            .sortedByDescending(RecruitResult::rankingScore)
+            .map(RecruitResult::rare)
 
-        assertEquals(true, robot.rankingScore > fourStar.rankingScore)
-        assertEquals(true, fourStar.rankingScore > threeStar.rankingScore)
+        assertEquals(listOf(6, 5, 4, 1, 3, 2), orderedRarities)
+    }
+
+    @Test
+    fun `unknown rarity has lowest guarantee and display rank`() {
+        val result = RecruitResult(operators = listOf(operator("unknown", 0)))
+
+        assertEquals(0, result.rare)
+        assertEquals(0, result.rankingScore)
     }
 
     private fun operator(name: String, rarity: Int) = RecruitOpe(

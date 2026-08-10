@@ -107,8 +107,8 @@ class Home : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // RealTimeActivity refreshes the persisted snapshot. Reload it whenever Home becomes
-        // visible again so the card reflects the latest successful realtime request.
+        // 实时数据页会更新持久化快照；首页每次重新可见时都应读取一次，
+        // 这样卡片能展示最近一次成功请求的数据。
         viewModel.loadApCache()
     }
 
@@ -259,17 +259,7 @@ class Home : Fragment() {
 
         binding.CurrentAccount.setOnClickListener { view ->
             if (!viewModel.hasSklandAccounts()) {
-                MenuDialog(requireContext())
-                    .add(getString(R.string.import_cookie)) {
-                        dialogController.showCookieLoginDialog()
-                    }
-                    .add(R.string.web_login) {
-                        dialogController.launchWebLogin()
-                    }
-                    .add(R.string.password_login) {
-                        dialogController.showPasswordLoginDialog()
-                    }
-                    .show()
+                showSklandLoginMenu()
             } else {
                 dialogController.showAccountPopup(view)
 
@@ -277,7 +267,7 @@ class Home : Fragment() {
         }
 
         binding.LoginNow.setOnClickListener {
-            dialogController.launchWebLogin()
+            showSklandLoginMenu()
         }
 
         binding.RecruitCalc.setup(RecruitCal)
@@ -353,6 +343,20 @@ class Home : Fragment() {
         }
 
         binding.ExLinks.adapter = linkAdapter
+    }
+
+    private fun showSklandLoginMenu() {
+        MenuDialog(requireContext())
+            .add(getString(R.string.import_cookie)) {
+                dialogController.showCookieLoginDialog()
+            }
+            .add(R.string.web_login) {
+                dialogController.launchWebLogin()
+            }
+            .add(R.string.password_login) {
+                dialogController.showPasswordLoginDialog()
+            }
+            .show()
     }
 
     private fun startManualAttendance() {

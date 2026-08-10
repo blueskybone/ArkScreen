@@ -9,7 +9,7 @@ import com.blueskybone.arkscreen.data.local.pref.preference.PreferenceStore
  * Date: 2026/3/20
  */
 /*内部使用的preference，用户不可见*/
-/** Internal persistent state that is not directly configurable by the user. */
+/** 不直接向用户开放配置的内部持久化状态。 */
 class InnerPrefManager() {
     constructor(preferenceStore: PreferenceStore) : this() {
         warnOverlayPermission = preferenceStore.getBoolean("warn_overlay_permission", true)

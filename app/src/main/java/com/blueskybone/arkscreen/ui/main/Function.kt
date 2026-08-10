@@ -37,11 +37,11 @@ import com.blueskybone.arkscreen.ui.common.bindinginfo.SetAtdTime
 import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetUpdateFreq
 import com.blueskybone.arkscreen.ui.common.view.PreferenceDialog
 import com.blueskybone.arkscreen.ui.main.common.PreferenceBinder
-import com.blueskybone.arkscreen.ui.widget.WidgetThemeActivity
-import com.blueskybone.arkscreen.ui.widget.Widget1
-import com.blueskybone.arkscreen.ui.widget.Widget2
-import com.blueskybone.arkscreen.ui.widget.Widget3
-import com.blueskybone.arkscreen.ui.widget.Widget4
+import com.blueskybone.arkscreen.ui.widget.WidgetTemplateLabActivity
+import com.blueskybone.arkscreen.ui.widget.WidgetNext1
+import com.blueskybone.arkscreen.ui.widget.WidgetNext2
+import com.blueskybone.arkscreen.ui.widget.WidgetNext3
+import com.blueskybone.arkscreen.ui.widget.WidgetNext4
 import com.blueskybone.arkscreen.ui.widget.WidgetWorkScheduler
 import com.blueskybone.arkscreen.platform.time.TimeUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -125,7 +125,7 @@ class Function : Fragment() {
             Icon.setImageResource(R.drawable.ic_widget_appearance)
         }
         binding.WidgetAppearance.Layout.setOnClickListener {
-            startActivity(Intent(requireContext(), WidgetThemeActivity::class.java))
+            startActivity(Intent(requireContext(), WidgetTemplateLabActivity::class.java))
         }
 
         PreferenceBinder.bindPreference(
@@ -385,7 +385,12 @@ class Function : Fragment() {
 
     private fun hasInstalledWidget(): Boolean {
         val manager = AppWidgetManager.getInstance(requireContext())
-        return listOf(Widget1::class.java, Widget2::class.java, Widget3::class.java, Widget4::class.java)
+        return listOf(
+            WidgetNext1::class.java,
+            WidgetNext2::class.java,
+            WidgetNext3::class.java,
+            WidgetNext4::class.java,
+        )
             .any { provider ->
                 manager.getAppWidgetIds(ComponentName(requireContext(), provider)).isNotEmpty()
             }

@@ -12,12 +12,11 @@ import kotlin.math.absoluteValue
 import kotlin.math.sign
 
 /**
- * Layout to wrap a scrollable component inside a ViewPager2. Provided as a solution to the problem
- * where pages of ViewPager2 have nested scrollable elements that scroll in the same direction as
- * ViewPager2. The scrollable element needs to be the immediate and only child of this host layout.
+ * 用于包裹 ViewPager2 内部可滚动组件的布局，解决子页面滚动方向与 ViewPager2 相同时的
+ * 手势冲突。可滚动元素必须是该布局唯一的直接子元素。
  *
- * This solution has limitations when using multiple levels of nested scrollable elements
- * (e.g. a horizontal RecyclerView in a vertical RecyclerView in a horizontal ViewPager2).
+ * 多层嵌套滚动时此方案存在限制，例如横向 ViewPager2 中的纵向 RecyclerView 又嵌套
+ * 横向 RecyclerView。
  */
 
 class NestedScrollableHost : FrameLayout {
@@ -60,7 +59,7 @@ class NestedScrollableHost : FrameLayout {
 
     private fun handleInterceptTouchEvent(e: MotionEvent) {
         val orientation = parentViewPager?.orientation ?: return
-        // Early return if child can't scroll in same direction as parent
+        // 子视图无法沿父视图方向滚动时无需处理手势冲突。
         if (!canChildScroll(orientation, -1f) && !canChildScroll(orientation, 1f)) {
             return
         }
@@ -73,22 +72,22 @@ class NestedScrollableHost : FrameLayout {
             val dx = e.x - initialX
             val dy = e.y - initialY
             val isVpHorizontal = orientation == ORIENTATION_HORIZONTAL
-            // assuming ViewPager2 touch-slop is 2x touch-slop of child
+            // ViewPager2 的触摸阈值约为子视图的两倍。
             val scaledDx = dx.absoluteValue * if (isVpHorizontal) .5f else 1f
             val scaledDy = dy.absoluteValue * if (isVpHorizontal) 1f else .5f
 
             if (scaledDx > touchSlop || scaledDy > touchSlop) {
 
                 if (isVpHorizontal == (scaledDy > scaledDx)) {
-                    // Gesture is perpendicular, allow all parents to intercept
+                    // 手势方向垂直，允许父视图拦截。
                     parent.requestDisallowInterceptTouchEvent(false)
                 } else {
-                    // Gesture is parallel, query child if movement in that direction is possible
+                    // 手势方向平行，检查子视图能否继续向该方向滚动。
                     if (canChildScroll(orientation, if (isVpHorizontal) dx else dy)) {
-                        // Child can scroll, disallow all parents to intercept
+                        // 子视图仍可滚动，禁止父视图拦截。
                         parent.requestDisallowInterceptTouchEvent(true)
                     } else {
-                        // Child cannot scroll, allow all parents to intercept
+                        // 子视图无法继续滚动，允许父视图拦截。
                         parent.requestDisallowInterceptTouchEvent(false)
                     }
                 }

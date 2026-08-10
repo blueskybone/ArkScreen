@@ -85,16 +85,9 @@ class CustomRadioGroup @JvmOverloads constructor(
         }
     }
 
-    fun getCheckedImageButtonId(): Int = checkedId
-
     fun clearCheck() {
         check(View.NO_ID)
     }
-
-    fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?) {
-        onCheckedChangeListener = listener
-    }
-
     interface OnCheckedChangeListener {
         fun onCheckedChanged(group: CustomRadioGroup, checkedId: Int)
     }

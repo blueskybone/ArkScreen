@@ -23,7 +23,7 @@ class SklandServerTimeCalibrator(
             ?: response.errorBody()?.string()?.let(::parseTimestampFromBody)
             ?: throw IllegalStateException("服务器响应缺少可用时间")
 
-        // The midpoint reduces the effect of request round-trip latency.
+        // 使用请求往返时间的中点，降低网络延迟对校准结果的影响。
         val localMidpoint = (requestStartedAt + requestFinishedAt) / 2
         val offsetSeconds = (serverTimeMillis - localMidpoint) / 1_000
         internal.timeCorrectSec.set(offsetSeconds)
@@ -46,7 +46,7 @@ class SklandServerTimeCalibrator(
     }.getOrNull()
 
     private fun Long.toMillis(): Long {
-        // Accept both Unix seconds and milliseconds from different error formats.
+        // 兼容不同错误格式中以秒或毫秒表示的 Unix 时间戳。
         return if (this < 10_000_000_000L) this * 1_000 else this
     }
 }

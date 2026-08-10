@@ -1,13 +1,8 @@
 package com.blueskybone.arkscreen.ui.common.bindinginfo
 
 import android.content.Context
-import android.graphics.Color
 import androidx.core.content.ContextCompat.getString
-import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.util.getScreenHeightDp
-import com.blueskybone.arkscreen.util.getScreenWidthDp
-import kotlin.math.sqrt
 
 /**
  *   Created by blueskybone
@@ -117,172 +112,6 @@ data object RecruitMode : ListInfo {
 }
 
 
-data object WidgetSize : ListInfo {
-    private const val SMALL = "small"
-    private const val MEDIUM = "medium"
-    private const val LARGE = "large"
-    override val title: Int = R.string.widget_size
-    override val key: String = "widget_size"
-    override val defaultValue: String = MEDIUM
-
-    override fun getEntryValues() = arrayOf(SMALL, MEDIUM, LARGE)
-
-    override fun getEntries(context: Context): Array<String> {
-        val small = getString(context, R.string.small)
-        val medium = getString(context, R.string.medium)
-        val large = getString(context, R.string.large)
-        return arrayOf(small, medium, large)
-    }
-
-    //remember spToPx
-    fun getTextSizeMain(size: String): Float {
-        return when (size) {
-            SMALL -> 20f
-            MEDIUM -> 24f
-            LARGE -> 28f
-            else -> throw IllegalArgumentException("Invalid : $size")
-        }
-    }
-
-    fun getTextSizeSub(size: String): Float {
-        val baseSize = when (size) {
-            SMALL -> 10f
-            MEDIUM -> 12f
-            LARGE -> 14f
-            else -> throw IllegalArgumentException("Invalid : $size")
-        }
-        return getWidthBasedTextSize(baseSize)
-    }
-
-    //remember dpToPx
-    fun getImageSize(size: String): Int {
-        val baseSize = when (size) {
-            SMALL -> 20
-            MEDIUM -> 24
-            LARGE -> 28
-            else -> throw IllegalArgumentException("Invalid : $size")
-        }
-        return getWidthBasedTextSize(baseSize.toFloat()).toInt()
-    }
-
-    fun getIconSize(size: String): Int {
-        val baseSize = when (size) {
-            SMALL -> 10
-            MEDIUM -> 12
-            LARGE -> 14
-            else -> throw IllegalArgumentException("Invalid : $size")
-        }
-        return getWidthBasedTextSize(baseSize.toFloat()).toInt()
-    }
-
-    fun getCompactTextSizeMain(size: String): Float = when (size) {
-        SMALL -> 16f
-        MEDIUM -> 18f
-        LARGE -> 20f
-        else -> throw IllegalArgumentException("Invalid : $size")
-    }
-
-    fun getCompactTextSizeSub(size: String): Float = when (size) {
-        SMALL -> 8f
-        MEDIUM -> 9f
-        LARGE -> 10f
-        else -> throw IllegalArgumentException("Invalid : $size")
-    }
-
-    fun getCompactIconSize(size: String): Int = when (size) {
-        SMALL -> 8
-        MEDIUM -> 9
-        LARGE -> 10
-        else -> throw IllegalArgumentException("Invalid : $size")
-    }
-
-    /**
-     * 基于屏幕宽度的百分比缩放
-     */
-    private fun getWidthBasedTextSize(baseSp: Float): Float {
-        val screenWidthDp = getScreenWidthDp(APP)
-        val baseWidth = 360f // 以 360dp 为基准
-
-        // 线性缩放公式
-        val scaleFactor = screenWidthDp / baseWidth
-
-        // 限制缩放范围：0.8x - 1.5x
-        val boundedScale = scaleFactor.coerceIn(0.8f, 1.8f)
-
-        return baseSp * boundedScale
-    }
-
-    private fun getAreaBasedTextSize(baseSp: Float): Float {
-        val screenWidthDp = getScreenWidthDp(APP)
-        val screenHeightDp = getScreenHeightDp(APP)
-        val baseArea = 360f * 770f // 基准屏幕面积
-
-        val currentArea = screenWidthDp * screenHeightDp
-        val areaRatio = currentArea / baseArea
-
-        // 使用平方根，让缩放更平缓
-        val scaleFactor = sqrt(areaRatio)
-
-        // 限制缩放范围
-        val boundedScale = scaleFactor.coerceIn(0.7f, 1.8f)
-
-        return baseSp * boundedScale
-    }
-
-}
-
-data object WidgetTextColor : ListInfo {
-    const val WHITE = "white"
-    const val BLACK = "black"
-    override val title: Int = R.string.text_color
-    override val key: String = "widget_text_color"
-    override val defaultValue: String = WHITE
-    override fun getEntryValues() = arrayOf(WHITE, BLACK)
-    override fun getEntries(context: Context): Array<String> {
-        val white = getString(context, R.string.white)
-        val black = getString(context, R.string.black)
-        return arrayOf(white, black)
-    }
-
-    fun getColorInt(color: String): Int {
-        return when (color) {
-            WHITE -> Color.WHITE
-            BLACK -> Color.BLACK
-            else -> throw IllegalArgumentException("Invalid : $color")
-        }
-    }
-}
-
-data object WidgetContent : ListInfo {
-    private const val AP = "ap"
-    private const val LABOR = "labor"
-    private const val TRAIN = "train"
-    private const val MEET = "meet"
-    override val title: Int = R.string.widget_content
-    override val key: String = "widget_content"
-    override val defaultValue: String = AP
-    const val defaultValue2: String = LABOR
-    override fun getEntryValues() = arrayOf(AP, LABOR, TRAIN, MEET)
-
-    override fun getEntries(context: Context): Array<String> {
-        val ap = getString(context, R.string.ap)
-        val labor = getString(context, R.string.labor)
-        val train = getString(context, R.string.train)
-        val meet = getString(context, R.string.meeting)
-        return arrayOf(ap, labor, train, meet)
-    }
-
-    fun getDrawableIcon(icon: String): Int {
-        return when (icon) {
-            AP -> R.drawable.ic_bolt
-            LABOR -> R.drawable.ic_drone
-            TRAIN -> R.drawable.ic_train
-            MEET -> R.drawable.ic_clue
-            else -> throw IllegalArgumentException("Invalid : $icon")
-        }
-    }
-}
-
 data object WidgetUpdateFreq : ListInfo {
     private const val MIN_15 = "min_15"
     private const val MIN_30 = "min_30"
@@ -308,5 +137,3 @@ data object WidgetUpdateFreq : ListInfo {
         }
     }
 }
-
-

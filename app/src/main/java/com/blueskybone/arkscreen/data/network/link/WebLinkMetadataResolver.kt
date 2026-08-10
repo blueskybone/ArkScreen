@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.data.network.link
 
+import com.blueskybone.arkscreen.data.common.HttpStatusException
 import com.blueskybone.arkscreen.data.common.toAppError
 import com.blueskybone.arkscreen.domain.service.LinkMetadataResolver
 import kotlinx.coroutines.CancellationException
@@ -28,7 +29,12 @@ class WebLinkMetadataResolver(
                 .header("User-Agent", USER_AGENT)
                 .build()
             val icon = client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) error("网页请求失败：HTTP ${response.code}")
+                if (!response.isSuccessful) {
+                    throw HttpStatusException(
+                        response.code,
+                        "网页请求失败：HTTP ${response.code}",
+                    )
+                }
                 val body = response.body ?: return@use ""
                 val source = body.source()
                 source.request(MAX_HTML_BYTES)

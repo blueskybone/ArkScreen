@@ -56,7 +56,7 @@ class MainModel(
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState
 
-    // Events are consumed once by MainActivity; durable screen data stays in uiState.
+    // 事件只由 MainActivity 消费一次；需要跨生命周期保留的页面数据放在 uiState。
     private val _event = Channel<MainEvent>(Channel.BUFFERED)
     val event = _event.receiveAsFlow()
     private val linkIconJobs = mutableMapOf<Long, Job>()
@@ -102,6 +102,7 @@ class MainModel(
             linkRepository.insertLink(defaultLink)
                 .onSuccess { innerPrefManager.insertLink.set(true) }
                 .onFailure { error ->
+                    Timber.tag("Home").e(error, "Default link initialization failed")
                     _event.send(MainEvent.ShowError(error.message ?: "默认链接初始化失败"))
                 }
         }
@@ -136,6 +137,7 @@ class MainModel(
             linkRepository.observeLinks()
                 .retryWhen { error, attempt ->
                     if (attempt == 0L) {
+                        Timber.tag("Home").e(error, "Link list observation failed")
                         _event.send(MainEvent.ShowError(error.message ?: "链接列表加载失败"))
                     }
                     delay(
@@ -182,6 +184,7 @@ class MainModel(
         viewModelScope.launch {
             repoAcc.setCurrentAccountSk(account)
                 .onFailure { error ->
+                    Timber.tag("Account").e(error, "Default Skland account switch failed")
                     _event.send(MainEvent.ShowError(error.message ?: "切换账号失败"))
                 }
         }
@@ -199,6 +202,7 @@ class MainModel(
                     _event.send(MainEvent.ShowToast("成功导入${cnt}条账号"))
                 }
                 .onFailure { error ->
+                    Timber.tag("Account").e(error, "Home Skland login failed")
                     _uiState.update {
                         it.copy(loginStatus = UiStatus.Error(error.message ?: "登录失败"))
                     }
@@ -221,6 +225,7 @@ class MainModel(
                     }
                 }
                 .onFailure { error ->
+                    Timber.tag("Home").e(error, "Announcement loading failed")
                     _uiState.update {
                         it.copy(
                             status = UiStatus.Error(error.message ?: "公告加载失败"),
@@ -238,6 +243,7 @@ class MainModel(
                     _uiState.update { it.copy(biliVideos = list) }
                 }
                 .onFailure { error ->
+                    Timber.tag("Home").e(error, "Bilibili video loading failed")
                     _event.send(
                         MainEvent.ShowError(userFacingError(error.message ?: "视频加载失败"))
                     )
@@ -284,6 +290,7 @@ class MainModel(
                     }
                 }
                 .onFailure { error ->
+                    Timber.tag("AppUpdate").e(error, "App update check failed")
                     _event.send(MainEvent.ShowError(error.message ?: "检查更新失败"))
                 }
         }
