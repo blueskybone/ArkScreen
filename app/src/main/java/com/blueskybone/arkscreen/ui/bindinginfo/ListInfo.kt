@@ -5,9 +5,9 @@ import android.graphics.Color
 import androidx.core.content.ContextCompat.getString
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq.HOUR_1
-import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq.MIN_15
-import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq.MIN_30
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize.LARGE
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize.MEDIUM
+import com.blueskybone.arkscreen.ui.bindinginfo.WidgetSize.SMALL
 import com.blueskybone.arkscreen.util.getScreenHeightDp
 import com.blueskybone.arkscreen.util.getScreenWidthDp
 import kotlin.math.sqrt
@@ -43,6 +43,37 @@ data object FloatWindowAppearance : ListInfo {
         val colorful = getString(context, R.string.colorful)
         return arrayOf(simple, colorful)
     }
+}
+
+data object ScDelay: ListInfo{
+    const val ONE_SECOND = "1000"
+    const val TWO_SECOND = "2000"
+    const val THREE_SECOND = "3000"
+
+    override val key = "screenshot_delay"
+    override val title = R.string.screenshot_delay
+    override val defaultValue = ONE_SECOND
+
+    override fun getEntryValues() = arrayOf(
+        ONE_SECOND, TWO_SECOND, THREE_SECOND
+    )
+
+    override fun getEntries(context: Context): Array<String> {
+        val sec_1 = getString(context, R.string.sec_1)
+        val sec_2 = getString(context, R.string.sec_2)
+        val sec_3 = getString(context, R.string.sec_3)
+        return arrayOf(sec_1, sec_2, sec_3)
+    }
+
+    fun getMSec(sec:String):Long{
+        return when (sec) {
+            ONE_SECOND -> 1000L
+            TWO_SECOND -> 2000L
+            THREE_SECOND -> 3000L
+            else -> throw IllegalArgumentException("Invalid : $sec")
+        }
+    }
+
 }
 
 data object AppTheme : ListInfo {

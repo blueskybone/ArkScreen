@@ -59,13 +59,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setUpNavigation()
         checkAppUpdate(this)
-        checkScreenInfo(this)
         requestOverlayPermission(this)
     }
 
-    private fun checkScreenInfo(context: Context){
-        Timber.i(getScreenInfo(context))
-    }
 
     private fun checkAppUpdate(context: Context) {
         model.appUpdateInfo.observe(this) { info ->
@@ -73,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                 if (it < info.versionCode)
                     Handler(Looper.getMainLooper()).post {
                         MaterialAlertDialogBuilder(context)
-                            .setTitle(info.version.toString())
+                            .setTitle(info.version)
                             .setMessage(info.content)
                             .setNegativeButton(R.string.cancel, null)
                             .setPositiveButton(getString(R.string.download)) { _, _ ->
@@ -91,6 +87,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpNavigation() {
         val viewPager = binding.ViewPager
+        viewPager.offscreenPageLimit = 2
         val bottomNavigationView: BottomNavigationView = binding.navView
         viewPager.adapter = ViewPagerFragmentAdapter(this)
 

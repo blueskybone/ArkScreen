@@ -18,19 +18,14 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.databinding.ActivityGachaBinding
 import com.blueskybone.arkscreen.preference.PrefManager
-import com.blueskybone.arkscreen.ui.fragment.CharNotOwn
-import com.blueskybone.arkscreen.ui.fragment.CharOwn
 import com.blueskybone.arkscreen.ui.fragment.Gacha
 import com.blueskybone.arkscreen.ui.fragment.GachaStatis
 import com.blueskybone.arkscreen.ui.fragment.GachaText
 import com.blueskybone.arkscreen.ui.recyclerview.GachaAdapter
-import com.blueskybone.arkscreen.ui.recyclerview.GachaTextAdapter
-import com.blueskybone.arkscreen.viewmodel.BaseModel
 import com.blueskybone.arkscreen.viewmodel.GachaModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
-import com.hjq.toast.Toaster
 import org.koin.android.ext.android.getKoin
 
 /**
@@ -41,7 +36,6 @@ import org.koin.android.ext.android.getKoin
 class GachaActivity : AppCompatActivity() {
     private val prefManager: PrefManager by getKoin().inject()
     private val model: GachaModel by viewModels()
-    private val modelBase: BaseModel by viewModels()
     private var adapter: GachaAdapter? = null
 
     private var _binding: ActivityGachaBinding? = null
@@ -117,16 +111,15 @@ class GachaActivity : AppCompatActivity() {
             }
 
             R.id.menu_import -> {
-                Toaster.show("施工中...")
-//                MaterialAlertDialogBuilder(this)
-//                    .setTitle(getString(R.string.import_data))
-//                    .setMessage(R.string.import_data_detail)
-//                    .setPositiveButton(R.string.import_data) { _, _ ->
-//                        val mimeTypes = arrayOf("text/plain", "application/json")
-//                        launcherForImport?.launch(mimeTypes)
-//                    }
-//                    .setNegativeButton(R.string.cancel, null)
-//                    .show()
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(getString(R.string.import_data))
+                    .setMessage(R.string.import_data_detail)
+                    .setPositiveButton(R.string.import_data) { _, _ ->
+                        val mimeTypes = arrayOf("text/plain", "application/json")
+                        launcherForImport?.launch(mimeTypes)
+                    }
+                    .setNegativeButton(R.string.cancel, null)
+                    .show()
                 true
             }
 
@@ -203,8 +196,7 @@ class GachaActivity : AppCompatActivity() {
         launcherForImport =
             registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
                 uri?.let {
-                    Toaster.show("施工中...")
-//                    model.importData(uri)
+                    model.importData(uri)
                 }
             }
     }

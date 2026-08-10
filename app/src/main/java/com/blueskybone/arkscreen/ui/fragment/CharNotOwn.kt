@@ -31,12 +31,19 @@ class CharNotOwn : Fragment() {
         _binding = FragmentCharNotOwnBinding.inflate(inflater)
         adapterFlow = CharMissFlowAdapter(requireContext(), binding.FlowLayout)
         setupBinding()
+        setupObserver()
         return binding.root
     }
 
     private fun setupBinding() {
         model.charsNotOwnList.observe(viewLifecycleOwner) { value ->
             adapterFlow.submitList(value)
+        }
+    }
+
+    private fun setupObserver(){
+        model.update.observe(viewLifecycleOwner){update->
+            binding.Update.text = "最后更新：" + update
         }
     }
 

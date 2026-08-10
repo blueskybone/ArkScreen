@@ -15,6 +15,9 @@ import com.hjq.toast.Toaster
  */
 
 class QuickTileService : TileService() {
+    /*
+    * 快速公招磁贴Service
+    * */
     override fun onClick() {
         super.onClick()
         collapsePanel()

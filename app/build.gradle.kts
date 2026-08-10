@@ -19,8 +19,8 @@ android {
         applicationId = "com.blueskybone.arkscreen"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 11
-        versionName = "2.2.1"
+        versionCode = 13
+        versionName = "2.2.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
@@ -174,4 +174,6 @@ dependencies {
     implementation(libs.toaster)
     implementation(libs.androidx.webkit)
     implementation(libs.mp.android.chart)
+    implementation(libs.circular.progressbar)
+
 }

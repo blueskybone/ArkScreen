@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.room.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -16,6 +17,9 @@ interface AccountGcDao {
 
     @Query("SELECT * FROM AccountGc")
     suspend fun getAll(): List<AccountGc>
+
+    @Query("SELECT * FROM AccountGc")
+    fun getAllLiveData(): LiveData<List<AccountGc>>
 
     @Query("DELETE FROM AccountGc WHERE id = :id")
     suspend fun delete(id: Long)

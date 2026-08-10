@@ -7,12 +7,12 @@
 
     <item
         android:id="@+id/navigation_function"
-        android:icon="@drawable/ic_tools"
-        android:title="@string/function" />
+        android:icon="@drawable/ic_layer"
+        android:title="@string/config" />
 
     <item
         android:id="@+id/navigation_setting"
-        android:icon="@drawable/ic_settings"
-        android:title="@string/setting" />
+        android:icon="@drawable/ic_menu_dots"
+        android:title="@string/more" />
 
 </menu>

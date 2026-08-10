@@ -2,6 +2,7 @@ package com.blueskybone.arkscreen.task.attendance
 
 import android.content.Context
 import com.blueskybone.arkscreen.APP
+import com.blueskybone.arkscreen.network.NetWorkTask.Companion.endfieldAttendance
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.sklandAttendance
 import com.blueskybone.arkscreen.room.ArkDatabase
 import com.blueskybone.arkscreen.util.updateNotification
@@ -16,6 +17,9 @@ suspend fun doSklandAttendance(context: Context) {
     val accountList = accountSkDao.getAll()
     val channelId = "atd_notify_channel"
     val channelName = "签到通知"
+
+    val accountEfList = database.getAccountEfDao().getAll()
+    val size = accountEfList.size + accountList.size
     for ((idx, account) in accountList.withIndex()) {
         updateNotification(
             context,
@@ -37,9 +41,33 @@ suspend fun doSklandAttendance(context: Context) {
             Thread.sleep(500)
         }
     }
+
+    for ((idx, account) in accountEfList.withIndex()) {
+        updateNotification(
+            context,
+            "正在签到中 (${idx + 1}/${accountList.size})",
+            account.nickName,
+            channelId,
+            channelName
+        )
+        val msg = endfieldAttendance(account)
+        Timber.i(account.nickName + " : " + msg)
+        updateNotification(
+            context,
+            "正在签到中 (${idx + 1}/${accountList.size})",
+            account.nickName + " : " + msg,
+            channelId,
+            channelName
+        )
+        withContext(Dispatchers.IO) {
+            Thread.sleep(500)
+        }
+    }
+
+
     updateNotification(
         context,
-        "签到完成 (${accountList.size}/${accountList.size})",
+        "签到完成 (${size}/${size})",
         "",
         channelId,
         channelName

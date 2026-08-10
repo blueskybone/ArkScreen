@@ -13,7 +13,6 @@ import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.WindowManager
 import android.webkit.CookieManager
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getString
 import com.blueskybone.arkscreen.APP
@@ -236,7 +235,6 @@ fun copyToClipboard(context: Context, text: String) {
     Toaster.show(getString(context, R.string.copied))
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun updateNotification(
     context: Context,
     title: String,
@@ -281,5 +279,29 @@ fun getTargetDrawableId(drawable: Int, pref: Preference<String>): Int {
             else -> R.drawable.ic_default
         }
     } else drawable
+}
 
+/**
+ * 生成设备ID (dId)
+ * 基于随机数据生成唯一的设备ID,格式模拟森空岛App的设备ID格式
+ * 格式: BL + Base64(32字节随机数据)
+ */
+fun generateDId(): String {
+    // 生成32字节随机数据
+    val randomBytes = java.security.SecureRandom().generateSeed(32)
+    // Base64编码
+    val base64String = android.util.Base64.encodeToString(randomBytes, android.util.Base64.NO_WRAP)
+    return "BL$base64String"
+}
+
+
+fun String.toCate(): String {
+    if (this.startsWith("LIMITED") || this.startsWith("LINKAGE") || this.startsWith("ATTAIN")) return "LIMITED"
+    if (this.startsWith("CLASSIC")|| this.startsWith("FESCLASSIC")) return "CLASSIC"
+    if (this.startsWith("SINGLE") ||
+        this.startsWith("DOUBLE") ||
+        this.startsWith("SPECIAL") ||
+        this.startsWith("NORM")
+    ) return "NORMAL"
+    return "UN"
 }

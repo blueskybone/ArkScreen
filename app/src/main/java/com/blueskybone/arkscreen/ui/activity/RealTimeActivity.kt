@@ -103,6 +103,10 @@ class RealTimeActivity : AppCompatActivity() {
         }
         binding.Ap.text = data.apNow
         binding.ApMax.text = data.apMax
+        binding.CircularProgressBar.apply {
+            progress = data.apNow.toFloat()
+            progressMax = data.apMax.substring(1).toFloat()
+        }
         binding.Avatar.load(data.avatarUrl)
         binding.Level.text = data.level
         binding.ApResTime.text = data.apResTime
@@ -139,6 +143,7 @@ class RealTimeActivity : AppCompatActivity() {
         binding.Page.visibility = View.GONE
         binding.ScrollView.visibility = View.VISIBLE
 
+        //发送广播强制更新桌面组件
 //        val intent = Intent(APP, WidgetReceiver::class.java)
 //        intent.action = WidgetReceiver.MANUAL_UPDATE
 //        APP.sendBroadcast(intent)

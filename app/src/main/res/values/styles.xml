@@ -5,25 +5,25 @@
         <item name="colorPrimary">@color/blue_500</item>
         <item name="colorPrimaryDark">@color/blue_600</item>
         <item name="colorSecondary">?attr/colorPrimary</item>
-        <item name="colorSurface">@color/purple_50</item>
-        <item name="colorOnSurface">@color/dark_blue</item>
-        <item name="android:colorBackground">@color/purple_bg</item>
+        <item name="colorSurface">@color/day_surface</item>
+        <item name="colorOnSurface">@color/day_text_primary</item>
+
+        <item name="android:colorBackground">@color/day_surface</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/transparent</item>
         <item name="textAppearanceBody1">@style/TextAppearance.Body1</item>
         <item name="textAppearanceBody2">@style/TextAppearance.Body2</item>
         <item name="textAppearanceHeadline4">@style/TextAppearance.Headline4</item>
         <item name="textAppearanceSubtitle2">@style/TextAppearance.Subtitle2</item>
+
+        <item name="android:textColorPrimary">@color/day_text_primary</item>
+
+        <item name="chipBackgroundColor">@color/cyan_trans</item>
     </style>
     
     <style name="TextAppearance.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
         <item name="android:textStyle">bold</item>
     </style>
-
-<!--    <style name="CardView" parent="Widget.Material3.CardView.Filled">-->
-<!--        <item name="colorSurface">@color/grey_200</item>-->
-<!--        <item name="backgroundColor">@color/grey_200</item>-->
-<!--    </style>-->
 
     <style name="TextView.Clickable" parent="Widget.AppCompat.TextView">
         <item name="android:clickable">true</item>
@@ -51,10 +51,6 @@
         <item name="cornerSize">16dp</item>
     </style>
 
-<!--    <style name="myCardView" parent="CardView.Light">-->
-<!--        <item name="cardBackgroundColor">@color/grey_200</item>-->
-<!--    </style>-->
-
     <style name="PopupDownAnim" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/popup_enter</item>
         <item name="android:windowExitAnimation">@anim/popup_exit</item>
@@ -68,9 +64,10 @@
         <item name="android:layout_marginEnd">16dp</item>
         <item name="cardCornerRadius">15dp</item>
         <item name="cardElevation">0dp</item>
-        <item name="cardBackgroundColor">?attr/android:colorBackground</item>
+<!--        <item name="cardBackgroundColor">?attr/android:colorBackground</item>-->
+        <item name="cardBackgroundColor">@color/white</item>
         <item name="strokeWidth">1dp</item>
-        <item name="strokeColor">@color/grey_300</item>
+<!--        <item name="strokeColor">@color/grey_300</item>-->
     </style>
 
 
@@ -78,6 +75,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">16dp</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textAppearance">@style/PreferenceTitle</item>
     </style>
 
@@ -100,7 +98,7 @@
     </style>
 
     <style name="PreferenceTitle" parent="TextAppearance.MaterialComponents.Body1">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
 
@@ -113,14 +111,15 @@
 
     <style name="PreferenceHeader" parent="Widget.AppCompat.TextView">
         <item name="android:paddingEnd">16dp</item>
-        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingTop">4dp</item>
         <item name="android:paddingStart">16dp</item>
-        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingBottom">4dp</item>
         <item name="android:textAppearance">?attr/textAppearanceSubtitle2</item>
     </style>
 
     <style name="Preference" parent="TextView.Clickable">
         <item name="android:padding">16dp</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textAppearance">@style/PreferenceTitle</item>
     </style>
 
@@ -183,16 +182,158 @@
     </style>
 
     <style name="CardViewChip" parent="Widget.MaterialComponents.CardView">
-        <item name="cardBackgroundColor">@color/transparent</item>
-        <item name="cardCornerRadius">16dp</item>
-        <item name="strokeWidth">1dp</item>
-        <item name="strokeColor">?attr/colorPrimary</item>
+        <item name="cardBackgroundColor">@color/white</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="cardCornerRadius">5dp</item>
+        <item name="android:layout_margin">5dp</item>
         <item name="cardElevation">0dp</item>
-        <item name="contentPadding">5dp</item>
     </style>
 
     <style name="TitleText">
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="BottomNavigationViewStyle" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="itemIconSize">20dp</item> <!-- 设置图标大小 -->
+        <item name="itemTextAppearanceActive">@style/BottomNavigationTextStyle</item>
+        <item name="itemTextAppearanceInactive">@style/BottomNavigationTextStyle</item>
+    </style>
+
+    <style name="BottomNavigationTextStyle" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">12sp</item> <!-- 设置文字大小 -->
+    </style>
+
+    <style name="Theme.ChipOverlay" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorOnSurface">@color/on_sec_con</item>
+        <item name="colorOutline">@color/on_sec_con</item>
+        <item name="colorSurface">@color/day_surface</item>
+    </style>
+
+    <style name="Widget.MyApp.Chip.Assist" parent="Widget.Material3.Chip.Assist">
+        <item name="android:theme">@style/Theme.ChipOverlay</item>
+        <item name="chipStartPadding">4dp</item>
+        <item name="chipEndPadding">4dp</item>
+        <item name="textStartPadding">4dp</item>
+        <item name="textEndPadding">4dp</item>
+    </style>
+
+
+<!--    <style name="Theme.ChipOverlayError" parent="Theme.Material3.DayNight.NoActionBar">-->
+<!--        <item name="colorOnSurface">@color/on_error</item>-->
+<!--        <item name="colorOutline">@color/error_con</item>-->
+<!--        <item name="colorSurface">@color/error_con</item>-->
+<!--    </style>-->
+
+<!--    <style name="Widget.MyApp.Chip.Error" parent="Widget.Material3.Chip.Assist">-->
+<!--        <item name="android:theme">@style/Theme.ChipOverlayError</item>-->
+<!--    </style>-->
+
+    <style name="Theme.ChipOverlaySuggestion" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorOnSurface">@color/on_sec_con</item>
+        <item name="colorOutline">@color/sec_con</item>
+        <item name="colorSurface">@color/sec_con</item>
+        <item name="chipIconTint">@color/on_sec_con</item>
+    </style>
+
+    <style name="Widget.MyApp.Chip.Suggestion" parent="Widget.Material3.Chip.Assist">
+        <item name="android:theme">@style/Theme.ChipOverlaySuggestion</item>
+        <item name="chipStartPadding">4dp</item>
+        <item name="chipEndPadding">4dp</item>
+        <item name="textStartPadding">4dp</item>
+        <item name="textEndPadding">4dp</item>
+    </style>
+
+
+    <style name="Theme.ChipOverlayRare6" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="chipStyle">@style/Widget.MyApp.Chip.Rare6</item>
+        <item name="colorOnSurface">@color/rare_6_line</item>
+        <item name="colorOutline">@color/rare_6_line</item>
+        <item name="colorSurface">@color/rare_6_surface</item>
+    </style>
+
+    <style name="Widget.MyApp.Chip.Rare6" parent="Widget.Material3.Chip.Assist">
+        <item name="android:theme">@style/Theme.ChipOverlayRare6</item>
+        <item name="chipStartPadding">4dp</item>
+        <item name="chipEndPadding">4dp</item>
+        <item name="textStartPadding">4dp</item>
+        <item name="textEndPadding">4dp</item>
+    </style>
+
+    <style name="Theme.ChipOverlayRare5" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="chipStyle">@style/Widget.MyApp.Chip.Rare5</item>
+        <item name="colorOnSurface">@color/rare_5_line</item>
+        <item name="colorOutline">@color/rare_5_line</item>
+        <item name="colorSurface">@color/rare_5_surface</item>
+    </style>
+
+    <style name="Widget.MyApp.Chip.Rare5" parent="Widget.Material3.Chip.Assist">
+        <item name="android:theme">@style/Theme.ChipOverlayRare5</item>
+        <item name="chipStartPadding">4dp</item>
+        <item name="chipEndPadding">4dp</item>
+        <item name="textStartPadding">4dp</item>
+        <item name="textEndPadding">4dp</item>
+    </style>
+
+    <style name="Theme.ChipOverlayRare4" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="chipStyle">@style/Widget.MyApp.Chip.Rare4</item>
+        <item name="colorOnSurface">@color/rare_4_line</item>
+        <item name="colorOutline">@color/rare_4_line</item>
+        <item name="colorSurface">@color/rare_4_surface</item>
+    </style>
+
+    <style name="Widget.MyApp.Chip.Rare4" parent="Widget.Material3.Chip.Assist">
+        <item name="android:theme">@style/Theme.ChipOverlayRare4</item>
+        <item name="chipStartPadding">4dp</item>
+        <item name="chipEndPadding">4dp</item>
+        <item name="textStartPadding">4dp</item>
+        <item name="textEndPadding">4dp</item>
+    </style>
+
+    <style name="Theme.ChipOverlayRare3" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="chipStyle">@style/Widget.MyApp.Chip.Rare3</item>
+
+        <item name="colorOnSurface">@color/rare_3_line</item>
+        <item name="colorOutline">@color/rare_3_line</item>
+        <item name="colorSurface">@color/rare_3_surface</item>
+    </style>
+
+    <style name="Widget.MyApp.Chip.Rare3" parent="Widget.Material3.Chip.Assist">
+        <item name="android:theme">@style/Theme.ChipOverlayRare3</item>
+        <item name="chipStartPadding">4dp</item>
+        <item name="chipEndPadding">4dp</item>
+        <item name="textStartPadding">4dp</item>
+        <item name="textEndPadding">4dp</item>
+    </style>
+
+
+    <style name="Theme.ChipOverlayRare2" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="chipStyle">@style/Widget.MyApp.Chip.Rare2</item>
+        <item name="colorOnSurface">@color/rare_2_line</item>
+        <item name="colorOutline">@color/rare_2_line</item>
+        <item name="colorSurface">@color/rare_2_surface</item>
+    </style>
+
+    <style name="Widget.MyApp.Chip.Rare2" parent="Widget.Material3.Chip.Assist">
+        <item name="android:theme">@style/Theme.ChipOverlayRare2</item>
+        <item name="chipStartPadding">4dp</item>
+        <item name="chipEndPadding">4dp</item>
+        <item name="textStartPadding">4dp</item>
+        <item name="textEndPadding">4dp</item>
+    </style>
+
+    <style name="Theme.ChipOverlayRare1" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="chipStyle">@style/Widget.MyApp.Chip.Rare1</item>
+        <item name="colorOnSurface">@color/rare_1_line</item>
+        <item name="colorOutline">@color/rare_1_line</item>
+        <item name="colorSurface">@color/rare_1_surface</item>
+    </style>
+
+    <style name="Widget.MyApp.Chip.Rare1" parent="Widget.Material3.Chip.Assist">
+        <item name="android:theme">@style/Theme.ChipOverlayRare1</item>
+        <item name="chipStartPadding">4dp</item>
+        <item name="chipEndPadding">4dp</item>
+        <item name="textStartPadding">4dp</item>
+        <item name="textEndPadding">4dp</item>
+    </style>
 </resources>

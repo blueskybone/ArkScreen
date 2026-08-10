@@ -8,6 +8,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_gravity="end|top"
+        android:contentDescription="@null"
         android:visibility="gone"
         android:src="@drawable/ic_notf_point" />
 
@@ -24,22 +25,28 @@
 
             <TextView
                 android:id="@+id/Title"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:textAppearance="?attr/textAppearanceBody2"
                 android:textStyle="bold" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
 
             <TextView
                 android:id="@+id/Value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:textAppearance="?attr/textAppearanceBody2"
                 android:textStyle="bold" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/Time"
+            android:textSize="12sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

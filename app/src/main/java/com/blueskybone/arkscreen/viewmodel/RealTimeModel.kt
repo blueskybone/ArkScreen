@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.DataUiState
-import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTask
+import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoTask
 import com.blueskybone.arkscreen.network.avatarUrl
 import com.blueskybone.arkscreen.playerinfo.RealTimeData
 import com.blueskybone.arkscreen.playerinfo.RealTimeUi
@@ -50,7 +50,7 @@ class RealTimeModel : ViewModel() {
     private suspend fun loadRealTimeData() {
         val accountSk = prefManager.baseAccountSk.get()
         if (accountSk.uid == "") {
-            _uiState.postValue(DataUiState.Error("请先添加账号"))
+            _uiState.postValue(DataUiState.Error("请先在 账号管理 添加游戏账号"))
             return
         }
         try {
@@ -85,8 +85,8 @@ class RealTimeModel : ViewModel() {
         realTimeUi.nickName = data.playerStatus.nickname
         realTimeUi.lastLogin = "上次登录 " +
                 when (getDayNum(getCurrentTs()) - getDayNum(data.playerStatus.lastOnlineTs)) {
-                    0L -> "今天"
-                    1L -> "昨天"
+                    0L -> "今天 " + getTimeStr(data.playerStatus.lastOnlineTs * 1000, "HH:mm")
+                    1L -> "昨天 "
                     else -> getTimeStr(data.playerStatus.lastOnlineTs * 1000, "yyyy-MM-dd")
                 }
 
@@ -185,7 +185,7 @@ class RealTimeModel : ViewModel() {
     private suspend fun getRealTimeData(account: AccountSk): RealTimeData? {
 
         try {
-            val response = getGameInfoConnectionTask(account)
+            val response = getGameInfoTask(account)
             if (!response.isSuccessful) throw Exception("!response.isSuccessful")
             response.body() ?: throw Exception("response empty")
             return geneRealTimeData(response.body()!!)

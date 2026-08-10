@@ -21,7 +21,7 @@ class FileLoggingInterceptor : HttpLoggingInterceptor.Logger {
         private val timeFormat = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
         private val executor = Executors.newSingleThreadExecutor()
 
-        private val excludedUrls = listOf("/api/v1/game/player/info")
+        private val excludedUrls = listOf("/api/v1/game/player/info","showConfig")
     }
     init {
         if (!logDir.exists()) {
@@ -31,9 +31,9 @@ class FileLoggingInterceptor : HttpLoggingInterceptor.Logger {
     }
 
     override fun log(message: String) {
-//        if (shouldSkipLogging(message)) {
-//            return
-//        }
+        if (shouldSkipLogging(message)) {
+            return
+        }
         executor.execute {
             try {
                 val date = dateFormat.format(Date())

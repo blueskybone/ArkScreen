@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.text.InputType
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -17,13 +18,10 @@ import android.widget.PopupWindow
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.blueskybone.arkscreen.R
@@ -36,19 +34,22 @@ import com.blueskybone.arkscreen.databinding.PopupAccountBinding
 import com.blueskybone.arkscreen.network.BiliVideo
 import com.blueskybone.arkscreen.playerinfo.cache.ApCache
 import com.blueskybone.arkscreen.preference.PrefManager
-import com.blueskybone.arkscreen.room.Account
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Link
+import com.blueskybone.arkscreen.ui.activity.AccountMngActivity
 import com.blueskybone.arkscreen.ui.activity.CharAssets
 import com.blueskybone.arkscreen.ui.activity.GachaActivity
 import com.blueskybone.arkscreen.ui.activity.LoginWeb
 import com.blueskybone.arkscreen.ui.activity.RealTimeActivity
 import com.blueskybone.arkscreen.ui.activity.RecruitActivity
+import com.blueskybone.arkscreen.ui.bindinginfo.AccountManager
 import com.blueskybone.arkscreen.ui.bindinginfo.Attendance
 import com.blueskybone.arkscreen.ui.bindinginfo.FuncChipInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.GachaStat
+import com.blueskybone.arkscreen.ui.bindinginfo.GameStarter
 import com.blueskybone.arkscreen.ui.bindinginfo.OpeAssets
 import com.blueskybone.arkscreen.ui.bindinginfo.RecruitCal
+import com.blueskybone.arkscreen.ui.bindinginfo.UserManual
 import com.blueskybone.arkscreen.ui.recyclerview.AccountAdapter
 import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
 import com.blueskybone.arkscreen.ui.recyclerview.LinkGridAdapter
@@ -66,8 +67,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.getKoin
-import kotlin.math.abs
-import kotlin.math.max
 
 
 /**
@@ -237,6 +236,9 @@ class Home : Fragment() {
                                 )
                             activityResultLauncher.launch(intent)
                         }
+                        .add(R.string.password_login) {
+                            displayPasswordLoginDialog()
+                        }
                         .show()
 
                 } else {
@@ -256,6 +258,9 @@ class Home : Fragment() {
         binding.OpeAssets.setup(OpeAssets)
         binding.GachaStat.setup(GachaStat)
         binding.Attendance.setup(Attendance)
+        binding.AccountManager.setup(AccountManager)
+        binding.GameStarter.setup(GameStarter)
+        binding.UserManual.setup(UserManual)
 
         binding.RecruitCalc.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), RecruitActivity::class.java))
@@ -265,6 +270,28 @@ class Home : Fragment() {
         }
         binding.GachaStat.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), GachaActivity::class.java))
+        }
+        binding.AccountManager.Layout.setOnClickListener {
+            startActivity(Intent(requireContext(), AccountMngActivity::class.java))
+        }
+        binding.GameStarter.Layout.setOnClickListener {
+            val currAcc = model.currentAccount.value
+            if(currAcc!=null && currAcc.official){
+                openAnotherApp("com.hypergryph.arknights")
+            }else{
+                openAnotherApp("com.hypergryph.arknights.bilibili")
+            }
+        }
+        binding.UserManual.Layout.setOnClickListener {
+            val cvId = "40623349"
+            try {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("bilibili://article/$cvId"))
+                startActivity(intent)
+            } catch (e: Exception) {
+                val intent =
+                    Intent(Intent.ACTION_VIEW, Uri.parse("https://www.bilibili.com/read/cv$cvId"))
+                startActivity(intent)
+            }
         }
         binding.AddLink.setOnClickListener {
             onAddButtonClick()
@@ -340,7 +367,7 @@ class Home : Fragment() {
             isOutsideTouchable = true
             animationStyle = R.style.PopupDownAnim
             setOnDismissListener {
-                activity.window?.attributes =  activity.window?.attributes?.apply {
+                activity.window?.attributes = activity.window?.attributes?.apply {
                     this.alpha = 1.0f
                 }
             }
@@ -381,6 +408,44 @@ class Home : Fragment() {
                     Toaster.show(getString(R.string.wrong_format))
                 }
             }.show()
+    }
+
+    /**
+     * 密码登录对话框
+     */
+    private fun displayPasswordLoginDialog() {
+        val dialogBinding = DialogInputBinding.inflate(layoutInflater)
+        dialogBinding.EditText1.hint = getString(R.string.phone_number)
+        dialogBinding.EditText2.visibility = View.VISIBLE
+        dialogBinding.EditText2.hint = getString(R.string.password)
+        dialogBinding.EditText2.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setView(dialogBinding.root)
+            .setTitle(R.string.password_login)
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton(R.string.login) { _, _ ->
+                val phone = dialogBinding.EditText1.text.toString()
+                val password = dialogBinding.EditText2.text.toString()
+
+                if (phone.isEmpty() || password.isEmpty()) {
+                    Toaster.show("请输入手机号和密码")
+                    return@setPositiveButton
+                }
+
+                Toaster.show(getString(R.string.logging_in))
+
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        model.accountSkLoginByPassword(phone, password)
+                    } catch (e: Exception) {
+                        withContext(Dispatchers.Main) {
+                            Toaster.show("登录失败：${e.message}")
+                        }
+                    }
+                }
+            }
+            .show()
     }
 
 //    @SuppressLint("QueryPermissionsNeeded")
@@ -516,4 +581,15 @@ class Home : Fragment() {
     }
 
     private val Int.dp: Int get() = (this * resources.displayMetrics.density).toInt()
+
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun openAnotherApp(packageName: String) {
+        val packageManager = requireActivity().packageManager
+        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
+        if (launchIntent != null) {
+            startActivity(launchIntent)
+        } else {
+            Toaster.show("未检测到游戏安装")
+        }
+    }
 }

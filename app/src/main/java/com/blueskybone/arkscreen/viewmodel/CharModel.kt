@@ -1,7 +1,6 @@
 package com.blueskybone.arkscreen.viewmodel
 
 import android.net.Uri
-import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,8 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.CharAllMap
 import com.blueskybone.arkscreen.DataUiState
-import com.blueskybone.arkscreen.Progress
-import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoConnectionTask
+import com.blueskybone.arkscreen.network.NetWorkTask.Companion.getGameInfoTask
 import com.blueskybone.arkscreen.playerinfo.Operator
 import com.blueskybone.arkscreen.playerinfo.compareOperators
 import com.blueskybone.arkscreen.playerinfo.getOperatorData
@@ -18,7 +16,6 @@ import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.ui.recyclerview.ViewType
 import com.blueskybone.arkscreen.util.readFileAsJsonNode
-import com.fasterxml.jackson.databind.node.ObjectNode
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,8 +33,7 @@ import java.io.IOException
 class CharModel : ViewModel() {
     private val prefManager: PrefManager by getKoin().inject()
 
-    val importingBackup = MutableLiveData<Progress>()
-    val exportingBackup = MutableLiveData<Progress>()
+//    val exportingBackup = MutableLiveData<Progress>() //导出进度（未实装）
 
     private val _uiState = MutableLiveData<DataUiState>()
     val uiState: LiveData<DataUiState> get() = _uiState
@@ -53,6 +49,9 @@ class CharModel : ViewModel() {
 
     private val _currentViewType = MutableLiveData<ViewType>()
     val currentViewType: LiveData<ViewType> = _currentViewType
+
+    private val _update = MutableLiveData<String>()
+    val update: LiveData<String> get() = _update
 
     //切换视图
     fun toggleViewType() {
@@ -130,6 +129,7 @@ class CharModel : ViewModel() {
             _uiState.value = DataUiState.Loading("加载中...")
             withContext(Dispatchers.IO) {
                 loadCharAssets()
+                _update.postValue(CharAllMap.updateTime())
             }
             val type = prefManager.assetsViewType.get()
             _currentViewType.value = ViewType.entries[type]
@@ -223,7 +223,7 @@ class CharModel : ViewModel() {
     }
 
     private suspend fun postCharsAssets(account: AccountSk) {
-        val response = getGameInfoConnectionTask(account)
+        val response = getGameInfoTask(account)
         if (!response.isSuccessful) throw Exception("!response.isSuccessful")
         response.body() ?: throw Exception("response empty")
         charList = getOperatorData(response.body()!!)
@@ -265,11 +265,11 @@ class CharModel : ViewModel() {
 
     /*
     * char name, rarity, profession, subProfession, level, evol, potnetialRank, mainskill, favorPercent,
-* gainTime, speciallevel@speciallevel, name-level@name-level@name-level
+    * gainTime, speciallevel@speciallevel, name-level@name-level@name-level
     * */
     fun exportTxt(uri: Uri) {
         viewModelScope.launch {
-            exportingBackup.value = Progress(true, 0, 0, true)
+//            exportingBackup.value = Progress(true, 0, 0, true)
             withContext(Dispatchers.IO) {
                 try {
                     val content = StringBuilder()
@@ -289,7 +289,7 @@ class CharModel : ViewModel() {
                     Toaster.show("导出失败：" + e.message)
                 }
             }
-            exportingBackup.value = Progress(false, 0, 0, false)
+//            exportingBackup.value = Progress(false, 0, 0, false)
             Toaster.show("导出完成")
         }
     }

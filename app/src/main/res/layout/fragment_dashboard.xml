@@ -14,129 +14,46 @@
             style="@style/TextView.Headline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/function" />
-
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/PreferenceHeader"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:text="@string/skland_account_manage" />
-                <ImageView
-                    android:id="@+id/SkInfo"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_info" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/AddAccountSk"
-                style="@style/PreferenceHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="@string/add" />
-            <!--            <ImageView-->
-            <!--                android:id="@+id/AddAccount"-->
-            <!--                android:layout_width="14dp"-->
-            <!--                android:layout_height="14dp"-->
-            <!--                android:layout_marginEnd="20dp"-->
-            <!--                android:layout_gravity="center|end"-->
-            <!--                android:contentDescription="@null"-->
-            <!--                android:src="@drawable/ic_plus" />-->
-        </FrameLayout>
-
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/RecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-        </com.google.android.material.card.MaterialCardView>
+            android:text="@string/config" />
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/PreferenceHeader"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:text="@string/gacha_account_manage" />
-
-                <ImageView
-                    android:id="@+id/GcInfo"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_info" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/AddAccountGc"
-                style="@style/PreferenceHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="@string/add" />
-            <!--            <ImageView-->
-            <!--                android:id="@+id/AddAccountGc"-->
-            <!--                android:layout_width="14dp"-->
-            <!--                android:layout_height="14dp"-->
-            <!--                android:layout_marginEnd="20dp"-->
-            <!--                android:layout_gravity="center|end"-->
-            <!--                android:contentDescription="@null"-->
-            <!--                android:src="@drawable/ic_plus" />-->
-        </FrameLayout>
-
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/RecyclerViewGc"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-        </com.google.android.material.card.MaterialCardView>
-
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp">
 
             <TextView
                 style="@style/PreferenceHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
+                android:layout_gravity="start|center"
                 android:text="@string/quick_recruit" />
 
-            <TextView
-                android:id="@+id/RecruitVideo"
-                style="@style/PreferenceHeader"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:text="@string/recruit_video" />
+                android:layout_marginEnd="16dp">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/OverlayPermissionChip"
+                    style="@style/Widget.MyApp.Chip.Suggestion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/permission"
+                    app:chipIcon="@drawable/ic_info" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/RecruitVideo"
+                    style="@style/Widget.MyApp.Chip.Assist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/recruit_video"
+                    app:chipIcon="@drawable/ic_play" />
+
+            </LinearLayout>
+
 
         </FrameLayout>
 
@@ -147,9 +64,10 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+
                 <include
                     android:id="@+id/RecruitMode"
-                    layout="@layout/preference" />
+                    layout="@layout/preference_value" />
 
                 <include
                     android:id="@+id/FloatWindowAppearance"
@@ -158,25 +76,57 @@
 
                 <include
                     android:id="@+id/ScreenShotDelay"
-                    layout="@layout/preference_seekbar"
-                    android:visibility="gone" />
+                    layout="@layout/preference_sub_value" />
 
                 <include
                     android:id="@+id/OverlayPermission"
-                    layout="@layout/preference" />
+                    layout="@layout/preference"
+                    android:visibility="gone" />
 
                 <include
                     android:id="@+id/NotifyPermission"
-                    layout="@layout/preference" />
+                    layout="@layout/preference"
+                    android:visibility="gone" />
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
-        <TextView
-            style="@style/PreferenceHeader"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/widget" />
+            android:paddingTop="16dp">
+
+            <TextView
+                style="@style/PreferenceHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center"
+                android:text="@string/widget" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/WidgetPermission"
+                style="@style/Widget.MyApp.Chip.Suggestion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/permission"
+                app:chipIcon="@drawable/ic_info" />
+
+            <ImageView
+                android:id="@+id/WidgetInfo"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_info"
+                android:visibility="gone" />
+            <!--            </LinearLayout>-->
+
+        </FrameLayout>
+
 
         <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
 
@@ -185,23 +135,28 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <androidx.appcompat.widget.SwitchCompat
+                <!--                <androidx.appcompat.widget.SwitchCompat-->
+                <!--                    android:id="@+id/AutoAttendance"-->
+                <!--                    style="@style/SwitchPreference"-->
+                <!--                    android:text="@string/skland_auto_attendance" />-->
+                <include
                     android:id="@+id/AutoAttendance"
-                    style="@style/SwitchPreference"
-                    android:text="@string/skland_auto_attendance"
-                    android:visibility="gone" />
+                    layout="@layout/preference_switch" />
 
                 <include
                     android:id="@+id/PowerSavingMode"
-                    layout="@layout/preference_switch" />
+                    layout="@layout/preference_sub_switch" />
 
 
-                <TextView
+                <include
                     android:id="@+id/WidgetAppearance"
-                    style="@style/Preference"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/widget_appearance" />
+                    layout="@layout/preference_icon" />
+                <!--                <TextView-->
+                <!--                    android:id="@+id/WidgetAppearance"-->
+                <!--                    style="@style/Preference"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:text="@string/widget_appearance" />-->
 
                 <include
                     android:id="@+id/WidgetRefresh"
@@ -210,17 +165,37 @@
 
                 <include
                     android:id="@+id/TurnOffBatteryOptimization"
-                    layout="@layout/preference" />
+                    layout="@layout/preference"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
-        <TextView
-            style="@style/PreferenceHeader"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/auto_attendance" />
+            android:paddingTop="16dp">
+
+            <TextView
+                style="@style/PreferenceHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center"
+                android:text="@string/auto_attendance" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/AttdPermission"
+                style="@style/Widget.MyApp.Chip.Suggestion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/permission"
+                app:chipIcon="@drawable/ic_info" />
+
+        </FrameLayout>
 
         <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
 
@@ -231,15 +206,16 @@
 
                 <include
                     android:id="@+id/BackAutoAtd"
-                    layout="@layout/preference_switch" />
+                    layout="@layout/preference_sub_switch" />
 
                 <include
                     android:id="@+id/SetAtdTime"
-                    layout="@layout/preference" />
+                    layout="@layout/preference_sub_value" />
 
                 <include
                     android:id="@+id/OpenAutoStartSettings"
-                    layout="@layout/preference" />
+                    layout="@layout/preference"
+                    android:visibility="gone" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>

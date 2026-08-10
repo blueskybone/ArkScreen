@@ -26,6 +26,72 @@
 
             <com.google.android.material.card.MaterialCardView
                 style="@style/CardViewContent"
+                android:layout_height="wrap_content">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center|start"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/Avatar"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginStart="10dp"
+                            android:background="@color/LightBlue200"
+                            android:padding="2dp"
+                            android:src="@drawable/char_ex_blaze"
+                            app:shapeAppearanceOverlay="@style/CircularImageView"
+                            app:strokeColor="@color/LightBlue200"
+                            app:strokeWidth="2dp" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:id="@+id/NickName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="?attr/colorPrimary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/LastLogin"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/Level"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="0dp"
+                        android:background="@drawable/stroke"
+                        android:padding="2dp"
+                        android:text="Lv120"
+                        android:textColor="@color/white"
+                        android:textSize="10sp" />
+                </FrameLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/CardViewContent"
                 android:visibility="visible">
 
                 <LinearLayout
@@ -33,138 +99,98 @@
                     android:layout_height="wrap_content"
                     android:baselineAligned="false"
                     android:orientation="horizontal"
+                    android:gravity="center"
                     android:padding="10dp">
 
 
-                    <FrameLayout
+
+
+                    <GridLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start|center"
+                        android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:orientation="horizontal">
+                        android:columnCount="1"
+                        android:padding="10dp"
+                        android:rowCount="2">
+
+                        <include
+                            android:id="@+id/Recruit"
+                            layout="@layout/info_card"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_columnWeight="1" />
+
+                        <include
+                            android:id="@+id/RecruitReFresh"
+                            layout="@layout/info_card"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_columnWeight="1" />
+                    </GridLayout>
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                            android:id="@+id/CircularProgressBar"
+                            android:layout_width="140dp"
+                            android:layout_height="140dp"
+                            app:cpb_background_progressbar_color="@color/transparent"
+                            app:cpb_background_progressbar_width="5dp"
+                            app:cpb_progress_direction="to_right"
+                            app:cpb_progressbar_color="@color/cyan_trans"
+                            app:cpb_progressbar_width="5dp"
+                            app:cpb_progress="12"
+                            app:cpb_round_border="false" />
 
                         <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <com.google.android.material.imageview.ShapeableImageView
-                                android:id="@+id/Avatar"
-                                android:layout_width="60dp"
-                                android:layout_height="60dp"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_marginStart="10dp"
-                                android:background="@color/LightBlue200"
-                                android:padding="2dp"
-                                android:src="@drawable/char_ex_blaze"
-                                app:shapeAppearanceOverlay="@style/CircularImageView"
-                                app:strokeColor="@color/LightBlue200"
-                                app:strokeWidth="2dp" />
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:orientation="vertical">
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:padding="5dp">
+                                android:layout_gravity="center"
+                                android:orientation="horizontal">
 
                                 <TextView
-                                    android:id="@+id/NickName"
+                                    android:id="@+id/Ap"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:text="-"
+                                    android:textAppearance="?attr/textAppearanceHeadline3"
                                     android:textColor="?attr/colorPrimary"
-                                    android:textSize="14sp"
                                     android:textStyle="bold" />
 
                                 <TextView
-                                    android:id="@+id/LastLogin"
+                                    android:id="@+id/ApMax"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textSize="12sp" />
+                                    android:layout_gravity="end|bottom"
+                                    android:text="/-"
+                                    android:textAppearance="?attr/textAppearanceBody1"
+                                    android:textStyle="bold" />
                             </LinearLayout>
-                        </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/Level"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="0dp"
-                            android:background="@drawable/stroke"
-                            android:padding="2dp"
-                            android:text="Lv120"
-                            android:textColor="@color/white"
-                            android:textSize="10sp" />
+                            <View
+                                android:id="@+id/Line"
+                                android:layout_width="100dp"
+                                android:layout_height="1dp"
+                                android:layout_gravity="center"
+                                android:background="?android:attr/listDivider" />
+
+                            <TextView
+                                android:id="@+id/ApResTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center" />
+                        </LinearLayout>
                     </FrameLayout>
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/Ap"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="-"
-                                android:textAppearance="?attr/textAppearanceHeadline3"
-                                android:textColor="?attr/colorPrimary"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/ApMax"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="end|bottom"
-                                android:text="/-"
-                                android:textAppearance="?attr/textAppearanceBody1"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <View
-                            android:id="@+id/Line"
-                            android:layout_width="80dp"
-                            android:layout_height="1dp"
-                            android:layout_gravity="center"
-                            android:background="?android:attr/listDivider" />
-
-                        <TextView
-                            android:id="@+id/ApResTime"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center" />
-                    </LinearLayout>
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
-
-                <GridLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:columnCount="2"
-                    android:padding="10dp"
-                    android:rowCount="1">
-
-                    <include
-                        android:id="@+id/Recruit"
-                        layout="@layout/info_card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1" />
-
-                    <include
-                        android:id="@+id/RecruitReFresh"
-                        layout="@layout/info_card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1" />
-                </GridLayout>
-
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
@@ -264,9 +290,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:paddingStart="16dp"
+                android:paddingStart="32dp"
                 android:paddingTop="8dp"
-                android:paddingEnd="16dp"
+                android:paddingEnd="32dp"
                 android:paddingBottom="8dp">
 
                 <View

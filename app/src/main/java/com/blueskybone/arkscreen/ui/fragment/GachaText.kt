@@ -9,12 +9,10 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.databinding.FragmentGachaTextBinding
 import com.blueskybone.arkscreen.ui.model.GachaInfo
 import com.blueskybone.arkscreen.ui.recyclerview.GachaTextAdapter
-import com.blueskybone.arkscreen.viewmodel.BaseModel
 import com.blueskybone.arkscreen.viewmodel.GachaModel
 
 class GachaText : Fragment() {

@@ -35,3 +35,21 @@ data object Attendance : FuncChipInfo {
     override val icon = R.drawable.ic_check
     override val iconColor = R.color.blue_500
 }
+
+data object AccountManager : FuncChipInfo {
+    override val title = R.string.account_manager
+    override val icon = R.drawable.ic_user
+    override val iconColor = R.color.blue_500
+}
+
+data object GameStarter : FuncChipInfo {
+    override val title = R.string.game_starter
+    override val icon = R.drawable.ic_notf_point
+    override val iconColor = R.color.blue_500
+}
+
+data object UserManual : FuncChipInfo {
+    override val title = R.string.manual
+    override val icon = R.drawable.ic_question
+    override val iconColor = R.color.blue_500
+}

@@ -6,11 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.APP
-import com.blueskybone.arkscreen.CharAllMap
 import com.blueskybone.arkscreen.DataUiState
 import com.blueskybone.arkscreen.Progress
 import com.blueskybone.arkscreen.network.NetWorkTask.Companion.pullNewRecords
-import com.blueskybone.arkscreen.network.announceUrl
 import com.blueskybone.arkscreen.playerinfo.Gachas
 import com.blueskybone.arkscreen.playerinfo.Records
 import com.blueskybone.arkscreen.preference.PrefManager
@@ -20,23 +18,17 @@ import com.blueskybone.arkscreen.room.Gacha
 import com.blueskybone.arkscreen.room.GachaWithNum
 import com.blueskybone.arkscreen.ui.model.GachaInfo
 import com.blueskybone.arkscreen.util.TimeUtils.getTimeStrYMD
-import com.fasterxml.jackson.databind.JsonNode
+import com.blueskybone.arkscreen.util.toCate
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.node.ArrayNode
-import com.fasterxml.jackson.databind.node.ObjectNode
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import org.koin.java.KoinJavaComponent.getKoin
-import org.w3c.dom.ls.LSInput
 import timber.log.Timber
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
-import kotlin.math.sin
 
 /**
  *   Created by blueskybone
@@ -55,13 +47,11 @@ class GachaModel : ViewModel() {
 
     private val database = ArkDatabase.getDatabase(APP)
     private val gachaDao = database.getGachaDao()
-    private val accountGcDao = database.getAccountGcDao()
 
     private val _gachaData = MutableLiveData<List<Gachas>>()
     val gachaData: LiveData<List<Gachas>> get() = _gachaData
 
     private val _gachaRecords = MutableLiveData<List<Gacha>>()
-    val gachaRecords: LiveData<List<Gacha>> get() = _gachaRecords
 
     private val _gachaRecordsCount = MutableLiveData<List<GachaWithNum>>()
     val gachaRecordsCount: LiveData<List<GachaWithNum>> get() = _gachaRecordsCount
@@ -69,10 +59,8 @@ class GachaModel : ViewModel() {
     private val _gachaInfoList = MutableLiveData<List<GachaInfo>>()
     val gachaInfoList: LiveData<List<GachaInfo>> get() = _gachaInfoList
 
-    private var fesPool: List<String>? = null
     private var gachaRecordsList: List<GachaWithNum> = mutableListOf()
 
-    private lateinit var charsNode: JsonNode
     var poolCountNormal = 0
     var poolCountFes = 0
     var poolCountCore = 0
@@ -140,18 +128,6 @@ class GachaModel : ViewModel() {
                 .thenByDescending { it.gacha.pos }
         )
     }
-
-    //数据库偷数据。
-    //pull新数据
-    //合并
-    //更新数据库 （ts, pos, uid）
-    //从数据库获取历史寻访数据[uid]
-//    private suspend fun loadGachaRecords(account: AccountGc) {
-//        val list = gachaDao.getByUid(account.uid)
-//        val ts = if (list.isEmpty()) null else list.last().ts
-//        val newList = getNewRecords(account.token, account.channelMasterId, account.uid, ts)
-//        gachaDao.insert(newList.reversed())
-//    }
 
     private suspend fun loadLocalRecords(account: AccountGc): List<Gacha> {
         return gachaDao.getByUid(account.uid)
@@ -290,9 +266,9 @@ class GachaModel : ViewModel() {
 
     private fun processGachaCount(recordsDb: List<Gacha>): List<GachaWithNum> {
         val gachaList = mutableListOf<GachaWithNum>()
-        //先按照Gacha.poolId分类，然后在每一个list中倒序排序List<Gacha>.sortByTsAndPosDescending().reversed()。
+        // 先按照Gacha.poolId分类，然后在每一个list中倒序排序List<Gacha>.sortByTsAndPosDescending().reversed()。
         // 然后遍历，维护两个值countSum和countNum。具体规则：countSum每次+1；countNum每次+1,遇到rarity == 6时归零。然后创建GachaWithNum
-        //最后把所有的list再次收集起来,倒序排序返回
+        // 最后把所有的list再次收集起来,倒序排序返回
         recordsDb.groupBy { it.poolId }.map { (_, list) ->
             val newList = list.sortByTsAndPosDescending().reversed()
             var countSum = 0
@@ -322,41 +298,7 @@ class GachaModel : ViewModel() {
         if (poolId == "ALL") return recordsDb
         return recordsDb.filter { it.gacha.poolId == poolId }
     }
-//    private fun deserialize(string: String): List<Record> {
-//        val list =
-//            string.split("@".toRegex()).dropLastWhile { it.isEmpty() }
-//                .toTypedArray()
-//        val records = mutableListOf<Record>()
-//        for (item in list) {
-//            val arrays = item.split("-".toRegex()).dropLastWhile { it.isEmpty() }
-//                .toTypedArray()
-//            records.add(Record(arrays[0], arrays[1].toInt(), arrays[2].toBoolean()))
-//        }
-//        return records
-//    }
 
-//    private fun deserializeLine(line: String, uid: String): Gacha {
-//        val list =
-//            line.split(",".toRegex()).dropLastWhile { it.isEmpty() }
-//                .toTypedArray()
-//        val recordStr = list[2]
-//
-//        return Gacha(uid = uid, ts = list[0].toLong(), pool = list[1], record = list[2])
-//    }
-
-    //ts, poolname, records: name, rarity, isNew
-    //单独判断 records split.list.size
-    //    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    //    var poolId: String = "UN",
-    //    val uid: String,
-    //    val ts: Long,
-    //    val pool: String,
-    //    val charName: String,
-    //    val charId: String,
-    //    val rarity: Int,
-    //    val isNew: Boolean,
-    //    var pos: Int = 0
-    //测试内容
     fun deleteRecords() {
         executeAsync {
             gachaDao.deleteByUid(curAccount.uid)
@@ -389,18 +331,6 @@ class GachaModel : ViewModel() {
         initialize()
     }
 
-    //TODO:抽出成utils.func
-    private fun String.toCate(): String {
-        if (this.startsWith("LIMITED") || this.startsWith("LINKAGE")) return "LIMITED"
-        if (this.startsWith("CLASSIC")) return "CLASSIC"
-        if (this.startsWith("SINGLE") ||
-            this.startsWith("DOUBLE") ||
-            this.startsWith("SPECIAL") ||
-            this.startsWith("NORM")
-        ) return "NORMAL"
-        return "UN"
-    }
-
     fun exportTxt(uri: Uri) {
         viewModelScope.launch {
             exportingBackup.value = Progress(true, 0, 0, true)
@@ -408,6 +338,7 @@ class GachaModel : ViewModel() {
                 try {
                     val dataList = gachaDao.getByUid(curAccount.uid).asReversed()
                     val content = StringBuilder()
+                    content.append("ARKSCREEN,${System.currentTimeMillis()},${curAccount.uid}")
                     content.append(dataList.joinToString("\n") { data ->
                         "${data.poolId},${data.poolCate},${data.ts},${data.pool},${data.charName},${data.charId},${data.rarity},${data.isNew},${data.pos}"
                     })
@@ -446,89 +377,118 @@ class GachaModel : ViewModel() {
     }
 
     //读取：完成后合并本地数据，删除重复数据，
-//    fun importData(uri: Uri) {
-//        viewModelScope.launch {
-//            importingBackup.value = Progress(true, 0, 0, true)
-//            val newList: List<Gacha>
-//            try {
-//                newList = withContext(Dispatchers.IO) {
-//                    when (APP.contentResolver.getType(uri)) {
-//                        "text/plain" -> readTextFile(uri) // 对于TXT文件
-//                        "application/json" -> readJsonFile(uri) // 对于JSON文件
-//                        else -> throw Exception("Unsupported file type")
-//                    }
-//                }
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//                Toaster.show("读取失败：" + e.message)
-//                return@launch
-//            }
-//            Toaster.show("读取成功，处理中")
-//
-//            _uiState.value = DataUiState.Loading("LOADING...")
-//            importingBackup.value = Progress(true, 5, 10, true)
-//
-//            val oldList = withContext(Dispatchers.IO) {
-//                gachaDao.getByUid(curAccount.uid)
-//            }
-//            val combinedList = (newList + oldList).distinctBy { it.ts }.sortedBy { it.ts }
-//            withContext(Dispatchers.IO) {
-//                gachaDao.deleteByUid(curAccount.uid)
-//                gachaDao.insert(combinedList)
-//            }
-//
-//            importingBackup.value = Progress(true, 7, 10, true)
-//            withContext(Dispatchers.IO) {
-//                _gachaData.postValue(processGachaData(curAccount))
-//            }
-//            importingBackup.value = Progress(true, 10, 10, true)
-//            _uiState.value = DataUiState.Success("")
-//        }
-//    }
-//
-    //考虑格式问题先不支持
-//
-//    private fun readTextFile(uri: Uri): List<Gacha> {
-//        return APP.contentResolver.openInputStream(uri)?.use { inputStream ->
-//            BufferedReader(InputStreamReader(inputStream)).use { reader ->
-//                reader.lineSequence() // 使用 lineSequence() 代替 forEachLine，使其更具可读性
-//                    .map { line -> deserializeLine(line, curAccount.uid) }
-//                    .toList() // 直接将结果转为 List
-//            }
-//        } ?: emptyList()
-//    }
-//
-//    private fun readJsonFile(uri: Uri): List<Gacha> {
-//        val gachaList = mutableListOf<Gacha>()
-//        APP.contentResolver.openInputStream(uri)?.use { inputStream ->
-//            var dataNode = ObjectMapper().readTree(inputStream)
-//            if (dataNode.has("data")) {
-//                dataNode = dataNode["data"]
-//            }
-//            dataNode.fieldNames().forEach { fieldName ->
-//                val gachaNode = dataNode.get(fieldName)
-//                val cNode = gachaNode.get("c")
-//                val pool = gachaNode.get("p").asText()
-//                val ts = fieldName.toLong()
-//                val recordStr = StringBuilder()
-//                cNode.forEach { node ->
-//                    recordStr.append(node[0].asText()).append("-")
-//                        .append(node[1].asInt()).append("-")
-//                        .append(node[2].asInt() == 1).append("@")
-//                }
-//                recordStr.deleteCharAt(recordStr.length - 1)
-//                gachaList.add(
-//                    Gacha(
-//                        uid = curAccount.uid,
-//                        ts = ts,
-//                        pool = pool,
-//                        record = recordStr.toString()
-//                    )
-//                )
-//            }
-//        }
-//        return gachaList
-//    }
+    fun importData(uri: Uri) {
+        viewModelScope.launch {
+            importingBackup.value = Progress(true, 0, 0, true)
+            val newList: List<Gacha>
+            try {
+                newList = withContext(Dispatchers.IO) {
+                    when (APP.contentResolver.getType(uri)) {
+                        "text/plain" -> readTextFile(uri) // 对于TXT文件
+                        "application/json" -> readJsonFile(uri) // 对于JSON文件
+                        else -> throw Exception("Unsupported file type")
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toaster.show("读取失败：" + e.message)
+                return@launch
+            }
+            Toaster.show("读取成功，处理中")
+
+            _uiState.value = DataUiState.Loading("LOADING...")
+            importingBackup.value = Progress(true, 5, 10, true)
+
+            val oldList = withContext(Dispatchers.IO) {
+                gachaDao.getByUid(curAccount.uid)
+            }
+            val combinedList = (newList + oldList).distinctBy { "${it.ts}-${it.pos}" }.sortedBy { it.ts }
+            withContext(Dispatchers.IO) {
+                gachaDao.deleteByUid(curAccount.uid)
+                gachaDao.insert(combinedList)
+            }
+
+            importingBackup.value = Progress(true, 7, 10, true)
+            withContext(Dispatchers.IO) {
+                initialize()
+            }
+            importingBackup.value = Progress(true, 10, 10, true)
+            _uiState.value = DataUiState.Success("")
+        }
+    }
+
+    private fun readTextFile(uri: Uri): List<Gacha> {
+        val gachaList: List<Gacha>
+        try{
+            gachaList =  APP.contentResolver.openInputStream(uri)?.use { inputStream ->
+                BufferedReader(InputStreamReader(inputStream)).use { reader ->
+                    val lines = reader.lineSequence()
+                    // 单独处理第一行
+                    val firstLine = lines.first()
+                    val info = firstLine.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                        .toTypedArray()
+                    val uid = info[2]
+                    // 处理剩余的行（跳过第一行）
+                    lines.drop(1) // 跳过第一行
+                        .map { line -> deserializeLine(line,uid) }
+                        .toList()
+                }
+            } ?: emptyList()
+        }catch (e : Exception){
+            Timber.e(e)
+            throw Exception("text文件导入失败：${e.message}")
+        }
+        return gachaList
+    }
+
+    private fun deserializeLine(line: String,uid: String): Gacha {
+        val list = line.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                .toTypedArray()
+        return Gacha(
+            uid = uid,
+            poolId = list[0],
+            poolCate =  list[1],
+            ts = list[2].toLong(),
+            pool =  list[3],
+            charName =  list[4],
+            charId = list[5],
+            rarity = list[6].toInt(),
+            isNew = list[7].toBoolean(),
+            pos = list[8].toInt(),
+        )
+    }
+
+    private fun readJsonFile(uri: Uri): List<Gacha> {
+        val gachaList = mutableListOf<Gacha>()
+        try {
+            APP.contentResolver.openInputStream(uri)?.use { inputStream ->
+                var dataNode = ObjectMapper().readTree(inputStream)
+                val infoNode = dataNode["info"]
+                val uid = infoNode.get("uid").asText()
+                dataNode = dataNode["data"]
+                dataNode.toList().forEach { record ->
+                    gachaList.add(
+                        Gacha(
+                            uid = uid,
+                            poolId = record.get("poolId").asText(),
+                            poolCate = record.get("poolCate").asText(),
+                            ts = record.get("ts").asLong(),
+                            pool = record.get("pool").asText(),
+                            charName = record.get("charName").asText(),
+                            charId = record.get("charId").asText(),
+                            rarity = record.get("rarity").asInt(),
+                            isNew = record.get("isNew").asBoolean(),
+                            pos = record.get("pos").asInt(),
+                        )
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            Timber.e(e.message)
+            throw Exception(e.message)
+        }
+        return gachaList
+    }
 
     private fun generateCustomJson(dataList: List<Gacha>, uid: String): String {
         val mapper = ObjectMapper()
@@ -553,26 +513,6 @@ class GachaModel : ViewModel() {
             gachaNode.put("pos", gacha.pos)
         }
         return mapper.writeValueAsString(root)
-    }
-
-    private suspend fun getPoolType(): List<String> {
-        val client = OkHttpClient()
-        val request = Request.Builder().url(announceUrl).build()
-        return withContext(Dispatchers.IO) {
-            client.newCall(request).execute().use { response ->
-                response.body?.string().let { resp ->
-                    try {
-                        val poolList = mutableListOf<String>()
-                        val list = ObjectMapper().readTree(resp).at("/fes")
-                        for (item in list) poolList.add(item.asText())
-                        poolList
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        emptyList()
-                    }
-                }
-            }
-        }
     }
 
 }

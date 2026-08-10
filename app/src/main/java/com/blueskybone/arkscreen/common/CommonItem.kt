@@ -2,6 +2,7 @@ package com.blueskybone.arkscreen.common
 
 import android.content.Context
 import android.graphics.Color
+import android.view.ContextThemeWrapper
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -16,6 +17,7 @@ import androidx.core.view.marginBottom
 import androidx.core.view.updateMargins
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.util.dpToPx
+import com.google.android.material.chip.Chip
 import com.nex3z.flowlayout.FlowLayout
 
 /**
@@ -218,4 +220,20 @@ fun getRadioButton(context: Context): RadioButton {
         val margin = (dpToPx(5))
         (layoutParams as? ViewGroup.MarginLayoutParams)?.setMargins(margin, margin, margin, margin)
     }
+}
+
+
+fun getChip(context: Context, text: String, theme: Int = R.style.Theme_ChipOverlayRare3): Chip {
+    val themedContext = ContextThemeWrapper(context, theme)
+    val dynamicChip =
+        Chip(themedContext, null, com.google.android.material.R.attr.chipStyle).apply {
+            this.text = text
+            id = View.generateViewId()
+        }
+    val layoutParams = LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
+    )
+    layoutParams.setMargins(dpToPx(context, 5F).toInt(), 0, 0, 0)
+    dynamicChip.layoutParams = layoutParams
+    return dynamicChip
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/settingScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,35 +8,59 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
 
         <TextView
             style="@style/TextView.Headline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/setting" />
+            android:text="@string/more" />
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:src="@mipmap/ic_rosm" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:text="@string/app_name" />
 
         <include
             android:id="@+id/AppTheme"
             layout="@layout/preference" />
 
+
+        <!--        <androidx.appcompat.widget.SwitchCompat-->
+        <!--            android:id="@+id/ShowHomeAnnounce"-->
+        <!--            style="@style/SwitchPreference"-->
+        <!--            android:text="@string/show_home_announce" />-->
+
+        <!--        <androidx.appcompat.widget.SwitchCompat-->
+        <!--            android:id="@+id/AutoUpdateApp"-->
+        <!--            style="@style/SwitchPreference"-->
+        <!--            android:text="@string/auto_check_update" />-->
         <include
-            android:id="@+id/UseInnerWeb"
+            android:id="@+id/ShowHomeAnnounce"
             layout="@layout/preference_switch" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/ShowHomeAnnounce"
-            style="@style/SwitchPreference"
-            android:text="@string/show_home_announce" />
-
-        <androidx.appcompat.widget.SwitchCompat
+        <include
             android:id="@+id/AutoUpdateApp"
-            style="@style/SwitchPreference"
-            android:text="@string/auto_check_update" />
+            layout="@layout/preference_switch" />
+
+        <include
+            android:id="@+id/UseInnerWeb"
+            layout="@layout/preference_sub_switch" />
 
         <include
             android:id="@+id/TimeCorrect"
-            layout="@layout/preference_switch" />
+            layout="@layout/preference_sub_switch" />
 
         <View
             android:layout_width="match_parent"
@@ -46,21 +69,14 @@
 
         <TextView
             style="@style/PreferenceHeader"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="@string/about" />
 
         <include
             android:id="@+id/CheckUpdate"
             layout="@layout/preference" />
-
-
-        <TextView
-            android:id="@+id/OpenSourceLicense"
-            style="@style/Preference"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/open_license" />
 
         <include
             android:id="@+id/GroupChat"
@@ -74,8 +90,9 @@
 
         <TextView
             style="@style/PreferenceHeader"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="@string/logs_option" />
 
         <TextView
@@ -92,6 +109,24 @@
             android:layout_height="wrap_content"
             android:text="@string/clean_logs" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+
+        <TextView
+            style="@style/PreferenceHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/others" />
+
+        <TextView
+            android:id="@+id/OpenSourceLicense"
+            style="@style/Preference"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/open_license" />
 
         <TextView
             android:id="@+id/FeedBack"
@@ -100,23 +135,13 @@
             android:layout_height="wrap_content"
             android:text="@string/send_feedback" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider" />
-
-        <TextView
-            style="@style/PreferenceHeader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/others" />
-
         <TextView
             android:id="@+id/Manual"
             style="@style/Preference"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/manual" />
+            android:text="@string/manual"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/Donate"

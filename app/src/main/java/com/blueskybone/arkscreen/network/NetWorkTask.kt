@@ -1,56 +1,55 @@
 package com.blueskybone.arkscreen.network
 
 
-import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.createAccountSkList
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.doAttendance
-import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getBasicInfo
+import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.doAttendanceForEndfield
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getCredByGrant
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getFirstPageRecords
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getGachaCate
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getGrantByToken
 import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getMorePageRecords
+import com.blueskybone.arkscreen.network.RetrofitUtils.Companion.getPlayerBinding
+import com.blueskybone.arkscreen.network.model.BindingResponse
 import com.blueskybone.arkscreen.network.model.PlayerInfoResp
+import com.blueskybone.arkscreen.room.AccountEf
 import com.blueskybone.arkscreen.room.AccountGc
 import com.blueskybone.arkscreen.room.AccountSk
 import com.blueskybone.arkscreen.room.Gacha
+import com.blueskybone.arkscreen.util.generateDId
+import com.blueskybone.arkscreen.util.toCate
 import retrofit2.Response
+import timber.log.Timber
 
 /**
  *   Created by blueskybone
  *   Date: 2025/1/14
  */
 
+/*
+* 简单的对鹰角api的复杂流程进行封装，隐藏鉴权的细节，
+* 外部只需要调用对应的功能函数，在外部的范围处理返回
+* */
+
 class NetWorkTask {
     companion object {
-        @Throws(Exception::class)
-        suspend fun createAccountList(token: String, dId: String): List<AccountSk> {
-            val credAndToken = getCredCode(token, dId)
-            return createAccountSkList(
-                credAndToken.cred,
-                credAndToken.token,
-                token,
-                dId
-            )
-        }
 
-        suspend fun createGachaAccount(
-            channelMasterId: Int,
+        suspend fun getSklandUserBinding(
             token: String,
-            akUserCenter: String,
-            xrToken: String
-        ): AccountGc? {
-            return getBasicInfo(channelMasterId, token, akUserCenter, xrToken)
+            dId: String
+        ): Response<BindingResponse> {
+            val credAndToken = getCredCode(token, dId)
+            return getPlayerBinding(credAndToken.cred, credAndToken.token, dId)
         }
 
         @Throws(Exception::class)
-        suspend fun getGameInfoConnectionTask(accountSk: AccountSk): Response<PlayerInfoResp> {
+        suspend fun getGameInfoTask(accountSk: AccountSk): Response<PlayerInfoResp> {
             val credAndToken = getCredCode(accountSk)
-            return RetrofitUtils.getGameInfoConnection(
+            return RetrofitUtils.getGameInfo(
                 credAndToken,
-                accountSk.uid
+                accountSk.uid,
+                accountSk.dId
             )
         }
-
 
         suspend fun sklandAttendance(accountSk: AccountSk): String {
             val credAndToken = getCredCode(accountSk)
@@ -58,40 +57,44 @@ class NetWorkTask {
                 credAndToken.cred,
                 credAndToken.token,
                 accountSk.uid,
-                accountSk.channelMasterId
+                accountSk.channelMasterId,
+                accountSk.dId
             )
+        }
+
+
+        suspend fun endfieldAttendance(accountEf: AccountEf): String {
+            val credAndToken = getCredCode(accountEf.token, accountEf.dId)
+            try{
+                doAttendanceForEndfield(
+                    credAndToken.cred,
+                    credAndToken.token,
+                    accountEf.dId,
+                    accountEf.roleId,
+                    accountEf.serverId
+                )
+                return "成功"
+            }catch (e:Exception){
+                Timber.e(e.message)
+                return "签到失败"
+            }
         }
 
         @Throws(Exception::class)
         private suspend fun getCredCode(accountSk: AccountSk): CredAndToken {
-            val grant = getGrantByToken(accountSk.token)
-            return getCredByGrant(grant, accountSk.dId)
+            val dId1 = generateDId()
+            val grant = getGrantByToken(accountSk.token, dId1)
+            val dId2 = generateDId()
+            return getCredByGrant(grant, dId2)
         }
 
         @Throws(Exception::class)
         private suspend fun getCredCode(token: String, dId: String): CredAndToken {
-            val grant = getGrantByToken(token)
-            return getCredByGrant(grant, dId)
+            val dId1 = generateDId()
+            val grant = getGrantByToken(token, dId1)
+            val dId2 = generateDId()
+            return getCredByGrant(grant, dId2)
         }
-
-//        suspend fun getNewRecords(
-//            token: String,
-//            channelMasterId: Int,
-//            uid: String,
-//            lastTs: Long?
-//        ): List<Gacha> {
-//            val newRecords = mutableListOf<Gacha>()
-//            for (page in 1..100) {
-//                val records =
-//                    getGachaRecords(page, token, channelMasterId, uid) ?: return newRecords
-//                for (record in records) {
-//                    if (record.ts == lastTs) return newRecords
-//                    else newRecords.add(record)
-//                }
-//            }
-//            return newRecords
-//        }
-
 
         suspend fun pullNewRecords(
             accountGc: AccountGc,
@@ -125,13 +128,5 @@ class NetWorkTask {
             }
             return records.toList()
         }
-
-        private fun String.toCate(): String {
-            if (this.startsWith("LIMITED") || this.startsWith("LINKAGE")) return "LIMITED"
-            if (this.startsWith("CLASSIC")) return "CLASSIC"
-            if (this.startsWith("SINGLE") || this.startsWith("DOUBLE") || this.startsWith("SPECIAL") || this.startsWith("NORM")) return "NORMAL"
-            return "UN"
-        }
     }
-
 }

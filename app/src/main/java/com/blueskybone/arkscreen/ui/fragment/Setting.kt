@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.ui.fragment
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -17,11 +18,11 @@ import com.blueskybone.arkscreen.BuildConfig
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.common.MenuDialog
 import com.blueskybone.arkscreen.databinding.DialogDonateBinding
-import com.blueskybone.arkscreen.databinding.DialogInputBinding
 import com.blueskybone.arkscreen.databinding.FragmentSettingBinding
 import com.blueskybone.arkscreen.databinding.PreferenceBinding
-import com.blueskybone.arkscreen.databinding.PreferenceSeekbarBinding
+import com.blueskybone.arkscreen.databinding.PreferenceSubSwitchBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSwitchBinding
+import com.blueskybone.arkscreen.databinding.PreferenceValueBinding
 import com.blueskybone.arkscreen.logger.FileLoggingInterceptor
 import com.blueskybone.arkscreen.logger.FileLoggingTree
 import com.blueskybone.arkscreen.network.getSklandServerTs
@@ -32,11 +33,11 @@ import com.blueskybone.arkscreen.ui.bindinginfo.AppTheme
 import com.blueskybone.arkscreen.ui.bindinginfo.CheckUpdate
 import com.blueskybone.arkscreen.ui.bindinginfo.GroupChat
 import com.blueskybone.arkscreen.ui.bindinginfo.ListInfo
-import com.blueskybone.arkscreen.ui.bindinginfo.SeekBarInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.TextInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.TimeCorrection
 import com.blueskybone.arkscreen.ui.bindinginfo.UseInnerWeb
 import com.blueskybone.arkscreen.util.copyToClipboard
+import com.blueskybone.arkscreen.util.getScreenInfo
 import com.blueskybone.arkscreen.util.saveDrawableToGallery
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
@@ -74,27 +75,35 @@ class Setting : Fragment() {
     }
 
     private fun setUpBinding() {
-        bindSwitchView(binding.AutoUpdateApp, prefManager.autoUpdateApp)
-        bindSwitchView(binding.ShowHomeAnnounce, prefManager.showHomeAnnounce)
-
-        binding.UseInnerWeb.setUp(UseInnerWeb, prefManager.useInnerWeb, null, null)
+//        bindSwitchView(binding.AutoUpdateApp, prefManager.autoUpdateApp)
+//        bindSwitchView(binding.ShowHomeAnnounce, prefManager.showHomeAnnounce)
+        binding.AutoUpdateApp.setUp(
+            R.drawable.ic_refresh,
+            R.string.auto_check_update,
+            prefManager.autoUpdateApp
+        )
+        binding.ShowHomeAnnounce.setUp(
+            R.drawable.ic_megaphone,
+            R.string.show_home_announce,
+            prefManager.showHomeAnnounce
+        )
+        binding.UseInnerWeb.setUp(R.drawable.ic_link, UseInnerWeb, prefManager.useInnerWeb, null, null)
         binding.TimeCorrect.setUp(
+            R.drawable.ic_delay,
             TimeCorrection, prefManager.timeCorrect,
             { recordTimeCorrect() }, null
         )
 
-        binding.AppTheme.setUp(AppTheme, prefManager.appTheme) {
+        binding.AppTheme.setUp(R.drawable.ic_palette, AppTheme, prefManager.appTheme) {
             Toaster.show("重启应用生效")
-//            requireActivity().recreate()
+//            requireActivity().recreate()  //立即重新创建Activity生效，但是会有性能问题。暂时移除。
         }
 
-
-
-        binding.CheckUpdate.setUp(CheckUpdate)
+        binding.CheckUpdate.setUp(R.drawable.ic_update, CheckUpdate)
         binding.CheckUpdate.apply {
             this.Value.text = BuildConfig.VERSION_NAME
         }
-        binding.GroupChat.setUp(GroupChat)
+        binding.GroupChat.setUp(R.drawable.ic_group, GroupChat)
 
         binding.CheckUpdate.Layout.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
@@ -151,6 +160,7 @@ class Setting : Fragment() {
         }
 
         binding.CheckLogs.setOnClickListener {
+            checkScreenInfo(requireContext())
             val combinedFiles = mutableListOf<File>()
             FileLoggingTree.logDir.listFiles()?.let {
                 combinedFiles.addAll(it)
@@ -230,7 +240,7 @@ class Setting : Fragment() {
                 .setNegativeButton(R.string.cancel, null)
                 .setNeutralButton(R.string.donated) { _, _ -> Toaster.show(getString(R.string.thank_for_donate)) }
                 .setPositiveButton(R.string.save_code) { _, _ ->
-                    CoroutineScope(Dispatchers.IO).launch{
+                    CoroutineScope(Dispatchers.IO).launch {
                         saveDrawableToGallery(requireContext(), R.drawable.wechat)
                         saveDrawableToGallery(requireContext(), R.drawable.zfb)
                         Toaster.show("已保存到本地")
@@ -240,21 +250,36 @@ class Setting : Fragment() {
     }
 
 
-    private fun displayDonateDialog() {
-
-    }
-
-    private fun bindSwitchView(switch: SwitchCompat, pref: Preference<Boolean>) {
-        switch.isChecked = pref.get()
-        switch.setOnCheckedChangeListener { _, isChecked -> pref.set(isChecked) }
-    }
+//    private fun bindSwitchView(switch: SwitchCompat, pref: Preference<Boolean>) {
+//        switch.isChecked = pref.get()
+//        switch.setOnCheckedChangeListener { _, isChecked -> pref.set(isChecked) }
+//    }
 
     private fun PreferenceSwitchBinding.setUp(
+        icon: Int?,
+        text: Int,
+        pref: Preference<Boolean>
+    ) {
+        Switch.isChecked = pref.get()
+        Switch.setOnCheckedChangeListener { _, isChecked -> pref.set(isChecked) }
+        if (icon == null) {
+            Icon.visibility = View.GONE
+        } else {
+            Icon.setImageResource(icon)
+        }
+        Title.setText(text)
+    }
+
+    private fun PreferenceSubSwitchBinding.setUp(
+        icon: Int?,
         textInfo: TextInfo,
         pref: Preference<Boolean>,
         onCall: (() -> Unit)?,
         offCall: (() -> Unit)?,
     ) {
+        if (icon == null) {
+            Icon.visibility = View.GONE
+        } else Icon.setImageResource(icon)
         Title.setText(textInfo.title)
         Value.setText(textInfo.subTitle)
         this.Switch.isChecked = pref.get()
@@ -265,16 +290,23 @@ class Setting : Fragment() {
         }
     }
 
-    private fun PreferenceBinding.setUp(textInfo: TextInfo) {
+    private fun PreferenceBinding.setUp(icon: Int?, textInfo: TextInfo) {
+        if (icon == null) {
+            Icon.visibility = View.GONE
+        } else Icon.setImageResource(icon)
         Title.setText(textInfo.title)
         Value.setText(textInfo.subTitle)
     }
 
     private fun PreferenceBinding.setUp(
+        icon: Int?,
         listInfo: ListInfo,
         pref: Preference<String>,
         onClick: (() -> Unit)?
     ) {
+        if (icon == null) {
+            Icon.visibility = View.GONE
+        } else Icon.setImageResource(icon)
         Title.setText(listInfo.title)
         val entries = listInfo.getEntries(requireContext())
         val entryValues = listInfo.getEntryValues()
@@ -309,48 +341,7 @@ class Setting : Fragment() {
         }
     }
 
-//    private fun openAutoStartSettings(context: Context) {
-//        try {
-//            val intent = Intent()
-//            val manufacturer = Build.MANUFACTURER.lowercase(Locale.ROOT)
-//            when {
-//                manufacturer.contains("xiaomi") -> {
-//                    intent.component = ComponentName(
-//                        "com.miui.securitycenter",
-//                        "com.miui.permcenter.autostart.AutoStartManagementActivity"
-//                    )
-//                }
-//
-//                manufacturer.contains("oppo") -> {
-//                    intent.component = ComponentName(
-//                        "com.coloros.safecenter",
-//                        "com.coloros.safecenter.permission.startup.StartupAppListActivity"
-//                    )
-//                }
-//
-//                manufacturer.contains("vivo") -> {
-//                    intent.component = ComponentName(
-//                        "com.vivo.permissionmanager",
-//                        "com.vivo.permissionmanager.activity.BgStartUpManagerActivity"
-//                    )
-//                }
-//
-//                manufacturer.contains("honor") -> {
-//                    intent.component = ComponentName(
-//                        "com.huawei.systemmanager",
-//                        "com.huawei.systemmanager.optimize.process.ProtectActivity"
-//                    )
-//                }
-//
-//                else -> {
-//                    Toaster.show("请手动在设置中找到自启动设置")
-//                    return
-//                }
-//            }
-//            context.startActivity(intent)
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            Toaster.show("无法打开自启动设置页面")
-//        }
-//    }
+    private fun checkScreenInfo(context: Context) {
+        Timber.i(getScreenInfo(context))
+    }
 }

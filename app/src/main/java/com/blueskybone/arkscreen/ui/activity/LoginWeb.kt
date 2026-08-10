@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
@@ -22,7 +21,6 @@ import com.blueskybone.arkscreen.databinding.ActivityLoginWebBinding
 import com.blueskybone.arkscreen.util.getCookie
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.hjq.toast.Toaster
 import timber.log.Timber
 
 /**
@@ -45,48 +43,48 @@ class LoginWeb : AppCompatActivity() {
             SKLAND, GACHA_OFFICIAL, GACHA_BILI
         }
 
-        private const val skland = "skland"
-        private const val gacha_official = "gacha_official"
-        private const val gacha_bili = "gacha_bili"
+        private const val SKLAND = "skland"
+        private const val GACHA_OFFICIAL = "gacha_official"
+        private const val GACHA_BILI = "gacha_bili"
 
-        private const val loginType = "login_type"
+        private const val LOGIN_TYPE = "login_type"
         private fun convert(type: LoginType): String {
             return when (type) {
-                LoginType.SKLAND -> skland
-                LoginType.GACHA_OFFICIAL -> gacha_official
-                else -> gacha_bili
+                LoginType.SKLAND -> SKLAND
+                LoginType.GACHA_OFFICIAL -> GACHA_OFFICIAL
+                else -> GACHA_BILI
             }
         }
 
         private fun convert(str: String): LoginType {
             return when (str) {
-                skland -> LoginType.SKLAND
-                gacha_official -> LoginType.GACHA_OFFICIAL
+                SKLAND -> LoginType.SKLAND
+                GACHA_OFFICIAL -> LoginType.GACHA_OFFICIAL
                 else -> LoginType.GACHA_BILI
             }
         }
 
-        private const val userAgent =
+        private const val USER_AGENT =
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0"
 
-        private const val sklandUrl = "https://www.skland.com"
-        private const val arkUserUrl = "https://ak.hypergryph.com/user/home"
+        private const val SKLAND_URL = "https://www.skland.com"
+        private const val ARK_USER_URL = "https://ak.hypergryph.com/user/home"
 //        private const val arkHomeBiliUrl = "https://ak.hypergryph.com/user/bilibili/login"
 
-        private const val apiOfficial = "https://web-api.skland.com/account/info/hg"
-        private const val arkApiOfficial = "https://web-api.hypergryph.com/account/info/hg"
+        private const val API_OFFICIAL = "https://web-api.skland.com/account/info/hg"
+        private const val ARK_API_OFFICIAL = "https://web-api.hypergryph.com/account/info/hg"
 //        private const val arkApiBili = "https://web-api.hypergryph.com/account/info/ak-b"
 
         fun start(context: Context, type: LoginType) {
             val intent = Intent(context, LoginWeb::class.java).apply {
-                putExtra(loginType, convert(type))
+                putExtra(LOGIN_TYPE, convert(type))
             }
             context.startActivity(intent)
         }
 
         fun startIntent(context: Context, type: LoginType): Intent {
             val intent = Intent(context, LoginWeb::class.java).apply {
-                putExtra(loginType, convert(type))
+                putExtra(LOGIN_TYPE, convert(type))
             }
             return intent
         }
@@ -114,7 +112,7 @@ class LoginWeb : AppCompatActivity() {
         settings.cacheMode = WebSettings.LOAD_DEFAULT // 默认缓存模式
         settings.domStorageEnabled = true
         settings.loadWithOverviewMode = true // 适应网页大小
-        settings.userAgentString = userAgent
+        settings.userAgentString = USER_AGENT
         settings.useWideViewPort = true
         settings.javaScriptEnabled = true
         settings.displayZoomControls = false
@@ -138,7 +136,7 @@ class LoginWeb : AppCompatActivity() {
             }
         }
 
-        when (convert(intent.getStringExtra(loginType) ?: skland)) {
+        when (convert(intent.getStringExtra(LOGIN_TYPE) ?: SKLAND)) {
             LoginType.SKLAND -> setSklandWebView()
             LoginType.GACHA_OFFICIAL -> setArkOfficialWebView()
             LoginType.GACHA_BILI -> setArkBilibiliWebView()
@@ -160,126 +158,181 @@ class LoginWeb : AppCompatActivity() {
         textButton.text = getString(R.string.text_web_skland)
         textButton.visibility = View.VISIBLE
 
-        class JsObject {
-            @JavascriptInterface
-            @Throws(JsonProcessingException::class)
-            fun submitDeviceDid(dId: String) {
-                try {
-                    val token = getCookie(apiOfficial, "ACCOUNT")
-                    val returnIntent = Intent()
-                    returnIntent.putExtra("token", token)
-                    returnIntent.putExtra("dId", dId)
-                    setResult(RESULT_OK, returnIntent)
-                    finish()
-                } catch (e: Exception) {
-                    Timber.tag("exception").w(e)
-                }
-            }
-        }
-
         webView.webViewClient = object : WebViewClient() {
             @SuppressLint("JavascriptInterface")
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
                 toolbar.title = view.title
                 view.addJavascriptInterface(JsObject(), "Android")
+                //自动检测登录js脚本
                 val script =
-                    "(function() {const dId = SMSdk.getDeviceId(); Android.submitDeviceDid(dId);})();".trim { it <= ' ' }
+                """(function() {
+                    const pollCred = setInterval(function () {
+                        const cred = localStorage.getItem("SK_OAUTH_CRED_KEY");
+                        if (cred) {
+                            const dId = SMSdk.getDeviceId(); 
+                            Android.submitDeviceDid(dId);
+                            clearInterval(pollCred);
+                        }
+                    }, 500);
+                    })();
+                """.trimIndent()
+                //手动js脚本
+                val manualScript = "(function() {const dId = SMSdk.getDeviceId(); Android.submitDeviceDid(dId);})();".trimIndent()
+                view.evaluateJavascript(script, null)
                 textButton.setOnClickListener {
-                    view.evaluateJavascript(script, null)
+                    view.evaluateJavascript(manualScript, null)
                 }
             }
         }
-        webView.loadUrl(sklandUrl)
-
+        webView.loadUrl(SKLAND_URL)
     }
+
 
     private fun setArkOfficialWebView() {
         textButton.text = getString(R.string.text_web_ark)
         textButton.visibility = View.VISIBLE
-        class JsObject {
-            @JavascriptInterface
-            @Throws(JsonProcessingException::class)
-            fun submitMetaJson(metaJson: String) {
-                try {
-                    val jsonNode = jacksonObjectMapper() .readTree(metaJson)
-                    val xrToken = jsonNode.get("token")?.asText()
-                    val token = getCookie(arkApiOfficial, "ACCOUNT")
-                    val userCenter = getCookie(arkUserUrl, "ak-user-center")
-
-                    val returnIntent = Intent()
-
-                    returnIntent.putExtra("token", token)
-                    returnIntent.putExtra("userCenter", userCenter)
-                    returnIntent.putExtra("xrToken", xrToken)
-                    returnIntent.putExtra("channelMasterId", 1)
-                    setResult(RESULT_OK, returnIntent)
-                    finish()
-                } catch (e: Exception) {
-                    Timber.tag("submitMetaJson exception").w(e)
-                }
-            }
-        }
         webView.apply {
-            // 1. 先配置 WebViewClient
-            val script =
-                "(function() {const metaJson = localStorage.ONE_ACCOUNT_ROLE_META; Android.submitMetaJson(metaJson);})();".trim { it <= ' ' }
-            this.addJavascriptInterface(JsObject(), "Android")
+            addJavascriptInterface(JsObjectArkOfficial(), "Android")
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
                     toolbar.title = view.title
-                    // 3. 页面加载完成后执行JS
+                    val manualScript = """
+                    (function() {
+                        const metaJson = localStorage.ONE_ACCOUNT_ROLE_META; 
+                        Android.submitMetaJson(metaJson);
+                    })();
+                """.trimIndent()
+
+                    val script = """
+                    (function() {
+                        localStorage.removeItem("ONE_ACCOUNT_ROLE_META");
+                        console.log("Cleared ONE_ACCOUNT_ROLE_META from localStorage");
+                        const pollCred = setInterval(function () {
+                            const cred = localStorage.getItem("ONE_ACCOUNT_ROLE_META");
+                            if (cred) {
+                                Android.submitMetaJson(cred);
+                                clearInterval(pollCred);
+                            }
+                        }, 500);
+                    })();
+                """.trimIndent()
+                    //手动触发
                     textButton.setOnClickListener {
-                        view.evaluateJavascript(script, null)
+                        view.evaluateJavascript(manualScript, null)
                     }
+                    //自动轮询
+                    view.evaluateJavascript(script, null)
                 }
             }
         }
-        webView.loadUrl(arkUserUrl)
+        webView.loadUrl(ARK_USER_URL)
     }
-
     private fun setArkBilibiliWebView() {
         textButton.text = getString(R.string.text_web_ark)
         textButton.visibility = View.VISIBLE
-        class JsObject {
-            @JavascriptInterface
-            @Throws(JsonProcessingException::class)
-            fun submitMetaJson(metaJson: String) {
-                try {
-                    val jsonNode = jacksonObjectMapper() .readTree(metaJson)
-                    val xrToken = jsonNode.get("token")?.asText()
-                    val userCenter = getCookie(arkUserUrl, "ak-user-center")
 
-                    val returnIntent = Intent()
-
-                    returnIntent.putExtra("userCenter", userCenter)
-                    returnIntent.putExtra("xrToken", xrToken)
-                    returnIntent.putExtra("channelMasterId", 2)
-                    setResult(RESULT_OK, returnIntent)
-                    finish()
-                } catch (e: Exception) {
-                    Timber.tag("submitMetaJson exception").w(e)
-                }
-            }
-        }
         webView.apply {
-            // 1. 先配置 WebViewClient
-            val script =
-                "(function() {const metaJson = localStorage.ONE_ACCOUNT_ROLE_META; Android.submitMetaJson(metaJson);})();".trim { it <= ' ' }
-            this.addJavascriptInterface(JsObject(), "Android")
+            addJavascriptInterface(JsObjectArkBili(), "Android")
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
                     toolbar.title = view.title
-                    // 2. 页面加载完成后执行JS
+                    val manualScript = """
+                    (function() {
+                        const metaJson = localStorage.ONE_ACCOUNT_ROLE_META; 
+                        Android.submitMetaJson(metaJson);
+                    })();
+                """.trimIndent()
+                    val script = """
+                    (function() {
+                        localStorage.removeItem("ONE_ACCOUNT_ROLE_META");
+                        console.log("Cleared ONE_ACCOUNT_ROLE_META from localStorage");
+                        const pollCred = setInterval(function () {
+                            const cred = localStorage.getItem("ONE_ACCOUNT_ROLE_META");
+                            if (cred) {
+                                Android.submitMetaJson(cred);
+                                clearInterval(pollCred);
+                            }
+                        }, 500);
+                    })();
+                """.trimIndent()
+                    //手动触发
                     textButton.setOnClickListener {
-                        view.evaluateJavascript(script, null)
+                        view.evaluateJavascript(manualScript, null)
                     }
+                    //自动轮询
+                    view.evaluateJavascript(script, null)
                 }
             }
         }
-        webView.loadUrl(arkUserUrl)
+        webView.loadUrl(ARK_USER_URL)
+    }
+    inner class JsObject {
+        @JavascriptInterface
+        @Throws(JsonProcessingException::class)
+        fun submitDeviceDid(dId: String) {
+            try {
+                val token = getCookie(API_OFFICIAL, "ACCOUNT")
+                val returnIntent = Intent()
+                returnIntent.putExtra("token", token)
+                returnIntent.putExtra("dId", dId)
+                setResult(RESULT_OK, returnIntent)
+                finish()
+            } catch (e: Exception) {
+                Timber.tag("exception").w(e)
+            }
+        }
+    }
+
+    inner class JsObjectArkOfficial {
+        @JavascriptInterface
+        fun submitMetaJson(metaJson: String) {
+            try {
+                println(metaJson)
+                val jsonNode = jacksonObjectMapper().readTree(metaJson)
+                val xrToken = jsonNode.get("token")?.asText()
+                val token = getCookie(ARK_API_OFFICIAL, "ACCOUNT")
+                val userCenter = getCookie(ARK_USER_URL, "ak-user-center")
+
+                // 使用 runOnUiThread 确保 UI 操作在主线程
+                runOnUiThread {
+                    val returnIntent = Intent().apply {
+                        putExtra("token", token)
+                        putExtra("userCenter", userCenter)
+                        putExtra("xrToken", xrToken)
+                        putExtra("channelMasterId", 1)
+                    }
+                    setResult(RESULT_OK, returnIntent)
+                    finish()
+                }
+            } catch (e: Exception) {
+                Timber.tag("submitMetaJson").w(e)
+            }
+        }
+    }
+
+    inner class JsObjectArkBili {
+        @JavascriptInterface
+        @Throws(JsonProcessingException::class)
+        fun submitMetaJson(metaJson: String) {
+            try {
+                val jsonNode = jacksonObjectMapper() .readTree(metaJson)
+                val xrToken = jsonNode.get("token")?.asText()
+                val userCenter = getCookie(ARK_USER_URL, "ak-user-center")
+
+                val returnIntent = Intent()
+
+                returnIntent.putExtra("userCenter", userCenter)
+                returnIntent.putExtra("xrToken", xrToken)
+                returnIntent.putExtra("channelMasterId", 2)
+                setResult(RESULT_OK, returnIntent)
+                finish()
+            } catch (e: Exception) {
+                Timber.tag("submitMetaJson exception").w(e)
+            }
+        }
     }
 
     override fun onDestroy() {

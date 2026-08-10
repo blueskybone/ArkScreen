@@ -1,7 +1,5 @@
 package com.blueskybone.arkscreen.ui.fragment
 
-import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -12,24 +10,21 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.common.MenuDialog
-import com.blueskybone.arkscreen.databinding.DialogInputBinding
+import com.blueskybone.arkscreen.common.PreferenceDialog
 import com.blueskybone.arkscreen.databinding.DialogTimepickerBinding
 import com.blueskybone.arkscreen.databinding.FragmentDashboardBinding
 import com.blueskybone.arkscreen.databinding.PreferenceBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSeekbarBinding
+import com.blueskybone.arkscreen.databinding.PreferenceSubSwitchBinding
+import com.blueskybone.arkscreen.databinding.PreferenceSubValueBinding
 import com.blueskybone.arkscreen.databinding.PreferenceSwitchBinding
+import com.blueskybone.arkscreen.databinding.PreferenceValueBinding
 import com.blueskybone.arkscreen.preference.PrefManager
 import com.blueskybone.arkscreen.preference.preference.Preference
-import com.blueskybone.arkscreen.room.Account
-import com.blueskybone.arkscreen.ui.activity.LoginWeb
 import com.blueskybone.arkscreen.ui.activity.MainActivity
 import com.blueskybone.arkscreen.ui.activity.WidgetThemeActivity
 import com.blueskybone.arkscreen.ui.bindinginfo.BackAutoAtd
@@ -40,19 +35,15 @@ import com.blueskybone.arkscreen.ui.bindinginfo.OpenAutoStartSettings
 import com.blueskybone.arkscreen.ui.bindinginfo.OverlayPermission
 import com.blueskybone.arkscreen.ui.bindinginfo.PowerSavingMode
 import com.blueskybone.arkscreen.ui.bindinginfo.RecruitMode
+import com.blueskybone.arkscreen.ui.bindinginfo.ScDelay
 import com.blueskybone.arkscreen.ui.bindinginfo.ScreenshotDelay
+//import com.blueskybone.arkscreen.ui.bindinginfo.ScreenshotDelay
 import com.blueskybone.arkscreen.ui.bindinginfo.SeekBarInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.SetAtdTime
 import com.blueskybone.arkscreen.ui.bindinginfo.TextInfo
 import com.blueskybone.arkscreen.ui.bindinginfo.TurnOffBatteryOptimization
 import com.blueskybone.arkscreen.ui.bindinginfo.WidgetUpdateFreq
-import com.blueskybone.arkscreen.ui.recyclerview.AccountAdapter
-import com.blueskybone.arkscreen.ui.recyclerview.ItemListener
 import com.blueskybone.arkscreen.util.TimeUtils
-import com.blueskybone.arkscreen.util.copyToClipboard
-import com.blueskybone.arkscreen.util.openLink
-import com.blueskybone.arkscreen.util.saveDrawableToGallery
-import com.blueskybone.arkscreen.viewmodel.BaseModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
 import org.koin.android.ext.android.getKoin
@@ -64,13 +55,8 @@ import java.util.Locale
  *   Date: 2024/12/31
  */
 class Function : Fragment() {
-    private val model: BaseModel by activityViewModels()
     private var _binding: FragmentDashboardBinding? = null
     private val prefManager: PrefManager by getKoin().inject()
-    private var adapter: AccountAdapter? = null
-    private var adapterGc: AccountAdapter? = null
-    private lateinit var activityResultLauncherSk: ActivityResultLauncher<Intent>
-    private lateinit var activityResultLauncherGc: ActivityResultLauncher<Intent>
 
     private val binding get() = _binding!!
     override fun onCreateView(
@@ -79,186 +65,66 @@ class Function : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        _binding = FragmentDashboardBinding.inflate(inflater)
-        initialize()
-        setUpBinding()
+        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+//        _binding = FragmentDashboardBinding.inflate(inflater)
+//        setUpBinding()
         return binding.root
     }
 
 
-    private val adapterSkListener = object : ItemListener {
-        @SuppressLint("NotifyDataSetChanged")
-        override fun onClick(position: Int) {
-            adapter?.currentList?.get(position)?.let { value ->
-                model.setDefaultAccountSk(value as com.blueskybone.arkscreen.room.AccountSk)
-                Toaster.show(getString(R.string.set_default_account, value.nickName))
-                adapter?.notifyDataSetChanged()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // 确保 context 不为空再执行
+        if (_binding != null && context != null) {
+            try{
+                setUpBinding()
+            }catch (e:Exception){
+                Timber.e(e.message)
             }
-        }
 
-        override fun onLongClick(position: Int) {
-            adapter?.currentList?.get(position)?.let { value ->
-                MenuDialog(requireContext())
-                    .add(getString(R.string.export_cookie)) {
-                        displayExportDialog("${value.token}@${(value as com.blueskybone.arkscreen.room.AccountSk).dId}")
-                    }
-                    .add(R.string.delete) { confirmDeletion(value) }
-                    .show()
-            }
-        }
-    }
-
-    private val adapterGcListener = object : ItemListener {
-        @SuppressLint("NotifyDataSetChanged")
-        override fun onClick(position: Int) {
-            adapterGc?.currentList?.get(position)?.let { value ->
-                model.setDefaultAccountGc(value as com.blueskybone.arkscreen.room.AccountGc)
-                Toaster.show(getString(R.string.set_default_account, value.nickName))
-                adapterGc?.notifyDataSetChanged()
-            }
-        }
-
-        override fun onLongClick(position: Int) {
-            adapterGc?.currentList?.get(position)?.let { value ->
-                MenuDialog(requireContext())
-                    .add(getString(R.string.export_cookie)) {
-                        val account = value as com.blueskybone.arkscreen.room.AccountGc
-                        displayExportDialog("${account.token}@${account.akUserCenter}@${account.xrToken}")
-                    }
-                    .add(R.string.delete) { confirmDeletion(value) }
-                    .show()
-                //
-            }
-        }
-    }
-
-
-    private fun initialize() {
-        adapter = AccountAdapter(requireContext(), adapterSkListener)
-        binding.RecyclerView.adapter = adapter
-        model.accountSkList.observe(viewLifecycleOwner) { value ->
-            adapter?.submitList(value as List<Account>?)
-        }
-
-        adapterGc = AccountAdapter(requireContext(), adapterGcListener)
-        binding.RecyclerViewGc.adapter = adapterGc
-        model.accountGcList.observe(viewLifecycleOwner) { value ->
-            adapterGc?.submitList(value as List<Account>?)
-        }
-
-        activityResultLauncherSk = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            // 处理返回结果
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                // 解析返回的数据
-                //TODO:添加try catch
-                val token = data?.getStringExtra("token")
-                val dId = data?.getStringExtra("dId")
-                if (token != null && dId != null) {
-                    Toaster.show(getString(R.string.getting_info))
-                    model.accountSkLogin(token, dId)
-                } else {
-                    Toaster.show("null")
-                }
-            }
-        }
-
-        activityResultLauncherGc = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            // 处理返回结果
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                // 解析返回的数据
-                //TODO:添加try catch
-                val token = data?.getStringExtra("token") ?: "null"
-                val xrToken = data?.getStringExtra("xrToken")
-                val userCenter = data?.getStringExtra("userCenter")
-                val channelMasterId = data?.getIntExtra("channelMasterId", 1)
-                if (xrToken != null && userCenter != null) {
-                    Toaster.show(getString(R.string.getting_info))
-                    model.accountGcLogin(token, channelMasterId!!, userCenter, xrToken)
-                } else {
-                    Toaster.show("null")
-                }
-            }
         }
     }
 
     private fun setUpBinding() {
-
-        binding.AddAccountSk.setOnClickListener {
-            MenuDialog(requireContext())
-                .add(getString(R.string.import_cookie)) {
-                    displayLoginDialog(1)
-                }
-                .add(R.string.web_login) {
-                    val intent =
-                        LoginWeb.startIntent(requireContext(), LoginWeb.Companion.LoginType.SKLAND)
-                    activityResultLauncherSk.launch(intent)
-                }
-                .show()
-        }
-
-        binding.AddAccountGc.setOnClickListener {
-            MenuDialog(requireContext())
-                .add(getString(R.string.import_cookie)) {
-                    displayLoginDialog(2)
-                }
-                .add(R.string.web_login_official) {
-                    val intent =
-                        LoginWeb.startIntent(
-                            requireContext(),
-                            LoginWeb.Companion.LoginType.GACHA_OFFICIAL
-                        )
-                    activityResultLauncherGc.launch(intent)
-                }.add(R.string.web_login_bili) {
-                    val intent =
-                        LoginWeb.startIntent(
-                            requireContext(),
-                            LoginWeb.Companion.LoginType.GACHA_BILI
-                        )
-                    activityResultLauncherGc.launch(intent)
-                }
-                .show()
-        }
-
-        binding.GcInfo.setOnClickListener {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.account_info)
-                .setMessage(R.string.gc_account_info)
-                .setNegativeButton(R.string.cancel, null)
-                .show()
-        }
-
-        binding.SkInfo.setOnClickListener {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.account_info)
-                .setMessage(R.string.sk_account_info)
-                .setNegativeButton(R.string.cancel, null)
-                .show()
-        }
-
-
-        bindSwitchView(binding.AutoAttendance, prefManager.autoAttendance)
-        binding.RecruitMode.setUp(RecruitMode, prefManager.recruitMode, null)
+//        bindSwitchView(binding.AutoAttendance, prefManager.autoAttendance)
+        binding.AutoAttendance.setUp(
+            R.drawable.ic_skland,
+            R.string.auto_attendance,
+            prefManager.autoAttendance
+        )
+        binding.RecruitMode.setUp(R.drawable.ic_filter, RecruitMode, prefManager.recruitMode, null)
         binding.FloatWindowAppearance.setUp(
+            null,
             FloatWindowAppearance,
             prefManager.floatWindowAppearance, null
         )
 
-        binding.ScreenShotDelay.setUp(ScreenshotDelay, prefManager.screenShotDelay)
+        binding.ScreenShotDelay.setUp(
+            R.drawable.ic_delay,
+            ScreenshotDelay,
+            ScDelay,
+            prefManager.screenShotDelay,
+            null
+        )
         binding.TurnOffBatteryOptimization.setUp(TurnOffBatteryOptimization)
-        binding.WidgetAppearance.setOnClickListener {
+        binding.WidgetAppearance.apply {
+            this.Title.text = getString(R.string.widget_appearance)
+            this.Icon.setImageResource(R.drawable.ic_palette)
+        }
+        binding.WidgetAppearance.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), WidgetThemeActivity::class.java))
         }
-        binding.WidgetRefresh.setUp(WidgetUpdateFreq, prefManager.widgetUpdateFreq, null)
+        binding.WidgetRefresh.setUp(null, WidgetUpdateFreq, prefManager.widgetUpdateFreq, null)
 
         binding.OverlayPermission.setUp(OverlayPermission)
         binding.NotifyPermission.setUp(NotifyPermission)
-        binding.PowerSavingMode.setUp(PowerSavingMode, prefManager.powerSavingMode, null, null)
+        binding.PowerSavingMode.setUp(
+            R.drawable.ic_battery,
+            PowerSavingMode,
+            prefManager.powerSavingMode,
+            null,
+            null
+        )
         binding.OpenAutoStartSettings.setUp(OpenAutoStartSettings)
         binding.RecruitVideo.setOnClickListener {
             val bvid = "BV1624y1q7Cv"
@@ -273,72 +139,72 @@ class Function : Fragment() {
             }
         }
 
-        binding.TurnOffBatteryOptimization.Layout.setOnClickListener {
-            (activity as MainActivity?)?.requestIgnoreBatteryOptimizations()
-        }
 
         binding.BackAutoAtd.setUp(
+            R.drawable.ic_check,
             BackAutoAtd,
             prefManager.backAutoAtd,
             { APP.setDailyAlarm() },
             { APP.cancelDailyAlarm() }
         )
-        binding.OpenAutoStartSettings.Layout.setOnClickListener {
-            openAutoStartSettings(requireContext())
+
+        binding.OverlayPermissionChip.setOnClickListener{
+            PreferenceDialog(requireContext()).add(R.string.overlay_permission, R.string.confirm){
+                (activity as MainActivity?)?.jumpToPermission(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+            }.add(R.string.notify_permission, R.string.notify_permission_detail){
+                (activity as MainActivity?)?.openNotificationSettings(requireContext())
+            }.show()
         }
-        binding.OverlayPermission.Layout.setOnClickListener {
-            (activity as MainActivity?)?.jumpToPermission(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+
+        binding.WidgetPermission.setOnClickListener{
+            PreferenceDialog(requireContext()).add(R.string.turn_off_battery_optimization, R.string.turn_off_battery_optimization_detail){
+                (activity as MainActivity?)?.requestIgnoreBatteryOptimizations()
+            }.show()
         }
-        binding.NotifyPermission.Layout.setOnClickListener {
-            (activity as MainActivity?)?.openNotificationSettings(requireContext())
+
+        binding.AttdPermission.setOnClickListener {
+            PreferenceDialog(requireContext()).add(R.string.open_auto_start_settings, R.string.open_auto_start_settings_detail){
+                openAutoStartSettings(requireContext())
+            }.show()
+        }
+
+//        binding.OpenAutoStartSettings.Layout.setOnClickListener {
+//            openAutoStartSettings(requireContext())
+//        }
+//        binding.OverlayPermission.Layout.setOnClickListener {
+//            (activity as MainActivity?)?.jumpToPermission(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+//        }
+//        binding.NotifyPermission.Layout.setOnClickListener {
+//            (activity as MainActivity?)?.openNotificationSettings(requireContext())
+//        }
+        binding.WidgetInfo.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.account_info)
+                .setMessage(R.string.widget_info)
+                .setNegativeButton(R.string.confirm, null)
+                .show()
         }
         timePickerBinding()
-    }
-
-    //type: 1 for sk, 2 for gc
-    private fun displayLoginDialog(type: Int) {
-        val dialogBinding = DialogInputBinding.inflate(layoutInflater)
-        dialogBinding.EditText2.visibility = View.GONE
-        dialogBinding.EditText1.hint = getString(R.string.import_cookie)
-        MaterialAlertDialogBuilder(requireContext())
-            .setView(dialogBinding.root)
-            .setTitle(R.string.import_cookie)
-            .setNegativeButton(R.string.cancel, null)
-            .setPositiveButton(R.string.import_cookie) { _, _ ->
-                val str = dialogBinding.EditText1.text.toString()
-                val list = str.split("@")
-                if (type == 1) {
-                    if (list.size == 2) {
-                        try {
-                            Toaster.show(getString(R.string.getting_info))
-                            model.accountSkLogin(list[0], list[1])
-                        } catch (e: Exception) {
-                            Toaster.show("cookie登录失败：${e.message}")
-                            Timber.e("cookie登录失败：${e.message}")
-                        }
-                    } else {
-                        Toaster.show(getString(R.string.wrong_format))
-                    }
-                } else if (type == 2) {
-                    if (list.size == 3) {
-                        try {
-                            Toaster.show(getString(R.string.getting_info))
-                            model.accountGcLogin(list[0], 1, list[1], list[2])
-                        } catch (e: Exception) {
-                            Toaster.show("cookie登录失败：${e.message}")
-                            Timber.e("cookie登录失败：${e.message}")
-                        }
-                    } else {
-                        Toaster.show(getString(R.string.wrong_format) + list.size)
-                    }
-                }
-
-            }.show()
     }
 
     private fun bindSwitchView(switch: SwitchCompat, pref: Preference<Boolean>) {
         switch.isChecked = pref.get()
         switch.setOnCheckedChangeListener { _, isChecked -> pref.set(isChecked) }
+    }
+
+    private fun PreferenceSwitchBinding.setUp(
+        icon: Int?,
+        text: Int,
+        pref: Preference<Boolean>
+    ) {
+        Switch.isChecked = pref.get()
+        Switch.setOnCheckedChangeListener { _, isChecked -> pref.set(isChecked) }
+        if (icon == null) {
+            Icon.visibility = View.GONE
+        } else {
+            Icon.setImageResource(icon)
+        }
+        Title.setText(text)
     }
 
 
@@ -357,12 +223,53 @@ class Function : Fragment() {
         }
     }
 
-    private fun PreferenceSwitchBinding.setUp(
+    private fun PreferenceSubValueBinding.setUp(
+        icon: Int?,
+        textInfo: TextInfo,
+        listInfo: ListInfo,
+        pref: Preference<String>,
+        onClick: (() -> Unit)?
+    ) {
+        if (icon == null) {
+            Icon.visibility = View.GONE
+        } else Icon.setImageResource(icon)
+        Title.setText(textInfo.title)
+        SubTitle.setText(textInfo.subTitle)
+        val entries = listInfo.getEntries(requireContext())
+        val entryValues = listInfo.getEntryValues()
+
+        var checked = entryValues.indexOf(pref.get()).coerceAtLeast(0)
+        val displayValue = if (checked < entries.size) entries[checked] else "未知"
+        Value.text = displayValue
+//
+//        var checked = entryValues.indexOf(pref.get())
+//        val displayValue = entries[checked]
+//        Value.text = displayValue
+        root.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(listInfo.title)
+                .setSingleChoiceItems(entries, checked) { dialog, which ->
+                    dialog.cancel()
+                    pref.set(entryValues[which])
+                    Value.text = entries[which]
+                    checked = which
+                    onClick?.invoke()
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+        }
+    }
+
+    private fun PreferenceSubSwitchBinding.setUp(
+        icon: Int?,
         textInfo: TextInfo,
         pref: Preference<Boolean>,
         onCall: (() -> Unit)?,
         offCall: (() -> Unit)?,
     ) {
+        if (icon == null) {
+            Icon.visibility = View.GONE
+        } else Icon.setImageResource(icon)
         Title.setText(textInfo.title)
         Value.setText(textInfo.subTitle)
         this.Switch.isChecked = pref.get()
@@ -379,16 +286,75 @@ class Function : Fragment() {
     }
 
     private fun PreferenceBinding.setUp(
+        icon: Int?,
         listInfo: ListInfo,
         pref: Preference<String>,
         onClick: (() -> Unit)?
     ) {
+        if (icon == null) {
+            Icon.visibility = View.GONE
+        } else Icon.setImageResource(icon)
+        Title.setText(listInfo.title)
         Title.setText(listInfo.title)
         val entries = listInfo.getEntries(requireContext())
+
+
+
         val entryValues = listInfo.getEntryValues()
-        var checked = entryValues.indexOf(pref.get())
-        val displayValue = entries[checked]
+//        var checked = entryValues.indexOf(pref.get())
+//        val displayValue = entries[checked]
+//        Value.text = displayValue
+        var checked = entryValues.indexOf(pref.get()).coerceAtLeast(0)
+        val displayValue = if (checked < entries.size) entries[checked] else "未知"
         Value.text = displayValue
+
+        root.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(listInfo.title)
+                .setSingleChoiceItems(entries, checked) { dialog, which ->
+                    dialog.cancel()
+                    pref.set(entryValues[which])
+                    Value.text = entries[which]
+                    checked = which
+                    onClick?.invoke()
+                }
+                .setNegativeButton(R.string.cancel, null)
+                .show()
+        }
+    }
+
+    private fun PreferenceValueBinding.setUp(
+        icon: Int?,
+        listInfo: ListInfo,
+        pref: Preference<String>,
+        onClick: (() -> Unit)?
+    ) {
+//        val context = context ?: return // 防御 Context 为空
+        if (icon == null) {
+            Icon.visibility = View.GONE
+        } else Icon.setImageResource(icon)
+        Title.setText(listInfo.title)
+        val entries = listInfo.getEntries(requireContext())
+
+
+
+        val entryValues = listInfo.getEntryValues()
+//        var checked = entryValues.indexOf(pref.get())
+
+        var checked = entryValues.indexOf(pref.get()).coerceAtLeast(0)
+        val displayValue = if (checked < entries.size) entries[checked] else "未知"
+//        Value.text = displayValue
+
+        if (checked == -1 || checked >= entries.size) {
+            checked = 0 // 或者给个默认值
+        }
+
+        if (entries.isNotEmpty()) {
+            Value.text = entries[checked]
+        }
+
+//        val displayValue = entries[checked]
+//        Value.text = displayValue
         root.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(listInfo.title)
@@ -410,7 +376,9 @@ class Function : Fragment() {
     }
 
     private fun timePickerBinding() {
+        binding.SetAtdTime.Icon.setImageResource(R.drawable.ic_clock)
         binding.SetAtdTime.Title.setText(SetAtdTime.title)
+        binding.SetAtdTime.SubTitle.setText(SetAtdTime.subTitle)
         val hour = prefManager.alarmAtdHour.get()
         val min = prefManager.alarmAtdMin.get()
         binding.SetAtdTime.Value.text =
@@ -422,7 +390,7 @@ class Function : Fragment() {
             }
             MaterialAlertDialogBuilder(requireContext())
                 .setView(dialogBinding.root)
-                .setTitle(R.string.set_auto_attendance_time)
+                .setTitle(R.string.attendance_time)
                 .setNegativeButton(R.string.cancel, null)
                 .setPositiveButton(R.string.confirm) { _, _ ->
                     val newHour = dialogBinding.TimePicker.hour
@@ -438,27 +406,6 @@ class Function : Fragment() {
                     if (prefManager.backAutoAtd.get()) APP.setDailyAlarm()
                 }.show()
         }
-    }
-
-    private fun displayExportDialog(key: String) {
-        val dialogBinding = DialogInputBinding.inflate(layoutInflater)
-        dialogBinding.EditText2.visibility = View.GONE
-        dialogBinding.EditText1.setText(key)
-        MaterialAlertDialogBuilder(requireContext())
-            .setView(dialogBinding.root)
-            .setTitle(R.string.export_cookie)
-            .setNegativeButton(R.string.cancel, null)
-            .setPositiveButton(R.string.copy) { _, _ ->
-                copyToClipboard(requireContext(), key)
-            }.show()
-    }
-
-    private fun confirmDeletion(value: Account) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setMessage(R.string.confirm_delete)
-            .setPositiveButton(R.string.delete) { _, _ -> model.deleteAccount(value) }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
     }
 
     private fun openAutoStartSettings(context: Context) {

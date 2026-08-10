@@ -1,6 +1,7 @@
 package com.blueskybone.arkscreen
 
 import android.util.Xml
+import com.blueskybone.arkscreen.CharAllMap.copyAssetsFile
 import com.blueskybone.arkscreen.network.downloadFile
 import com.blueskybone.arkscreen.network.makeSuspendRequest
 import com.blueskybone.arkscreen.util.readFileAsJsonNode
@@ -71,7 +72,7 @@ sealed interface ConfigRes {
         return node["update"]["version"].asInt()
     }
 
-    private fun copyAssetsFile(): String {
+   fun copyAssetsFile(): String {
         val file = File(filepath)
         if (!file.exists()) {
             APP.assets.open(filename).use { inputStream ->
@@ -114,6 +115,12 @@ data object RecruitDb : ConfigRes {
     override val url: URL =
         URL("https://gitee.com/blueskybone/ArkScreen/raw/master/resource/recruit_version.xml")
     override val filepath = "${APP.externalCacheDir}/$filename"
+
+    fun newOpes():List<String>{
+        val filepath = copyAssetsFile()
+        val node = readFileAsJsonNode(filepath)
+        return node["new_ope"]["name"].elements().asSequence().map { it.asText() }.toList()
+    }
 }
 
 data object AppUpdateInfo {

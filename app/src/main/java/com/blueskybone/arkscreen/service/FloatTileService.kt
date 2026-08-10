@@ -18,7 +18,9 @@ import com.hjq.window.EasyWindow
  *   Date: 2025/1/23
  */
 class FloatTileService : TileService() {
-
+    /*
+    * 悬浮球磁贴Service
+    * */
     companion object {
         var isRunning = false
     }
@@ -67,7 +69,9 @@ class FloatTileService : TileService() {
         }
         isRunning = !isRunning
     }
-
+    /*
+    * 关闭顶部控制面板：只需要打开一个空的dialog
+    * */
     private fun collapsePanel() {
         val dialog = Dialog(this)
         showDialog(dialog)
