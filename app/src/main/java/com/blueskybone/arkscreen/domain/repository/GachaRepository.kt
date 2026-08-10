@@ -23,5 +23,4 @@ interface GachaRepository {
 
     suspend fun correctUnCateRecord(account: Account): Result<Unit>
 
-    //TODO；把卡池统计的一部分逻辑放在repo里，不要挤占UI层
 }

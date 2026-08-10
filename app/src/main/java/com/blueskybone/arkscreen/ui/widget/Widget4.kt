@@ -16,17 +16,24 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
-import com.blueskybone.arkscreen.APP
+import com.blueskybone.arkscreen.platform.widget.WidgetRefreshWorker
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.data.local.pref.PrefManager
+import com.blueskybone.arkscreen.data.local.pref.CachePrefManager
+import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
+import com.blueskybone.arkscreen.domain.repository.AccountRepository
 import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetTextColor
 import com.blueskybone.arkscreen.ui.widget.WidgetReceiver.Companion.MANUAL_UPDATE
+import com.blueskybone.arkscreen.ui.widget.WidgetReceiver.Companion.WORKER_NAME
 import com.blueskybone.arkscreen.util.TimeUtils
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
 import com.blueskybone.arkscreen.util.dpToPx
-import com.blueskybone.arkscreen.util.getTargetDrawableId
 import com.hjq.toast.Toaster
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -36,10 +43,11 @@ import java.util.concurrent.TimeUnit
  *   Date: 2024/8/7
  */
 class Widget4 : AppWidgetProvider() {
-    private val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
+    private val prefManager: SettingPrefManager by KoinJavaComponent.getKoin().inject()
+    private val cachePrefManager: CachePrefManager by KoinJavaComponent.getKoin().inject()
+    private val accountRepository: AccountRepository by KoinJavaComponent.getKoin().inject()
 
     companion object {
-        const val WORKER_NAME = "AttendanceWorker"
         const val START_GAME = "com.blueskybone.arkscreen.START_GAME"
     }
 
@@ -104,9 +112,9 @@ class Widget4 : AppWidgetProvider() {
                     setTextViewTextSize(R.id.meeting, spType, subSize)
                 }
 
-                val recruitCache = prefManager.recruitCache.get()
-                val refreshCache = prefManager.refreshCache.get()
-                val meetCache = prefManager.meetCache.get()
+                val recruitCache = cachePrefManager.recruitCache.get()
+                val refreshCache = cachePrefManager.refreshCache.get()
+                val meetCache = cachePrefManager.meetCache.get()
                 //recruit
                 val now = getCurrentTs()
                 val completeCount = when {
@@ -180,7 +188,7 @@ class Widget4 : AppWidgetProvider() {
                     val bitmap1 =
                         ResourcesCompat.getDrawable(
                             context.resources,
-                            getTargetDrawableId(R.drawable.ic_bolt, prefManager.widgetTextColor),
+                            getTargetDrawableId(R.drawable.ic_bolt, prefManager.widgetTextColor.get()),
                             null
                         )?.toBitmap()!!
                     val scaledBitmap1 = Bitmap.createScaledBitmap(bitmap1, size, size, true)
@@ -189,7 +197,7 @@ class Widget4 : AppWidgetProvider() {
                     val bitmap2 =
                         ResourcesCompat.getDrawable(
                             context.resources,
-                            getTargetDrawableId(R.drawable.ic_drone, prefManager.widgetTextColor),
+                            getTargetDrawableId(R.drawable.ic_drone, prefManager.widgetTextColor.get()),
                             null
                         )?.toBitmap()!!
                     val scaledBitmap2 = Bitmap.createScaledBitmap(bitmap2, size, size, true)
@@ -199,7 +207,7 @@ class Widget4 : AppWidgetProvider() {
                 //apply data
                 fun Long.toMinutes() = this / (60)
                 val now = getCurrentTs()
-                val apCache = prefManager.apCache.get()
+                val apCache = cachePrefManager.apCache.get()
                 val apMax = apCache.max
 
                 val current = when {
@@ -217,7 +225,7 @@ class Widget4 : AppWidgetProvider() {
                     )
                 }
                 //labor
-                val laborCache = prefManager.laborCache.get()
+                val laborCache = cachePrefManager.laborCache.get()
                 val max = laborCache.max
                 val curr = when {
                     laborCache.remainSec == 0L -> laborCache.max
@@ -258,7 +266,7 @@ class Widget4 : AppWidgetProvider() {
                     val bitmap =
                         ResourcesCompat.getDrawable(
                             context.resources,
-                            getTargetDrawableId(R.drawable.ic_train, prefManager.widgetTextColor),
+                            getTargetDrawableId(R.drawable.ic_train, prefManager.widgetTextColor.get()),
                             null
                         )?.toBitmap()!!
                     val scaledBitmap = Bitmap.createScaledBitmap(bitmap, size, size, true)
@@ -266,7 +274,7 @@ class Widget4 : AppWidgetProvider() {
                 }
 
                 val now = getCurrentTs()
-                val trainCache = prefManager.trainCache.get()
+                val trainCache = cachePrefManager.trainCache.get()
                 if (trainCache.isnull) {
                     views.setTextViewText(R.id.train_name, "暂无数据")
                 } else {
@@ -345,7 +353,7 @@ class Widget4 : AppWidgetProvider() {
 
     override fun onEnabled(context: Context?) {
         val workRequest: PeriodicWorkRequest = PeriodicWorkRequest.Builder(
-            SklandWorker::class.java,
+            WidgetRefreshWorker::class.java,
             PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS * 2, TimeUnit.MILLISECONDS
         ).build()
         WorkManager.getInstance(context!!)
@@ -358,7 +366,7 @@ class Widget4 : AppWidgetProvider() {
     }
 
     override fun onDisabled(context: Context?) {
-        WorkManager.getInstance(context!!).cancelUniqueWork(WORKER_NAME)
+        context?.let(WidgetWorkScheduler::cancelIfNoWidgets)
         super.onDisabled(context)
     }
 
@@ -367,66 +375,34 @@ class Widget4 : AppWidgetProvider() {
         if (intent.action == START_GAME) {
             val appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)
             if (appWidgetId != -1) {
-//                playFadeOutAnimation(context, appWidgetId)
-                if (prefManager.baseAccountSk.get().official)
-                    openAnotherApp("com.hypergryph.arknights")
-                else
-                    openAnotherApp("com.hypergryph.arknights.bilibili")
+                val pendingResult = goAsync()
+                CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+                    try {
+                        val account = accountRepository.observeCurrentSkAcc().first()
+                        val packageName = if (account?.official != false) {
+                            "com.hypergryph.arknights"
+                        } else {
+                            "com.hypergryph.arknights.bilibili"
+                        }
+                        openAnotherApp(context, packageName)
+                    } finally {
+                        pendingResult.finish()
+                    }
+                }
             }
         }
     }
 
     @SuppressLint("QueryPermissionsNeeded")
-    private fun openAnotherApp(packageName: String) {
-        val packageManager = APP.packageManager
+    private fun openAnotherApp(context: Context, packageName: String) {
+        val packageManager = context.packageManager
         val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
         if (launchIntent != null) {
-            APP.startActivity(launchIntent)
+            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(launchIntent)
         } else {
             Toaster.show("未检测到游戏安装")
         }
     }
-
-//    private fun playFadeOutAnimation(context: Context, appWidgetId: Int) {
-//
-//
-////        val views = RemoteViews(context.packageName, R.layout.widget_attendance).apply {
-////            setImageViewResource(R.id.loading, R.drawable.click_anim)
-////        }
-////
-////        AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, views)
-////
-////        // 启动动画
-////        views.setImageViewResource(R.id.loading, R.drawable.click_anim)
-////        AppWidgetManager.getInstance(context).partiallyUpdateAppWidget(appWidgetId, views)
-//
-//
-////        val appWidgetManager = AppWidgetManager.getInstance(context)
-////
-////        // 1. 显示视图 (初始alpha=0.8)
-////        val showViews = RemoteViews(context.packageName, R.layout.widget_attendance).apply {
-////            setViewVisibility(R.id.loading, View.VISIBLE)
-////            setFloat(R.id.loading, "setAlpha", 0.8f)
-////        }
-////        appWidgetManager.partiallyUpdateAppWidget(appWidgetId, showViews)
-////
-////        // 2. 渐隐动画 (分5步)
-////        for (i in 1..5) {
-////            Handler(Looper.getMainLooper()).postDelayed({
-////                val animatedViews =
-////                    RemoteViews(context.packageName, R.layout.widget_attendance).apply {
-////                        // 计算当前alpha (从0.8线性递减到0)
-////                        val alpha = 0.8f - (0.8f * i / 5f)
-////                        setFloat(R.id.loading, "setAlpha", alpha)
-////
-////                        // 最后一步隐藏视图
-////                        if (i == 5) {
-////                            setViewVisibility(R.id.loading, View.GONE)
-////                        }
-////                    }
-////                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, animatedViews)
-////            }, (i * 80).toLong()) // 每80毫秒一帧，总共400毫秒动画
-////        }
-//    }
 
 }

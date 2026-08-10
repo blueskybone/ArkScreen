@@ -1,14 +1,13 @@
 package com.blueskybone.arkscreen.ui.account.common
 
 import android.content.Context
-import android.text.InputType
-import android.text.method.DigitsKeyListener
 import android.view.LayoutInflater
-import android.view.View
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.DialogInputBinding
 import com.blueskybone.arkscreen.domain.model.account.Account
 import com.blueskybone.arkscreen.ui.common.view.MenuDialog
+import com.blueskybone.arkscreen.ui.common.view.configurePasswordLogin
+import com.blueskybone.arkscreen.ui.common.view.configureSingleInput
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 /**
@@ -38,7 +37,7 @@ class AccountDialogHelper(
 
     fun showExportDialog(content: String, onCopy: () -> Unit) {
         val binding = DialogInputBinding.inflate(inflater).apply {
-            EditText2.visibility = View.GONE
+            configureSingleInput(context.getString(R.string.export_cookie), sensitive = true)
             EditText1.setText(content)
             EditText1.setSelection(content.length)
         }
@@ -53,8 +52,7 @@ class AccountDialogHelper(
 
     fun showCookieLoginDialog(onConfirm: (String) -> Unit) {
         val binding = DialogInputBinding.inflate(inflater).apply {
-            EditText2.visibility = View.GONE
-            EditText1.hint = context.getString(R.string.import_cookie)
+            configureSingleInput(context.getString(R.string.import_cookie), sensitive = true)
         }
 
         MaterialAlertDialogBuilder(context)
@@ -69,13 +67,9 @@ class AccountDialogHelper(
 
     fun showPasswordLoginDialog(onConfirm: (phone: String, password: String) -> Unit) {
         val binding = DialogInputBinding.inflate(inflater).apply {
-            EditText1.hint = context.getString(R.string.phone_number)
-            EditText2.visibility = View.VISIBLE
-            EditText2.hint = context.getString(R.string.password)
-            EditText2.inputType =
-                InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT
-            EditText2.keyListener = DigitsKeyListener.getInstance(
-                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/"
+            configurePasswordLogin(
+                phoneHint = context.getString(R.string.phone_number),
+                passwordHint = context.getString(R.string.password),
             )
         }
 

@@ -1,9 +1,11 @@
 package com.blueskybone.arkscreen.data.repository
 
-import com.blueskybone.arkscreen.data.local.pref.PrefManager
+import com.blueskybone.arkscreen.data.local.pref.CachePrefManager
 import com.blueskybone.arkscreen.data.network.ApiService
 import com.blueskybone.arkscreen.data.network.auth.HeaderProvider
 import com.blueskybone.arkscreen.data.network.model.AttendanceEndfieldResponse
+import com.blueskybone.arkscreen.data.network.model.Awards
+import com.fasterxml.jackson.databind.JsonNode
 import com.blueskybone.arkscreen.data.network.model.AttendanceRequest
 import com.blueskybone.arkscreen.data.network.model.AttendanceResponse
 import com.blueskybone.arkscreen.data.network.model.PlayerInfoResp
@@ -32,8 +34,9 @@ import kotlinx.coroutines.withContext
  */
 class SklandRepositoryImpl(
     private val api: ApiService,
-    private val headerProvider: HeaderProvider = HeaderProvider,
-    private val prefManager: PrefManager
+    private val apiAs: ApiService,
+    private val headerProvider: HeaderProvider,
+    private val prefManager: CachePrefManager
 ) : SklandRepository {
 
 
@@ -64,16 +67,52 @@ class SklandRepositoryImpl(
     }
 
     private fun handleAttendanceResp(resp: AttendanceResponse): String {
+        if (resp.code != 0) throw IllegalStateException(resp.message)
         return resp.data.awards.joinToString("  ") {
             "${it.resource.name}×${it.count}"
         }
     }
 
-    //TODO:看一下具体的返回值
     private fun handleAttendanceEfResp(resp: AttendanceEndfieldResponse): String {
-        return resp.data.awardIds.joinToString("  ") {
-            "${it.id}×${it.type}"
-        }
+        if (resp.code != 0) throw IllegalStateException(resp.message)
+        return resp.data.awardIds
+            .groupingBy { it }
+            .eachCount()
+            .entries
+            .joinToString("  ") { (award, count) ->
+                val name = findEndfieldRewardName(resp.data.resourceInfoMap, award)
+                "$name×$count"
+            }
+            .ifBlank { "签到成功" }
+    }
+
+    private fun findEndfieldRewardName(resourceMap: JsonNode?, award: Awards): String {
+        if (resourceMap == null || resourceMap.isNull) return award.id
+        val candidates = sequenceOf(
+            resourceMap.path(award.id),
+            resourceMap.path(award.type.toString()).path(award.id),
+            resourceMap.path("${award.type}_${award.id}"),
+        ) + listOfNotNull(findNodeByKey(resourceMap, award.id)).asSequence()
+
+        return candidates
+            .mapNotNull { node -> node?.let(::extractRewardName) }
+            .firstOrNull()
+            ?: award.id
+    }
+
+    private fun findNodeByKey(node: JsonNode, key: String): JsonNode? {
+        if (!node.isContainerNode) return null
+        node.get(key)?.let { return it }
+        return node.elements().asSequence()
+            .mapNotNull { child -> findNodeByKey(child, key) }
+            .firstOrNull()
+    }
+
+    private fun extractRewardName(node: JsonNode): String? {
+        if (node.isTextual) return node.asText().takeIf { it.isNotBlank() }
+        return sequenceOf("name", "itemName", "displayName")
+            .mapNotNull { field -> node.get(field)?.asText() }
+            .firstOrNull { it.isNotBlank() }
     }
 
 
@@ -120,25 +159,40 @@ class SklandRepositoryImpl(
     }
 
 
-    override suspend fun fetchRealTimeData(account: AccountSk): Result<RealTimeData> = safeResultSync {
-        withContext(Dispatchers.IO) {
-            val cred = fetchCredInfo(account.token, account.dId, headerProvider, api)
-            val playerInfoResp = fetchGameData(cred.cred, cred.token, account.uid, account.dId)
-            RealTimeMapper.toDomain(playerInfoResp)
+    override suspend fun fetchRealTimeData(account: AccountSk): Result<RealTimeData> =
+        safeResultSync {
+            withContext(Dispatchers.IO) {
+                val cred = fetchCredInfo(
+                    account.token,
+                    account.dId,
+                    headerProvider,
+                    api = api,
+                    apiAs = apiAs
+                )
+                val playerInfoResp = fetchGameData(cred.cred, cred.token, account.uid, account.dId)
+                RealTimeMapper.toDomain(playerInfoResp)
+            }
         }
-    }
 
-    override suspend fun fetchCharAssets(account: AccountSk): Result<List<Operator>> = safeResultSync {
-        withContext(Dispatchers.IO) {
-            val cred = fetchCredInfo(account.token, account.dId, headerProvider, api)
-            val playerInfoResp = fetchGameData(cred.cred, cred.token, account.uid, account.dId)
-            OperatorMapper.toDomain(playerInfoResp)
+    override suspend fun fetchCharAssets(account: AccountSk): Result<List<Operator>> =
+        safeResultSync {
+            withContext(Dispatchers.IO) {
+                val cred = fetchCredInfo(
+                    account.token,
+                    account.dId,
+                    headerProvider,
+                    api = api,
+                    apiAs = apiAs
+                )
+                val playerInfoResp = fetchGameData(cred.cred, cred.token, account.uid, account.dId)
+                OperatorMapper.toDomain(playerInfoResp)
+            }
         }
-    }
 
     override suspend fun fetchAkCheckResult(account: AccountSk): Result<String> = safeResultSync {
         withContext(Dispatchers.IO) {
-            val cred = fetchCredInfo(account.token, account.dId, headerProvider, api)
+            val cred =
+                fetchCredInfo(account.token, account.dId, headerProvider, api = api, apiAs = apiAs)
             val resp = fetchArkAttendance(
                 cred.cred,
                 cred.token,
@@ -152,7 +206,8 @@ class SklandRepositoryImpl(
 
     override suspend fun fetchEfCheckResult(account: AccountEf): Result<String> = safeResultSync {
         withContext(Dispatchers.IO) {
-            val cred = fetchCredInfo(account.token, account.dId, headerProvider, api)
+            val cred =
+                fetchCredInfo(account.token, account.dId, headerProvider, api = api, apiAs = apiAs)
             val resp = fetchEfAttendance(
                 cred.cred,
                 cred.token,

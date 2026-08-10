@@ -9,7 +9,6 @@ import com.blueskybone.arkscreen.domain.model.ConfigType
 import com.blueskybone.arkscreen.domain.model.ResourceSyncStatus
 import com.blueskybone.arkscreen.domain.model.operator.OperatorBasicInfo
 import com.blueskybone.arkscreen.domain.model.recruit.RecruitDatabase
-import com.fasterxml.jackson.databind.JsonNode
 import kotlinx.coroutines.flow.Flow
 
 interface GameResourceRepository {

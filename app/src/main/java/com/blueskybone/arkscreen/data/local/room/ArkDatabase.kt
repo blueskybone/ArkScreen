@@ -119,27 +119,5 @@ abstract class ArkDatabase : RoomDatabase() {
                 )
             }
         }
-
-//        object Migration6 : Migration(5, 6) {
-//            override fun migrate(db: SupportSQLiteDatabase) {
-//                db.execSQL("DROP TABLE Gacha")
-//                db.execSQL("""
-//            CREATE TABLE Gacha (
-//                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-//                poolId TEXT NOT NULL DEFAULT 'UN',
-//                poolCate TEXT NOT NULL DEFAULT 'UN',
-//                uid TEXT NOT NULL,
-//                ts INTEGER NOT NULL,
-//                pool TEXT NOT NULL,
-//                charName TEXT NOT NULL,
-//                charId TEXT NOT NULL,
-//                rarity INTEGER NOT NULL,
-//                isNew INTEGER NOT NULL,
-//                pos INTEGER NOT NULL DEFAULT 0
-//            )
-//        """)
-//                db.execSQL("CREATE UNIQUE INDEX index_Gacha_uid_ts_pos ON Gacha(uid, ts, pos)")
-//            }
-//        }
     }
 }

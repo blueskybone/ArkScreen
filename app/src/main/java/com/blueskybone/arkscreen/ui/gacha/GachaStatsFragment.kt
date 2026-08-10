@@ -5,11 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Spinner
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -43,7 +41,7 @@ import timber.log.Timber
 * */
 
 class GachaStatsFragment : Fragment() {
-    private val model : GachaModel by activityViewModels()
+    private val model: GachaModel by activityViewModel()
 
     private var _binding: FragmentGachaStatisBinding? = null
     private val binding get() = _binding!!
@@ -64,25 +62,17 @@ class GachaStatsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 model.uiState.collect { state ->
-                    renderState(state)
                     state.gachaUiSnapshot?.let{
-                        renderGachaStats(it)
+                        renderGachaStats(it, state.selectedPoolId)
                     }
                 }
             }
         }
     }
 
-    private fun renderGachaStats(gachaUi: GachaUiSnapshot) {
+    private fun renderGachaStats(gachaUi: GachaUiSnapshot, selectedPoolId: String) {
         val poolStatsList = gachaUi.gachaPoolStats
-        setupSpinner(poolStatsList)
-    }
-
-    //TODO:检查一下这个函数逻辑
-    private fun renderState(gachaUiState: GachaUiState){
-        if(gachaUiState.error != null){
-            binding.root
-        }
+        setupSpinner(poolStatsList, selectedPoolId)
     }
 
     private fun setPieChart(gachaInfo: GachaPoolStats) {
@@ -131,61 +121,60 @@ class GachaStatsFragment : Fragment() {
         pieChart.invalidate()
     }
 
-    private fun setupSpinner(gachaInfo: List<GachaPoolStats>) {
-        val dataText = gachaInfo.map { item -> item.poolName }
-        val adapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_item,  // 默认布局
-            dataText
-        )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)  // 下拉项布局
-
-        // 设置适配器
-        val spinner: Spinner = binding.Spinner
-        spinner.adapter = adapter
-
-        // 设置选择监听器
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                try {
-                    val info = gachaInfo[position]
-                    setPieChart(info)
-                    val countSum = info.rare3 + info.rare4 + info.rare5 + info.rare6
-                    binding.RecordsCount.text = countSum.toString() + "抽"
-
-                    binding.Rare6Count.text = "共 " + info.rare6.toString() + " 个"
-                    binding.Rare6Percent.text = "占 " + "%.1f%%".format(info.rare6.toFloat() / countSum * 100)
-                    binding.Rare6Ave.text = if(info.rare6 == 0) "-" else (countSum /info.rare6).toString()  + "抽/个"
-
-                    binding.Rare5Count.text = "共 " + info.rare5.toString() + " 个"
-                    binding.Rare5Percent.text = "占 " + "%.1f%%".format(info.rare5.toFloat() / countSum * 100)
-                    binding.Rare5Ave.text = if(info.rare5 == 0) "-" else (countSum /info.rare5).toString()  + "抽/个"
-
-                    binding.Rare4Count.text = "共 " + info.rare4.toString() + " 个"
-                    binding.Rare4Percent.text = "占 " + "%.1f%%".format(info.rare4.toFloat() / countSum * 100)
-                    binding.Rare4Ave.text = if(info.rare4 == 0) "-" else (countSum /info.rare4).toString()  + "抽/个"
-
-                    binding.Rare3Count.text = "共 " + info.rare3.toString() + " 个"
-                    binding.Rare3Percent.text = "占 " + "%.1f%%".format(info.rare3.toFloat() / countSum * 100)
-                    binding.Rare3Ave.text = if(info.rare3 == 0) "-" else (countSum /info.rare3).toString()  + "抽/个"
-                }catch (e: Exception){
-                    Toaster.show(e.message)
-                    Timber.e(e)
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
+    private fun setupSpinner(gachaInfo: List<GachaPoolStats>, selectedPoolId: String) {
+        if (gachaInfo.isEmpty()) {
+            binding.PoolDropdown.setAdapter(null)
+            binding.PoolDropdown.setText("", false)
+            binding.RecordsCount.text = "0"
+            binding.PieChart.clear()
+            return
         }
-        // 设置默认选择（可选）
-        // 选择第一项,并触发监听器
-        spinner.setSelection(0)
+        binding.PoolDropdown.setAdapter(
+            ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_list_item_1,
+                gachaInfo.map { it.poolName },
+            )
+        )
+        binding.PoolDropdown.setOnItemClickListener { _, _, position, _ ->
+            gachaInfo.getOrNull(position)?.let { model.selectPool(it.poolId) }
+        }
+
+        val selectedInfo = gachaInfo.firstOrNull { it.poolId == selectedPoolId }
+            ?: gachaInfo.first()
+        binding.PoolDropdown.setText(selectedInfo.poolName, false)
+        renderSelectedPool(selectedInfo)
     }
+
+    private fun renderSelectedPool(info: GachaPoolStats) {
+        try {
+            setPieChart(info)
+            val countSum = info.rare3 + info.rare4 + info.rare5 + info.rare6
+            binding.RecordsCount.text = getString(R.string.gacha_result_count, countSum)
+
+            binding.Rare6Count.text = "共 ${info.rare6} 个"
+            binding.Rare6Percent.text = formatPercent(info.rare6, countSum)
+            binding.Rare6Ave.text = if (info.rare6 == 0) "-" else "${countSum / info.rare6}抽/个"
+
+            binding.Rare5Count.text = "共 ${info.rare5} 个"
+            binding.Rare5Percent.text = formatPercent(info.rare5, countSum)
+            binding.Rare5Ave.text = if (info.rare5 == 0) "-" else "${countSum / info.rare5}抽/个"
+
+            binding.Rare4Count.text = "共 ${info.rare4} 个"
+            binding.Rare4Percent.text = formatPercent(info.rare4, countSum)
+            binding.Rare4Ave.text = if (info.rare4 == 0) "-" else "${countSum / info.rare4}抽/个"
+
+            binding.Rare3Count.text = "共 ${info.rare3} 个"
+            binding.Rare3Percent.text = formatPercent(info.rare3, countSum)
+            binding.Rare3Ave.text = if (info.rare3 == 0) "-" else "${countSum / info.rare3}抽/个"
+        } catch (error: Exception) {
+            Toaster.show(error.message)
+            Timber.e(error)
+        }
+    }
+
+    private fun formatPercent(count: Int, total: Int): String =
+        if (total == 0) "占 0.0%" else "占 " + "%.1f%%".format(count.toFloat() / total * 100)
 
     private fun setupSimpleBarChart() {
 
@@ -241,5 +230,12 @@ class GachaStatsFragment : Fragment() {
             invalidate()
 
         }
+    }
+
+    override fun onDestroyView() {
+        binding.PieChart.clear()
+        binding.BarChart.clear()
+        _binding = null
+        super.onDestroyView()
     }
 }

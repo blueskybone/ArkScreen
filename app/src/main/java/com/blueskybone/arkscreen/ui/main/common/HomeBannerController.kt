@@ -6,6 +6,8 @@ import android.widget.LinearLayout
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.domain.model.BiliVideo
@@ -31,6 +33,15 @@ class HomeBannerController(
     private var videos: List<BiliVideo> = emptyList()
 
     private var bannerAdapter: ImagePagerAdapter? = null
+    private val pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            updateIndicators(position)
+        }
+    }
+
+    init {
+        viewPager.registerOnPageChangeCallback(pageChangeCallback)
+    }
 
     private val bannerListener = object : ItemListener {
         override fun onClick(position: Int) {
@@ -59,36 +70,23 @@ class HomeBannerController(
         this.videos = videos
 
 
-        // 如果数据为空，直接返回
-        if (videos.isEmpty()) return
+        if (videos.isEmpty()) {
+            autoScrollJob?.cancel()
+            bannerAdapter = null
+            viewPager.adapter = null
+            indicatorLayout.removeAllViews()
+            return
+        }
 
-        // 设置 ViewPager adapter
-
-//        if (bannerAdapter == null) {
-//            bannerAdapter = ImagePagerAdapter(bannerListener, videos)
-//            binding.TitleBanner.adapter = bannerAdapter
-//            binding.TitleBanner.isUserInputEnabled = true
-//            setupIndicators(videos)
-//            startAutoScroll()
-//        } else {
-//            bannerAdapter = ImagePagerAdapter(bannerListener, videos)
-//            binding.TitleBanner.adapter = bannerAdapter
-//            setupIndicators(videos)
-//        }
-
-        val bannerAdapter = ImagePagerAdapter(bannerListener, videos)
+        bannerAdapter = ImagePagerAdapter(bannerListener, videos)
         viewPager.adapter = bannerAdapter
-        viewPager.isUserInputEnabled = true // 可滑动
-
-        // 设置指示器
+        viewPager.isUserInputEnabled = videos.size > 1
         setupIndicators(videos)
-
-        // 开始自动轮播
         startAutoScroll()
     }
 
     private val Int.dp: Int
-        get() = (this * resources.displayMetrics.density).toInt()
+        get() = (this * fragment.resources.displayMetrics.density).toInt()
 
     private fun setupIndicators(videos: List<BiliVideo>) {
         indicatorLayout.removeAllViews()
@@ -117,20 +115,24 @@ class HomeBannerController(
     private fun startAutoScroll() {
         autoScrollJob?.cancel()
         autoScrollJob = fragment.viewLifecycleOwner.lifecycleScope.launch {
-            while (isActive) {
-                delay(5000) // 每5秒切换一次
-                val count = viewPager.adapter?.itemCount ?: 0
-                if (count > 1) {
-                    val nextItem = (viewPager.currentItem + 1) % count
-                    viewPager.setCurrentItem(nextItem, true)
-                    updateIndicators(nextItem)
+            fragment.viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                while (isActive) {
+                    delay(5000)
+                    val count = viewPager.adapter?.itemCount ?: 0
+                    if (count > 1) {
+                        val nextItem = (viewPager.currentItem + 1) % count
+                        viewPager.setCurrentItem(nextItem, true)
+                    }
                 }
             }
         }
     }
 
     fun release() {
-        autoScrollJob?.cancel() // 取消自动轮播
+        autoScrollJob?.cancel()
+        viewPager.unregisterOnPageChangeCallback(pageChangeCallback)
+        viewPager.adapter = null
+        bannerAdapter = null
     }
 
 }

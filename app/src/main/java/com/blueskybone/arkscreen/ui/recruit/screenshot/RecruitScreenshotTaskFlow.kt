@@ -11,6 +11,9 @@ class RecruitScreenshotTaskFlow(
     private val recruitScreenshotFlow: RecruitScreenshotFlow,
 ) : ScreenshotTaskFlow {
 
+    override val keepCaptureSessionAlive: Boolean
+        get() = source == ScreenshotStartSource.FloatingBall
+
     override suspend fun onScreenshot(bitmap: Bitmap) {
         recruitScreenshotFlow.run(
             bitmap = bitmap,

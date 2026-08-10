@@ -95,19 +95,9 @@
             android:layout_marginTop="16dp"
             android:text="@string/logs_option" />
 
-        <TextView
+        <include
             android:id="@+id/CheckLogs"
-            style="@style/Preference"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/check_logs" />
-
-        <TextView
-            android:id="@+id/CleanLogs"
-            style="@style/Preference"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/clean_logs" />
+            layout="@layout/preference" />
 
         <View
             android:layout_width="match_parent"
@@ -121,19 +111,13 @@
             android:layout_marginTop="16dp"
             android:text="@string/others" />
 
-        <TextView
+        <include
             android:id="@+id/OpenSourceLicense"
-            style="@style/Preference"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/open_license" />
+            layout="@layout/preference" />
 
-        <TextView
+        <include
             android:id="@+id/FeedBack"
-            style="@style/Preference"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/send_feedback" />
+            layout="@layout/preference" />
 
         <TextView
             android:id="@+id/Manual"
@@ -143,12 +127,9 @@
             android:text="@string/manual"
             android:visibility="gone" />
 
-        <TextView
+        <include
             android:id="@+id/Donate"
-            style="@style/Preference"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/donate" />
+            layout="@layout/preference" />
 
 
     </LinearLayout>

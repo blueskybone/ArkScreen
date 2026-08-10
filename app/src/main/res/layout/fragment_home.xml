@@ -39,7 +39,7 @@
         <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
 
 
-            <com.blueskybone.arkscreen.common.NestedScrollableHost
+            <com.blueskybone.arkscreen.ui.common.view.NestedScrollableHost
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -47,7 +47,7 @@
                     android:id="@+id/TitleBanner"
                     android:layout_width="match_parent"
                     android:layout_height="120dp" />
-            </com.blueskybone.arkscreen.common.NestedScrollableHost>
+            </com.blueskybone.arkscreen.ui.common.view.NestedScrollableHost>
 
             <LinearLayout
                 android:id="@+id/BannerIdc"
@@ -201,14 +201,15 @@
                 android:layout_gravity="start|center"
                 android:text="@string/tools_3rd" />
 
-            <com.google.android.material.chip.Chip
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/AddLink"
-                style="@style/Widget.MyApp.Chip.Suggestion"
+                style="@style/Widget.ArkScreen.SectionAction.Tonal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                android:layout_height="36dp"
+                android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="16dp"
-                android:text="@string/add" />
+                android:text="@string/add"
+                app:icon="@drawable/ic_add" />
         </FrameLayout>
 
         <com.google.android.material.card.MaterialCardView
@@ -250,4 +251,3 @@
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
-

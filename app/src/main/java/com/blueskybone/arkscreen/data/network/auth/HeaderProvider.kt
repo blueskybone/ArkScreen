@@ -1,10 +1,14 @@
 package com.blueskybone.arkscreen.data.network.auth
 
+import com.blueskybone.arkscreen.domain.service.AppClock
+
 /**
  * Created by blueskybone
  * Date: 2026/2/26
  */
-object HeaderProvider {
+class HeaderProvider(
+    private val clock: AppClock,
+) {
     // 基础 Header，通常是固定的
     private fun createBaseHeaders(): Map<String, String> {
         return mapOf(
@@ -36,7 +40,7 @@ object HeaderProvider {
         params: String,
         dId: String = ""
     ): Map<String, String>{
-        val timestamp = (System.currentTimeMillis() / 1000).toString()
+        val timestamp = clock.currentEpochSeconds().toString()
         val sign = calculateSign(api, params, token, timestamp, dId)
         return mapOf(
             "cred" to cred,

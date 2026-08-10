@@ -1,34 +1,37 @@
 package com.blueskybone.arkscreen.ui.gacha
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupWindow
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.R
+import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.databinding.FragmentGachaBinding
-import com.blueskybone.arkscreen.databinding.PopupAccountBinding
 import com.blueskybone.arkscreen.domain.model.account.Account
 import com.blueskybone.arkscreen.ui.account.adapter.AccountAdapter
+import com.blueskybone.arkscreen.ui.account.common.AccountPickerPopup
 import com.blueskybone.arkscreen.ui.account.model.AccountItemAction
+import com.blueskybone.arkscreen.ui.account.model.AccountItemUiModel
 import com.blueskybone.arkscreen.ui.gacha.adapter.GachaAdapter
+import com.blueskybone.arkscreen.ui.gacha.model.GachaPool
 import com.blueskybone.arkscreen.ui.gacha.model.GachaUiSnapshot
 import kotlinx.coroutines.launch
 
 class GachaFragment : Fragment() {
 
-    private val model: GachaModel by activityViewModels()
+    private val model: GachaModel by activityViewModel()
+    private val settingPrefManager: SettingPrefManager by inject()
     private var adapter: GachaAdapter? = null
-    private var accountPopup: PopupWindow? = null
+    private var accountPopup: AccountPickerPopup? = null
     private var adapterAccount: AccountAdapter? = null
+    private var gachaPools: List<GachaPool> = emptyList()
     private var _binding: FragmentGachaBinding? = null
     private val binding get() = _binding!!
 
@@ -50,7 +53,7 @@ class GachaFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 model.uiState.collect { state ->
-                    renderState(state)
+                    renderAccount(state)
                     state.gachaUiSnapshot?.let{
                         renderGachaOverview(it)
                         renderGachaPool(it)
@@ -60,13 +63,29 @@ class GachaFragment : Fragment() {
         }
     }
 
-
-
-    private fun renderState(gachaUiState: GachaUiState){
-        if(gachaUiState.error != null){
-            binding.root
+    private fun renderAccount(state: GachaUiState) {
+        val current = state.currAccount
+        binding.NickName.text = current?.nickName.orEmpty()
+        if (current != null) {
+            binding.Icon.setImageResource(
+                if (current.official) R.drawable.hg_icon_80x80
+                else R.drawable.bili_icon_75x71
+            )
+        } else {
+            binding.Icon.setImageDrawable(null)
         }
+
+        adapterAccount?.submitList(
+            state.accList.map { account ->
+                AccountItemUiModel(
+                    account = account,
+                    isDefault = account.uid == current?.uid,
+                )
+            }
+        )
     }
+
+
 
     private fun renderGachaOverview(gachaUi: GachaUiSnapshot) {
         binding.CountSum.text = getString(R.string.gacha_count, gachaUi.gachaOverview.totalCount)
@@ -86,13 +105,24 @@ class GachaFragment : Fragment() {
     }
 
     private fun renderGachaPool(gachaUi: GachaUiSnapshot) {
-        adapter?.submitList(gachaUi.gachaPools)
+        gachaPools = gachaUi.gachaPools
+        submitVisiblePools()
+    }
+
+    private fun submitVisiblePools() {
+        val visiblePools = if (binding.ShowEmptyPools.isChecked) {
+            gachaPools
+        } else {
+            gachaPools.filter { it.hitRecords.isNotEmpty() }
+        }
+        adapter?.submitList(visiblePools)
     }
 
     private fun createItemAction(): AccountItemAction {
         return object : AccountItemAction {
             override fun onClick(account: Account) {
                 model.checkoutAccount(account)
+                accountPopup?.dismiss()
             }
             override fun onLongClick(account: Account) {
             }
@@ -103,95 +133,42 @@ class GachaFragment : Fragment() {
     private fun setupBinding() {
         adapter = GachaAdapter(requireContext())
         binding.RecyclerView.adapter = adapter
+        binding.ShowEmptyPools.isChecked = settingPrefManager.showEmptyGachaPools.get()
         binding.RecyclerView.apply {
             // 设置固定大小，优化性能
             setHasFixedSize(true)
 
             // 禁用滚动
             overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-            isNestedScrollingEnabled = false
         }
         binding.Exchange.setOnClickListener { view ->
             showAccountPopup(view)
         }
+        binding.PlayerInfo.setOnClickListener { view ->
+            showAccountPopup(view)
+        }
+        binding.ShowEmptyPools.setOnCheckedChangeListener { _, isChecked ->
+            settingPrefManager.showEmptyGachaPools.set(isChecked)
+            submitVisiblePools()
+        }
     }
-
-//    private fun setUpObserver() {
-//        model.gachaData.observe(requireActivity()) { value ->
-//            adapter?.submitList(value)
-//        }
-//        model.uiState.observe(requireActivity()) { value ->
-//            when (value) {
-//                is DataUiState.Success -> displayView()
-//                else -> {}
-//            }
-//        }
-//
-//        modelBase.accountGcList.observe(viewLifecycleOwner) { value ->
-//            adapterAccount?.submitList(value)
-//        }
-//
-//        modelBase.currentAccountGc.observe(viewLifecycleOwner) { value ->
-//            if(value==null) return@observe
-//            binding.NickName.text = value.nickName
-//            if (value.official) binding.Icon.setImageResource(R.drawable.hg_icon_80x80)
-//            else binding.Icon.setImageResource(R.drawable.bili_icon_75x71)
-//        }
-//    }
-
-//    private fun displayView() {
-//        binding.CountSum.text = getString(R.string.gacha_count, model.finalCountSum)
-//        binding.Rarity6.text = model.rarity6Count.toString()
-//        binding.AverageCount.text =
-//            if (model.rarity6Count == 0) "-" else getString(
-//                R.string.gacha_count,
-//                model.finalCountSum / model.rarity6Count
-//            )
-//        binding.NormalCount.text = getString(R.string.gacha_count, model.poolCountNormal)
-//        binding.FesCount.text = getString(R.string.gacha_count, model.poolCountFes)
-//        binding.CoreCount.text = getString(R.string.gacha_count, model.poolCountCore)
-//        binding.DateRange.text = getString(R.string.date_range, model.dateRange)
-//    }
 
     private fun showAccountPopup(anchor: View) {
         if (accountPopup?.isShowing == true) return
-        val activity = requireActivity()
-        // 初始化弹窗
-        val binding = PopupAccountBinding.inflate(LayoutInflater.from(requireContext()))
-        val popupView = binding.root  // 获取根布局
-        binding.lvAccount.adapter = adapterAccount
-
-        accountPopup = PopupWindow(
-            popupView,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            true
-        ).apply {
-            setBackgroundDrawable(
-                ContextCompat.getDrawable(
-                    requireContext(),
-                    android.R.color.transparent
-                )
-            )
-            isOutsideTouchable = true
-            animationStyle = R.style.PopupDownAnim
-            setOnDismissListener {
-                activity.window?.attributes = activity.window?.attributes?.apply {
-                    this.alpha = 1.0f
-                }
-            }
+        val accountAdapter = adapterAccount ?: return
+        accountPopup = AccountPickerPopup(requireActivity(), accountAdapter).also {
+            it.show(anchor)
         }
-        // 显示弹窗前调整背景透明度
-        activity.window?.attributes = activity.window?.attributes?.apply {
-            alpha = 0.7f
-        }
-        // 计算弹窗位置，显示在锚点下方
-        val location = IntArray(2)
-        anchor.getLocationOnScreen(location)
-        val x = location[0]
-        val y = location[1] + anchor.height
+    }
 
-        // 显示弹窗，可根据需要调整x和y的偏移量
-        accountPopup?.showAtLocation(anchor, Gravity.NO_GRAVITY, x, y)
+    override fun onDestroyView() {
+        accountPopup?.dismiss()
+        accountPopup = null
+        binding.RecyclerView.adapter = null
+        adapter = null
+        adapterAccount = null
+        gachaPools = emptyList()
+        _binding = null
+        super.onDestroyView()
     }
 }

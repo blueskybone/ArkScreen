@@ -1,15 +1,12 @@
 package com.blueskybone.arkscreen.ui.realtime
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
 import com.blueskybone.arkscreen.util.launchApp
 import com.blueskybone.arkscreen.databinding.ActivityRealTimeBinding
 import com.blueskybone.arkscreen.databinding.InfoCardBinding
-import com.blueskybone.arkscreen.ui.UiState
 import com.blueskybone.arkscreen.ui.common.bindinginfo.Campaign
 import com.blueskybone.arkscreen.ui.common.bindinginfo.DataInfo
 import com.blueskybone.arkscreen.ui.common.bindinginfo.Dormitories
@@ -23,6 +20,7 @@ import com.blueskybone.arkscreen.ui.common.bindinginfo.Trading
 import com.blueskybone.arkscreen.ui.common.bindinginfo.Train
 import com.blueskybone.arkscreen.ui.realtime.model.RealTimeUi
 import com.hjq.toast.Toaster
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  *   Created by blueskybone
@@ -34,7 +32,8 @@ class RealTimeActivity : AppCompatActivity() {
     private var _binding: ActivityRealTimeBinding? = null
     private val binding get() = _binding!!
 
-    private val model: RealTimeModel by viewModels()
+    private val model: RealTimeModel by viewModel()
+    private var currentOfficial = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +54,17 @@ class RealTimeActivity : AppCompatActivity() {
         binding.Tired.setUp(Tired)
         binding.Train.setUp(Train)
         binding.Campaign.setUp(Campaign)
+        binding.Starter.setOnClickListener {
+            if (currentOfficial) {
+                launchApp("com.hypergryph.arknights") {
+                    Toaster.show(getString(com.blueskybone.arkscreen.R.string.official_game_not_found))
+                }
+            } else {
+                launchApp("com.hypergryph.arknights.bilibili") {
+                    Toaster.show(getString(com.blueskybone.arkscreen.R.string.bilibili_game_not_found))
+                }
+            }
+        }
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -65,19 +75,22 @@ class RealTimeActivity : AppCompatActivity() {
     }
 
     private fun InfoCardBinding.setUp(pairInfo: RealTimeUi.PairInfo) {
-        Time.text = pairInfo.time
-        Value.text = pairInfo.value
+        Time.text = pairInfo.time.resolve(this@RealTimeActivity)
+        Value.text = pairInfo.value.resolve(this@RealTimeActivity)
         Notify.visibility = if(pairInfo.notify) View.VISIBLE else View.GONE
     }
 
     private fun setupObserver() {
-        model.uiState.observe(this) { value ->
-            when (value) {
-                is UiState.Loading -> displayLoadingView()
-                is UiState.Error -> displayErrorView(value.message)
-                is UiState.Success -> displayView()
-                is UiState.Warning -> displayWarningView(value.message)
-                else -> {}
+        model.state.observe(this) { state ->
+            when (state) {
+                RealTimeScreenState.Loading -> displayLoadingView()
+                RealTimeScreenState.Empty ->
+                    displayWarningView(getString(com.blueskybone.arkscreen.R.string.realtime_no_account))
+                is RealTimeScreenState.Error -> displayErrorView(
+                    state.message
+                        ?: getString(com.blueskybone.arkscreen.R.string.realtime_load_failed)
+                )
+                is RealTimeScreenState.Content -> displayView(state.data)
             }
         }
     }
@@ -85,7 +98,7 @@ class RealTimeActivity : AppCompatActivity() {
     private fun displayLoadingView() {
         binding.Page.visibility = View.VISIBLE
         binding.ScrollView.visibility = View.GONE
-        binding.Message.text = "加载中..."
+        binding.Message.setText(com.blueskybone.arkscreen.R.string.loading)
     }
 
     private fun displayErrorView(msg: String) {
@@ -100,21 +113,27 @@ class RealTimeActivity : AppCompatActivity() {
         binding.Message.text = msg
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun displayView() {
-        val realtimeUi = model.realTimeUi
-        val data = realtimeUi.value!!
-        binding.Ap.text = data.apNow
-        binding.ApMax.text = data.apMax
+    private fun displayView(data: RealTimeUi) {
+        binding.Ap.text = data.apNow.toString()
+        binding.ApMax.text =
+            getString(com.blueskybone.arkscreen.R.string.realtime_ap_max, data.apMax)
         binding.CircularProgressBar.apply {
-            progress = data.apNow.toFloat()
-            progressMax = data.apMax.substring(1).toFloat()
+            progressMax = data.apMax.toFloat().coerceAtLeast(1F)
+            progress = data.apNow.toFloat().coerceIn(0F, progressMax)
         }
         binding.Avatar.load(data.avatarUrl)
-        binding.Level.text = data.level
-        binding.ApResTime.text = data.apResTime
+        binding.Level.text = getString(com.blueskybone.arkscreen.R.string.realtime_level, data.level)
+        binding.ApFullTime.text = data.apFullTime.resolve(this)
+        binding.ApResTime.text = data.apResTime.resolve(this)
         binding.NickName.text = data.nickName
-        binding.LastLogin.text = data.lastLogin
+        binding.LastLogin.text = data.lastLogin.resolve(this)
+        binding.Server.setText(
+            if (data.official) {
+                com.blueskybone.arkscreen.R.string.official_server
+            } else {
+                com.blueskybone.arkscreen.R.string.bilibili_server
+            }
+        )
         binding.Recruit.setUp(data.recruit)
         binding.RecruitReFresh.setUp(data.recruitRefresh)
         binding.Labor.setUp(data.labor)
@@ -126,29 +145,21 @@ class RealTimeActivity : AppCompatActivity() {
         binding.Train.setUp(data.train)
         binding.Campaign.setUp(data.campaign)
 
-        if (data.displayChange) {
-            binding.TrainChange.visibility = View.VISIBLE
-        }
-        if (data.logosChange.display) {
-            binding.Logos.Layout.visibility = View.VISIBLE
-            binding.Logos.Text.text = data.logosChange.text
-        }
-        if (data.ireneChange.display) {
-            binding.Irene.Layout.visibility = View.VISIBLE
-            binding.Irene.Text.text = data.ireneChange.text
-        }
-        binding.Starter.setOnClickListener {
-            if (data.official)
-                this.launchApp("com.hypergryph.arknights") { Toaster.show("未检测到官服游戏安装") }
-            else
-                this.launchApp("com.hypergryph.arknights.bilibili") { Toaster.show("未检测到b服游戏安装") }
-        }
+        binding.TrainChange.visibility =
+            if (data.logosChange != null || data.ireneChange != null) View.VISIBLE else View.GONE
+        binding.Logos.Layout.visibility =
+            if (data.logosChange != null) View.VISIBLE else View.GONE
+        binding.Logos.Text.text = data.logosChange?.text?.resolve(this).orEmpty()
+        binding.Irene.Layout.visibility =
+            if (data.ireneChange != null) View.VISIBLE else View.GONE
+        binding.Irene.Text.text = data.ireneChange?.text?.resolve(this).orEmpty()
+        currentOfficial = data.official
         binding.Page.visibility = View.GONE
         binding.ScrollView.visibility = View.VISIBLE
+    }
 
-        //发送广播强制更新桌面组件
-//        val intent = Intent(APP, WidgetReceiver::class.java)
-//        intent.action = WidgetReceiver.MANUAL_UPDATE
-//        APP.sendBroadcast(intent)
+    override fun onDestroy() {
+        _binding = null
+        super.onDestroy()
     }
 }

@@ -4,9 +4,7 @@ import com.blueskybone.arkscreen.domain.common.safeResultSync
 import com.blueskybone.arkscreen.domain.model.recruit.RecruitDatabase
 import com.blueskybone.arkscreen.domain.model.recruit.RecruitOpe
 import com.blueskybone.arkscreen.domain.model.recruit.RecruitResult
-import com.blueskybone.arkscreen.domain.repository.ResourceRepository
 import com.blueskybone.arkscreen.domain.service.RecruitDatabaseProvider
-import com.blueskybone.arkscreen.util.getOneCombination
 
 /**
  * Created by blueskybone
@@ -27,16 +25,27 @@ class CalcResultUseCase(
         val db = databaseProvider.getDatabase().getOrThrow()
 
         val tagCombinations = getTagCombinations(tags)
-        tagCombinations.map { tagCombination ->
+        tagCombinations.mapNotNull { tagCombination ->
+            val operators = query(
+                db = db,
+                tags = tagCombination,
+            ).sortedWith(
+                compareByDescending<RecruitOpe> { it.rare }
+                    .thenBy { it.name }
+            )
+            if (operators.isEmpty()) return@mapNotNull null
+            if (filter && !isUsefulQuickResult(operators)) return@mapNotNull null
+
             RecruitResult(
                 tags = tagCombination,
-                operators = query(
-                    db = db,
-                    tags = tagCombination,
-                    filter = filter,
-                ) as MutableList<RecruitOpe>,
+                operators = operators,
             )
-        }
+        }.sortedWith(
+            compareByDescending<RecruitResult> { it.rankingScore }
+                .thenByDescending { it.tags.size }
+                .thenBy { it.operators.size }
+                .thenBy { it.tags.joinToString() }
+        )
     }
 
     private fun getTagCombinations(
@@ -49,17 +58,31 @@ class CalcResultUseCase(
             }
     }
 
+    private fun getOneCombination(items: List<String>, size: Int): List<List<String>> {
+        if (size !in 1..items.size) return emptyList()
+        val result = mutableListOf<List<String>>()
+
+        fun collect(start: Int, selected: MutableList<String>) {
+            if (selected.size == size) {
+                result += selected.toList()
+                return
+            }
+            for (index in start until items.size) {
+                selected += items[index]
+                collect(index + 1, selected)
+                selected.removeAt(selected.lastIndex)
+            }
+        }
+
+        collect(0, mutableListOf())
+        return result
+    }
+
     private fun query(
         db: RecruitDatabase,
         tags: List<String>,
-        filter: Boolean,
     ): List<RecruitOpe> {
         if (tags.isEmpty()) return emptyList()
-
-        if (filter) {
-            if ("新手" in tags) return emptyList()
-            if (matchesLowRarityOnly(db, tags)) return emptyList()
-        }
 
         return buildList {
             if ("高级资深干员" in tags) {
@@ -136,12 +159,9 @@ class CalcResultUseCase(
             }
     }
 
-    private fun matchesLowRarityOnly(
-        db: RecruitDatabase,
-        tags: List<String>,
-    ): Boolean {
-        return db.operatorLowList.any { operator ->
-            operator.tag.containsAll(tags)
-        }
+    private fun isUsefulQuickResult(operators: List<RecruitOpe>): Boolean {
+        val guaranteesFourStarsOrHigher = operators.all { it.rare >= 4 }
+        val guaranteesRobot = operators.all { it.rare == 1 }
+        return guaranteesFourStarsOrHigher || guaranteesRobot
     }
 }

@@ -1,36 +1,28 @@
 package com.blueskybone.arkscreen.ui.character
 
 import android.os.Bundle
+import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
-import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ConcatAdapter
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.data.local.pref.PrefManager
+import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.databinding.DialogCharBinding
 import com.blueskybone.arkscreen.databinding.FragmentCharBinding
-import com.blueskybone.arkscreen.domain.model.operator.bindAvatarView
-import com.blueskybone.arkscreen.domain.model.operator.bindEquipView
-import com.blueskybone.arkscreen.domain.model.operator.bindSkillView
-import com.blueskybone.arkscreen.domain.model.operator.evolveIconMap
-import com.blueskybone.arkscreen.domain.model.operator.potentialIconMap
-import com.blueskybone.arkscreen.domain.model.operator.profIconMap
-import com.blueskybone.arkscreen.domain.model.operator.rarityColorMap
-import com.blueskybone.arkscreen.legacy.I18nManager
+import com.blueskybone.arkscreen.domain.service.TextTranslator
 import com.blueskybone.arkscreen.ui.character.adapter.CharAdapter
+import com.blueskybone.arkscreen.ui.character.adapter.CharHeaderAdapter
 import com.blueskybone.arkscreen.ui.character.adapter.ViewType
 import com.blueskybone.arkscreen.ui.common.adapter.ItemListener
 import com.blueskybone.arkscreen.ui.common.view.FlowRadioGroup
@@ -38,13 +30,14 @@ import com.blueskybone.arkscreen.ui.common.view.getFlowRadioGroup
 import com.blueskybone.arkscreen.ui.common.view.profImageButton
 import com.blueskybone.arkscreen.ui.common.view.tagButton
 import com.blueskybone.arkscreen.util.TimeUtils.getTimeStrYMD
-import com.blueskybone.arkscreen.util.openLink
+import com.blueskybone.arkscreen.ui.common.openLink
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.noties.markwon.Markwon
-import kotlinx.coroutines.CoroutineScope
+import com.hjq.toast.Toaster
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.getKoin
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.net.URLEncoder
 
 
@@ -53,17 +46,33 @@ import java.net.URLEncoder
  *   Date: 2025/1/19
  */
 
-class CharOwn : Fragment(), ItemListener {
+class CharOwn : Fragment() {
 
-    private val model: CharModel by activityViewModels()
+    private val model: CharModel by activityViewModel()
     private var _binding: FragmentCharBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var adapter: CharAdapter
-    private lateinit var launcherForTxt: ActivityResultLauncher<String>
+    private val headerAdapter = CharHeaderAdapter()
+    private val launcherForTxt =
+        registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
+            val context = context ?: return@registerForActivityResult
+            uri ?: return@registerForActivityResult
+            lifecycleScope.launch {
+                val result = runCatching {
+                    withContext(Dispatchers.IO) {
+                        context.contentResolver.openOutputStream(uri)?.use { output ->
+                            output.write(model.generateExportText().toByteArray())
+                        } ?: error("无法创建导出文件")
+                    }
+                }
+                result.onSuccess { Toaster.show("导出完成") }
+                    .onFailure { Toaster.show("导出失败：${it.message}") }
+            }
+        }
 
-    private val prefManager: PrefManager by getKoin().inject()
-    private var i18nManager: I18nManager = I18nManager.instance
+    private val prefManager: SettingPrefManager by getKoin().inject()
+    private val textTranslator: TextTranslator by getKoin().inject()
 
     private val profList =
         listOf("PIONEER", "WARRIOR", "TANK", "SNIPER", "CASTER", "MEDIC", "SUPPORT", "SPECIAL")
@@ -83,6 +92,7 @@ class CharOwn : Fragment(), ItemListener {
     private lateinit var profRadioGroup: FlowRadioGroup
     private lateinit var levelRadioGroup: FlowRadioGroup
     private lateinit var rarityRadioGroup: FlowRadioGroup
+    private var currentViewType: ViewType? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -97,7 +107,6 @@ class CharOwn : Fragment(), ItemListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter = CharAdapter(requireContext(), 24, adapterListener)
-        //        registerLauncher()
         setupBinding()
         setUpObserver()
         setButtonLayout()
@@ -105,26 +114,27 @@ class CharOwn : Fragment(), ItemListener {
     }
 
     private fun updateLayout(viewType: ViewType) {
+        if (currentViewType == viewType) return
+        currentViewType = viewType
         adapter.setViewType(viewType)
 
         when (viewType) {
             ViewType.LIST -> {
                 binding.RecyclerView.layoutManager = LinearLayoutManager(requireContext())
-                binding.ViewChanger.setImageResource(R.drawable.ic_list)
-                binding.TableHeader.visibility = View.VISIBLE
+                binding.ViewChanger.setIconResource(R.drawable.ic_list)
             }
 
             ViewType.GRID -> {
-                binding.RecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-                binding.ViewChanger.setImageResource(R.drawable.ic_grid)
-                binding.TableHeader.visibility = View.GONE
-                prefManager.assetsViewType.set(ViewType.GRID.ordinal)
+                binding.RecyclerView.layoutManager = createGridLayoutManager()
+                binding.ViewChanger.setIconResource(R.drawable.ic_grid)
             }
         }
+        headerAdapter.setViewType(viewType)
+        binding.RecyclerView.invalidateItemDecorations()
     }
 
     private fun setButtonLayout() {
-        val linearLayout = binding.ButtonLayout
+        val linearLayout = binding.FilterContent
         linearLayout.removeAllViews()
         profRadioGroup = getFlowRadioGroup(requireContext())
         for ((idx, prof) in profList.withIndex()) {
@@ -132,12 +142,14 @@ class CharOwn : Fragment(), ItemListener {
             profRadioGroup.addView(but)
         }
         linearLayout.addView(profRadioGroup)
+
         levelRadioGroup = getFlowRadioGroup(requireContext())
         for (level in levelList) {
             val but = tagButton(requireContext(), level)
             levelRadioGroup.addView(but)
         }
         linearLayout.addView(levelRadioGroup)
+
         rarityRadioGroup = getFlowRadioGroup(requireContext())
         for (rarity in rarityList) {
             val but = tagButton(requireContext(), rarity)
@@ -151,7 +163,7 @@ class CharOwn : Fragment(), ItemListener {
         rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (!recyclerView.canScrollVertically(1)) {
+                if (dy > 0 && adapter.hasMore && !recyclerView.canScrollVertically(1)) {
                     recyclerView.post { adapter.loadMoreData() }
                 }
             }
@@ -160,8 +172,29 @@ class CharOwn : Fragment(), ItemListener {
 
     private fun setupBinding() {
 
-        binding.RecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.RecyclerView.adapter = adapter
+        binding.RecyclerView.layoutManager = createGridLayoutManager()
+        binding.RecyclerView.adapter = ConcatAdapter(headerAdapter, adapter)
+        binding.RecyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            private val outer = (11 * resources.displayMetrics.density).toInt()
+            private val inner = (2 * resources.displayMetrics.density).toInt()
+
+            override fun getItemOffsets(
+                outRect: Rect,
+                view: View,
+                parent: RecyclerView,
+                state: RecyclerView.State,
+            ) {
+                if ((currentViewType ?: ViewType.GRID) != ViewType.GRID) return
+                val position = parent.getChildAdapterPosition(view)
+                if (position <= 0) return
+                val gridPosition = position - 1
+                if (gridPosition % 2 == 0) {
+                    outRect.set(outer, 0, inner, 0)
+                } else {
+                    outRect.set(inner, 0, outer, 0)
+                }
+            }
+        })
 
         binding.Filter.setOnClickListener {
             if (binding.ButtonLayout.isGone) {
@@ -172,7 +205,6 @@ class CharOwn : Fragment(), ItemListener {
                 binding.ButtonLayout.visibility = View.GONE
                 binding.FrameDialog.visibility = View.GONE
 
-                //TODO: model.sublime.filter
                 submitFilter()
             }
         }
@@ -183,21 +215,10 @@ class CharOwn : Fragment(), ItemListener {
 
 
         binding.Export.setOnClickListener {
-            launcherForTxt.launch(prefManager.baseAccountSk.get().nickName + "_char_assets")
+            val accountName = model.exportFileBaseName()
+            launcherForTxt.launch("${accountName}_char_assets")
 
         }
-        binding.Statistic.setOnClickListener {
-            val textView = TextView(requireContext()).apply {
-                setPadding(80, 80, 80, 80) // 设置padding
-            }
-            val markwon = Markwon.create(requireContext())
-            markwon.setMarkdown(textView, model.generateStatisticMarkDownText())
-            MaterialAlertDialogBuilder(requireContext())
-                .setView(textView)
-                .setTitle(getString(R.string.statistic))
-                .show()
-        }
-
         binding.FrameDialog.setOnClickListener {
             binding.ButtonLayout.visibility = View.GONE
             binding.FrameDialog.visibility = View.GONE
@@ -209,10 +230,24 @@ class CharOwn : Fragment(), ItemListener {
         }
     }
 
+    private fun createGridLayoutManager() =
+        GridLayoutManager(requireContext(), 2).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int =
+                    if (position == 0) spanCount else 1
+            }
+        }
+
     private fun setUpObserver() {
         model.charsList.observe(viewLifecycleOwner) { value ->
             adapter.refreshData(value)
             binding.RecyclerView.scrollToPosition(0)
+        }
+        model.statistic.observe(viewLifecycleOwner) { statistic ->
+            headerAdapter.submitStatistic(statistic)
+        }
+        model.currentAccount.observe(viewLifecycleOwner) { account ->
+            headerAdapter.submitAccount(account)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -222,58 +257,39 @@ class CharOwn : Fragment(), ItemListener {
                 }
             }
         }
-
-//        model.currentViewType.observe(viewLifecycleOwner) { viewType ->
-//            adapter.setViewType(viewType)
-//
-//            when (viewType) {
-//                ViewType.LIST -> {
-//                    binding.RecyclerView.layoutManager = LinearLayoutManager(requireContext())
-//                    binding.ViewChanger.setImageResource(R.drawable.ic_list)
-//                    binding.TableHeader.visibility = View.VISIBLE
-//                }
-//
-//                ViewType.GRID, null -> {
-//                    binding.RecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-//                    binding.ViewChanger.setImageResource(R.drawable.ic_grid)
-//                    binding.TableHeader.visibility = View.GONE
-//                    prefManager.assetsViewType.set(ViewType.GRID.ordinal)
-//                }
-//            }
-//        }
     }
 
     private fun submitFilter() {
         val id1 = profRadioGroup.getCheckedRadioButtonId()
-        val filter1 = if (id1 != -1) {
-            (profRadioGroup.findViewById<View>(id1) as? ImageButton)?.contentDescription?.toString()
-                ?: "ALL"
-        } else "ALL"
+        val filter1 = id1.takeIf { it != View.NO_ID }
+            ?.let { profRadioGroup.findViewById<View>(it) }
+            ?.let { profRadioGroup.indexOfChild(it) }
+            ?.let(profList::getOrNull)
 
         val id2 = levelRadioGroup.getCheckedRadioButtonId()
-        val filter2 = if (id2 != -1) {
-            (levelRadioGroup.findViewById<View>(id2) as? Button)?.text?.toString() ?: "ALL"
-        } else "ALL"
+        val filter2 = id2.takeIf { it != View.NO_ID }
+            ?.let { levelRadioGroup.findViewById<View>(it) }
+            ?.let { levelRadioGroup.indexOfChild(it) }
+            ?.let { CharModel.EvolveFilter.entries.getOrNull(it + 1) }
+            ?: CharModel.EvolveFilter.ALL
 
         val id3 = rarityRadioGroup.getCheckedRadioButtonId()
-        val filter3 = if (id3 != -1) {
-            (rarityRadioGroup.findViewById<View>(id3) as? Button)?.text?.toString() ?: "ALL"
-        } else "ALL"
+        val filter3 = id3.takeIf { it != View.NO_ID }
+            ?.let { rarityRadioGroup.findViewById<View>(it) }
+            ?.let { rarityRadioGroup.indexOfChild(it) }
+            ?.let { CharModel.RarityFilter.entries.getOrNull(it + 1) }
+            ?: CharModel.RarityFilter.ALL
 
-        CoroutineScope(Dispatchers.IO).launch {
-            model.applyFilter(filter1, filter2, filter3)
-        }
+        model.applyFilter(filter1, filter2, filter3)
     }
 
     private val adapterListener = object : ItemListener {
         override fun onClick(position: Int) {
 
-            adapter.currentList[position].let { item ->
+            adapter.currentList.getOrNull(position)?.let { item ->
                 val binding = DialogCharBinding.inflate(layoutInflater)
+                binding.Name.text = item.name
                 binding.Level.text = item.level.toString()
-
-                val profRsc = profIconMap[item.profession]!!
-                ContextCompat.getDrawable(requireContext(), profRsc)
 
                 binding.Profession.setImageResource(
                     profIconMap[item.profession] ?: R.drawable.skill_icon_default
@@ -288,22 +304,20 @@ class CharOwn : Fragment(), ItemListener {
                 val colorId = rarityColorMap[item.rarity + 1] ?: R.color.red
                 val draw = ContextCompat.getDrawable(requireContext(), colorId)
 
-                binding.Avatar.setBackgroundDrawable(draw)
+                binding.Avatar.background = draw
                 bindAvatarView(binding.Avatar, item.skinId)
 
                 binding.Rarity.text = "★".repeat(item.rarity + 1)
                 binding.GetTime.text = "获取时间：" + getTimeStrYMD(item.gainTime)
-                binding.SubProf.text = "· " + i18nManager.convert(
-                    item.subProfessionId,
-                    I18nManager.ConvertType.SubProfession
-                )
+                binding.SubProf.text = "· ${item.subProfessionId}"
+                viewLifecycleOwner.lifecycleScope.launch {
+                    binding.SubProf.text = "· " + textTranslator.translate(
+                        item.subProfessionId,
+                        item.subProfessionId
+                    )
+                }
 
                 binding.Love.text = "信赖值：" + item.favorPercent + "%"
-
-                binding.PRTSlink.setOnClickListener {
-                    val url = "https://prts.wiki/w/" + URLEncoder.encode(item.name, "UTF-8")
-                    openLink(requireContext(), url, prefManager)
-                }
 
                 binding.Skill1.Icon.alpha = 0.0F
                 binding.Skill2.Icon.alpha = 0.0F
@@ -358,7 +372,11 @@ class CharOwn : Fragment(), ItemListener {
 
                 MaterialAlertDialogBuilder(requireContext())
                     .setView(binding.root)
-                    .setTitle(item.name)
+                    .setPositiveButton(R.string.goto_PRTS) { _, _ ->
+                        val url =
+                            "https://prts.wiki/w/" + URLEncoder.encode(item.name, "UTF-8")
+                        openLink(requireContext(), url, prefManager)
+                    }
                     .show()
 
             }
@@ -368,23 +386,10 @@ class CharOwn : Fragment(), ItemListener {
         }
     }
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
+        binding.RecyclerView.adapter = null
         _binding = null
-        super.onDestroy()
+        currentViewType = null
+        super.onDestroyView()
     }
-
-    override fun onClick(position: Int) {
-
-    }
-
-    override fun onLongClick(position: Int) {
-
-    }
-
-//    private fun registerLauncher() {
-//        launcherForTxt =
-//            registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
-//                uri?.let { model.exportTxt(uri) }
-//            }
-//    }
 }

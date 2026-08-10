@@ -1,7 +1,7 @@
 <resources>
     <!-- App Info -->
     <string name="app_name">公招助手</string>
-    <string name="version">2.2.2</string>
+    <string name="version">2.2.4</string>
     <string name="text_default">default text</string>
 
     <!-- Dialogs Action-->
@@ -56,7 +56,6 @@
     <!-- Home Page -->
     <string name="announcement">公告</string>
     <string name="last_update">最后更新：%1$s</string>
-    <string name="last_sync_time">上次同步：%1$s</string>
     <string name="tools_3rd">外部工具</string>
     <string name="no_account_warn">请先在 功能-游戏账号管理 添加账号</string>
 
@@ -165,13 +164,24 @@
 
     <!-- Account Page-->
     <string name="account_manager">账号管理</string>
-    <string name="skland_account_manage">游戏账号</string>
-    <string name="gacha_account_manage">卡池账号</string>
+    <string name="account_manager_summary">账号按用途分组。长按账号可复制信息、导出凭据或删除。</string>
+    <string name="skland_account_manage">森空岛账号</string>
+    <string name="skland_account_summary">登录后自动同步关联的游戏角色</string>
+    <string name="arknights_accounts">明日方舟</string>
+    <string name="endfield_accounts">明日方舟：终末地</string>
+    <string name="endfield_account_summary">随森空岛账号同步，目前仅用于签到</string>
+    <string name="gacha_account_manage">寻访记录账号</string>
+    <string name="gacha_account_summary">用于同步和统计明日方舟寻访记录</string>
+    <string name="add_skland_account">添加森空岛账号</string>
+    <string name="add_gacha_account">添加寻访记录账号</string>
+    <string name="no_arknights_account">暂无明日方舟角色，请先添加森空岛账号</string>
+    <string name="no_endfield_account">暂无明日方舟：终末地角色</string>
+    <string name="no_gacha_account">暂无寻访记录账号</string>
     <string name="text_web_skland">划到最右端点击“发图文”，登录后将自动跳转。如未跳转，请手动点击此处。</string>
     <string name="text_web_ark">登录后将自动跳转。如未跳转，请手动点击此处。</string>
     <string name="getting_info">获取信息中</string>
-    <string name="sk_account_info">游戏账号用于查询游戏数据、森空岛签到。\n可能会导致森空岛app登录状态失效。\n可长按操作。</string>
-    <string name="gc_account_info">卡池账号仅用于寻访统计。\n可长按操作。</string>
+    <string name="sk_account_info">森空岛账号用于同步关联的明日方舟和终末地角色。明日方舟角色可用于查询游戏数据与签到；终末地角色目前仅用于签到。\n\n登录可能会使森空岛 App 的登录状态失效。</string>
+    <string name="gc_account_info">寻访记录账号独立于森空岛账号，仅用于同步和统计明日方舟寻访记录。</string>
     <string name="account_info">说明</string>
     <string name="add_account">添加账号</string>
     <string name="add_icon">+</string>
@@ -206,27 +216,32 @@
     <string name="newest_update">当前是最新版本</string>
     <string name="send_feedback">发送反馈</string>
     <string name="open_license">开源许可</string>
+    <string name="open_license_summary">本应用使用的第三方开源软件</string>
+    <string name="search_library">搜索依赖库</string>
+    <string name="license_unknown">未声明许可证</string>
+    <string name="license_project">项目主页</string>
+    <string name="license_text">许可证正文</string>
+    <string name="license_module">依赖坐标</string>
+    <string name="license_version">版本</string>
+    <string name="license_empty">没有匹配的依赖库</string>
+    <string name="license_load_failed">许可证清单读取失败</string>
     <string name="logs_option">日志</string>
+    <string name="log_manager">日志管理</string>
+    <string name="log_files">日志文件</string>
+    <string name="log_total_size">占用空间</string>
+    <string name="log_type_app">应用</string>
+    <string name="log_type_network">网络</string>
+    <string name="log_empty">暂无日志</string>
+    <string name="share">分享</string>
+    <string name="all">全部</string>
+    <string name="share_logs">分享日志</string>
+    <string name="confirm_delete_log">确定删除“%1$s”吗？</string>
+    <string name="confirm_clear_logs">确定清除全部应用日志和网络日志吗？</string>
+    <string name="logs_cleared_count">已清除 %1$d 个日志文件</string>
     <string name="debug">调试</string>
     <string name="debug_mode">调试模式</string>
     <string name="check_logs">查看日志</string>
     <string name="clean_logs">清除日志</string>
-    <string name="open_license_content">
-        [AndroidX](https://github.com/androidx/androidx)\n\n
-        [AndroidX WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)\n
-        [Material Components for Android](https://github.com/material-components/material-components-android)\n\n
-        [JUnit](https://github.com/junit-team/junit4)\n\n
-        [Koin](https://github.com/InsertKoinIO/koin)\n\n
-        [Coil](https://github.com/coil-kt/coil)\n\n
-        [Markwon](https://github.com/noties/Markwon)\n\n
-        [Jackson](https://github.com/FasterXML/jackson)\n\n
-        [Flow Layout](https://github.com/nex3z/FlowLayout)\n\n
-        [Timber](https://github.com/JakeWharton/timber)\n\n
-        [OkHttp](https://github.com/square/okhttp)\n\n
-        [Retrofit](https://github.com/square/retrofit)\n\n
-        [EasyWindow](https://github.com/getActivity/EasyWindow)\n\n
-        [Toaster](https://github.com/getActivity/Toaster)\n\n
-    </string>
     <string name="update_log">更新日志</string>
     <string name="qq_group">QQ群聊</string>
     <string name="qq_group_content">意见反馈，聊天吹水</string>
@@ -243,6 +258,45 @@
     <string name="qq_not_install">未安装QQ</string>
 
     <string name="export">导出</string>
+    <string name="filter">筛选</string>
+    <string name="change_view">切换列表显示方式</string>
+    <string name="assets_overview">资产概览</string>
+    <string name="current_operator_account">当前账号角色</string>
+    <string name="realtime_ap_recovered">已恢复</string>
+    <string name="realtime_last_login_today">上次登录 今天 %1$s</string>
+    <string name="realtime_last_login_yesterday">上次登录 昨天</string>
+    <string name="realtime_last_login_date">上次登录 %1$s</string>
+    <string name="realtime_recruit_complete">已完成招募</string>
+    <string name="realtime_refresh_complete">已完成刷新</string>
+    <string name="realtime_meeting_complete">交流完成</string>
+    <string name="realtime_training_complete">专精完成</string>
+    <string name="realtime_idle">空闲中</string>
+    <string name="realtime_no_data">暂无数据</string>
+    <string name="realtime_logos_shift">逻各斯换班时间：%1$s</string>
+    <string name="realtime_irene_shift">艾丽妮换班时间：%1$s</string>
+    <string name="realtime_level">Lv%1$d</string>
+    <string name="realtime_ap_max">/%1$d</string>
+    <string name="realtime_no_account">请先在 首页-账号管理 添加游戏账号</string>
+    <string name="realtime_load_failed">加载失败：请查看日志</string>
+    <string name="official_game_not_found">未检测到官服游戏安装</string>
+    <string name="bilibili_game_not_found">未检测到B服游戏安装</string>
+    <string name="realtime_current_role">当前角色</string>
+    <string name="realtime_immediate_status">即时状态</string>
+    <string name="realtime_base_overview">基建概览</string>
+    <string name="realtime_sanity">理智</string>
+    <string name="realtime_ap_full_at">回满： %1$s</string>
+    <string name="realtime_ap_remaining">剩余： %1$s</string>
+    <string name="realtime_ap_full_recovered">回满： 已恢复</string>
+    <string name="realtime_ap_remaining_recovered">剩余： 已恢复</string>
+    <string name="realtime_shift_reminder">训练换班提醒</string>
+    <string name="realtime_launch_game">启动游戏</string>
+    <string name="official_server">官服</string>
+    <string name="bilibili_server">B服</string>
+    <string name="assets_owned">持有</string>
+    <string name="assets_e2">精二</string>
+    <string name="assets_m3">专三</string>
+    <string name="assets_module3_short">三模</string>
+    <string name="assets_rarity_progress">%1$d★  %2$d/%3$d</string>
     <string name="export_cookie">导出Cookie（包含登录凭证，请勿告知他人）</string>
     <string name="import_cookie">导入Cookie</string>
     <string name="input_cookie">输入Cookie</string>
@@ -273,7 +327,29 @@
     <string name="set_default_account">默认账号设置为%1$s</string>
     <string name="not_support_set_default">暂不支持设置操作</string>
     <string name="gacha_count">%1$d抽</string>
+    <string name="gacha_unit">抽</string>
+    <string name="limited">[限定]</string>
     <string name="date_range">数据统计自 %1$s</string>
+    <string name="current_gacha_account">当前寻访账号</string>
+    <string name="switch_account">切换账号</string>
+    <string name="total_gacha_count">累计寻访</string>
+    <string name="six_star_count">六星干员</string>
+    <string name="average_six_star">平均出货</string>
+    <string name="limited_pool">限定</string>
+    <string name="standard_pool">常驻</string>
+    <string name="classic_pool">中坚</string>
+    <string name="show_empty_gacha_pools">显示未出货卡池</string>
+    <string name="statistics_pool">统计卡池</string>
+    <string name="filter_pool">筛选卡池</string>
+    <string name="only_six_star">只看六星</string>
+    <string name="only_new_operator">只看新获得</string>
+    <string name="gacha_result_count">共 %1$d 条记录</string>
+    <string name="gacha_rarity">%1$d★</string>
+    <string name="gacha_record_pool_info">%1$s · 第 %2$d 抽</string>
+    <string name="current_pool_gacha_count">本池 %1$d 抽</string>
+    <string name="no_six_star_records">暂无六星记录</string>
+    <string name="expand_gacha_records">展开全部 %1$d 条</string>
+    <string name="collapse_gacha_records">收起记录</string>
     <string name="statistic_info">统计信息</string>
 
     <string name="announcement_content">\n庐山烟雨浙江潮，未至千般恨不消。\n到得还来别无事，庐山烟雨浙江潮。</string>

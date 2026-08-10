@@ -6,17 +6,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.core.logger.FileLoggingInterceptor
-import com.blueskybone.arkscreen.core.logger.FileLoggingTree
-import com.blueskybone.arkscreen.data.local.pref.PrefManager
+import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.databinding.DialogDonateBinding
 import com.blueskybone.arkscreen.databinding.FragmentSettingBinding
-import com.blueskybone.arkscreen.ui.common.LogActivity
+import com.blueskybone.arkscreen.platform.theme.AppThemeController
+import com.blueskybone.arkscreen.domain.service.ServerTimeCalibrator
+import com.blueskybone.arkscreen.ui.common.LogManagerActivity
+import com.blueskybone.arkscreen.ui.license.OpenSourceLicensesActivity
 import com.blueskybone.arkscreen.ui.common.bindinginfo.AppTheme
 import com.blueskybone.arkscreen.ui.common.bindinginfo.CheckUpdate
 import com.blueskybone.arkscreen.ui.common.bindinginfo.GroupChat
@@ -25,18 +25,15 @@ import com.blueskybone.arkscreen.ui.common.bindinginfo.UseInnerWeb
 import com.blueskybone.arkscreen.ui.common.view.MenuDialog
 import com.blueskybone.arkscreen.ui.main.common.PreferenceBinder
 import com.blueskybone.arkscreen.util.copyToClipboard
-import com.blueskybone.arkscreen.util.getScreenInfo
-import com.blueskybone.arkscreen.util.saveDrawableToGallery
 import com.github.mikephil.charting.BuildConfig
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
-import io.noties.markwon.Markwon
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.getKoin
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
-import java.io.File
 
 /**
  *   Created by blueskybone
@@ -44,9 +41,11 @@ import java.io.File
  */
 class Setting : Fragment() {
     private var _binding: FragmentSettingBinding? = null
-    private val model: MainModel by activityViewModels()
+    private val model: MainModel by activityViewModel()
     private val binding get() = _binding!!
-    private val prefManager: PrefManager by getKoin().inject()
+    private val prefManager: SettingPrefManager by getKoin().inject()
+    private val appThemeController: AppThemeController by getKoin().inject()
+    private val serverTimeCalibrator: ServerTimeCalibrator by getKoin().inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,9 +58,9 @@ class Setting : Fragment() {
         return binding.root
     }
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
         _binding = null
-        super.onDestroy()
+        super.onDestroyView()
     }
 
     private fun setUpBinding() {
@@ -103,9 +102,7 @@ class Setting : Fragment() {
             icon = R.drawable.ic_palette,
             listInfo = AppTheme,
             pref = prefManager.appTheme,
-            onClick = {
-                Toaster.show("重启应用生效")
-            }
+            onClick = appThemeController::applySavedTheme
         )
 
         PreferenceBinder.bindPreferenceText(
@@ -113,7 +110,6 @@ class Setting : Fragment() {
             icon = R.drawable.ic_update,
             textInfo = CheckUpdate
         )
-        binding.CheckUpdate.Value.text = BuildConfig.VERSION_NAME
 
         PreferenceBinder.bindPreferenceText(
             binding = binding.GroupChat,
@@ -121,19 +117,36 @@ class Setting : Fragment() {
             textInfo = GroupChat
         )
 
+        PreferenceBinder.bindPreferenceText(
+            binding = binding.CheckLogs,
+            icon = R.drawable.ic_log,
+            text = R.string.log_manager
+        )
+
+        PreferenceBinder.bindPreferenceText(
+            binding = binding.OpenSourceLicense,
+            icon = R.drawable.ic_license,
+            text = R.string.open_license
+        )
+
+        PreferenceBinder.bindPreferenceText(
+            binding = binding.FeedBack,
+            icon = R.drawable.ic_feedback,
+            text = R.string.send_feedback
+        )
+
+        PreferenceBinder.bindPreferenceText(
+            binding = binding.Donate,
+            icon = R.drawable.ic_favorite,
+            text = R.string.donate
+        )
+
         binding.CheckUpdate.Layout.setOnClickListener {
-            model.checkAppUpdate()
+            model.checkAppUpdate(showNoUpdate = true)
         }
 
-        binding.OpenSourceLicense.setOnClickListener {
-            val textView = TextView(requireContext()).apply {
-                setPadding(80, 80, 80, 80) // 设置padding
-            }
-            val markwon = Markwon.create(requireContext())
-            markwon.setMarkdown(textView, getString(R.string.open_license_content))
-            MaterialAlertDialogBuilder(requireContext())
-                .setView(textView)
-                .show()
+        binding.OpenSourceLicense.Layout.setOnClickListener {
+            startActivity(Intent(requireContext(), OpenSourceLicensesActivity::class.java))
         }
 
         binding.GroupChat.Layout.setOnClickListener {
@@ -150,43 +163,11 @@ class Setting : Fragment() {
             }
         }
 
-        binding.CheckLogs.setOnClickListener {
-            checkScreenInfo(requireContext())
-            val combinedFiles = mutableListOf<File>()
-            FileLoggingTree.logDir.listFiles()?.let {
-                combinedFiles.addAll(it)
-            }
-            FileLoggingInterceptor.logDir.listFiles()?.let {
-                combinedFiles.addAll(it)
-            }
-            val menuDialog = MenuDialog(requireContext())
-            for (file in combinedFiles) {
-                menuDialog.add(file.name) {
-                    val intent = Intent(requireContext(), LogActivity::class.java)
-                    intent.putExtra("log_filepath", file.absoluteFile.toString())
-                    startActivity(intent)
-                }
-            }
-            menuDialog.show()
+        binding.CheckLogs.Layout.setOnClickListener {
+            startActivity(Intent(requireContext(), LogManagerActivity::class.java))
         }
 
-        binding.CleanLogs.setOnClickListener {
-            MaterialAlertDialogBuilder(requireContext())
-                .setMessage(R.string.confirm_delete)
-                .setPositiveButton(R.string.delete) { _, _ ->
-                    FileLoggingTree.logDir.listFiles()?.forEach { file ->
-                        file.delete()
-                    }
-                    FileLoggingInterceptor.logDir.listFiles()?.forEach { file ->
-                        file.delete()
-                    }
-                    Toaster.show("已清除日志")
-                }
-                .setNegativeButton(R.string.cancel, null)
-                .show()
-        }
-
-        binding.FeedBack.setOnClickListener {
+        binding.FeedBack.Layout.setOnClickListener {
             MenuDialog(requireContext()).add("github") {
                 val github = "https://github.com/blueskybone/ArkScreen/issues"
                 startActivity(Intent(Intent.ACTION_VIEW, github.toUri()))
@@ -224,16 +205,19 @@ class Setting : Fragment() {
                 startActivity(intent)
             }
         }
-        binding.Donate.setOnClickListener {
+        binding.Donate.Layout.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.donate)
                 .setView(DialogDonateBinding.inflate(layoutInflater).root)
                 .setNegativeButton(R.string.cancel, null)
                 .setNeutralButton(R.string.donated) { _, _ -> Toaster.show(getString(R.string.thank_for_donate)) }
                 .setPositiveButton(R.string.save_code) { _, _ ->
-                    CoroutineScope(Dispatchers.IO).launch {
-                        saveDrawableToGallery(requireContext(), R.drawable.wechat)
-                        saveDrawableToGallery(requireContext(), R.drawable.zfb)
+                    val context = requireContext().applicationContext
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        withContext(Dispatchers.IO) {
+                            saveDrawableToGallery(context, R.drawable.wechat)
+                            saveDrawableToGallery(context, R.drawable.zfb)
+                        }
                         Toaster.show("已保存到本地")
                     }
                 }.show()
@@ -241,19 +225,19 @@ class Setting : Fragment() {
     }
 
     private fun recordTimeCorrect() {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            try {
-//                val subTs = getSklandServerTs() - System.currentTimeMillis() / 1000
-//                prefManager.timeCorrectSec.set(subTs)
-//                Toaster.show("delay: $subTs s")
-//            } catch (e: Exception) {
-//                Toaster.show(e.message)
-//                Timber.e(e.printStackTrace().toString())
-//            }
-//        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            serverTimeCalibrator.calibrate()
+                .onSuccess { offsetSeconds ->
+                    val signedOffset = if (offsetSeconds >= 0) "+$offsetSeconds" else "$offsetSeconds"
+                    Toaster.show("时间校准完成：$signedOffset 秒")
+                }
+                .onFailure { error ->
+                    prefManager.timeCorrect.set(false)
+                    binding.TimeCorrect.Switch.isChecked = false
+                    Toaster.show(error.message ?: "时间校准失败")
+                    Timber.w("Server time calibration failed: %s", error.message)
+                }
+        }
     }
 
-    private fun checkScreenInfo(context: Context) {
-        Timber.i(getScreenInfo(context))
-    }
 }

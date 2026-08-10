@@ -4,109 +4,123 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Spinner
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
+import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.FragmentGachaTextBinding
 import com.blueskybone.arkscreen.ui.gacha.adapter.GachaTextAdapter
+import com.blueskybone.arkscreen.ui.gacha.model.GachaPoolStats
 import com.blueskybone.arkscreen.ui.gacha.model.Record
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class GachaTextFragment : Fragment() {
-    private val model : GachaModel by activityViewModels()
+
+    private val model: GachaModel by activityViewModel()
     private lateinit var adapter: GachaTextAdapter
     private var _binding: FragmentGachaTextBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
+    private var records: List<Record> = emptyList()
+    private var pools: List<GachaPoolStats> = emptyList()
+    private var selectedPoolId: String = "ALL"
 
-        adapter = GachaTextAdapter(requireContext(), 100)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View {
+        adapter = GachaTextAdapter(requireContext(), PAGE_SIZE)
         _binding = FragmentGachaTextBinding.inflate(inflater, container, false)
         setupBinding()
-        setupListener()
         collectUiState()
         return binding.root
     }
 
     private fun setupBinding() {
         binding.RecyclerView.adapter = adapter
-    }
-
-    private fun setupListener() {
-        val rv = binding.RecyclerView
-        rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.RecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (!recyclerView.canScrollVertically(1)) {
+                if (!recyclerView.canScrollVertically(1) && adapter.hasMore) {
                     recyclerView.post { adapter.loadMoreData() }
                 }
             }
         })
-    }
 
-    private fun setupSpinner(recordList: List<Record>, poolNames: List<String>) {
-        if (poolNames.isEmpty()) return
-        val spinnerAdapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_item,  // 默认布局
-            poolNames   //卡池名称作为数据
-        )
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)  // 下拉项布局
-
-        // 设置适配器
-        val spinner: Spinner = binding.Spinner
-        spinner.adapter = spinnerAdapter
-
-        // 设置选择监听器
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                val poolName = poolNames[position]
-                val filteredRecords = recordList.filter { it.gachaPool == poolName }
-                adapter.refreshData(filteredRecords)
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
+        binding.PoolDropdown.setOnItemClickListener { _, _, position, _ ->
+            pools.getOrNull(position)?.let { pool ->
+                model.selectPool(pool.poolId)
             }
         }
-        // 设置默认选择（可选），选择第一项,并触发监听器
-        spinner.setSelection(0)
+        binding.FilterSixStar.setOnCheckedChangeListener { _, _ -> applyFilters() }
+        binding.FilterNew.setOnCheckedChangeListener { _, _ -> applyFilters() }
     }
 
     private fun collectUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 model.uiState.collect { state ->
-                    renderState(state)
-                    state.gachaUiSnapshot?.let{
-                        setupSpinner(it.records, it.gachaPoolStats.map { item -> item.poolName })
+                    state.gachaUiSnapshot?.let { snapshot ->
+                        records = snapshot.records
+                        pools = snapshot.gachaPoolStats
+                        selectedPoolId = state.selectedPoolId
+                        renderPoolDropdown()
+                        applyFilters()
                     }
                 }
             }
         }
     }
 
-    private fun renderState(gachaUiState: GachaUiState){
-        if(gachaUiState.error != null){
-            binding.root
+    private fun renderPoolDropdown() {
+        if (pools.isEmpty()) {
+            binding.PoolDropdown.setAdapter(null)
+            binding.PoolDropdown.setText("", false)
+            return
         }
+
+        binding.PoolDropdown.setAdapter(
+            ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_list_item_1,
+                pools.map { it.poolName },
+            )
+        )
+        val selectedPool = pools.firstOrNull { it.poolId == selectedPoolId } ?: pools.first()
+        binding.PoolDropdown.setText(selectedPool.poolName, false)
+    }
+
+    private fun applyFilters() {
+        var filtered = if (selectedPoolId == "ALL") {
+            records
+        } else {
+            records.filter { it.poolId == selectedPoolId }
+        }
+        if (binding.FilterSixStar.isChecked) {
+            filtered = filtered.filter { it.rare == SIX_STAR_RARITY }
+        }
+        if (binding.FilterNew.isChecked) {
+            filtered = filtered.filter { it.isNew }
+        }
+
+        binding.ResultCount.text = getString(R.string.gacha_result_count, filtered.size)
+        adapter.refreshData(filtered)
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         binding.RecyclerView.adapter = null
+        records = emptyList()
+        pools = emptyList()
         _binding = null
+        super.onDestroyView()
+    }
+
+    private companion object {
+        const val PAGE_SIZE = 100
+        const val SIX_STAR_RARITY = 5
     }
 }

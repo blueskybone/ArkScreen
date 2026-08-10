@@ -15,15 +15,20 @@ import com.blueskybone.arkscreen.data.network.model.GrantResponse
 import com.blueskybone.arkscreen.data.network.model.LoginRequest
 import com.blueskybone.arkscreen.data.network.model.LoginResponse
 import com.blueskybone.arkscreen.data.network.model.PlayerInfoResp
+import com.fasterxml.jackson.databind.JsonNode
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.HeaderMap
 import retrofit2.http.POST
 import retrofit2.http.Query
+import retrofit2.http.QueryMap
 import retrofit2.http.Streaming
 
 interface ApiService {
+    @GET("/api/v1/game/player/info")
+    suspend fun getServerTimestamp(): Response<JsonNode>
+
     // 获取凭证
     @POST("/api/v1/user/auth/generate_cred_by_code")
     suspend fun generateCredByCode(
@@ -125,7 +130,7 @@ interface ApiService {
 
     @GET("/x/v2/space/archive/cursor")
     suspend fun getBiliVideo(
-        @Query("query") query: String,
+        @QueryMap query: Map<String, String>,
         @HeaderMap headers: Map<String, String>
     ): Response<BiliResponse>
 }

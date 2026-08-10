@@ -15,8 +15,10 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
+import com.blueskybone.arkscreen.platform.widget.WidgetRefreshWorker
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.data.local.pref.PrefManager
+import com.blueskybone.arkscreen.data.local.pref.CachePrefManager
+import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetContent
 import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetTextColor
@@ -25,7 +27,6 @@ import com.blueskybone.arkscreen.ui.widget.WidgetReceiver.Companion.WORKER_NAME
 import com.blueskybone.arkscreen.util.TimeUtils
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
 import com.blueskybone.arkscreen.util.dpToPx
-import com.blueskybone.arkscreen.util.getTargetDrawableId
 import org.koin.java.KoinJavaComponent
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -36,7 +37,8 @@ import java.util.concurrent.TimeUnit
  */
 
 class Widget3 : AppWidgetProvider() {
-    private val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
+    private val prefManager: SettingPrefManager by KoinJavaComponent.getKoin().inject()
+    private val cachePrefManager: CachePrefManager by KoinJavaComponent.getKoin().inject()
 
     companion object {
         const val REQUEST_CODE = 1101
@@ -97,7 +99,7 @@ class Widget3 : AppWidgetProvider() {
                 val size = dpToPx(imageSize)
                 val bitmap1 = ResourcesCompat.getDrawable(
                     context.resources,
-                    getTargetDrawableId(icon1, prefManager.widgetTextColor),
+                    getTargetDrawableId(icon1, prefManager.widgetTextColor.get()),
                     null
                 )
                     ?.toBitmap()!!
@@ -106,7 +108,7 @@ class Widget3 : AppWidgetProvider() {
 
                 val bitmap2 = ResourcesCompat.getDrawable(
                     context.resources,
-                    getTargetDrawableId(icon2, prefManager.widgetTextColor),
+                    getTargetDrawableId(icon2, prefManager.widgetTextColor.get()),
                     null
                 )
                     ?.toBitmap()!!
@@ -144,7 +146,7 @@ class Widget3 : AppWidgetProvider() {
     override fun onEnabled(context: Context?) {
         //创建queue worker
         val workRequest: PeriodicWorkRequest = PeriodicWorkRequest.Builder(
-            SklandWorker::class.java,
+            WidgetRefreshWorker::class.java,
             PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS * 2, TimeUnit.MILLISECONDS
         )
             .build()
@@ -167,15 +169,7 @@ class Widget3 : AppWidgetProvider() {
     }
 
     override fun onDisabled(context: Context?) {
-        if (context != null && areAllWidgetsEmpty(
-                context,
-                Widget1::class.java,
-                Widget2::class.java,
-                Widget3::class.java
-            )
-        ) {
-            WorkManager.getInstance(context).cancelUniqueWork(WORKER_NAME)
-        }
+        context?.let(WidgetWorkScheduler::cancelIfNoWidgets)
     }
 
     private fun updateWidgetContent(
@@ -189,7 +183,7 @@ class Widget3 : AppWidgetProvider() {
                 fun Long.toMinutes() = this / 60
 
                 val now = getCurrentTs()
-                val apCache = prefManager.apCache.get()
+                val apCache = cachePrefManager.apCache.get()
                 val apMax = apCache.max
 
                 val current = when {
@@ -208,7 +202,7 @@ class Widget3 : AppWidgetProvider() {
 
             "labor" -> {
                 val now = getCurrentTs()
-                val laborCache = prefManager.laborCache.get()
+                val laborCache = cachePrefManager.laborCache.get()
                 val max = laborCache.max
                 val curr = run {
                     if (laborCache.remainSec == 0L) {
@@ -230,7 +224,7 @@ class Widget3 : AppWidgetProvider() {
 
             "train" -> {
                 val now = getCurrentTs()
-                val trainCache = prefManager.trainCache.get()
+                val trainCache = cachePrefManager.trainCache.get()
                 if (trainCache.isnull) {
                     views.setTextViewText(textViewId, "暂无数据")
                 } else {
@@ -266,7 +260,7 @@ class Widget3 : AppWidgetProvider() {
             }
             "meet" ->{
                 val now = getCurrentTs()
-                val meetCache = prefManager.meetCache.get()
+                val meetCache = cachePrefManager.meetCache.get()
                 if (meetCache.isnull) {
                     views.setTextViewText(R.id.value, "暂无数据")
                 } else {

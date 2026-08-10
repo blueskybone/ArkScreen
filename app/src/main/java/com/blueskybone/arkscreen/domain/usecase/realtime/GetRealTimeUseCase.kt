@@ -1,7 +1,6 @@
 package com.blueskybone.arkscreen.domain.usecase.realtime
 
 
-import com.blueskybone.arkscreen.data.common.toAppError
 import com.blueskybone.arkscreen.domain.model.account.AccountSk
 import com.blueskybone.arkscreen.domain.model.realtime.RealTimeData
 import com.blueskybone.arkscreen.domain.repository.SklandRepository
@@ -16,9 +15,10 @@ class GetRealTimeUseCase(
     suspend operator fun invoke(account: AccountSk): Result<RealTimeData> {
 
         val result = repo.fetchRealTimeData(account)
-        val data =
-            result.getOrNull() ?: return Result.failure(result.exceptionOrNull()!!.toAppError())
-        //TODO:设置缓存别放在这
+        val data = result.getOrNull() ?: return Result.failure(
+            result.exceptionOrNull() ?: IllegalStateException("实时数据为空")
+        )
+        // Cache updates remain part of this refresh so widgets observe the same snapshot.
         repo.setRealTimeCache(data)
         return result
     }

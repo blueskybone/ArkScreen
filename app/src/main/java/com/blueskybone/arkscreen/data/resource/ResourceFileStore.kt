@@ -25,10 +25,20 @@ class ResourceFileStore(
                 assetName = type.fileName,
                 targetFile = targetFile,
             )
+        } else if (type == ConfigType.I18N_DB && !hasCurrentI18nSchema(targetFile)) {
+            // Replace the obsolete bundled schema left in cache by older app versions.
+            copyAssetToCache(
+                assetName = type.fileName,
+                targetFile = targetFile,
+            )
         }
 
         return targetFile
     }
+
+    private fun hasCurrentI18nSchema(file: File): Boolean = runCatching {
+        jsonReader.readNode(file).has("mapInfo")
+    }.getOrDefault(false)
 
     fun getLocalVersion(type: ConfigType): String {
         return runCatching {

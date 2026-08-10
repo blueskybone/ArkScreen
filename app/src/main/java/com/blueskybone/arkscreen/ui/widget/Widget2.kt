@@ -15,8 +15,10 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
+import com.blueskybone.arkscreen.platform.widget.WidgetRefreshWorker
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.data.local.pref.PrefManager
+import com.blueskybone.arkscreen.data.local.pref.CachePrefManager
+import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetContent
 import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetTextColor
@@ -25,7 +27,6 @@ import com.blueskybone.arkscreen.ui.widget.WidgetReceiver.Companion.WORKER_NAME
 import com.blueskybone.arkscreen.util.TimeUtils
 import com.blueskybone.arkscreen.util.TimeUtils.getCurrentTs
 import com.blueskybone.arkscreen.util.dpToPx
-import com.blueskybone.arkscreen.util.getTargetDrawableId
 import org.koin.java.KoinJavaComponent
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -38,7 +39,8 @@ import java.util.concurrent.TimeUnit
 
 class Widget2 : AppWidgetProvider() {
 
-    private val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
+    private val prefManager: SettingPrefManager by KoinJavaComponent.getKoin().inject()
+    private val cachePrefManager: CachePrefManager by KoinJavaComponent.getKoin().inject()
 
 
     override fun onUpdate(
@@ -85,7 +87,7 @@ class Widget2 : AppWidgetProvider() {
                 val size = dpToPx(iconSize)
                 val bitmap = ResourcesCompat.getDrawable(
                     context.resources,
-                    getTargetDrawableId(drawable, prefManager.widgetTextColor),
+                    getTargetDrawableId(drawable, prefManager.widgetTextColor.get()),
                     null
                 )?.toBitmap()!!
                 val scaledBitmap = Bitmap.createScaledBitmap(bitmap, size, size, true)
@@ -104,25 +106,13 @@ class Widget2 : AppWidgetProvider() {
             )
             views.setOnClickPendingIntent(R.id.layout, pendingIntent)
 
-//        val intent = Intent(context, WidgetReceiver::class.java).apply {
-//            action = "com.yourpackage.ACTION_WIDGET_CLICK"
-//            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, REQUEST_CODE)
-//        }
-//        val pendingIntent = PendingIntent.getBroadcast(
-//            context,
-//            REQUEST_CODE, // 使用 widgetId 作为 requestCode 确保唯一性
-//            intent,
-//            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-//        )
-//        views.setOnClickPendingIntent(R.id.layout, pendingIntent)
-
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }
 
     override fun onEnabled(context: Context?) {
         val workRequest: PeriodicWorkRequest = PeriodicWorkRequest.Builder(
-            SklandWorker::class.java,
+            WidgetRefreshWorker::class.java,
             PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS * 2, TimeUnit.MILLISECONDS
         )
             .build()
@@ -145,15 +135,7 @@ class Widget2 : AppWidgetProvider() {
     }
 
     override fun onDisabled(context: Context?) {
-        if (context != null && areAllWidgetsEmpty(
-                context,
-                Widget1::class.java,
-                Widget2::class.java,
-                Widget3::class.java
-            )
-        ) {
-            WorkManager.getInstance(context).cancelUniqueWork(WORKER_NAME)
-        }
+        context?.let(WidgetWorkScheduler::cancelIfNoWidgets)
     }
 
     private fun updateWidgetContent(
@@ -167,7 +149,7 @@ class Widget2 : AppWidgetProvider() {
                 fun Long.toMinutes() = this / 60
 
                 val now = getCurrentTs()
-                val apCache = prefManager.apCache.get()
+                val apCache = cachePrefManager.apCache.get()
                 val apMax = apCache.max
 
                 val current = when {
@@ -186,7 +168,7 @@ class Widget2 : AppWidgetProvider() {
 
             "labor" -> {
                 val now = getCurrentTs()
-                val laborCache = prefManager.laborCache.get()
+                val laborCache = cachePrefManager.laborCache.get()
                 val max = laborCache.max
                 val curr = run {
                     if (laborCache.remainSec == 0L) {
@@ -208,7 +190,7 @@ class Widget2 : AppWidgetProvider() {
 
             "train" -> {
                 val now = getCurrentTs()
-                val trainCache = prefManager.trainCache.get()
+                val trainCache = cachePrefManager.trainCache.get()
                 if (trainCache.isnull) {
                     views.setTextViewText(textViewId, "暂无数据")
                 } else {
@@ -245,7 +227,7 @@ class Widget2 : AppWidgetProvider() {
 
             "meet" ->{
                 val now = getCurrentTs()
-                val meetCache = prefManager.meetCache.get()
+                val meetCache = cachePrefManager.meetCache.get()
                 if (meetCache.isnull) {
                     views.setTextViewText(R.id.value, "暂无数据")
                 } else {

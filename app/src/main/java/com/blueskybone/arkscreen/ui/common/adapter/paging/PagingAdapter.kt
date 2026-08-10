@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.ui.common.adapter.paging
 
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.min
 
@@ -7,82 +8,11 @@ import kotlin.math.min
  *   Created by blueskybone
  *   Date: 2025/1/21
  */
-//abstract class PagingAdapter<T, V : RecyclerView.ViewHolder> :
-//    RecyclerView.Adapter<V>() {
-//
-//    lateinit var currentList: MutableList<T>
-//    private lateinit var allList: List<T>
-//
-//    private var totalPage: Int = 0
-//    private var currentPage: Int = 1
-//
-//    abstract val PAGE_SIZE: Int
-//
-//    fun loadMoreData() {
-//        if (currentPage == totalPage) return
-//        if ((totalPage - currentPage) == 1) {
-//
-//            val subList = allList.subList(currentPage * PAGE_SIZE, allList.size)
-//            println(subList.size)
-//            currentList.addAll(subList)
-//            notifyItemRangeInserted(
-//                currentPage * PAGE_SIZE,
-//                allList.size - currentPage * PAGE_SIZE
-//            )
-//            currentPage++
-//        } else {
-//            val subList = allList.subList(
-//                currentPage * PAGE_SIZE,
-//                (currentPage + 1) * PAGE_SIZE
-//            )
-//            currentList.addAll(subList)
-//            notifyItemRangeInserted(currentPage * PAGE_SIZE, PAGE_SIZE)
-//            currentPage++
-//        }
-//    }
-//
-//    fun refreshData(newList: List<T>) {
-//        allList = newList
-//        currentPage = 0
-//        totalPage = if (allList.isEmpty()) {
-//            0
-//        } else {
-//            allList.size / PAGE_SIZE + 1
-//        }
-//        loadFirstPage()
-//        notifyDataSetChanged()
-//    }
-//
-//    private fun loadFirstPage() {
-//        println("loadFirstPage")
-//        currentList = ArrayList()
-//        println("currentList = ArrayList()")
-//        if (currentPage == totalPage) return
-//        if (currentPage == totalPage - 1) {
-//            val subList = allList.subList(currentPage * PAGE_SIZE, allList.size)
-//            currentList.addAll(subList)
-//            currentPage++
-//        } else {
-//            val subList = allList.subList(
-//                currentPage * PAGE_SIZE,
-//                (currentPage + 1) * PAGE_SIZE
-//            )
-//            currentList.addAll(subList)
-//            currentPage++
-//        }
-//    }
-//
-//    override fun getItemCount(): Int {
-//        return currentList.size
-//    }
-//
-//}
-
 abstract class PagingAdapter<T, V : RecyclerView.ViewHolder> :
     RecyclerView.Adapter<V>() {
 
-    // 立即初始化为空列表，避免未初始化状态
-    var currentList: MutableList<T> = mutableListOf()
+    private val visibleItems = mutableListOf<T>()
+    val currentList: List<T> get() = visibleItems
     private var allList: List<T> = listOf()
 
     private var totalPage: Int = 0
@@ -90,18 +20,25 @@ abstract class PagingAdapter<T, V : RecyclerView.ViewHolder> :
 
     abstract val PAGE_SIZE: Int
 
+    protected open fun areItemsTheSame(oldItem: T, newItem: T): Boolean =
+        oldItem == newItem
+
+    protected open fun areContentsTheSame(oldItem: T, newItem: T): Boolean =
+        oldItem == newItem
+
+    val hasMore: Boolean
+        get() = currentPage < totalPage
+
     override fun onBindViewHolder(holder: V, position: Int) {
-        // 添加安全检查
-        if (position < currentList.size) {
-            bindViewHolder(holder, currentList[position])
+        if (position < visibleItems.size) {
+            bindViewHolder(holder, visibleItems[position])
         }
     }
 
-    // 抽象方法让子类实现具体的绑定逻辑
     abstract fun bindViewHolder(holder: V, item: T)
 
     fun loadMoreData() {
-        if (currentPage == totalPage) return
+        if (!hasMore) return
 
         val startPos = currentPage * PAGE_SIZE
         val endPos = if ((totalPage - currentPage) == 1) {
@@ -113,13 +50,14 @@ abstract class PagingAdapter<T, V : RecyclerView.ViewHolder> :
         if (startPos >= allList.size) return
 
         val subList = allList.subList(startPos, min(endPos, allList.size))
-        val insertPosition = currentList.size
-        currentList.addAll(subList)
+        val insertPosition = visibleItems.size
+        visibleItems.addAll(subList)
         notifyItemRangeInserted(insertPosition, subList.size)
         currentPage++
     }
 
     fun refreshData(newList: List<T>) {
+        val oldVisibleItems = visibleItems.toList()
         allList = newList
         currentPage = 1
         totalPage = if (allList.isEmpty()) {
@@ -128,9 +66,24 @@ abstract class PagingAdapter<T, V : RecyclerView.ViewHolder> :
             (allList.size - 1) / PAGE_SIZE + 1
         }
 
-        currentList.clear()
+        visibleItems.clear()
         loadFirstPage()
-        notifyDataSetChanged()
+        DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize(): Int = oldVisibleItems.size
+            override fun getNewListSize(): Int = visibleItems.size
+
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                this@PagingAdapter.areItemsTheSame(
+                    oldVisibleItems[oldItemPosition],
+                    visibleItems[newItemPosition],
+                )
+
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                this@PagingAdapter.areContentsTheSame(
+                    oldVisibleItems[oldItemPosition],
+                    visibleItems[newItemPosition],
+                )
+        }).dispatchUpdatesTo(this)
     }
 
     private fun loadFirstPage() {
@@ -138,9 +91,9 @@ abstract class PagingAdapter<T, V : RecyclerView.ViewHolder> :
 
         val endPos = min(PAGE_SIZE, allList.size)
         val subList = allList.subList(0, endPos)
-        currentList.addAll(subList)
+        visibleItems.addAll(subList)
         currentPage = 1
     }
 
-    override fun getItemCount(): Int = currentList.size
+    override fun getItemCount(): Int = visibleItems.size
 }

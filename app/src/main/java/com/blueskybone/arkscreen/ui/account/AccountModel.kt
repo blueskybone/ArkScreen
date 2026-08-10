@@ -11,7 +11,7 @@ import com.blueskybone.arkscreen.domain.repository.AccountRepository
 import com.blueskybone.arkscreen.domain.usecase.account.SyncAccountGcUseCase
 import com.blueskybone.arkscreen.domain.usecase.account.SyncAccountSkUseCase
 import com.blueskybone.arkscreen.ui.account.model.AccountItemUiModel
-import com.hjq.toast.Toaster
+import com.blueskybone.arkscreen.ui.UiStatus
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -33,8 +33,8 @@ class AccountModel(
     private val _event = MutableSharedFlow<UiEvent>(extraBufferCapacity = 1)
     val event: SharedFlow<UiEvent> = _event
 
-    private val _isOperating = MutableStateFlow(false)
-    val isOperating: StateFlow<Boolean> = _isOperating
+    private val _operationStatus = MutableStateFlow<UiStatus>(UiStatus.Idle)
+    val operationStatus: StateFlow<UiStatus> = _operationStatus
 
     private val skListFlow = repo.observeSkAcc()
         .catch { emit(emptyList()) }
@@ -178,7 +178,7 @@ class AccountModel(
 
     private fun execute(block: suspend () -> Unit) {
         viewModelScope.launch {
-            _isOperating.value = true
+            _operationStatus.value = UiStatus.Loading()
             try {
                 block()
             } catch (e: CancellationException) {
@@ -186,17 +186,11 @@ class AccountModel(
             } catch (e: Exception) {
                 _event.emit(UiEvent.ShowError(e.message ?: "发生未知错误"))
             } finally {
-                _isOperating.value = false
+                _operationStatus.value = UiStatus.Idle
             }
         }
     }
 
-    fun geneAccountCookie(account: Account): String {
-        return try {
-            repo.accountCookieEncode(account)
-        } catch (e: Exception) {
-            Toaster.show("发生错误：${e.message}")
-            ""
-        }
-    }
+    fun generateAccountCookie(account: Account): Result<String> =
+        runCatching { repo.accountCookieEncode(account) }
 }

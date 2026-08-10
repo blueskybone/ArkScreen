@@ -16,6 +16,7 @@ import java.util.function.Function
  */
 
 /*专门用于游戏数据缓存的preference*/
+/** Short-lived API snapshots used by home cards and widgets. */
 class CachePrefManager() {
     constructor(preferenceStore: PreferenceStore) : this() {
         apCache = preferenceStore.getObject(

@@ -4,14 +4,14 @@ import android.content.Context
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.data.local.pref.PrefManager
+import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.databinding.DialogCharMissBinding
 import com.blueskybone.arkscreen.databinding.ItemCharMissBinding
 import com.blueskybone.arkscreen.domain.model.operator.Operator
-import com.blueskybone.arkscreen.domain.model.operator.bindAvatarView
-import com.blueskybone.arkscreen.domain.model.operator.profIconMap
-import com.blueskybone.arkscreen.domain.model.operator.rarityColorMap
-import com.blueskybone.arkscreen.util.openLink
+import com.blueskybone.arkscreen.ui.character.bindAvatarView
+import com.blueskybone.arkscreen.ui.character.profIconMap
+import com.blueskybone.arkscreen.ui.character.rarityColorMap
+import com.blueskybone.arkscreen.ui.common.openLink
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nex3z.flowlayout.FlowLayout
 import org.koin.mp.KoinPlatform
@@ -22,10 +22,8 @@ class CharMissFlowAdapter(
     private val flowLayout: FlowLayout
 ) {
 
-    private var operators: List<Operator> = emptyList()
-    private val prefManager: PrefManager by KoinPlatform.getKoin().inject()
+    private val prefManager: SettingPrefManager by KoinPlatform.getKoin().inject()
     fun submitList(newList: List<Operator>) {
-        operators = newList
         flowLayout.removeAllViews()
         newList.forEach { operator ->
             addOperatorView(operator, flowLayout)
@@ -48,7 +46,7 @@ class CharMissFlowAdapter(
         )
         val colorId = rarityColorMap[item.rarity + 1] ?: R.color.red
         val draw = ContextCompat.getDrawable(context, colorId)
-        binding.Avatar.setBackgroundDrawable(draw)
+        binding.Avatar.background = draw
         bindAvatarView(binding.Avatar, item.skinId)
         binding.setUpListener(item)
     }
@@ -68,7 +66,7 @@ class CharMissFlowAdapter(
             val colorId = rarityColorMap[item.rarity + 1] ?: R.color.red
             val draw = ContextCompat.getDrawable(context, colorId)
 
-            binding.Avatar.setBackgroundDrawable(draw)
+            binding.Avatar.background = draw
             bindAvatarView(binding.Avatar, item.skinId)
 
             binding.PRTSlink.setOnClickListener {

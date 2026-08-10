@@ -3,8 +3,6 @@ package com.blueskybone.arkscreen.data.network.model
 sealed class BasicInfoRequest {
     // 参数1的请求格式
     data class OfficialRequest(
-//        val appId: Int,
-//        val channelMasterId: Int,
         val channelToken: String
     ) : BasicInfoRequest()
 
@@ -13,4 +11,3 @@ sealed class BasicInfoRequest {
         val token: String
     ) : BasicInfoRequest()
 }
-

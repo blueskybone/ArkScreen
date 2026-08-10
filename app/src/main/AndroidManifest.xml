@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
@@ -28,6 +29,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="31">
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
 
         <receiver
@@ -80,7 +91,7 @@
         </receiver>
 
         <receiver
-            android:name=".platform.schedule.AtdAlarmReceiver"
+            android:name=".platform.schedule.AttendanceAlarmReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -119,9 +130,21 @@
             android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".ui.common.LogActivity"
-            android:exported="true"
+            android:exported="false"
             android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
+        <activity
+            android:name=".ui.common.LogManagerActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.main.MainActivity" />
+        <activity
+            android:name=".ui.license.OpenSourceLicensesActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.main.MainActivity" />
+        <activity
+            android:name=".ui.license.LicenseDetailActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.license.OpenSourceLicensesActivity" />
         <activity
             android:name=".ui.character.CharAssets"
             android:exported="true"

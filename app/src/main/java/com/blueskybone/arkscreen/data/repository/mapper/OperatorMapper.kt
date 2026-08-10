@@ -25,23 +25,24 @@ object OperatorMapper {
                 defaultEquipId = char.defaultEquipId
 
                 // 技能信息
-                skills = char.skills.mapIndexed { index, skill ->
+                skills = char.skills.mapIndexedTo(ArrayList()) { index, skill ->
                     Operator.Skill(index, skill.id, skill.specializeLevel)
-                }.toMutableList() as ArrayList<Operator.Skill>
+                }
 
                 // 模组信息
-                equips = char.equip.mapIndexedNotNull { index, equip ->
-                    data.equipmentInfoMap[equip.id]?.takeIf { it.typeName2 != null }?.let { equipInfo ->
+                equips = char.equip.mapIndexedNotNullTo(ArrayList()) { index, equip ->
+                    data.equipmentInfoMap[equip.id]?.let { equipInfo ->
+                        val typeName = equipInfo.typeName2 ?: return@mapIndexedNotNullTo null
                         Operator.Equip(
                             index - 1,
                             equip.id,
                             equip.locked,
                             equipInfo.typeIcon,
-                            equipInfo.typeName2!!,
+                            typeName,
                             equip.level
                         )
                     }
-                }.toMutableList() as ArrayList<Operator.Equip>
+                }
 
 
                 data.charInfoMap[charId]?.let { charInfo ->

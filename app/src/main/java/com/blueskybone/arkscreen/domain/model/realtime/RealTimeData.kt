@@ -54,7 +54,6 @@ data class RealTimeData(
         var trainer: String = "",               //real name from mapinfo
         var trainerIsNull: Boolean = false,     //null: 空闲中
         var targetSkill: Int = 0,
-//        var targetLevel: Int = 0,             //算不出来，只有专精三可以判断(12h,24h)，专精一二由于艾丽妮的技能导致无法区分。
         var totalPoint: Long = 0L,
         var remainPoint: Long = 0L,
         var status: Long = -1L,

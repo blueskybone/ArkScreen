@@ -11,12 +11,7 @@ import androidx.room.PrimaryKey
 
 //@Entity(indices = [Index(value = ["uid"])])
 //data class Gacha(
-//    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-//    val uid: String,
-//    val ts: Long,
-//    val pool: String,
-//    var record: String, //val records: List<Record>,
-//    //val isValid: Boolean        //排除数据不相连错误
+//    @PrimaryKey(autoGenerate = true) val id: Long = 0,//    //val isValid: Boolean        //排除数据不相连错误
 //)
 
 

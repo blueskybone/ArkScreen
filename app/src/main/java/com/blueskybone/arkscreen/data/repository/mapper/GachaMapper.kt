@@ -13,9 +13,10 @@ object GachaMapper {
             uid = uid,
             ts = record.ts,
             charName = record.charName,
-            charId = record.poolId,
+            charId = record.charId,
             isNew = record.isNew,
-            rarity = record.rarity
+            rarity = record.rarity,
+            pos = record.pos,
         )
     }
 
@@ -27,7 +28,7 @@ object GachaMapper {
             pool = gacha.pool,
             ts = gacha.ts,
             charName = gacha.charName,
-            charId = gacha.poolId,
+            charId = gacha.charId,
             isNew = gacha.isNew,
             rarity = gacha.rarity,
             pos = gacha.pos

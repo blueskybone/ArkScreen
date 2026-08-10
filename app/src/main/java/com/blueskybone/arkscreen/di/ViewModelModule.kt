@@ -14,10 +14,11 @@ val viewModelModule = module {
     viewModel {
         MainModel(
             repoAcc = get(),
-            repoRes = get(),
+            homeContentRepository = get(),
+            linkRepository = get(),
             repoSkland = get(),
-            getAttdResultUseCase = get(),
             checkUpdateUseCase = get(),
+            startAppUpdateDownloadUseCase = get(),
             syncAccountSkUseCase = get()
         )
     }
@@ -28,14 +29,21 @@ val viewModelModule = module {
             syncRecordsUseCase = get()
         )
     }
-    viewModel { RecruitModel(repo = get(), calcResultUseCase = get()) }
+    viewModel {
+        RecruitModel(
+            repo = get(),
+            databaseProvider = get(),
+            calcResultUseCase = get(),
+        )
+    }
     viewModel { RealTimeModel(getRealTimeUseCase = get(), repo = get()) }
     viewModel {
         CharModel(
             repo = get(),
             repoAcc = get(),
             getCharAssetsUseCase = get(),
-            getCharMissUseCase = get()
+            getCharMissUseCase = get(),
+            settings = get(),
         )
     }
 }

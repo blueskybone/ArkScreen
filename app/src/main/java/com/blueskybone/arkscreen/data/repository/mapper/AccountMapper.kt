@@ -84,7 +84,6 @@ object AccountMapper {
     }
 
 
-    //TODO：放这合适吗
     fun BindingItem.toSkEntities(token: String, dId: String): List<AccountSk> {
         return this.bindingList.map { user ->
             AccountSk(

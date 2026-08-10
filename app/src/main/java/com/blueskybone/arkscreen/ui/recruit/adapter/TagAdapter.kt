@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.ui.common.view.tagButton
 import com.blueskybone.arkscreen.ui.recruit.TagItem
+import com.blueskybone.arkscreen.util.dpToPx
+import com.google.android.flexbox.FlexboxLayoutManager
 
 class TagAdapter(
     private val onClick: (String) -> Unit
@@ -29,7 +31,16 @@ class TagAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagViewHolder {
-        val button = tagButton(parent.context, "")
+        val context = parent.context
+        val button = tagButton(context, "").apply {
+            layoutParams = FlexboxLayoutManager.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+            ).apply {
+                val margin = dpToPx(context, 5F).toInt()
+                setMargins(0, 0, margin, margin)
+            }
+        }
         return TagViewHolder(button)
     }
 

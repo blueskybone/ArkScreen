@@ -10,6 +10,9 @@ data class RecruitOpe(
     val tags: List<String>,
     val skin: String
 ) {
+    val skinId: String
+        get() = if ('#' in skin) skin else "$skin#1"
+
     operator fun compareTo(o: RecruitOpe): Int {
         return if (this.rare > o.rare) {
             -1

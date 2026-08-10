@@ -11,10 +11,11 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/Update"
-            style="@style/Widget.MyApp.Chip.Assist"
+            style="@style/Widget.ArkScreen.MetadataChip.Primary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp" />
 
         <com.nex3z.flowlayout.FlowLayout

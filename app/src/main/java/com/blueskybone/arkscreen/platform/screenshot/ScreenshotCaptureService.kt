@@ -49,7 +49,9 @@ class ScreenshotCaptureService : Service() {
                 }
             }
 
-            stopSelfSafely()
+            if (!flow.keepCaptureSessionAlive) {
+                stopSelfSafely()
+            }
         }
 
         return START_NOT_STICKY
@@ -57,6 +59,7 @@ class ScreenshotCaptureService : Service() {
 
     override fun onDestroy() {
         serviceScope.cancel()
+        screenshotCapturer.close()
         super.onDestroy()
     }
 
@@ -73,6 +76,10 @@ class ScreenshotCaptureService : Service() {
         fun start(context: Context) {
             val intent = Intent(context, ScreenshotCaptureService::class.java)
             ContextCompat.startForegroundService(context, intent)
+        }
+
+        fun stop(context: Context) {
+            context.stopService(Intent(context, ScreenshotCaptureService::class.java))
         }
     }
 }

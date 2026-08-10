@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.data.local.pref.PrefManager
+import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.data.local.pref.preference.Preference
 import com.blueskybone.arkscreen.databinding.ActivityWidgetSettingBinding
 import com.blueskybone.arkscreen.databinding.PreferenceBinding
@@ -33,7 +33,7 @@ class WidgetThemeActivity : AppCompatActivity() {
 
     private var _binding: ActivityWidgetSettingBinding? = null
     private val binding get() = _binding!!
-    private val prefManager: PrefManager by getKoin().inject()
+    private val prefManager: SettingPrefManager by getKoin().inject()
 
     private val bgList =
         listOf(

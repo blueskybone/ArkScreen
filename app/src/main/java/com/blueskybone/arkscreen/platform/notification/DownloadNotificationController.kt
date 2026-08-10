@@ -52,7 +52,7 @@ class DownloadNotificationController(
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle("下载完成")
-            .setContentText("点击安装新版本")
+            .setContentText("请返回应用安装新版本")
             .setOngoing(false)
             .build()
 

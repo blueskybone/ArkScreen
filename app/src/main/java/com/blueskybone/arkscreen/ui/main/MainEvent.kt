@@ -11,7 +11,10 @@ sealed interface MainEvent {
         val url: String,
     ) : MainEvent
 
-    data class StartAppDownload(val url: String) : MainEvent
+    data object DownloadStarted : MainEvent
+    data class DownloadProgress(val percent: Int) : MainEvent
+    data class DownloadCompleted(val filePath: String) : MainEvent
+    data class DownloadFailed(val message: String) : MainEvent
     data class ShowToast(val message: String) : MainEvent
     data class ShowError(val message: String) : MainEvent
 }

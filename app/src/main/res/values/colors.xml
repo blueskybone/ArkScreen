@@ -94,4 +94,22 @@
     <color name="rare_2_surface">#1799D88B</color>
     <color name="rare_1_surface">#17595959</color>
 
+    <!-- Home tool shortcuts. Keep icon/container pairs together for easy tuning. -->
+    <color name="tool_recruit_icon">#1565C0</color>
+    <color name="tool_recruit_container">#D9EAFE</color>
+    <color name="tool_assets_icon">#6A3DB5</color>
+    <color name="tool_assets_container">#EBDDFF</color>
+    <color name="tool_gacha_icon">#B84E00</color>
+    <color name="tool_gacha_container">#FFE1CC</color>
+    <color name="tool_attendance_icon">#237A3B</color>
+    <color name="tool_attendance_container">#D8F3DF</color>
+    <color name="tool_account_icon">#4554A4</color>
+    <color name="tool_account_container">#E0E4FF</color>
+    <color name="tool_game_icon">#725C00</color>
+    <color name="tool_game_container">#38F8DE05</color>
+    <color name="tool_manual_icon">#006A67</color>
+    <color name="tool_manual_container">#C9F1EC</color>
+    <color name="recruit_metadata_chip_background">#E6E6E6</color>
+    <color name="recruit_metadata_chip_text">#424242</color>
+
 </resources>

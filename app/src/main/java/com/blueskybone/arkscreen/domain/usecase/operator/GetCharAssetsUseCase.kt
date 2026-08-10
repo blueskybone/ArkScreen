@@ -10,5 +10,7 @@ import com.blueskybone.arkscreen.domain.repository.SklandRepository
  */
 class GetCharAssetsUseCase(private val repo: SklandRepository) {
     suspend operator fun invoke(account: AccountSk): Result<List<Operator>> =
-        repo.fetchCharAssets(account)
+        repo.fetchCharAssets(account).map { operators ->
+            operators.sortedWith(OperatorOrdering.default)
+        }
 }

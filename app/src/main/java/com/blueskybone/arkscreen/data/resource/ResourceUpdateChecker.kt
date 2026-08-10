@@ -40,7 +40,7 @@ class ResourceUpdateChecker(
             setInput(StringReader(xmlText))
         }
 
-        var versionCode = 0F
+        var versionCode = 0L
         var version = ""
         var date = ""
         var content = ""
@@ -51,7 +51,7 @@ class ResourceUpdateChecker(
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if (eventType == XmlPullParser.START_TAG) {
                 when (parser.name) {
-                    "versionCode" -> versionCode = parser.nextText().toFloatOrNull() ?: 0F
+                    "versionCode" -> versionCode = parser.nextText().toLongOrNull() ?: 0L
                     "version" -> version = parser.nextText()
                     "update" -> date = parser.nextText()
                     "content" -> content = parser.nextText()

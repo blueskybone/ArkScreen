@@ -59,19 +59,6 @@ class GachaDetailAdapter(private val context: Context) :
                 binding.IsNew.visibility = View.GONE
             }
 
-//            val layerDrawable = binding.ProgressBar.progressDrawable as LayerDrawable
-//            val progressDrawable1 =
-//                layerDrawable.findDrawableByLayerId(android.R.id.progress) as ScaleDrawable
-//            val progressDrawable = progressDrawable1.drawable as GradientDrawable
-//            progressDrawable.setColor(Color.RED) // 设置进度条颜色
-//            if (item.count < 37) {
-//                progressDrawable.setColor(ContextCompat.getColor(context, R.color.trans_blue))
-//            } else if (item.count < 50) {
-//                progressDrawable.setColor(ContextCompat.getColor(context, R.color.trans_blue))
-//            } else {
-//                progressDrawable.setColor(ContextCompat.getColor(context, R.color.trans_blue))
-//            }
-
             val skinUrl = URLEncoder.encode(item.charId + "#1.png", "UTF-8")
             val url = "$avatarUrl$skinUrl"
             binding.Avatar.load(url)

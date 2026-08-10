@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.blueskybone.arkscreen.data.local.room.AccountSk
 import kotlinx.coroutines.flow.Flow
 
@@ -35,6 +36,9 @@ interface AccountSkDao {
     @Query("DELETE FROM AccountSk WHERE uid = :uid")
     suspend fun deleteByUid(uid: String)
 
+    @Query("DELETE FROM AccountSk WHERE uid = :uid AND id != (SELECT MIN(id) FROM AccountSk WHERE uid = :uid)")
+    suspend fun deleteDuplicatesByUid(uid: String)
+
     @Query("SELECT * FROM AccountSk WHERE uid = :uid")
     fun getAccountFlowByUid(uid: String): Flow<AccountSk?>
 
@@ -46,5 +50,24 @@ interface AccountSkDao {
         token: String,
         dId: String,
         official: Boolean
-    )
+    ): Int
+
+    @Transaction
+    suspend fun upsert(account: AccountSk) {
+        val updated = updateAccount(
+            uid = account.uid,
+            channelMasterId = account.channelMasterId,
+            nickName = account.nickName,
+            token = account.token,
+            dId = account.dId,
+            official = account.official,
+        )
+        if (updated == 0) insert(account)
+        deleteDuplicatesByUid(account.uid)
+    }
+
+    @Transaction
+    suspend fun upsert(accounts: List<AccountSk>) {
+        accounts.forEach { upsert(it) }
+    }
 }

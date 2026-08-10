@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import com.blueskybone.arkscreen.data.local.room.AccountGc
 import kotlinx.coroutines.flow.Flow
 
@@ -31,6 +32,8 @@ interface AccountGcDao {
     @Query("DELETE FROM AccountGc WHERE uid = :uid")
     suspend fun deleteByUid(uid: String)
 
+    @Query("DELETE FROM AccountGc WHERE uid = :uid AND id != (SELECT MIN(id) FROM AccountGc WHERE uid = :uid)")
+    suspend fun deleteDuplicatesByUid(uid: String)
 
     @Query("SELECT * FROM AccountGc WHERE uid = :uid")
     fun getAccountFlowByUid(uid: String): Flow<AccountGc?>
@@ -38,11 +41,26 @@ interface AccountGcDao {
     @Query("UPDATE accountgc SET channelMasterId = :channelMasterId, nickName = :nickName, token = :token,official = :official,akUserCenter = :akUserCenter,xrToken = :xrToken WHERE uid = :uid")
     suspend fun updateAccount(
         uid: String,
-        channelMasterId: String,
+        channelMasterId: Int,
         nickName: String,
         token: String,
         official: Boolean,
         akUserCenter: String,
         xrToken: String
-    )
+    ): Int
+
+    @Transaction
+    suspend fun upsert(account: AccountGc) {
+        val updated = updateAccount(
+            uid = account.uid,
+            channelMasterId = account.channelMasterId,
+            nickName = account.nickName,
+            token = account.token,
+            official = account.official,
+            akUserCenter = account.akUserCenter,
+            xrToken = account.xrToken,
+        )
+        if (updated == 0) insert(account)
+        deleteDuplicatesByUid(account.uid)
+    }
 }

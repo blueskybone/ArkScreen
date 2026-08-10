@@ -1,6 +1,6 @@
 package com.blueskybone.arkscreen.data.network.model
 
-import org.json.JSONObject
+import com.fasterxml.jackson.databind.JsonNode
 
 data class AttendanceEndfieldResponse(
     val code: Int,
@@ -10,7 +10,7 @@ data class AttendanceEndfieldResponse(
 
 data class EndfieldAwards(
     val awardIds: List<Awards>,
-    val resourceInfoMap: JSONObject? = null
+    val resourceInfoMap: JsonNode? = null
 )
 
 data class Awards(

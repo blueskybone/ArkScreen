@@ -3,8 +3,6 @@ package com.blueskybone.arkscreen.data.local.pref
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.data.local.pref.preference.Preference
 import com.blueskybone.arkscreen.data.local.pref.preference.PreferenceStore
-import com.blueskybone.arkscreen.data.local.room.AccountSk
-import com.blueskybone.arkscreen.domain.model.cache.ApCache
 import com.blueskybone.arkscreen.ui.common.bindinginfo.AppTheme
 import com.blueskybone.arkscreen.ui.common.bindinginfo.FloatWindowAppearance
 import com.blueskybone.arkscreen.ui.common.bindinginfo.RecruitMode
@@ -15,11 +13,7 @@ import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetSize
 import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetTextColor
 import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetUpdateFreq
 
-/**
- * Created by blueskybone
- * Date: 2026/3/20
- */
-/*用户可操作的配置*/
+/** User-visible settings. Runtime state and cached responses do not belong here. */
 class SettingPrefManager() {
     constructor(preferenceStore: PreferenceStore) : this() {
         recruitMode = preferenceStore.getString(RecruitMode.key, RecruitMode.FLOATWINDOW)
@@ -41,6 +35,8 @@ class SettingPrefManager() {
         alarmAtdMin = preferenceStore.getInt("alarm_attendance_min", 10)
         useInnerWeb = preferenceStore.getBoolean("use_inner_web", true)
         appTheme = preferenceStore.getString("app_theme", AppTheme.defaultValue)
+        assetsViewType = preferenceStore.getInt("assets_view_type", 0)
+        showEmptyGachaPools = preferenceStore.getBoolean("show_empty_gacha_pools", true)
 
 
         widgetAlpha = preferenceStore.getInt(WidgetAlpha.key, WidgetAlpha.defaultValue)
@@ -106,13 +102,6 @@ class SettingPrefManager() {
     * */
     lateinit var timeCorrect: Preference<Boolean>   //开启时间校正
 
-    lateinit var baseAccountSk: Preference<AccountSk>   //默认游戏账号（删掉）
-
-    /*
-    * 省流模式缓存选项
-    * */
-    lateinit var apCache: Preference<ApCache>   //（删掉）
-
     /*
     * 后台自动签到
     * */
@@ -127,6 +116,8 @@ class SettingPrefManager() {
     lateinit var useInnerWeb: Preference<Boolean>       //使用内置浏览器
     lateinit var appTheme: Preference<String>           //主题
     lateinit var showHomeAnnounce: Preference<Boolean>  //显示首页公告
+    lateinit var assetsViewType: Preference<Int>        //干员资产列表展示模式
+    lateinit var showEmptyGachaPools: Preference<Boolean>
 
     /*
     * 桌面组件相关设置

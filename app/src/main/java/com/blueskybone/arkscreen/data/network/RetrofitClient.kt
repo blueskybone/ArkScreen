@@ -1,5 +1,7 @@
 package com.blueskybone.arkscreen.data.network
 
+import com.blueskybone.arkscreen.APP
+import com.blueskybone.arkscreen.BuildConfig
 import com.blueskybone.arkscreen.core.logger.FileLoggingInterceptor
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -20,24 +22,18 @@ object RetrofitClient {
     private val objectMapper = ObjectMapper().registerKotlinModule().apply {
         configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
-    private val fileLogger = FileLoggingInterceptor()
-    private val loggingInterceptor = HttpLoggingInterceptor(fileLogger).apply {
-        level = HttpLoggingInterceptor.Level.BODY
-    }
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
         .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
-        .addInterceptor(HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.HEADERS
-        })
-        .addInterceptor { chain ->
-            val original = chain.request()
-            val request = original.newBuilder()
-                .method(original.method, original.body)
-                .build()
-            chain.proceed(request)
+        .apply {
+            if (BuildConfig.DEBUG) {
+                addInterceptor(
+                    HttpLoggingInterceptor(FileLoggingInterceptor(APP)).apply {
+                        level = HttpLoggingInterceptor.Level.BASIC
+                    }
+                )
+            }
         }
-        .addInterceptor(loggingInterceptor)
         .build()
 
     // 森空岛api

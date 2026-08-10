@@ -45,7 +45,6 @@ fun space(context: Context, dp: Float): Space {
 }
 
 
-//TODO：赶紧改了
 private fun Button.setTagLayout(text: String) {
     val layoutParams = LinearLayout.LayoutParams(
         LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT

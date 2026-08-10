@@ -16,14 +16,6 @@ sealed interface SeekBarInfo {
 }
 
 //data object ScreenshotDelay : SeekBarInfo {
-//    override val title = R.string.screenshot_delay
-//    override val key = "screenshot_delay"
-//    override val defaultValue = 0
-//    override val min = 0
-//    override val max = 3
-//    override val step = 1
-//}
-
 data object WidgetAlpha : SeekBarInfo {
     override val title = R.string.widget_alpha
     override val key = "widget_alpha"

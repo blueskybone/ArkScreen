@@ -10,6 +10,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
+import java.net.URL
 
 /**
  * Created by blueskybone
@@ -25,6 +27,21 @@ class LinkRepositoryImpl(
                 LinkMapper.toDomain(link)
             }
         }.flowOn(dispatcher)
+    }
+
+    override suspend fun resolveIcon(url: String): Result<String> = withContext(dispatcher) {
+        runCatching {
+            val html = URL(url).readText()
+            Regex("""<link.*?rel=(["'])(?:icon|shortcut icon)\1.*?href=(["'])(.*?)\2""")
+                .find(html)
+                ?.groupValues
+                ?.get(3)
+                ?.let { iconPath ->
+                    if (iconPath.startsWith("http")) iconPath
+                    else URL(URL(url), iconPath).toString()
+                }
+                .orEmpty()
+        }
     }
 
 

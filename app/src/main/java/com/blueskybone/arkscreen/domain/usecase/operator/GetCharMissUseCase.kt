@@ -36,5 +36,6 @@ class GetCharMissUseCase(
                     profession = info.profession
                 }
             }
+            .sortedWith(OperatorOrdering.default)
     }
 }

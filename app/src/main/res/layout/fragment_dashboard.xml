@@ -34,23 +34,23 @@
                 android:layout_gravity="end"
                 android:layout_marginEnd="16dp">
 
-                <com.google.android.material.chip.Chip
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/OverlayPermissionChip"
-                    style="@style/Widget.MyApp.Chip.Suggestion"
+                    style="@style/Widget.ArkScreen.SectionAction.Tonal"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="36dp"
                     android:layout_marginStart="4dp"
                     android:text="@string/permission"
-                    app:chipIcon="@drawable/ic_info" />
+                    app:icon="@drawable/ic_permission" />
 
-                <com.google.android.material.chip.Chip
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/RecruitVideo"
-                    style="@style/Widget.MyApp.Chip.Assist"
+                    style="@style/Widget.ArkScreen.SectionAction.Outlined"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="36dp"
                     android:layout_marginStart="8dp"
                     android:text="@string/recruit_video"
-                    app:chipIcon="@drawable/ic_play" />
+                    app:icon="@drawable/ic_play_circle" />
 
             </LinearLayout>
 
@@ -103,16 +103,16 @@
                 android:layout_gravity="start|center"
                 android:text="@string/widget" />
 
-            <com.google.android.material.chip.Chip
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/WidgetPermission"
-                style="@style/Widget.MyApp.Chip.Suggestion"
+                style="@style/Widget.ArkScreen.SectionAction.Tonal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                android:layout_height="36dp"
+                android:layout_gravity="end|center_vertical"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/permission"
-                app:chipIcon="@drawable/ic_info" />
+                app:icon="@drawable/ic_permission" />
 
             <ImageView
                 android:id="@+id/WidgetInfo"
@@ -184,16 +184,16 @@
                 android:layout_gravity="start|center"
                 android:text="@string/auto_attendance" />
 
-            <com.google.android.material.chip.Chip
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/AttdPermission"
-                style="@style/Widget.MyApp.Chip.Suggestion"
+                style="@style/Widget.ArkScreen.SectionAction.Tonal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
                 android:layout_gravity="end|center"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/permission"
-                app:chipIcon="@drawable/ic_info" />
+                app:icon="@drawable/ic_permission" />
 
         </FrameLayout>
 

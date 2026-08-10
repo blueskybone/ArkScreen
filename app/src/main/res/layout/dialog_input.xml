@@ -3,21 +3,39 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:paddingStart="24dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="24dp"
+    android:paddingBottom="4dp">
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/EditText1"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/InputLayout1"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:textAppearance="@style/TextAppearance.Body2"
-        android:hint="@string/title" />
+        android:hint="@string/title">
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/EditText2"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/EditText1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:textAppearance="@style/TextAppearance.Body2" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/InputLayout2"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:textAppearance="@style/TextAppearance.Body2"
-        android:hint="@string/site_url" />
+        android:layout_marginTop="12dp"
+        android:hint="@string/site_url">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/EditText2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textUri"
+            android:textAppearance="@style/TextAppearance.Body2" />
+    </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>

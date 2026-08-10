@@ -6,7 +6,6 @@ import com.blueskybone.arkscreen.domain.model.gacha.Record as DomainRecord
 
 
 object GachaUiMapper {
-    //TODO: 关于records的问题重新看一下，主要是record有两个count属性
 
     fun map(records: List<DomainRecord>): GachaUiSnapshot {
         if (records.isEmpty()) {
@@ -72,9 +71,11 @@ object GachaUiMapper {
                     name = record.charName,
                     charId = record.charId,
                     isNew = record.isNew,
-                    count = totalCount,
+                    count = pityCount,
                     ts = record.ts,
+                    pos = record.pos,
                     rare = record.rarity,
+                    poolId = record.poolId,
                     gachaPool = record.pool,
                     gachaCount = totalCount
                 )
@@ -84,13 +85,15 @@ object GachaUiMapper {
             }
         }
 
-        return result.sortedByDescending { it.ts }
+        return result.sortedWith(
+            compareByDescending<Record> { it.ts }
+                .thenByDescending { it.pos }
+        )
     }
 
     private fun buildGachaPools(
         recordsByPoolId: Map<String, List<DomainRecord>>
     ): List<GachaPool> {
-//        var recordId = 0
 
         return recordsByPoolId.map { (poolId, poolRecords) ->
             val sorted = poolRecords.sortByTsAndPosDescending()
@@ -112,7 +115,9 @@ object GachaUiMapper {
                     isNew = hitRecord.isNew,
                     count = count,
                     ts = hitRecord.ts,
+                    pos = hitRecord.pos,
                     rare = hitRecord.rarity,
+                    poolId = hitRecord.poolId,
                     gachaPool = hitRecord.pool,
                     gachaCount = count
                 )
@@ -130,7 +135,9 @@ object GachaUiMapper {
                     isNew = hitRecord.isNew,
                     count = count,
                     ts = hitRecord.ts,
+                    pos = hitRecord.pos,
                     rare = hitRecord.rarity,
+                    poolId = hitRecord.poolId,
                     gachaPool = hitRecord.pool,
                     gachaCount = count
                 )
@@ -140,7 +147,7 @@ object GachaUiMapper {
                 poolName = sorted.firstOrNull()?.pool.orEmpty(),
                 poolId = poolId,
                 isFes = sorted.firstOrNull()?.poolCate.toGachaType() == GachaType.LIMITED,
-                records = segmentedRecords,
+                hitRecords = segmentedRecords,
                 totalCount = sorted.size,
                 ts = sorted.firstOrNull()?.ts ?: 0L
             )
@@ -154,7 +161,7 @@ object GachaUiMapper {
             GachaPoolStats(
                 poolName = poolRecords.firstOrNull()?.pool.orEmpty(),
                 poolId = poolId,
-                isFes = false,  //TODO:这里都替换掉哦
+                isFes = poolRecords.firstOrNull()?.poolCate.toGachaType() == GachaType.LIMITED,
                 rare6 = poolRecords.count { it.rarity == 5 },
                 rare5 = poolRecords.count { it.rarity == 4 },
                 rare4 = poolRecords.count { it.rarity == 3 },

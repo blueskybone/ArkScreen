@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.FragmentCharNotOwnBinding
 import com.blueskybone.arkscreen.ui.character.adapter.CharMissFlowAdapter
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 /**
  *   Created by blueskybone
@@ -16,7 +17,7 @@ import com.blueskybone.arkscreen.ui.character.adapter.CharMissFlowAdapter
 
 class CharNotOwn : Fragment() {
 
-    private val model: CharModel by activityViewModels()
+    private val model: CharModel by activityViewModel()
     private var _binding: FragmentCharNotOwnBinding? = null
     private val binding get() = _binding!!
 
@@ -42,12 +43,13 @@ class CharNotOwn : Fragment() {
 
     private fun setupObserver(){
         model.update.observe(viewLifecycleOwner){update->
-            binding.Update.text = "最后更新：" + update
+            binding.Update.text = getString(R.string.last_update, update)
         }
     }
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
+        binding.FlowLayout.removeAllViews()
         _binding = null
-        super.onDestroy()
+        super.onDestroyView()
     }
 }

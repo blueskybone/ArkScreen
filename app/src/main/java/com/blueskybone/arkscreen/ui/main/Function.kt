@@ -11,9 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
-import com.blueskybone.arkscreen.APP
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.data.local.pref.PrefManager
+import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
+import com.blueskybone.arkscreen.platform.schedule.AttendanceAlarmController
 import com.blueskybone.arkscreen.databinding.DialogTimepickerBinding
 import com.blueskybone.arkscreen.databinding.FragmentDashboardBinding
 import com.blueskybone.arkscreen.ui.common.bindinginfo.BackAutoAtd
@@ -41,7 +41,8 @@ import java.util.Locale
  */
 class Function : Fragment() {
     private var _binding: FragmentDashboardBinding? = null
-    private val prefManager: PrefManager by getKoin().inject()
+    private val prefManager: SettingPrefManager by getKoin().inject()
+    private val alarmController: AttendanceAlarmController by getKoin().inject()
 
     private val binding get() = _binding!!
     override fun onCreateView(
@@ -153,12 +154,15 @@ class Function : Fragment() {
             icon = R.drawable.ic_check,
             textInfo = BackAutoAtd,
             pref = prefManager.backAutoAtd,
-            onCall = { APP.setDailyAlarm() },
-            offCall = { APP.cancelDailyAlarm() }
+            onCall = alarmController::schedule,
+            offCall = alarmController::cancel,
         )
 
         binding.OverlayPermissionChip.setOnClickListener {
-            PreferenceDialog(requireContext()).add(R.string.overlay_permission, R.string.confirm) {
+            PreferenceDialog(requireContext()).add(
+                R.string.overlay_permission,
+                R.string.overlay_permission_detail
+            ) {
                 (activity as MainActivity?)?.jumpToPermission(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
             }.add(R.string.notify_permission, R.string.notify_permission_detail) {
                 (activity as MainActivity?)?.openNotificationSettings(requireContext())
@@ -180,6 +184,8 @@ class Function : Fragment() {
                 R.string.open_auto_start_settings_detail
             ) {
                 openAutoStartSettings(requireContext())
+            }.add(R.string.notify_permission, R.string.notify_permission_detail) {
+                (activity as MainActivity?)?.openNotificationSettings(requireContext())
             }.show()
         }
 
@@ -225,8 +231,8 @@ class Function : Fragment() {
                             R.string.auto_attendance_time,
                             TimeUtils.getDigitalString(newHour, newMin)
                         )
-                    APP.cancelDailyAlarm()
-                    if (prefManager.backAutoAtd.get()) APP.setDailyAlarm()
+                    alarmController.cancel()
+                    if (prefManager.backAutoAtd.get()) alarmController.schedule()
                 }.show()
         }
     }

@@ -69,12 +69,8 @@ class LoginWeb : AppCompatActivity() {
 
         private const val SKLAND_URL = "https://www.skland.com"
         private const val ARK_USER_URL = "https://ak.hypergryph.com/user/home"
-//        private const val arkHomeBiliUrl = "https://ak.hypergryph.com/user/bilibili/login"
-
         private const val API_OFFICIAL = "https://web-api.skland.com/account/info/hg"
         private const val ARK_API_OFFICIAL = "https://web-api.hypergryph.com/account/info/hg"
-//        private const val arkApiBili = "https://web-api.hypergryph.com/account/info/ak-b"
-
         fun start(context: Context, type: LoginType) {
             val intent = Intent(context, LoginWeb::class.java).apply {
                 putExtra(LOGIN_TYPE, convert(type))
@@ -336,7 +332,8 @@ class LoginWeb : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         webView.destroy()
+        _binding = null
+        super.onDestroy()
     }
 }

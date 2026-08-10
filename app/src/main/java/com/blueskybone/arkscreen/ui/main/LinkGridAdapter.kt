@@ -33,11 +33,19 @@ class LinkGridAdapter(private val listener: ItemListener) :
         RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setOnLongClickListener {
-                listener.onLongClick(bindingAdapterPosition)
-                true
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onLongClick(position)
+                    true
+                } else {
+                    false
+                }
             }
             binding.root.setOnClickListener {
-                listener.onClick(bindingAdapterPosition)
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onClick(position)
+                }
             }
         }
 

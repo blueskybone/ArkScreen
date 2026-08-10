@@ -23,9 +23,8 @@ import com.blueskybone.arkscreen.domain.model.realtime.RealTimeData
 object RealTimeMapper {
 
     fun toDomain(playerInfoResp: PlayerInfoResp): RealTimeData {
-        val dataTree = playerInfoResp.data ?: return RealTimeData().apply {
-            currentTs = System.currentTimeMillis()
-        }
+        val dataTree = playerInfoResp.data
+            ?: throw IllegalStateException("实时数据响应为空")
         val currentTs = dataTree.currentTs
 
         return RealTimeData().apply {
@@ -129,7 +128,10 @@ object RealTimeMapper {
                 }
 
                 else -> {
-                    current = max - ((ap.completeRecoveryTime - currentTs).toInt() / (60 * 6) + 1)
+                    val missing = ((ap.completeRecoveryTime - currentTs) / (60 * 6) + 1)
+                        .coerceAtMost(Int.MAX_VALUE.toLong())
+                        .toInt()
+                    current = (max - missing).coerceIn(0, max)
                     remainSecs = ap.completeRecoveryTime - currentTs
                     recoverTime = ap.completeRecoveryTime
                 }
@@ -180,11 +182,15 @@ object RealTimeMapper {
 
                     else -> {
                         status = 1L
-                        train.speed?.let { speed ->
+                        val lastUpdateTime = train.lastUpdateTime
+                        train.speed?.takeIf { it > 0.0 }?.let { speed ->
                             this.remainPoint = (remainSecs.toDouble() * speed).toLong()
-                            val totalPointCalc =
-                                ((currentTs - train.lastUpdateTime!!).toDouble() * speed).toLong() + this.remainPoint
-                            totalPoint = getTotalPoint(totalPointCalc)
+                            if (lastUpdateTime != null) {
+                                val totalPointCalc =
+                                    ((currentTs - lastUpdateTime).coerceAtLeast(0L)
+                                        .toDouble() * speed).toLong() + this.remainPoint
+                                totalPoint = getTotalPoint(totalPointCalc)
+                            }
 
 
                             val targetPointIrene = when (profession) {
@@ -364,20 +370,29 @@ object RealTimeMapper {
             manufacturesNode.forEach { node ->
                 RealTimeData.Manufacture().apply {
                     formula = node.formulaId
-                    val weight = formulaMap[node.formulaId]?.weight ?: 1
+                    val weight = (formulaMap[node.formulaId]?.weight ?: 1).coerceAtLeast(1)
                     val stockLimit = node.capacity / weight
                     max = stockLimit
 
-                    var stock = node.complete
-                    if (currentTs >= node.completeWorkTime) {
+                    var stock = node.complete.coerceIn(0, stockLimit)
+                    if (stock >= stockLimit || currentTs >= node.completeWorkTime) {
                         stock = stockLimit
                         completeTime = -1L
                         remainSecs = -1L
                     } else {
-                        stock += ((currentTs - node.lastUpdateTime) /
-                                ((node.completeWorkTime - node.lastUpdateTime) / (stockLimit - stock))).toInt()
+                        val remainingUnits = stockLimit - stock
+                        val productionWindow =
+                            (node.completeWorkTime - node.lastUpdateTime).coerceAtLeast(0L)
+                        val secondsPerUnit = productionWindow / remainingUnits
+                        if (secondsPerUnit > 0L) {
+                            stock += (
+                                (currentTs - node.lastUpdateTime).coerceAtLeast(0L) /
+                                    secondsPerUnit
+                                ).toInt()
+                            stock = stock.coerceAtMost(stockLimit)
+                        }
                         completeTime = node.completeWorkTime
-                        remainSecs = node.completeWorkTime - currentTs
+                        remainSecs = (node.completeWorkTime - currentTs).coerceAtLeast(0L)
                     }
 
                     manufactures.add(this)
@@ -397,14 +412,14 @@ object RealTimeMapper {
 
     private fun calculateLaborInfo(labor: Labor, currentTs: Long): RealTimeData.Labor {
         return RealTimeData.Labor().apply {
-            max = labor.maxValue
+            max = labor.maxValue.coerceAtLeast(0)
             val laborRemain = labor.remainSecs - (currentTs - labor.lastUpdateTime)
 
-            current = if (labor.remainSecs == 0L) {
-                labor.value
+            current = if (labor.remainSecs <= 0L) {
+                labor.value.coerceIn(0, max)
             } else {
                 ((currentTs - labor.lastUpdateTime) * (max - labor.value) /
-                        labor.remainSecs + labor.value).toInt().coerceAtMost(max)
+                        labor.remainSecs + labor.value).toInt().coerceIn(0, max)
             }
 
             this.remainSecs = if (laborRemain < 0) 0 else laborRemain
@@ -458,6 +473,7 @@ object RealTimeMapper {
             charList.forEach { char ->
                 if (char.workTime != 0L) {
                     val speed = (8640000L - char.ap).toFloat() / char.workTime.toFloat()
+                    if (speed <= 0F || !speed.isFinite()) return@forEach
                     val restTime = char.ap.toFloat() / speed
 
                     if ((currentTs - char.lastApAddTime) > restTime) {

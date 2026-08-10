@@ -4,21 +4,26 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.data.local.pref.PrefManager
 import com.blueskybone.arkscreen.databinding.ActivityGachaBinding
+import com.blueskybone.arkscreen.ui.UiStatus
 import com.blueskybone.arkscreen.ui.common.view.MenuDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
-import org.koin.android.ext.android.getKoin
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.hjq.toast.Toaster
+import kotlinx.coroutines.launch
 
 /**
  *   Created by blueskybone
@@ -26,22 +31,76 @@ import org.koin.android.ext.android.getKoin
  */
 
 class GachaActivity : AppCompatActivity() {
-    private val prefManager: PrefManager by getKoin().inject()
-    private val model: GachaModel by viewModels()
+    private val model: GachaModel by viewModel()
 
     private var _binding: ActivityGachaBinding? = null
     private val binding get() = _binding!!
     private var launcherForTxt: ActivityResultLauncher<String>? = null
     private var launcherForJson: ActivityResultLauncher<String>? = null
     private var launcherForImport: ActivityResultLauncher<Array<String>>? = null
+    private val pageChangeCallback = object : OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            binding.TabLayout.selectTab(binding.TabLayout.getTabAt(position))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityGachaBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//        setupObserver()
         setUpBinding()
         registerLauncher()
+        observeState()
+        observeEvents()
+    }
+
+    private fun observeState() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                model.uiState.collect { state ->
+                    val hasCachedRecords = state.gachaUiSnapshot?.records?.isNotEmpty() == true
+                    when (val status = state.status) {
+                        is UiStatus.Loading -> {
+                            if (hasCachedRecords) showContent()
+                            else showStatus(status.message ?: "加载中...")
+                        }
+                        is UiStatus.Empty -> showStatus(status.message)
+                        is UiStatus.Error -> {
+                            if (hasCachedRecords) showContent()
+                            else showStatus(status.message)
+                        }
+                        is UiStatus.Success -> showContent()
+                        UiStatus.Idle -> Unit
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showStatus(message: String) {
+        binding.Message.text = message
+        binding.Page.visibility = View.VISIBLE
+        binding.TabLayout.visibility = View.GONE
+        binding.ViewPager.visibility = View.GONE
+    }
+
+    private fun showContent() {
+        binding.Page.visibility = View.GONE
+        binding.TabLayout.visibility = View.VISIBLE
+        binding.ViewPager.visibility = View.VISIBLE
+    }
+
+    private fun observeEvents() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                model.event.collect { event ->
+                    when (event) {
+                        is GachaEvent.ShowError -> Toaster.show(event.message)
+                        is GachaEvent.ShowMessage -> Toaster.show(event.message)
+                    }
+                }
+            }
+        }
     }
 
     private fun setUpBinding() {
@@ -59,11 +118,7 @@ class GachaActivity : AppCompatActivity() {
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
 
-        vp.registerOnPageChangeCallback(object : OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                ta.selectTab(ta.getTabAt(position))
-            }
-        })
+        vp.registerOnPageChangeCallback(pageChangeCallback)
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -94,9 +149,9 @@ class GachaActivity : AppCompatActivity() {
             R.id.menu_export -> {
                 MenuDialog(this)
                     .add(getString(R.string.file_txt)) {
-                        launcherForTxt?.launch(prefManager.baseAccountGc.get().uid + "_gacha_records")
+                        launcherForTxt?.launch(model.exportFileBaseName())
                     }.add(getString(R.string.file_json)) {
-                        launcherForJson?.launch(prefManager.baseAccountGc.get().uid + "_gacha_records")
+                        launcherForJson?.launch(model.exportFileBaseName())
                     }.show()
                 true
             }
@@ -138,56 +193,12 @@ class GachaActivity : AppCompatActivity() {
         }
     }
 
-//    private fun setupObserver() {
-//        model.uiState.observe(this) { value ->
-//            when (value) {
-//                is DataUiState.Loading -> displayLoadingView(value.msg)
-//                is DataUiState.Error -> displayErrorView(value.msg)
-//                is DataUiState.Success -> displayView()
-//                else -> {}
-//            }
-//        }
-//
-//        model.gachaData.observe(this) { value ->
-//            adapter?.submitList(value)
-//        }
-//    }
+    private fun registerLauncher() = Unit
 
-//    private fun displayLoadingView(msg: String) {
-//        binding.Page.visibility = View.VISIBLE
-//        binding.ViewPager.visibility = View.GONE
-//        binding.Message.text = msg
-//    }
-//
-//    private fun displayErrorView(msg: String) {
-//        binding.Page.visibility = View.VISIBLE
-//        binding.ViewPager.visibility = View.GONE
-//        binding.Message.text = msg
-//    }
-//
-//    private fun displayView() {
-//        binding.Page.visibility = View.GONE
-//        binding.ViewPager.visibility = View.VISIBLE
-//    }
-
-    private fun registerLauncher() {
-//        launcherForTxt =
-//            registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
-//                uri?.let {
-//                    model.exportTxt(uri)
-//                }
-//            }
-//        launcherForJson =
-//            registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
-//                uri?.let {
-//                    model.exportJson(uri)
-//                }
-//            }
-//        launcherForImport =
-//            registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-//                uri?.let {
-//                    model.importData(uri)
-//                }
-//            }
+    override fun onDestroy() {
+        binding.ViewPager.unregisterOnPageChangeCallback(pageChangeCallback)
+        binding.ViewPager.adapter = null
+        _binding = null
+        super.onDestroy()
     }
 }

@@ -2,7 +2,6 @@ package com.blueskybone.arkscreen.ui.character.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -10,14 +9,17 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.ItemCharBinding
 import com.blueskybone.arkscreen.databinding.ItemCharListBinding
 import com.blueskybone.arkscreen.domain.model.operator.Operator
-import com.blueskybone.arkscreen.domain.model.operator.bindAvatarView
-import com.blueskybone.arkscreen.domain.model.operator.bindEquipView
-import com.blueskybone.arkscreen.domain.model.operator.bindSkillView
-import com.blueskybone.arkscreen.domain.model.operator.bindSkillViewLarge
-import com.blueskybone.arkscreen.domain.model.operator.evolveIconMap
-import com.blueskybone.arkscreen.domain.model.operator.potentialIconMap
-import com.blueskybone.arkscreen.domain.model.operator.profIconMap
-import com.blueskybone.arkscreen.domain.model.operator.rarityColorMap
+import com.blueskybone.arkscreen.ui.character.bindAvatarView
+import com.blueskybone.arkscreen.ui.character.bindEquipView
+import com.blueskybone.arkscreen.ui.character.bindSkillView
+import com.blueskybone.arkscreen.ui.character.bindSkillViewLarge
+import com.blueskybone.arkscreen.ui.character.evolveIconMap
+import com.blueskybone.arkscreen.ui.character.potentialIconMap
+import com.blueskybone.arkscreen.ui.character.profIconMap
+import com.blueskybone.arkscreen.ui.character.rarityColorMap
+import com.blueskybone.arkscreen.ui.character.raritySurfaceColorMap
+import com.blueskybone.arkscreen.ui.character.resetEquipView
+import com.blueskybone.arkscreen.ui.character.resetSkillView
 import com.blueskybone.arkscreen.ui.common.adapter.ItemListener
 import com.blueskybone.arkscreen.ui.common.adapter.paging.PagingAdapter
 
@@ -38,6 +40,9 @@ class CharAdapter(
     companion object {
         private const val VIEW_TYPE_PAYLOAD = "view_type_payload"
     }
+
+    override fun areItemsTheSame(oldItem: Operator, newItem: Operator): Boolean =
+        oldItem.charId == newItem.charId
 
     // 改变视图
     fun setViewType(viewType: ViewType) {
@@ -76,13 +81,6 @@ class CharAdapter(
         }
     }
 
-//    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-//        when (holder) {
-//            is CharListVH -> holder.bind(currentList[position])
-//            is CharGridVH -> holder.bind(currentList[position])
-//        }
-//    }
-
     override fun bindViewHolder(holder: RecyclerView.ViewHolder, item: Operator) {
         when (holder) {
             is CharListVH -> holder.bind(item)
@@ -99,11 +97,15 @@ class CharAdapter(
 
         init {
             binding.root.setOnLongClickListener {
-                listener.onLongClick(bindingAdapterPosition)
-                true
+                val position = bindingAdapterPosition
+                if (position == RecyclerView.NO_POSITION) false else {
+                    listener.onLongClick(position)
+                    true
+                }
             }
             binding.root.setOnClickListener {
-                listener.onClick(bindingAdapterPosition)
+                bindingAdapterPosition.takeIf { it != RecyclerView.NO_POSITION }
+                    ?.let(listener::onClick)
             }
         }
 
@@ -111,9 +113,18 @@ class CharAdapter(
 
             binding.Name.text = item.name
             binding.Level.text = item.level.toString()
-
-            val profRsc = profIconMap[item.profession]!!
-            ContextCompat.getDrawable(context, profRsc)
+            val rarity = item.rarity + 1
+            binding.Rarity.text = context.getString(R.string.gacha_rarity, rarity)
+            binding.Rarity.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    rarityColorMap[rarity] ?: R.color.rare_1,
+                )
+            )
+            binding.Rarity.backgroundTintList = ContextCompat.getColorStateList(
+                context,
+                raritySurfaceColorMap[rarity] ?: R.color.rare_1_surface,
+            )
 
             binding.Profession.setImageResource(
                 profIconMap[item.profession] ?: R.drawable.skill_icon_default
@@ -125,23 +136,11 @@ class CharAdapter(
                 evolveIconMap[item.evolvePhase] ?: R.drawable.skill_icon_default
             )
 
-            val colorId = rarityColorMap[item.rarity + 1] ?: R.color.red
-            val draw = ContextCompat.getDrawable(context, colorId)
-
             bindAvatarView(binding.Avatar, item.skinId)
 
-            binding.Skill1.Icon.setImageResource(R.drawable.skill_icon_default)
-            binding.Skill2.Icon.setImageResource(R.drawable.skill_icon_default)
-            binding.Skill3.Icon.setImageResource(R.drawable.skill_icon_default)
-            binding.Skill1.Icon.alpha = 0.0F
-            binding.Skill2.Icon.alpha = 0.0F
-            binding.Skill3.Icon.alpha = 0.0F
-            binding.Skill1.Special.visibility = View.GONE
-            binding.Skill2.Special.visibility = View.GONE
-            binding.Skill3.Special.visibility = View.GONE
-            binding.Skill1.MainRank.visibility = View.GONE
-            binding.Skill2.MainRank.visibility = View.GONE
-            binding.Skill3.MainRank.visibility = View.GONE
+            resetSkillView(binding.Skill1)
+            resetSkillView(binding.Skill2)
+            resetSkillView(binding.Skill3)
 
             for (skill in item.skills) {
                 when (skill.index) {
@@ -151,15 +150,9 @@ class CharAdapter(
                     else -> {}
                 }
             }
-            binding.Equip1.Icon.setImageResource(R.drawable.skill_icon_default)
-            binding.Equip2.Icon.setImageResource(R.drawable.skill_icon_default)
-            binding.Equip3.Icon.setImageResource(R.drawable.skill_icon_default)
-            binding.Equip1.Icon.alpha = 0.0F
-            binding.Equip2.Icon.alpha = 0.0F
-            binding.Equip3.Icon.alpha = 0.0F
-            binding.Equip1.Stage.visibility = View.GONE
-            binding.Equip2.Stage.visibility = View.GONE
-            binding.Equip3.Stage.visibility = View.GONE
+            resetEquipView(binding.Equip1)
+            resetEquipView(binding.Equip2)
+            resetEquipView(binding.Equip3)
 
             for (equip in item.equips) {
                 when (equip.index) {
@@ -180,11 +173,15 @@ class CharAdapter(
         RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setOnLongClickListener {
-                listener.onLongClick(bindingAdapterPosition)
-                true
+                val position = bindingAdapterPosition
+                if (position == RecyclerView.NO_POSITION) false else {
+                    listener.onLongClick(position)
+                    true
+                }
             }
             binding.root.setOnClickListener {
-                listener.onClick(bindingAdapterPosition)
+                bindingAdapterPosition.takeIf { it != RecyclerView.NO_POSITION }
+                    ?.let(listener::onClick)
             }
         }
 
@@ -192,9 +189,6 @@ class CharAdapter(
 
             binding.Name.text = item.name
             binding.Level.text = item.level.toString()
-
-            val profRsc = profIconMap[item.profession]!!
-            ContextCompat.getDrawable(context, profRsc)
 
             binding.Profession.setImageResource(
                 profIconMap[item.profession] ?: R.drawable.skill_icon_default
@@ -209,25 +203,13 @@ class CharAdapter(
 
             val colorId = rarityColorMap[item.rarity + 1] ?: R.color.rare_1
             val draw = ContextCompat.getDrawable(context, colorId)
-            binding.Avatar.setBackgroundDrawable(draw)
+            binding.Avatar.background = draw
 
             bindAvatarView(binding.Avatar, item.skinId)
 
-            binding.Skill1.Icon.setImageResource(R.drawable.skill_icon_default)
-            binding.Skill2.Icon.setImageResource(R.drawable.skill_icon_default)
-            binding.Skill3.Icon.setImageResource(R.drawable.skill_icon_default)
-            binding.Skill1.Icon.alpha = 0.0F
-            binding.Skill2.Icon.alpha = 0.0F
-            binding.Skill3.Icon.alpha = 0.0F
-            binding.Skill1.Special.visibility = View.GONE
-            binding.Skill2.Special.visibility = View.GONE
-            binding.Skill3.Special.visibility = View.GONE
-            binding.Skill1.MainRank.visibility = View.GONE
-            binding.Skill2.MainRank.visibility = View.GONE
-            binding.Skill3.MainRank.visibility = View.GONE
-            binding.Skill1.root.visibility = View.GONE
-            binding.Skill2.root.visibility = View.GONE
-            binding.Skill3.root.visibility = View.GONE
+            resetSkillView(binding.Skill1)
+            resetSkillView(binding.Skill2)
+            resetSkillView(binding.Skill3)
 
             for (skill in item.skills) {
                 when (skill.index) {
@@ -237,18 +219,9 @@ class CharAdapter(
                     else -> {}
                 }
             }
-            binding.Equip1.Icon.setImageResource(R.drawable.skill_icon_default)
-            binding.Equip2.Icon.setImageResource(R.drawable.skill_icon_default)
-            binding.Equip3.Icon.setImageResource(R.drawable.skill_icon_default)
-            binding.Equip1.Icon.alpha = 0.0F
-            binding.Equip2.Icon.alpha = 0.0F
-            binding.Equip3.Icon.alpha = 0.0F
-            binding.Equip1.Stage.visibility = View.GONE
-            binding.Equip2.Stage.visibility = View.GONE
-            binding.Equip3.Stage.visibility = View.GONE
-            binding.Equip1.root.visibility = View.GONE
-            binding.Equip2.root.visibility = View.GONE
-            binding.Equip3.root.visibility = View.GONE
+            resetEquipView(binding.Equip1)
+            resetEquipView(binding.Equip2)
+            resetEquipView(binding.Equip3)
 
             for (equip in item.equips) {
                 when (equip.index) {

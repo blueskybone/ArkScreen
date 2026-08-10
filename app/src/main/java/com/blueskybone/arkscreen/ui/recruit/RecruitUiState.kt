@@ -1,10 +1,10 @@
 package com.blueskybone.arkscreen.ui.recruit
 
 import com.blueskybone.arkscreen.domain.model.recruit.RecruitResult
+import com.blueskybone.arkscreen.ui.UiStatus
 
 data class RecruitUiState(
-    val loading: Boolean = false,
-    val error: String? = null,
+    val status: UiStatus = UiStatus.Idle,
 
     val selectedTags: List<String> = emptyList(),
 
@@ -12,3 +12,7 @@ data class RecruitUiState(
     val update: String = "",
     val newOpe: List<String> = emptyList()
 )
+
+sealed interface RecruitEvent {
+    data class ShowError(val message: String) : RecruitEvent
+}

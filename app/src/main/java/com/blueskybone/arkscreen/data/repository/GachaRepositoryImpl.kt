@@ -13,7 +13,6 @@ import com.blueskybone.arkscreen.data.repository.utils.safeResultSync
 import com.blueskybone.arkscreen.domain.model.account.Account
 import com.blueskybone.arkscreen.domain.model.gacha.Record
 import com.blueskybone.arkscreen.domain.repository.GachaRepository
-import com.blueskybone.arkscreen.util.toCate
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -30,9 +29,17 @@ import com.blueskybone.arkscreen.domain.model.account.AccountGc as DomainAccGc
 class GachaRepositoryImpl(
     private val gachaDao: GachaDao,
     private val api: ApiService,
-    private val headerProvider: HeaderProvider = HeaderProvider,
+    private val headerProvider: HeaderProvider,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : GachaRepository {
+
+    private fun String.toCate(): String = when {
+        startsWith("LIMITED") || startsWith("LINKAGE") || startsWith("ATTAIN") -> "LIMITED"
+        startsWith("CLASSIC") || startsWith("FESCLASSIC") -> "CLASSIC"
+        startsWith("SINGLE") || startsWith("DOUBLE") || startsWith("SPECIAL") ||
+            startsWith("NORM") -> "NORMAL"
+        else -> "UN"
+    }
 
     private fun AccountGc.toHeaders() = headerProvider.createAkHeader(
         akUserCenter, token, xrToken
@@ -66,16 +73,12 @@ class GachaRepositoryImpl(
         )
     }
 
-    @Deprecated("不要直接在这操作")
-    suspend fun deleteByUid(uid: String) = gachaDao.deleteByUid(uid)
-
     override fun observeRecords(uid: String): Flow<List<Record>> {
         return gachaDao.getFLowByUid(uid)
             .map { gachas ->
                 gachas.map { gacha ->
                     GachaMapper.toDomain(gacha)
                 }
-                //TODO: 按照时间和pos排序（没啥必要，放在domain或者UI处理）
             }.flowOn(dispatcher)
     }
 
@@ -117,7 +120,7 @@ class GachaRepositoryImpl(
             val acc = AccountMapper.toEntity(account)
             val localRecords = gachaDao.getByUid(acc.uid)
             //获取最后一条历史时间避免每次pull全部数据
-            val lastTs = if (localRecords.isEmpty()) 0L else localRecords.last().ts
+            val lastTs = localRecords.maxOfOrNull { it.ts } ?: 0L
             //获取卡池名称
             val cateList = fetchGachaCate(acc)
             //然后去请求远端
@@ -152,7 +155,15 @@ class GachaRepositoryImpl(
     }
 
     override suspend fun correctUnCateRecord(account: Account): Result<Unit> {
-        TODO("Not yet implemented")
+        return safeResultSync {
+            val records = gachaDao.getByUid(account.uid)
+            val corrected = records
+                .filter { it.poolCate == "UN" }
+                .map { it.copy(poolCate = it.poolId.toCate()) }
+            if (corrected.isNotEmpty()) {
+                gachaDao.updateGachas(corrected)
+            }
+        }
     }
 
     private suspend fun fetchGachaCate(account: AccountGc): List<String> {

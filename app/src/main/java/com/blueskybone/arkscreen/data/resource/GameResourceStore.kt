@@ -9,6 +9,7 @@ import com.blueskybone.arkscreen.data.repository.utils.safeResultSync
 import com.blueskybone.arkscreen.domain.model.ConfigType
 import com.blueskybone.arkscreen.domain.model.ResourceSyncStatus
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -33,7 +34,7 @@ class GameResourceStore(
             val remoteInfo = updateChecker.fetchUpdateInfo(type.xmlUrl)
             val localVersion = fileStore.getLocalVersion(type)
 
-            if (remoteInfo.version <= localVersion) {
+            if (compareVersions(remoteInfo.version, localVersion) <= 0) {
                 emit(ResourceSyncStatus.UpToDate(type))
                 return@flow
             }
@@ -49,6 +50,7 @@ class GameResourceStore(
 
             emit(ResourceSyncStatus.Updated(type))
         } catch (throwable: Throwable) {
+            if (throwable is CancellationException) throw throwable
             emit(
                 ResourceSyncStatus.Failed(
                     type = type,
@@ -106,5 +108,18 @@ class GameResourceStore(
         return mutexMap.getOrPut(type) {
             Mutex()
         }
+    }
+
+    private fun compareVersions(remote: String, local: String): Int {
+        val remoteParts = remote.trim().split('.').map { it.toLongOrNull() ?: 0L }
+        val localParts = local.trim().split('.').map { it.toLongOrNull() ?: 0L }
+        val size = maxOf(remoteParts.size, localParts.size)
+
+        repeat(size) { index ->
+            val comparison = (remoteParts.getOrNull(index) ?: 0L)
+                .compareTo(localParts.getOrNull(index) ?: 0L)
+            if (comparison != 0) return comparison
+        }
+        return 0
     }
 }

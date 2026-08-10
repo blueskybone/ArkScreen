@@ -3,15 +3,15 @@ package com.blueskybone.arkscreen.ui.recruit.ocr
 import android.content.Context
 import android.graphics.Bitmap
 import com.blueskybone.arkscreen.util.getRealScreenSize
+import timber.log.Timber
 
 
-//TODO: 注意context的传递
 class RecruitTagRecognizer(
     private val context: Context,
     private val imageProcessor: ImageProcessor
 ) {
 
-    fun recognize(bitmap: Bitmap): Result<List<String>> {
+    suspend fun recognize(bitmap: Bitmap): Result<List<String>> {
         return runCatching {
 
             val point = getRealScreenSize(context)
@@ -19,10 +19,19 @@ class RecruitTagRecognizer(
             val screenHeight = point.y
 
             val data = imageProcessor.getRecruitTags(bitmap, screenWidth, screenHeight)
-            data.tags
+            val tags = data.tags
                 .map { it.trim() }
                 .filter { it.isNotBlank() }
                 .distinct()
+            Timber.tag("RecruitOCR").d(
+                "Recognition result: status=%s message=%s tags=%s",
+                data.status,
+                data.msg,
+                tags,
+            )
+            tags
+        }.onFailure { throwable ->
+            Timber.tag("RecruitOCR").e(throwable, "Recruit tag recognition failed")
         }
     }
 }

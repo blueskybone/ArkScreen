@@ -6,6 +6,7 @@ import com.blueskybone.arkscreen.platform.screenshot.ScreenshotError
 import com.blueskybone.arkscreen.platform.screenshot.ScreenshotStartSource
 import com.blueskybone.arkscreen.presentation.recruit.floating.RecruitResultDisplayer
 import com.blueskybone.arkscreen.ui.recruit.ocr.RecruitTagRecognizer
+import timber.log.Timber
 
 class RecruitScreenshotFlow(
     private val tagRecognizer: RecruitTagRecognizer,
@@ -17,7 +18,9 @@ class RecruitScreenshotFlow(
         bitmap: Bitmap,
         source: ScreenshotStartSource
     ) {
-        val tags = tagRecognizer.recognize(bitmap).getOrElse {
+        Timber.tag("RecruitFlow").d("Start recruit recognition: source=%s", source)
+        val tags = tagRecognizer.recognize(bitmap).getOrElse { throwable ->
+            Timber.tag("RecruitFlow").e(throwable, "Recognition stage failed")
             resultDisplayer.showError("识别公招标签失败")
             return
         }
@@ -27,10 +30,18 @@ class RecruitScreenshotFlow(
             return
         }
 
-        val results = calcRecruitResultUseCase(tags).getOrElse {
+        Timber.tag("RecruitFlow").d("Calculate recruit combinations: tags=%s", tags)
+        val results = calcRecruitResultUseCase(tags, filter = true).getOrElse { throwable ->
+            Timber.tag("RecruitFlow").e(throwable, "Recruit calculation failed: tags=%s", tags)
             resultDisplayer.showError("计算公招结果失败")
             return
         }
+        Timber.tag("RecruitFlow").d(
+            "Recruit calculation completed: tags=%s resultCount=%d results=%s",
+            tags,
+            results.size,
+            results.map { result -> result.tags to result.operators.map { it.name } },
+        )
 
         resultDisplayer.showResult(
             tags = tags,

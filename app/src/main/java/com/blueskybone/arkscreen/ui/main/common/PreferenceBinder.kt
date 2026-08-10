@@ -88,7 +88,17 @@ object PreferenceBinder {
         icon: Int?,
         textInfo: TextInfo
     ) {
-        binding.setUp(textInfo)
+        binding.setUp(icon, textInfo)
+    }
+
+    fun bindPreferenceText(
+        binding: PreferenceBinding,
+        icon: Int?,
+        text: Int
+    ) {
+        binding.Icon.bindIcon(icon)
+        binding.Title.setText(text)
+        binding.Value.visibility = View.GONE
     }
 
 
@@ -285,9 +295,11 @@ object PreferenceBinder {
             }
         }
     }
-    private fun PreferenceBinding.setUp(textInfo: TextInfo) {
+    private fun PreferenceBinding.setUp(icon: Int?, textInfo: TextInfo) {
+        Icon.bindIcon(icon)
         Title.setText(textInfo.title)
         Value.setText(textInfo.subTitle)
+        Value.visibility = View.VISIBLE
     }
 
     private fun PreferenceBinding.setUp(

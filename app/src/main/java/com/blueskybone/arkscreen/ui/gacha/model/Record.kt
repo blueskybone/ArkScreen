@@ -25,7 +25,9 @@ data class Record(
     val isNew: Boolean,
     val count: Int,
     val ts:Long,
+    val pos: Int,
     val rare: Int,
+    val poolId: String,
     val gachaPool: String,
     val gachaCount: Int
 )

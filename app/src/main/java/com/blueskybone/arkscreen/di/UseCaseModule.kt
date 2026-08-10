@@ -1,11 +1,13 @@
 package com.blueskybone.arkscreen.di
 
-import com.blueskybone.arkscreen.domain.usecase.CheckUpdateUseCase
-import com.blueskybone.arkscreen.domain.usecase.DownloadAppUseCase
+import com.blueskybone.arkscreen.domain.usecase.appupdate.CheckAppUpdateUseCase
+import com.blueskybone.arkscreen.domain.usecase.appupdate.DownloadAppUpdateUseCase
+import com.blueskybone.arkscreen.domain.usecase.appupdate.StartAppUpdateDownloadUseCase
 import com.blueskybone.arkscreen.domain.usecase.account.LoadCookieUseCase
 import com.blueskybone.arkscreen.domain.usecase.account.SyncAccountGcUseCase
 import com.blueskybone.arkscreen.domain.usecase.account.SyncAccountSkUseCase
 import com.blueskybone.arkscreen.domain.usecase.attendance.GetAttdResultUseCase
+import com.blueskybone.arkscreen.domain.usecase.attendance.RunAttendanceUseCase
 import com.blueskybone.arkscreen.domain.usecase.gacha.SyncRecordsUseCase
 import com.blueskybone.arkscreen.domain.usecase.operator.GetCharAssetsUseCase
 import com.blueskybone.arkscreen.domain.usecase.operator.GetCharMissUseCase
@@ -14,8 +16,9 @@ import com.blueskybone.arkscreen.domain.usecase.recruit.CalcResultUseCase
 import org.koin.dsl.module
 
 val useCaseModule = module {
-    factory { CheckUpdateUseCase(get(), get()) }
-    factory { DownloadAppUseCase(get()) }
+    factory { CheckAppUpdateUseCase(get(), get()) }
+    factory { DownloadAppUpdateUseCase(get()) }
+    factory { StartAppUpdateDownloadUseCase(get()) }
 
     // Account
     factory { LoadCookieUseCase(get()) }
@@ -24,6 +27,7 @@ val useCaseModule = module {
 
     // Attendance
     factory { GetAttdResultUseCase(get()) }
+    factory { RunAttendanceUseCase(get(), get()) }
 
     // Gacha
     factory { SyncRecordsUseCase(get()) }

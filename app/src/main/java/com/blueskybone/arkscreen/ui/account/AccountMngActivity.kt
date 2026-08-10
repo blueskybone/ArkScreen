@@ -7,7 +7,6 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -21,11 +20,13 @@ import com.blueskybone.arkscreen.domain.model.account.AccountType
 import com.blueskybone.arkscreen.ui.account.adapter.AccountAdapter
 import com.blueskybone.arkscreen.ui.account.common.AccountDialogHelper
 import com.blueskybone.arkscreen.ui.account.model.AccountItemAction
+import com.blueskybone.arkscreen.ui.UiStatus
 import com.blueskybone.arkscreen.ui.common.view.MenuDialog
 import com.blueskybone.arkscreen.util.copyToClipboard
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  *   Created by blueskybone
@@ -33,7 +34,7 @@ import kotlinx.coroutines.launch
  */
 class AccountMngActivity : AppCompatActivity() {
 
-    private val model: AccountModel by viewModels()
+    private val model: AccountModel by viewModel()
     private lateinit var binding: ActivityAccountMngBinding
     private lateinit var dialogHelper: AccountDialogHelper
 
@@ -73,7 +74,7 @@ class AccountMngActivity : AppCompatActivity() {
                             hasData = list.isNotEmpty(),
                             header = binding.ArknightsHeader,
                             card = binding.ArknightsCard,
-                            empty = null,
+                            empty = binding.ArknightsEmpty,
                             alwaysShow = true
                         )
                     }
@@ -86,7 +87,7 @@ class AccountMngActivity : AppCompatActivity() {
                             hasData = list.isNotEmpty(),
                             header = binding.GachaHeader,
                             card = binding.GachaCard,
-                            empty = null,
+                            empty = binding.GachaEmpty,
                             alwaysShow = true
                         )
                     }
@@ -99,8 +100,8 @@ class AccountMngActivity : AppCompatActivity() {
                             hasData = list.isNotEmpty(),
                             header = binding.EndfieldHeader,
                             card = binding.EndfieldCard,
-                            empty = null,
-                            alwaysShow = false
+                            empty = binding.EndfieldEmpty,
+                            alwaysShow = true
                         )
                     }
                 }
@@ -125,11 +126,11 @@ class AccountMngActivity : AppCompatActivity() {
     //加载中
     private fun observeOperating() {
         lifecycleScope.launch {
-            model.isOperating
+            model.operationStatus
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                .collect { isOperating ->
+                .collect { status ->
                     // 这里建议直接控制显隐
-                    toggleLoading(isOperating)
+                    toggleLoading(status is UiStatus.Loading)
                 }
         }
     }
@@ -261,10 +262,16 @@ class AccountMngActivity : AppCompatActivity() {
 
     private fun buildExportAction(account: Account): (() -> Unit) {
         return {
-            val cookie = model.geneAccountCookie(account)
-            dialogHelper.showExportDialog(cookie) {
-                copyToClipboard(this, cookie)
-            }
+            model.generateAccountCookie(account).fold(
+                onSuccess = { cookie ->
+                    dialogHelper.showExportDialog(cookie) {
+                        copyToClipboard(this, cookie)
+                    }
+                },
+                onFailure = { error ->
+                    Toaster.show(error.message ?: "账号导出失败")
+                },
+            )
         }
     }
 
@@ -368,5 +375,14 @@ class AccountMngActivity : AppCompatActivity() {
 
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDestroy() {
+        loadingDialog?.dismiss()
+        loadingDialog = null
+        binding.RecyclerView.adapter = null
+        binding.RecyclerViewGc.adapter = null
+        binding.RecyclerViewEf.adapter = null
+        super.onDestroy()
     }
 }

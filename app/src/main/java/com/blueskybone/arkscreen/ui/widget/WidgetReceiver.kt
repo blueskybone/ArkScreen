@@ -3,8 +3,10 @@ package com.blueskybone.arkscreen.ui.widget
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.work.OneTimeWorkRequest
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.blueskybone.arkscreen.platform.widget.WidgetRefreshWorker
 import com.hjq.toast.Toaster
 import timber.log.Timber
 
@@ -16,7 +18,17 @@ class WidgetReceiver : BroadcastReceiver() {
 
     companion object {
         const val MANUAL_UPDATE = "com.blueskybone.arkscreen.MANUAL_UPDATE"
-        const val WORKER_NAME = "SklandWorker"
+        const val WORKER_NAME = "WidgetRefreshWorker"
+        const val ONE_TIME_WORKER_NAME = "WidgetRefreshWorkerOneTime"
+
+        fun enqueueUpdate(context: Context) {
+            val request = OneTimeWorkRequestBuilder<WidgetRefreshWorker>().build()
+            WorkManager.getInstance(context).enqueueUniqueWork(
+                ONE_TIME_WORKER_NAME,
+                ExistingWorkPolicy.KEEP,
+                request
+            )
+        }
     }
 
     override fun onReceive(context: Context?, intent: Intent) {
@@ -26,8 +38,7 @@ class WidgetReceiver : BroadcastReceiver() {
             }
             Toaster.show("更新中...")
             Timber.i("WidgetReceiver onReceive")
-            WorkManager.getInstance(context!!)
-                .enqueue(OneTimeWorkRequest.from(SklandWorker::class.java))
+            enqueueUpdate(context!!)
         }
     }
 }

@@ -16,6 +16,9 @@ class AppUpdateRemoteDataSource(
         val remoteInfo = resourceUpdateChecker.fetchUpdateInfo(
             ConfigType.APP_INFO.xmlUrl
         )
+        require(remoteInfo.versionCode > 0L) {
+            "app update xml missing or invalid versionCode"
+        }
 
         return AppUpdateInfo(
             version = remoteInfo.version,

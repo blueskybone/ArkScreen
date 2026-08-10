@@ -2,6 +2,7 @@ package com.blueskybone.arkscreen.data.resource
 
 import com.blueskybone.arkscreen.domain.repository.GameResourceRepository
 import com.blueskybone.arkscreen.domain.service.TextTranslator
+import timber.log.Timber
 
 /**
  * Created by blueskybone
@@ -12,9 +13,18 @@ class TextTranslatorImpl(
 ) : TextTranslator {
 
     override suspend fun translate(key: String, fallback: String): String {
-        val map = gameResourceRepository.getI18nMap()
-            .getOrElse { emptyMap() }
+        val normalizedKey = key.trim()
+        val map = gameResourceRepository.getI18nMap().getOrElse { throwable ->
+            Timber.tag("RecruitOCR").e(throwable, "Load i18n map failed")
+            return fallback
+        }
 
-        return map[key.trim()] ?: fallback
+        return map[normalizedKey] ?: fallback.also {
+            Timber.tag("RecruitOCR").w(
+                "Missing translation: key=%s fallback=%s",
+                normalizedKey,
+                fallback,
+            )
+        }
     }
 }

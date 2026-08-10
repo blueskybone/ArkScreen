@@ -19,14 +19,15 @@ suspend fun fetchCredInfo(
     token: String,
     dId: String,
     headerProvider: HeaderProvider,
-    api: ApiService
+    api: ApiService,
+    apiAs: ApiService,
 ): CredAndToken {
 
     val grantResp = safeApiCall(
         call = {
             val request = GrantRequest(appCode = "4ca99fa6b56cc2ba", token = token, type = 0)
             val headers = headerProvider.createGrantHeaders(dId)
-            api.getGrant(request, headers)
+            apiAs.getGrant(request, headers)
         },
         errorMessage = "获取grant授权码失败"
     )
@@ -48,13 +49,13 @@ suspend fun fetchToken(
     password: String,
     dId: String,
     headerProvider: HeaderProvider,
-    api: ApiService
+    apiAs: ApiService
 ): String {
     val resp = safeApiCall(
         call = {
             val request = LoginRequest(phone, password)
             val headers = headerProvider.createGrantHeaders(dId)
-            api.loginByPassword(
+            apiAs.loginByPassword(
                 request,
                 headers
             )

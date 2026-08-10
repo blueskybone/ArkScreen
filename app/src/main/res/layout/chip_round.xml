@@ -17,7 +17,7 @@
         android:padding="8dp"
         android:src="@drawable/ic_tags"
         android:background="@drawable/text_chip"
-        app:tint="?attr/colorPrimary"/>
+        app:tint="?attr/colorPrimary" />
 
     <TextView
         android:id="@+id/Title"

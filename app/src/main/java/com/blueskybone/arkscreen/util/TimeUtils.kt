@@ -1,7 +1,7 @@
 package com.blueskybone.arkscreen.util
 
 import android.annotation.SuppressLint
-import com.blueskybone.arkscreen.data.local.pref.PrefManager
+import com.blueskybone.arkscreen.domain.service.AppClock
 import org.koin.java.KoinJavaComponent.getKoin
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -56,7 +56,7 @@ object TimeUtils {
         if (wdhms.day > 0) stringBuilder.append("${wdhms.day}d")
         if (wdhms.hour > 0) stringBuilder.append("${wdhms.hour}h")
         if (wdhms.min > 0) stringBuilder.append("${wdhms.min}m")
-        //TODO: should handle in calling func
+        // 小于一分钟时表示资源已经恢复。
         if (stringBuilder.isEmpty()) return "restored"
         return stringBuilder.toString()
     }
@@ -83,43 +83,11 @@ object TimeUtils {
     }
 
     fun getCurrentTs(): Long {
-        val prefManager: PrefManager by getKoin().inject()
-        return if (prefManager.timeCorrect.get()) {
-            prefManager.timeCorrectSec.get() + System.currentTimeMillis() / 1000
-        } else {
-            System.currentTimeMillis() / 1000
-        }
+        val clock: AppClock by getKoin().inject()
+        return clock.currentEpochSeconds()
     }
 
-
-    //TODO:fix
-    //follow the time util api, a new week begin from Sunday
-    //beijing time, 00:00 divide two days
-    //follow ark-time, ts should add one day + 4 hours = (86400 + 3600*4)*1000
-//    fun getWeekNum(ts: Long): Long {
-//        val tsc = ts + 100800000L
-//        val weekFields = WeekFields.of(Locale.CHINA)
-//        val weekNum = Instant.ofEpochMilli(tsc)
-//            .atZone(zoneId)
-//            .get(weekFields.weekOfWeekBasedYear())
-//        return weekNum.toLong()
-//    }
-//
-//    fun getMonthNum(ts: Long): Long {
-//        val monthNum = Instant.ofEpochMilli(ts)
-//            .atZone(zoneId)
-//            .get(ChronoField.MONTH_OF_YEAR)
-//        return monthNum.toLong()
-//    }
-//
-//    fun getLoggerTimeStr(): String {
-//        val current = LocalDateTime.now()
-//        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
-//        val formatted = current.format(formatter)
-//        return "[$formatted]"
-//    }
-
-    //TODO:check this.
+    // 服务端日序号按北京时间计算。
     fun getDayNum(ts: Long): Long {
         return (ts + 28800) / 86400
     }

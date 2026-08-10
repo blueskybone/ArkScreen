@@ -2,19 +2,16 @@ package com.blueskybone.arkscreen.ui.character
 
 import android.os.Bundle
 import android.view.View
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.blueskybone.arkscreen.databinding.ActivityCharAssetsBinding
-import com.blueskybone.arkscreen.ui.UiState
+import com.blueskybone.arkscreen.ui.UiStatus
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
-import com.hjq.toast.Toaster
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 /**
@@ -24,17 +21,20 @@ import com.hjq.toast.Toaster
 
 class CharAssets : AppCompatActivity() {
 
-    private val model: CharModel by viewModels()
+    private val model: CharModel by viewModel()
     private var _binding: ActivityCharAssetsBinding? = null
-    private var launcherForTxt: ActivityResultLauncher<String>? = null
     private val binding get() = _binding!!
+    private val pageChangeCallback = object : OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            binding.TabLayout.selectTab(binding.TabLayout.getTabAt(position))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityCharAssetsBinding.inflate(layoutInflater)
         setupBinding()
         setupObserver()
-        registerLauncher()
         setContentView(binding.root)
     }
 
@@ -52,11 +52,7 @@ class CharAssets : AppCompatActivity() {
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
 
-        vp.registerOnPageChangeCallback(object : OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                ta.selectTab(ta.getTabAt(position))
-            }
-        })
+        vp.registerOnPageChangeCallback(pageChangeCallback)
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -64,12 +60,11 @@ class CharAssets : AppCompatActivity() {
     private fun setupObserver() {
         model.uiState.observe(this) { value ->
             when (value) {
-                is UiState.Loading -> displayLoadingView("加载中...")
-                is UiState.Error -> displayErrorView(value.message)
-                is UiState.Success -> displayView()
-                UiState.Cancelled -> Toaster.show("cancelled")
-                is UiState.Warning -> Toaster.show(value.message)
-                else -> {}
+                is UiStatus.Loading -> displayLoadingView(value.message ?: "加载中...")
+                is UiStatus.Error -> displayErrorView(value.message)
+                is UiStatus.Empty -> displayErrorView(value.message)
+                is UiStatus.Success -> displayView()
+                UiStatus.Idle -> Unit
             }
         }
     }
@@ -105,12 +100,10 @@ class CharAssets : AppCompatActivity() {
         }
     }
 
-    private fun registerLauncher() {
-        launcherForTxt =
-            registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
-                uri?.let {
-//                    model.exportTxt(uri)
-                }
-            }
+    override fun onDestroy() {
+        binding.ViewPager.unregisterOnPageChangeCallback(pageChangeCallback)
+        binding.ViewPager.adapter = null
+        _binding = null
+        super.onDestroy()
     }
 }

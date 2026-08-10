@@ -11,6 +11,8 @@ interface LinkRepository {
 
     fun observeLinks(): Flow<List<Link>>
 
+    suspend fun resolveIcon(url: String): Result<String>
+
     suspend fun insertLink(link: Link): Result<Unit>
 
     suspend fun updateLink(link: Link): Result<Unit>

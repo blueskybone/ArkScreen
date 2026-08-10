@@ -20,7 +20,7 @@ import com.blueskybone.arkscreen.data.repository.utils.safeResultSync
 import com.blueskybone.arkscreen.data.repository.utils.safeResultNormal
 import com.blueskybone.arkscreen.domain.model.account.AccountType
 import com.blueskybone.arkscreen.domain.repository.AccountRepository
-import com.blueskybone.arkscreen.util.generateDId
+import com.blueskybone.arkscreen.data.repository.utils.generateDId
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,8 +41,9 @@ class AccountRepositoryImpl(
     private val accountGcDao: AccountGcDao,
     private val accountEfDao: AccountEfDao,
     private val api: ApiService,
-    private val apiAk: ApiService,
-    private val headerProvider: HeaderProvider = HeaderProvider,
+    private val apiAs: ApiService,
+    private val apiAk : ApiService,
+    private val headerProvider: HeaderProvider,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val preference: InnerPrefManager
 ) : AccountRepository {
@@ -96,17 +97,13 @@ class AccountRepositoryImpl(
             when (item.appCode) {
                 "arknights" -> {
                     val list = item.toSkEntities(token, dId)
-                    //TODO:写一个Update方法，以后不允许登录多个账号了，只能更新当前的账号
-                    accountSkDao.insert(list)
+                    accountSkDao.upsert(list)
                     cnt += list.size
-                    //TODO：放到domain部分
-//                if (prefManager.baseAccountSk.get().uid == "")
-//                    prefManager.baseAccountSk.set(list[0])
                 }
 
                 "endfield" -> {
                     val list = item.toEfEntities(token, dId)
-                    accountEfDao.insert(list)
+                    accountEfDao.upsert(list)
                     cnt += list.size
                 }
             }
@@ -129,7 +126,7 @@ class AccountRepositoryImpl(
             akUserCenter = akUserCenter,
             xrToken = xrToken,
         )
-        accountGcDao.insert(account)
+        accountGcDao.upsert(account)
         return cnt
     }
 
@@ -204,8 +201,8 @@ class AccountRepositoryImpl(
     ): Result<Int> = safeResultSync {
         withContext(Dispatchers.IO) {
             val dId = generateDId()
-            val token = fetchToken(phone, code, dId, headerProvider, api)
-            val credInfo = fetchCredInfo(token, dId, headerProvider, api)
+            val token = fetchToken(phone, code, dId, headerProvider,  apiAs = apiAs)
+            val credInfo = fetchCredInfo(token, dId, headerProvider, api = api, apiAs= apiAs)
             val bindingResp = fetchPlayerBinding(credInfo.cred, credInfo.token, dId)
             handleBindingResponse(bindingResp, token, dId)
         }
@@ -214,7 +211,7 @@ class AccountRepositoryImpl(
     override suspend fun loginByToken(token: String): Result<Int> = safeResultSync {
         withContext(Dispatchers.IO) {
             val dId = generateDId()
-            val credInfo = fetchCredInfo(token, dId, headerProvider, api)
+            val credInfo = fetchCredInfo(token, dId, headerProvider,  api = api, apiAs= apiAs)
             val bindingResp = fetchPlayerBinding(credInfo.cred, credInfo.token, dId)
             handleBindingResponse(bindingResp, token, dId)
         }

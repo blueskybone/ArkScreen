@@ -4,6 +4,7 @@ import android.app.Application
 import android.widget.ImageView
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.platform.screenshot.ScreenshotStartSource
+import com.blueskybone.arkscreen.platform.screenshot.ScreenshotCaptureService
 import com.blueskybone.arkscreen.ui.recruit.screenshot.RecruitScreenshotStarter
 import com.hjq.window.EasyWindow
 
@@ -48,6 +49,7 @@ class RecruitFloatingBallController(
 
     fun hide() {
         EasyWindow.cancelAll()
+        ScreenshotCaptureService.stop(application)
         isShowing = false
     }
 }
