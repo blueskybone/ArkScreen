@@ -1,7 +1,6 @@
 <resources>
     <!-- App Info -->
     <string name="app_name">公招助手</string>
-    <string name="version">2.2.4</string>
 
     <!-- Dialogs Action-->
     <string name="cancel">取消</string>

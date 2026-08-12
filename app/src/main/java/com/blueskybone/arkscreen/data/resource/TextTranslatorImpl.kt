@@ -23,13 +23,13 @@ class TextTranslatorImpl(
 
     override suspend fun translate(key: String, fallback: String): String {
         val normalizedKey = key.trim()
-        val map = gameResourceRepository.getI18nMap().getOrElse { throwable ->
+        val translations = gameResourceRepository.getI18nTranslations().getOrElse { throwable ->
             Timber.tag("TextTranslator").e(throwable, "Load i18n map failed")
             startResourceSync()
             return fallback
         }
 
-        val translated = map[normalizedKey] ?: fallback.also {
+        val translated = translations.translate(normalizedKey) ?: fallback.also {
             Timber.tag("TextTranslator").w(
                 "Missing translation: key=%s fallback=%s",
                 normalizedKey,
@@ -42,13 +42,13 @@ class TextTranslatorImpl(
 
     override suspend fun translateAll(keys: Collection<String>): Map<String, String> {
         val normalizedKeys = keys.asSequence().map(String::trim).distinct().toList()
-        val map = gameResourceRepository.getI18nMap().getOrElse { throwable ->
+        val translations = gameResourceRepository.getI18nTranslations().getOrElse { throwable ->
             Timber.tag("TextTranslator").e(throwable, "Load i18n map failed")
             startResourceSync()
             return normalizedKeys.associateWith { it }
         }
         val translated = normalizedKeys.associateWith { key ->
-            map[key] ?: key.also {
+            translations.translate(key) ?: key.also {
                 Timber.tag("TextTranslator").w("Missing translation: key=%s", key)
             }
         }

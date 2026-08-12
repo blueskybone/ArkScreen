@@ -91,6 +91,18 @@ object PreferenceBinder {
         binding.Value.visibility = View.GONE
     }
 
+    fun bindPreferenceText(
+        binding: PreferenceBinding,
+        icon: Int?,
+        text: Int,
+        value: CharSequence
+    ) {
+        binding.Icon.bindIcon(icon)
+        binding.Title.setText(text)
+        binding.Value.text = value
+        binding.Value.visibility = View.VISIBLE
+    }
+
 
 
     private fun ImageView.bindIcon(icon: Int?) {

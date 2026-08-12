@@ -2,6 +2,7 @@ package com.blueskybone.arkscreen.data.resource
 
 
 import com.blueskybone.arkscreen.domain.model.ConfigType
+import com.blueskybone.arkscreen.domain.model.I18nTranslations
 import com.blueskybone.arkscreen.data.resource.model.RecruitDatabaseDto
 import com.blueskybone.arkscreen.domain.model.ResourceSyncStatus
 import com.blueskybone.arkscreen.domain.model.operator.OperatorBasicInfo
@@ -33,16 +34,14 @@ class GameResourceRepositoryImpl(
         }
     }
 
-    override suspend fun getI18nMap(): Result<Map<String, String>> {
+    override suspend fun getI18nTranslations(): Result<I18nTranslations> {
         return gameResourceStore.load(ConfigType.I18N_DB) { file ->
             val root = jsonReader.readNode(file)
-            val mapInfoNode = root["mapInfo"]
-                ?: throw FileNotFoundException("I18n file missing mapInfo")
-
-            mapInfoNode.fields().asSequence()
-                .associate { (key, value) ->
-                    key.trim() to value.asText()
-                }
+            I18nTranslations(
+                recruit = root.readTranslationSection("recruit"),
+                profession = root.readTranslationSection("profession"),
+                subProfession = root.readTranslationSection("sub_profession"),
+            )
         }
     }
 
@@ -74,5 +73,14 @@ class GameResourceRepositoryImpl(
 
     override fun clearResourceCache(type: ConfigType) {
         gameResourceStore.clearCache(type)
+    }
+
+    private fun com.fasterxml.jackson.databind.JsonNode.readTranslationSection(
+        name: String,
+    ): Map<String, String> {
+        val section = this[name] ?: throw FileNotFoundException("I18n file missing $name")
+        return section.fields().asSequence().associate { (key, value) ->
+            key.trim() to value.asText()
+        }
     }
 }

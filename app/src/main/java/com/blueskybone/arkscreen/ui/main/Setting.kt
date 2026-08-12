@@ -13,12 +13,12 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.databinding.DialogDonateBinding
 import com.blueskybone.arkscreen.databinding.FragmentSettingBinding
+import com.blueskybone.arkscreen.domain.model.AppVersion
 import com.blueskybone.arkscreen.platform.theme.AppThemeController
 import com.blueskybone.arkscreen.domain.service.ServerTimeCalibrator
 import com.blueskybone.arkscreen.ui.common.LogManagerActivity
 import com.blueskybone.arkscreen.ui.license.OpenSourceLicensesActivity
 import com.blueskybone.arkscreen.ui.common.bindinginfo.AppTheme
-import com.blueskybone.arkscreen.ui.common.bindinginfo.CheckUpdate
 import com.blueskybone.arkscreen.ui.common.bindinginfo.GroupChat
 import com.blueskybone.arkscreen.ui.common.bindinginfo.TimeCorrection
 import com.blueskybone.arkscreen.ui.common.bindinginfo.UseInnerWeb
@@ -44,6 +44,7 @@ class Setting : Fragment() {
     private val model: MainModel by activityViewModel()
     private val binding get() = _binding!!
     private val prefManager: SettingPrefManager by getKoin().inject()
+    private val appVersion: AppVersion by getKoin().inject()
     private val appThemeController: AppThemeController by getKoin().inject()
     private val serverTimeCalibrator: ServerTimeCalibrator by getKoin().inject()
 
@@ -108,7 +109,8 @@ class Setting : Fragment() {
         PreferenceBinder.bindPreferenceText(
             binding = binding.CheckUpdate,
             icon = R.drawable.ic_update,
-            textInfo = CheckUpdate
+            text = R.string.check_update,
+            value = appVersion.name
         )
 
         PreferenceBinder.bindPreferenceText(

@@ -129,12 +129,17 @@ class ResourceFileStore(
 
     private fun isValidI18n(root: com.fasterxml.jackson.databind.JsonNode): Boolean {
         val version = versionOf(root)
-        val mapInfo = root["mapInfo"]
-        if (version == "0" || mapInfo == null || !mapInfo.isObject || mapInfo.isEmpty) return false
-        val entriesValid = mapInfo.fields().asSequence().all { (key, value) ->
-            key.isNotBlank() && value.isTextual && value.asText().isNotBlank()
+        if (version == "0") return false
+
+        val sections = I18N_SECTIONS.map { root[it] }
+        if (sections.any { it == null || !it.isObject || it.isEmpty }) return false
+        val entriesValid = sections.all { section ->
+            section!!.fields().asSequence().all { (key, value) ->
+                key.isNotBlank() && value.isTextual && value.asText().isNotBlank()
+            }
         }
-        return entriesValid && REQUIRED_RECRUIT_KEYS.all(mapInfo::has)
+        val recruit = root["recruit"] ?: return false
+        return entriesValid && REQUIRED_RECRUIT_KEYS.all(recruit::has)
     }
 
     private fun versionOf(root: com.fasterxml.jackson.databind.JsonNode): String =
@@ -179,6 +184,8 @@ class ResourceFileStore(
     }
 
     private companion object {
+        val I18N_SECTIONS = listOf("recruit", "profession", "sub_profession")
+
         val REQUIRED_RECRUIT_KEYS = setOf(
             "medic", "supporter", "caster", "guard", "vanguard", "defender",
             "sniper", "specialist", "top-ope", "sen-ope", "starter", "melee",

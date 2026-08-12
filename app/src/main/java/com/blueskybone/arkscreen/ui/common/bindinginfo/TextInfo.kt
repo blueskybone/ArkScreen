@@ -30,12 +30,6 @@ data object TurnOffBatteryOptimization : TextInfo {
     override val icon = null
 }
 
-data object CheckUpdate : TextInfo {
-    override val title = R.string.check_update
-    override val subTitle = R.string.version
-    override val icon = R.drawable.ic_refresh
-}
-
 data object GroupChat : TextInfo {
     override val title = R.string.qq_group
     override val subTitle = R.string.qq_group_content
