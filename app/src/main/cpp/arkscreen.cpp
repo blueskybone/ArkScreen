@@ -10,19 +10,19 @@
 #include "core.h"
 
 using namespace std;
-#ifndef _Included_com_blueskybone_arkscreen_task_screenshot_ImageProcessor
+#ifndef _Included_com_blueskybone_arkscreen_ui_recruit_ocr_ImageProcessor_getTagText
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 /*
-* Class:     com_blueskybone_arkscreen_task_screenshot_ImageProcessor
+* Class:     com_blueskybone_arkscreen_ui_recruit_ocr_ImageProcessor_getTagText
 * Method:    getTagText
 * Signature: (Landroid/graphics/Bitmap;)[Ljava/lang/String;
 */
 extern "C"
 JNIEXPORT jstring
-Java_com_blueskybone_arkscreen_task_screenshot_ImageProcessor_getTagText(JNIEnv *env,
+Java_com_blueskybone_arkscreen_ui_recruit_ocr_ImageProcessor_getTagText(JNIEnv *env,
                                                                          jobject clazz,
                                                                          jobject jBitmap,
                                                                          jstring jDataPath,
@@ -70,7 +70,7 @@ Java_com_blueskybone_arkscreen_task_screenshot_ImageProcessor_getTagText(JNIEnv 
             (*env).ReleaseStringUTFChars(jDataPath, filePath);
             return env->NewStringUTF(filePath);
         } else {
-            //TODO:change result format
+            // TODO：后续统一 JNI 识别结果格式。
             int cnt = 0;
             char result_tag_all[100] = "";
             strcat(result_tag_all, "RECRUIT,");

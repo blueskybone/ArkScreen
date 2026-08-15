@@ -15,3 +15,6 @@ local.properties
 
 *.apk
 *.aar
+
+# Local API response samples may contain account data.
+/.local-data/

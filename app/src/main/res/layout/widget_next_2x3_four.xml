@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/widget_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop"
+        android:src="@drawable/widget_next_bg_transparent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:gravity="center_vertical|start"
+        android:orientation="horizontal"
+        android:paddingHorizontal="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="4dp">
+
+        <TextView
+            android:id="@+id/widget_account_server"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:textColor="#FFB8BBC3"
+            android:textSize="9sp"
+            tools:text="官服" />
+
+        <TextView
+            android:id="@+id/widget_account_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:maxWidth="88dp"
+            android:maxLines="1"
+            android:textColor="#FFE6E8EC"
+            android:textSize="10sp"
+            tools:text="Dr.Theresa" />
+
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/widget_footer_attendance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:textColor="#FFB8BBC3"
+            android:textSize="10sp"
+            tools:text="已签到" />
+
+        <TextView
+            android:id="@+id/widget_footer_separator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:includeFontPadding="false"
+            android:text="·"
+            android:textColor="#FFB8BBC3"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/widget_footer_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:textColor="#FFB8BBC3"
+            android:textSize="10sp"
+            tools:text="更新 14:32" />
+
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/widget_header_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="top"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="22dp"
+        android:background="#3DFFFFFF"
+        android:contentDescription="@null" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="23dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="8dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="5dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="5dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/widget_icon_1"
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_bolt"
+                            android:tint="@color/white" />
+
+                        <TextView
+                            android:id="@+id/widget_title_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:includeFontPadding="false"
+                            android:maxLines="1"
+                            android:textColor="#FFC8CBD2"
+                            android:textSize="11sp"
+                            tools:text="理智" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/widget_value_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:textColor="@color/white"
+                        android:textSize="19sp"
+                        android:textStyle="bold"
+                        tools:text="23 / 135" />
+
+                    <TextView
+                        android:id="@+id/widget_detail_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:textColor="#FFC8CBD2"
+                        android:textSize="10sp"
+                        tools:text="6小时后回满" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="5dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/widget_icon_2"
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_drone"
+                            android:tint="@color/white" />
+
+                        <TextView
+                            android:id="@+id/widget_title_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:includeFontPadding="false"
+                            android:maxLines="1"
+                            android:textColor="#FFC8CBD2"
+                            android:textSize="11sp"
+                            tools:text="无人机" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/widget_value_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:textColor="@color/white"
+                        android:textSize="19sp"
+                        android:textStyle="bold"
+                        tools:text="72 / 200" />
+
+                    <TextView
+                        android:id="@+id/widget_detail_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:textColor="#FFC8CBD2"
+                        android:textSize="10sp"
+                        tools:text="3小时后回满" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="5dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/widget_icon_3"
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_recruit"
+                            android:tint="@color/white" />
+
+                        <TextView
+                            android:id="@+id/widget_title_3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:includeFontPadding="false"
+                            android:maxLines="1"
+                            android:textColor="#FFC8CBD2"
+                            android:textSize="11sp"
+                            tools:text="公开招募" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/widget_value_3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:textColor="@color/white"
+                        android:textSize="19sp"
+                        android:textStyle="bold"
+                        tools:text="1 / 4" />
+
+                    <TextView
+                        android:id="@+id/widget_detail_3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:textColor="#FFC8CBD2"
+                        android:textSize="10sp"
+                        tools:text="2小时后完成" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="5dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/widget_icon_4"
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_train"
+                            android:tint="@color/white" />
+
+                        <TextView
+                            android:id="@+id/widget_title_4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:includeFontPadding="false"
+                            android:maxLines="1"
+                            android:textColor="#FFC8CBD2"
+                            android:textSize="11sp"
+                            tools:text="训练室" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/widget_value_4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:textColor="@color/white"
+                        android:textSize="19sp"
+                        android:textStyle="bold"
+                        tools:text="能天使" />
+
+                    <TextView
+                        android:id="@+id/widget_detail_4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:textColor="#FFC8CBD2"
+                        android:textSize="10sp"
+                        tools:text="2小时后完成" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="44dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="4dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/widget_action_refresh"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:contentDescription="@string/update_data"
+                android:padding="7dp"
+                android:src="@drawable/ic_refresh"
+                android:tint="@color/white" />
+
+            <ImageView
+                android:id="@+id/widget_action_start"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_marginTop="8dp"
+                android:contentDescription="@string/widget_start_game"
+                android:padding="6dp"
+                android:src="@drawable/ic_starter" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

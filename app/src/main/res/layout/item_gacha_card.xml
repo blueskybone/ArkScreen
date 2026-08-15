@@ -1,6 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/CardViewContent">
+    style="@style/CardViewContent"
+    android:layout_marginTop="0dp"
+    android:layout_marginBottom="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,61 +16,81 @@
 
             <TextView
                 android:id="@+id/PoolName"
-                android:textAppearance="?attr/textAppearanceSubtitle2"
                 android:layout_width="wrap_content"
-                android:paddingTop="16dp"
-                android:paddingStart="16dp"
-                android:paddingEnd="5dp"
-                android:paddingBottom="8dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|start"
+                android:paddingStart="16dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="5dp"
+                android:paddingBottom="8dp"
+                android:textAppearance="?attr/textAppearanceSubtitle2"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/Fes"
-                android:textAppearance="?attr/textAppearanceSubtitle2"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|start"
-                app:layout_constraintStart_toEndOf="@id/PoolName"
-                app:layout_constraintTop_toTopOf="parent"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"
+                android:text="@string/limited"
+                android:textAppearance="?attr/textAppearanceSubtitle2"
+                android:textColor="@color/red"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:text="[限定]"
-                android:textColor="@color/red" />
+                app:layout_constraintStart_toEndOf="@id/PoolName"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/RecordsCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|end"
-                app:layout_constraintEnd_toStartOf="@+id/text"
-                app:layout_constraintTop_toTopOf="parent"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+                app:layout_constraintEnd_toStartOf="@id/CountUnit"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
-                android:id="@+id/text"
+                android:id="@+id/CountUnit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|end"
-                android:text="抽"
-                android:paddingEnd="5dp"
                 android:paddingStart="2dp"
+                android:paddingEnd="5dp"
+                android:text="@string/gacha_unit"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/RecyclerView"
+        <LinearLayout
+            android:id="@+id/RecordsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            android:orientation="vertical" />
 
+        <TextView
+            android:id="@+id/EmptyState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="@string/no_six_star_records"
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:textColor="?android:attr/textColorSecondary"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/ExpandHint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="8dp"
+            android:paddingBottom="10dp"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:textColor="?attr/colorPrimary"
+            android:visibility="gone" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

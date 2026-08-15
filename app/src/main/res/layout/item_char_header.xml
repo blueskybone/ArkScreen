@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.google.android.material.card.MaterialCardView
+        style="@style/CardViewContent"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="12dp"
+        android:clickable="false"
+        android:focusable="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:minHeight="72dp"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="12dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/AccountIcon"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:contentDescription="@null"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/RoundedImageView" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/current_operator_account"
+                    android:textAppearance="?attr/textAppearanceCaption"
+                    android:textColor="?android:attr/textColorSecondary" />
+
+                <TextView
+                    android:id="@+id/AccountNickName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/account_source_skland"
+                    android:textAppearance="?attr/textAppearanceCaption"
+                    android:textColor="?android:attr/textColorSecondary" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        style="@style/CardViewContent"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="false"
+        android:focusable="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/assets_overview"
+                android:textAppearance="?attr/textAppearanceCaption"
+                android:textColor="?android:attr/textColorSecondary" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Widget.ArkScreen.AssetStatCell"
+                    android:text="@string/assets_owned" />
+
+                <TextView
+                    android:id="@+id/TotalOwn"
+                    style="@style/Widget.ArkScreen.AssetStatValue" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    style="@style/Widget.ArkScreen.AssetStatCell"
+                    android:text="@string/assets_e2" />
+
+                <TextView
+                    android:id="@+id/TotalE2"
+                    style="@style/Widget.ArkScreen.AssetStatValue" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Widget.ArkScreen.AssetStatCell"
+                    android:text="@string/assets_m3" />
+
+                <TextView
+                    android:id="@+id/TotalM3"
+                    style="@style/Widget.ArkScreen.AssetStatValue" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    style="@style/Widget.ArkScreen.AssetStatCell"
+                    android:text="@string/assets_module3_short" />
+
+                <TextView
+                    android:id="@+id/TotalModule3"
+                    style="@style/Widget.ArkScreen.AssetStatValue" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/R6Progress"
+                    style="@style/Widget.ArkScreen.AssetStatChip"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="@color/rare_6_surface"
+                    android:textColor="@color/rare_6" />
+
+                <TextView
+                    android:id="@+id/R5Progress"
+                    style="@style/Widget.ArkScreen.AssetStatChip"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:backgroundTint="@color/rare_5_surface"
+                    android:textColor="@color/rare_5" />
+
+                <TextView
+                    android:id="@+id/R4Progress"
+                    style="@style/Widget.ArkScreen.AssetStatChip"
+                    android:layout_marginStart="4dp"
+                    android:backgroundTint="@color/rare_4_surface"
+                    android:textColor="@color/rare_4" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/TableHeader"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="4dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/sec_con"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp">
+
+            <TextView
+                style="@style/Widget.ArkScreen.TableHeaderText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.4"
+                android:gravity="center"
+                android:text="干员" />
+
+            <TextView
+                style="@style/Widget.ArkScreen.TableHeaderText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="技能" />
+
+            <TextView
+                style="@style/Widget.ArkScreen.TableHeaderText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.3"
+                android:gravity="center"
+                android:text="信赖" />
+
+            <TextView
+                style="@style/Widget.ArkScreen.TableHeaderText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.8"
+                android:gravity="center"
+                android:text="模组" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

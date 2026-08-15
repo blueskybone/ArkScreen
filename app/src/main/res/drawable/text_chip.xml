@@ -1,0 +1,4 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/cyan_trans" /> <!-- 背景颜色 -->
+    <corners android:radius="10dp" /> <!-- 圆角大小 -->
+</shape>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <external-files-path
+        name="app_update_apk"
+        path="apk/" />
+    <external-cache-path
+        name="app_logs"
+        path="logs/" />
+    <external-cache-path
+        name="network_logs"
+        path="network_logs/" />
+    <cache-path
+        name="internal_app_logs"
+        path="logs/" />
+    <cache-path
+        name="internal_network_logs"
+        path="network_logs/" />
+    <cache-path
+        name="operator_posters"
+        path="operator_posters/" />
+</paths>
