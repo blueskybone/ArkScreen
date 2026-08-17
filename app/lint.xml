@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lint>
+    <!-- AppWidget layouts are inflated by RemoteViews and require framework android:tint. -->
+    <issue id="UseAppTint">
+        <ignore path="src/main/res/layout/widget_next_1x1.xml" />
+        <ignore path="src/main/res/layout/widget_next_1x2.xml" />
+        <ignore path="src/main/res/layout/widget_next_2x2.xml" />
+        <ignore path="src/main/res/layout/widget_next_2x3_four.xml" />
+        <ignore path="src/main/res/layout/widget_next_2x3_full.xml" />
+    </issue>
+</lint>

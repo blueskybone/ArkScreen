@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
@@ -29,58 +30,19 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
 
-
-        <receiver
-            android:name=".widget.Widget1"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_1_info" />
-        </receiver>
-
-        <receiver
-            android:name=".widget.Widget2"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_2_info" />
-        </receiver>
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
 
         <receiver
-            android:name=".widget.Widget3"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_3_info" />
-        </receiver>
-
-        <receiver
-            android:name=".widget.Widget4"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.blueskybone.arkscreen.START_GAME" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_4_info" />
-        </receiver>
-
-        <receiver
-            android:name=".receiver.AtdAlarmReceiver"
+            android:name=".platform.schedule.AttendanceAlarmReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -88,16 +50,61 @@
         </receiver>
 
 
-        <receiver
-            android:name=".receiver.WidgetReceiver"
-            android:exported="false">
+          <receiver
+              android:name=".ui.widget.WidgetReceiver"
+              android:exported="false">
             <intent-filter>
                 <action android:name="com.blueskybone.arkscreen.MANUAL_UPDATE" />
             </intent-filter>
-        </receiver>
+          </receiver>
+
+          <receiver
+              android:name=".ui.widget.WidgetNext1"
+              android:exported="false">
+              <intent-filter>
+                  <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+              </intent-filter>
+              <meta-data
+                  android:name="android.appwidget.provider"
+                  android:resource="@xml/widget_next_1_info" />
+          </receiver>
+
+          <receiver
+              android:name=".ui.widget.WidgetNext2"
+              android:exported="false">
+              <intent-filter>
+                  <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+              </intent-filter>
+              <meta-data
+                  android:name="android.appwidget.provider"
+                  android:resource="@xml/widget_next_2_info" />
+          </receiver>
+
+          <receiver
+              android:name=".ui.widget.WidgetNext3"
+              android:exported="false">
+              <intent-filter>
+                  <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+              </intent-filter>
+              <meta-data
+                  android:name="android.appwidget.provider"
+                  android:resource="@xml/widget_next_3_info" />
+          </receiver>
+
+          <receiver
+              android:name=".ui.widget.WidgetNext4"
+              android:exported="false">
+              <intent-filter>
+                  <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                  <action android:name="com.blueskybone.arkscreen.START_GAME" />
+              </intent-filter>
+              <meta-data
+                  android:name="android.appwidget.provider"
+                  android:resource="@xml/widget_next_4_info" />
+          </receiver>
 
         <activity
-            android:name=".ui.activity.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:launchMode="singleTask">
@@ -108,68 +115,76 @@
         </activity>
 
         <activity
-            android:name=".ui.activity.RealTimeActivity"
-            android:exported="true"
-            android:parentActivityName=".ui.activity.MainActivity"
+            android:name=".ui.realtime.RealTimeActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".ui.activity.LoginWeb"
-            android:exported="true"
-            android:parentActivityName=".ui.activity.MainActivity"
+            android:name=".ui.account.LoginWeb"
+            android:exported="false"
+            android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".ui.activity.LogActivity"
-            android:exported="true"
-            android:parentActivityName=".ui.activity.MainActivity"
+            android:name=".ui.common.LogActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".ui.activity.CharAssets"
-            android:exported="true"
-            android:parentActivityName=".ui.activity.MainActivity"
+            android:name=".ui.common.LogManagerActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.main.MainActivity" />
+        <activity
+            android:name=".ui.license.OpenSourceLicensesActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.main.MainActivity" />
+        <activity
+            android:name=".ui.license.LicenseDetailActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.license.OpenSourceLicensesActivity" />
+        <activity
+            android:name=".ui.character.CharAssets"
+            android:exported="false"
+            android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".ui.activity.GachaActivity"
-            android:exported="true"
-            android:parentActivityName=".ui.activity.MainActivity"
+            android:name=".ui.gacha.GachaActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".ui.activity.RecruitActivity"
-            android:exported="true"
-            android:parentActivityName=".ui.activity.MainActivity"
+            android:name=".ui.recruit.RecruitActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".ui.activity.WidgetThemeActivity"
-            android:exported="true"
-            android:parentActivityName=".ui.activity.MainActivity"
+            android:name=".ui.account.AccountMngActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
+        <activity
+            android:name=".ui.widget.WidgetTemplateLabActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.main.MainActivity" />
 
-        <activity android:name=".ui.activity.WebViewActivity" />
+        <activity android:name=".ui.common.WebViewActivity" />
 
         <activity
-            android:name=".task.screenshot.AcquireCapturePermission"
+            android:name=".platform.screenshot.ScreenshotPermissionActivity"
             android:excludeFromRecents="true"
-            android:exported="true"
-            android:launchMode="singleTask"
-            android:taskAffinity=""
-            android:theme="@style/TranslucentTheme"
-            android:windowSoftInputMode="adjustNothing" />
-        <activity
-            android:name=".task.screenshot.TransActivity"
-            android:excludeFromRecents="true"
-            android:exported="true"
+            android:exported="false"
             android:launchMode="singleTask"
             android:taskAffinity=""
             android:theme="@style/TranslucentTheme"
             android:windowSoftInputMode="adjustNothing" />
 
         <service
-            android:name=".task.screenshot.RecruitService"
+            android:name=".platform.screenshot.ScreenshotCaptureService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="mediaProjection" />
 
         <service
-            android:name=".service.QuickTileService"
+            android:name=".platform.tile.QuickRecruitTileService"
             android:enabled="true"
             android:exported="true"
             android:icon="@drawable/ic_rosm_trans"
@@ -181,7 +196,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".service.FloatTileService"
+            android:name=".platform.tile.FloatRecruitTileService"
             android:enabled="true"
             android:exported="true"
             android:icon="@drawable/ic_rosm_trans"

@@ -1,5 +1,5 @@
 {
-	"update": {"version": 2,"date": "2024-5-20"},
+	"update": {"version": "8","date": "2026-8-11"},
 	"recruit": {
 		"top-ope": "高级资深干员",
 		"sen-ope": "资深干员",
@@ -96,7 +96,7 @@
 		"summoner":"召唤师",
 		"craftsman":"工匠",
 		"ritualist":"巫役",
-		"excutor":"处决者",
+		"executor":"处决者",
 		"traper":"陷阱师",
 		"hookmaster":"钩索师",
 		"pusher":"推击手",
@@ -104,8 +104,15 @@
 		"merchant":"行商",
 		"dollkeeper":"傀儡师",
 		"geek":"怪杰",
-		"executor": "处决者",
-		"skywalker": "巡空者",
-		"counsellor": "策士"
+		"counsellor":"策士",
+		"primprotector":"本源铁卫",
+		"skybreaker":"裂空炮手",
+		"watchman":"守望者",
+		"soulcaster":"塑灵术师",
+		"mercenary":"佣兵",
+		"supportiveranger":"游击手",
+		"primguard":"本源近卫",
+		"alchemist":"炼金师",
+		"skywalker":"巡空者"
 	}
 }

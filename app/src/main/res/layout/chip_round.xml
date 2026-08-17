@@ -11,12 +11,13 @@
 
     <ImageView
         android:id="@+id/Icon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:contentDescription="@string/text_default"
-        android:padding="5dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:contentDescription="@null"
+        android:padding="8dp"
         android:src="@drawable/ic_tags"
-        app:tint="?attr/colorPrimary"/>
+        android:background="@drawable/text_chip"
+        app:tint="?attr/colorPrimary" />
 
     <TextView
         android:id="@+id/Title"

@@ -1,38 +1,34 @@
 package com.blueskybone.arkscreen
 
-import android.app.AlarmManager
 import android.app.Application
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
 import android.os.Build
-import android.view.Gravity
-import androidx.appcompat.app.AppCompatDelegate
+import android.util.Log
 import coil.Coil
 import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.request.CachePolicy
 import coil.util.DebugLogger
-import com.blueskybone.arkscreen.logger.FileLoggingTree
-import com.blueskybone.arkscreen.network.equipCachePath
-import com.blueskybone.arkscreen.network.skillCachePath
-import com.blueskybone.arkscreen.network.skinCachePath
-import com.blueskybone.arkscreen.preference.PrefManager
-import com.blueskybone.arkscreen.preference.preference.shared.SharedPreferenceStore
-import com.blueskybone.arkscreen.receiver.AtdAlarmReceiver
-import com.blueskybone.arkscreen.ui.bindinginfo.AppTheme
+import com.blueskybone.arkscreen.core.logger.FileLoggingTree
+import com.blueskybone.arkscreen.core.logger.CrashLogger
+import com.blueskybone.arkscreen.data.network.equipCachePath
+import com.blueskybone.arkscreen.data.network.skillCachePath
+import com.blueskybone.arkscreen.data.network.skinCachePath
+import com.blueskybone.arkscreen.di.appModule
+import com.blueskybone.arkscreen.di.databaseModule
+import com.blueskybone.arkscreen.di.preferenceModule
+import com.blueskybone.arkscreen.di.repositoryModule
+import com.blueskybone.arkscreen.di.useCaseModule
+import com.blueskybone.arkscreen.di.viewModelModule
+import com.blueskybone.arkscreen.di.screenshotModule
+import com.blueskybone.arkscreen.platform.theme.AppThemeController
+import com.blueskybone.arkscreen.di.recruitScreenshotModule
 import com.blueskybone.arkscreen.util.getDensityDpi
 import com.hjq.toast.Toaster
-import com.hjq.toast.style.BlackToastStyle
-import com.hjq.toast.style.WhiteToastStyle
-import org.koin.android.ext.android.getKoin
+import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
-import org.koin.dsl.module
-import org.koin.java.KoinJavaComponent
 import timber.log.Timber
 import java.io.File
-import java.util.Calendar
 
 /**
  *   Created by blueskybone
@@ -54,6 +50,9 @@ class App : Application() {
 
     private fun setCoilDiskCache() {
         val imageLoader = ImageLoader.Builder(this)
+            .apply {
+                if (BuildConfig.DEBUG) logger(DebugLogger())
+            }
             .diskCache {
                 DiskCache.Builder()
                     .directory(this.cacheDir.resolve("image_cache"))
@@ -68,36 +67,49 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        val koinApplication = startKoin {
+            if (BuildConfig.DEBUG) androidLogger()
+            androidContext(this@App)
+            modules(
+                appModule,
+                databaseModule,
+                preferenceModule,
+                repositoryModule,
+                useCaseModule,
+                viewModelModule,
+                screenshotModule,
+                recruitScreenshotModule,
+            )
+        }
+        // 必须在首个 Activity 创建前恢复主题，否则启动页会先使用错误主题再重建。
+        koinApplication.koin.get<AppThemeController>().applySavedTheme()
         val screenDensityDpi = getDensityDpi(this)
         setScreenDpi(screenDensityDpi)
 
-        //Initialize Logger
-        Timber.plant(FileLoggingTree())
-
-        val preferenceModule = module {
-            single { SharedPreferenceStore(this@App) }
-            single { PrefManager(get<SharedPreferenceStore>()) }
-        }
-
-        Coil.setImageLoader(
-            ImageLoader.Builder(this)
-                .logger(DebugLogger()) // 开启日志
-                .build()
+        // 初始化日志系统
+        if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
+        val fileLoggingTree = FileLoggingTree(
+            context = this,
+            minimumPriority = if (BuildConfig.DEBUG) Log.DEBUG else Log.WARN,
+        )
+        Timber.plant(fileLoggingTree)
+        CrashLogger.install(fileLoggingTree)
+        Timber.tag("AppStartup").i(
+            "App started: version=%s versionCode=%d sdk=%d device=%s/%s debug=%s",
+            BuildConfig.VERSION_NAME,
+            BuildConfig.VERSION_CODE,
+            Build.VERSION.SDK_INT,
+            Build.MANUFACTURER,
+            Build.MODEL,
+            BuildConfig.DEBUG,
         )
 
-        startKoin {
-            androidLogger()
-            modules(preferenceModule)
-        }
         createFolder(skinCachePath)
         createFolder(equipCachePath)
         createFolder(skillCachePath)
 
         setCoilDiskCache()
-        setAppTheme()
-        setDailyAlarm()
-        setToaster()
-        //cancelDailyAlarm()
+
     }
 
     private fun createFolder(path: String) {
@@ -119,65 +131,4 @@ class App : Application() {
         }
     }
 
-    fun setDailyAlarm() {
-        println("setDailyAlarm")
-        val prefManager: PrefManager by getKoin().inject()
-//        if (!prefManager.backAutoAtd.get()) return
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(this, AtdAlarmReceiver::class.java)
-        val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        } else {
-            PendingIntent.FLAG_UPDATE_CURRENT
-        }
-        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, flags)
-
-        val now = System.currentTimeMillis()
-        val calendar = Calendar.getInstance().apply {
-            timeInMillis = now
-            set(Calendar.HOUR_OF_DAY, prefManager.alarmAtdHour.get())
-            set(Calendar.MINUTE, prefManager.alarmAtdMin.get())
-            // 如果设置的时间早于当前时间，设置为明天的同一时间
-            if (timeInMillis < now) {
-                add(Calendar.DAY_OF_YEAR, 1)
-            }
-        }
-
-        alarmManager.setInexactRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            pendingIntent
-        )
-    }
-
-    fun cancelDailyAlarm() {
-        println("cancelDailyAlarm")
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(this, AtdAlarmReceiver::class.java)
-        val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        } else {
-            PendingIntent.FLAG_UPDATE_CURRENT
-        }
-        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, flags)
-        alarmManager.cancel(pendingIntent)
-    }
-
-    private fun setAppTheme() {
-        val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
-        when (prefManager.appTheme.get()) {
-            AppTheme.LIGHT -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            AppTheme.DARK -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            AppTheme.SYSTEM -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-        }
-    }
-    private fun setToaster(){
-        val prefManager: PrefManager by KoinJavaComponent.getKoin().inject()
-        when(prefManager.appTheme.get()){
-            AppTheme.LIGHT -> Toaster.setStyle(BlackToastStyle())
-            AppTheme.DARK, AppTheme.SYSTEM-> Toaster.setStyle(WhiteToastStyle())
-        }
-        Toaster.setGravity(Gravity.TOP, 0, 60 * screenDpi.toInt())
-    }
 }

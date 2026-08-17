@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/widget_next_4_description"
+    android:initialKeyguardLayout="@layout/widget_next_2x3_four"
+    android:initialLayout="@layout/widget_next_2x3_four"
+    android:minWidth="180dp"
+    android:minHeight="110dp"
+    android:previewImage="@drawable/widget_preview_next_2x3"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="0"
+    android:widgetCategory="home_screen" />

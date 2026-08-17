@@ -23,9 +23,17 @@
 -keep class com.blueskybone.arkscreen.task.** { *; }
 -keep class com.blueskybone.arkscreen.common.** { *; }
 -keep class com.blueskybone.arkscreen.playerinfo.** { *; }
--keep class com.blueskybone.arkscreen.network.** { *; }
+# Retrofit services and Jackson DTOs are inspected through annotations and reflection.
+# The network package moved under data during the refactor; keep the current package
+# for test/release builds instead of relying on the obsolete pre-refactor rule.
+-keep class com.blueskybone.arkscreen.data.network.** { *; }
+-keepattributes Signature,InnerClasses,EnclosingMethod
+-keepattributes RuntimeVisibleAnnotations,RuntimeInvisibleAnnotations,AnnotationDefault
+-keepattributes RuntimeVisibleParameterAnnotations,RuntimeInvisibleParameterAnnotations,MethodParameters
 
 -keep class android.hardware.display.** { *; }
 -keep class android.media.projection.** { *; }
 -keep class com.blueskybone.arkscreen.common.** { *; }
 
+# JNI exports use the fully-qualified ImageProcessor class and method names.
+-keep class com.blueskybone.arkscreen.ui.recruit.ocr.ImageProcessor { *; }

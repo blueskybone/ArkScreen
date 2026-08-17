@@ -19,10 +19,13 @@
         android:layout_below="@id/Toolbar">
 
         <TextView
-            android:padding="10dp"
             android:id="@+id/LogText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:padding="12dp"
+            android:textIsSelectable="true"
+            android:textSize="12sp" />
 
     </ScrollView>
 </RelativeLayout>

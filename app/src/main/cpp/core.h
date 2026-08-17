@@ -110,7 +110,7 @@ namespace arkscreen {
             data_end = nullptr;
         }
 
-        //deep copy
+        // 深拷贝
         Bitmap8(const Bitmap8 &n_bitmap) {
             rows = n_bitmap.rows;
             cols = n_bitmap.cols;
@@ -182,9 +182,9 @@ namespace arkscreen {
             size_t row;
             dst_bitmap.create(width, height);
             uchar *data_ptr = dst_bitmap.data + width * top;
-            //top
+            // 顶部
             dst_bitmap.fillRect(Rect(0, 0, width, top), BG_COLOR);
-            //body
+            // 主体
             for (row = 0; row < rows; row++) {
                 memset(data_ptr, BG_COLOR, left);
                 data_ptr += left;
@@ -193,7 +193,7 @@ namespace arkscreen {
                 memset(data_ptr, BG_COLOR, right);
                 data_ptr += right;
             }
-            //bottom
+            // 底部
             dst_bitmap.fillRect(Rect(0, rows + top, width, bottom), BG_COLOR);
         }
 

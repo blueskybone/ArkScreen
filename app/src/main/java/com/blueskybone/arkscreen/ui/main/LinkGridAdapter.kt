@@ -1,0 +1,71 @@
+package com.blueskybone.arkscreen.ui.main
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import com.blueskybone.arkscreen.R
+import com.blueskybone.arkscreen.databinding.ItemLinkRoundBinding
+import com.blueskybone.arkscreen.domain.model.link.Link
+import com.blueskybone.arkscreen.ui.common.adapter.ItemListener
+
+/**
+ *   Created by blueskybone
+ *   Date: 2025/6/15
+ */
+
+class LinkGridAdapter(private val listener: ItemListener) :
+    ListAdapter<Link, LinkGridAdapter.LinkVH>(DiffCallback) {
+
+    private object DiffCallback : DiffUtil.ItemCallback<Link>() {
+        override fun areItemsTheSame(oldItem: Link, newItem: Link): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Link, newItem: Link): Boolean {
+            return (oldItem.title == newItem.title && oldItem.url == newItem.url && oldItem.icon == newItem.icon)
+        }
+    }
+
+    inner class LinkVH(private val binding: ItemLinkRoundBinding, listener: ItemListener) :
+        RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.root.setOnLongClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onLongClick(position)
+                    true
+                } else {
+                    false
+                }
+            }
+            binding.root.setOnClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onClick(position)
+                }
+            }
+        }
+
+        fun bind(item: Link) {
+            binding.Title.text = item.title
+            binding.Icon.load(item.icon) {
+                error(R.drawable.ic_default_trans)               // 加载失败的占位图
+                crossfade(true)                     // 淡入淡出效果
+                crossfade(300)
+            }
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LinkVH {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = ItemLinkRoundBinding.inflate(inflater, parent, false)
+        return LinkVH(binding, listener)
+    }
+
+    override fun onBindViewHolder(holder: LinkVH, position: Int) {
+        holder.bind(getItem(position))
+    }
+}

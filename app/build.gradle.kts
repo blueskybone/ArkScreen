@@ -1,9 +1,8 @@
-//plugins {
-//    id("com.android.application")
-//    id("org.jetbrains.kotlin.android")
-//    id("com.google.devtools.ksp")
-//    id("kotlin-parcelize")
-//}
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier
+import org.gradle.api.artifacts.result.ResolvedArtifactResult
+import org.gradle.maven.MavenModule
+import org.gradle.maven.MavenPomArtifact
+import javax.xml.parsers.DocumentBuilderFactory
 
 plugins {
     alias(libs.plugins.android.application)
@@ -19,8 +18,8 @@ android {
         applicationId = "com.blueskybone.arkscreen"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 11
-        versionName = "2.2.1"
+        versionCode = 16
+        versionName = "2.3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
@@ -32,7 +31,10 @@ android {
 
     buildTypes {
         release {
+            // 网络 DTO 依赖 Jackson 反射反序列化。在所有远端响应模型的保留规则验证完成前，
+            // Release 构建必须关闭代码和资源压缩，避免类名或字段被裁剪后线上解析失败。
             isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -74,61 +76,106 @@ android {
         }
     }
 
+    sourceSets.getByName("main").assets.srcDir(
+        layout.buildDirectory.dir("generated/third-party-licenses/assets")
+    )
+}
+
+val generateThirdPartyLicenses by tasks.registering {
+    group = "documentation"
+    description = "Generates the third-party license catalog bundled with the app."
+
+    val outputFile = layout.buildDirectory.file(
+        "generated/third-party-licenses/assets/third_party_licenses.json"
+    )
+    outputs.file(outputFile)
+
+    doLast {
+        val componentIds = configurations.getByName("releaseRuntimeClasspath")
+            .incoming.resolutionResult.allComponents
+            .mapNotNull { it.id as? ModuleComponentIdentifier }
+            .distinctBy { "${it.group}:${it.module}:${it.version}" }
+
+        val resolution = dependencies.createArtifactResolutionQuery()
+            .forComponents(componentIds)
+            .withArtifacts(MavenModule::class.java, MavenPomArtifact::class.java)
+            .execute()
+
+        fun String.jsonEscape(): String = buildString {
+            this@jsonEscape.forEach { char ->
+                append(
+                    when (char) {
+                        '\\' -> "\\\\"
+                        '"' -> "\\\""
+                        '\n' -> "\\n"
+                        '\r' -> "\\r"
+                        '\t' -> "\\t"
+                        else -> char
+                    }
+                )
+            }
+        }
+
+        fun org.w3c.dom.Element.childText(tag: String): String =
+            getElementsByTagName(tag).item(0)?.textContent?.trim().orEmpty()
+
+        val documentBuilderFactory = DocumentBuilderFactory.newInstance().apply {
+            setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
+            setFeature("http://xml.org/sax/features/external-general-entities", false)
+            setFeature("http://xml.org/sax/features/external-parameter-entities", false)
+            setAttribute("http://javax.xml.XMLConstants/property/accessExternalDTD", "")
+            setAttribute("http://javax.xml.XMLConstants/property/accessExternalSchema", "")
+        }
+
+        val entries = resolution.resolvedComponents.mapNotNull componentLoop@ { component ->
+            val id = component.id as? ModuleComponentIdentifier ?: return@componentLoop null
+            val pom = component.getArtifacts(MavenPomArtifact::class.java)
+                .filterIsInstance<ResolvedArtifactResult>()
+                .firstOrNull()?.file
+                ?: return@componentLoop null
+            val root = documentBuilderFactory.newDocumentBuilder().parse(pom).documentElement
+            val licenses = root.getElementsByTagName("license")
+            val licenseValues = (0 until licenses.length).mapNotNull licenseLoop@ { index ->
+                val element = licenses.item(index) as? org.w3c.dom.Element
+                    ?: return@licenseLoop null
+                val name = element.childText("name")
+                val url = element.childText("url")
+                if (name.isBlank() && url.isBlank()) null else name to url
+            }.distinct()
+
+            val displayName = root.childText("name").ifBlank { id.module }
+            val projectUrl = root.childText("url")
+            """
+                {
+                  "id": "${"${id.group}:${id.module}".jsonEscape()}",
+                  "name": "${displayName.jsonEscape()}",
+                  "version": "${id.version.jsonEscape()}",
+                  "projectUrl": "${projectUrl.jsonEscape()}",
+                  "licenses": [${licenseValues.joinToString(",") { (name, url) ->
+                      """{"name":"${name.jsonEscape()}","url":"${url.jsonEscape()}"}"""
+                  }}]
+                }
+            """.trimIndent()
+        }.sortedBy { it.lowercase() }
+
+        val target = outputFile.get().asFile
+        target.parentFile.mkdirs()
+        target.writeText(entries.joinToString(prefix = "[\n", separator = ",\n", postfix = "\n]"))
+    }
+}
+
+tasks.configureEach {
+    if (
+        name == "mergeDebugAssets" ||
+        name == "mergeReleaseAssets" ||
+        name == "lintVitalAnalyzeRelease" ||
+        name == "generateReleaseLintVitalReportModel"
+    ) {
+        dependsOn(generateThirdPartyLicenses)
+    }
 }
 
 dependencies {
-//    implementation("androidx.core:core-ktx:1.9.0")
-//    implementation("androidx.appcompat:appcompat:1.7.0")
-//    implementation("com.google.android.material:material:1.12.0")
-//    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
-//    implementation("androidx.paging:paging-runtime:3.3.2")
-//    implementation("com.google.android.material:material:1.6.0")
-//
-//
-//    testImplementation("junit:junit:4.13.2")
-//    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-//    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-//    implementation("androidx.navigation:navigation-fragment-ktx:2.8.5")
-//    implementation("androidx.navigation:navigation-ui-ktx:2.8.5")
-//
-//    implementation("io.insert-koin:koin-core:3.4.0")
-//    implementation("io.insert-koin:koin-android:3.4.0")
-//    implementation("io.insert-koin:koin-android-compat:3.4.0")
-//
-//    ksp("androidx.room:room-compiler:2.6.1")
-//    implementation("androidx.room:room-ktx:2.6.1")
-//    implementation("androidx.room:room-runtime:2.6.1")
-//
-//    implementation("io.coil-kt:coil:2.5.0")
-//    implementation("io.noties.markwon:core:4.2.0")
-//    implementation("com.fasterxml.jackson.core:jackson-core:2.12.1")
-//    implementation("com.fasterxml.jackson.core:jackson-databind:2.12.1")
-//    implementation("androidx.webkit:webkit:1.12.1")
-//    implementation("com.nex3z:flow-layout:1.3.3")
-//    implementation("com.jakewharton.timber:timber:5.0.1")
-//    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-//
-//    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-//    implementation("com.squareup.retrofit2:converter-jackson:2.9.0")
-//    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
-//    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.0")
-//
-//    implementation("com.github.getActivity:EasyWindow:10.62")
-//    implementation("com.github.getActivity:Toaster:12.6")
-//
-//    implementation("androidx.work:work-runtime:2.9.0")
-//    implementation(platform(libs.compose.bom))
-//    androidTestImplementation(platform(libs.compose.bom))
-//
-//    // Compose 相关 (让BOM管理版本)
-//    implementation(libs.androidx.ui)
-//    implementation(libs.androidx.ui.graphics)
-//    implementation(libs.androidx.ui.tooling.preview)
-//    implementation(libs.androidx.material3)
-//    implementation(libs.androidx.activity.compose)
-//    implementation(libs.androidx.lifecycle.viewmodel.compose)
-//    implementation(libs.androidx.runtime.livedata)
-//    implementation(libs.androidx.pager)
 
     // AndroidX 核心
     implementation(libs.androidx.core.ktx)
@@ -167,11 +214,19 @@ dependencies {
     implementation(libs.coil)
 
     // 其他工具库
-    implementation(libs.markwon.core)
     implementation(libs.flow.layout)
     implementation(libs.timber)
     implementation(libs.easy.window)
     implementation(libs.toaster)
     implementation(libs.androidx.webkit)
     implementation(libs.mp.android.chart)
+    implementation(libs.circular.progressbar)
+
+    implementation(libs.recyclerview)
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.coroutines.android)
+    implementation(libs.flexbox)
+    implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.fragment.ktx)
+
 }

@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="center_horizontal">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/Toolbar"
@@ -17,6 +16,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/Toolbar"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:paddingBottom="16dp"
         android:visibility="visible">
 
         <LinearLayout
@@ -24,277 +26,360 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+
             <com.google.android.material.card.MaterialCardView
                 style="@style/CardViewContent"
-                android:visibility="visible">
+                android:layout_marginTop="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:baselineAligned="false"
+                    android:gravity="center_vertical"
+                    android:minHeight="76dp"
                     android:orientation="horizontal"
-                    android:padding="10dp">
+                    android:padding="14dp">
 
-
-                    <FrameLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start|center"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <com.google.android.material.imageview.ShapeableImageView
-                                android:id="@+id/Avatar"
-                                android:layout_width="60dp"
-                                android:layout_height="60dp"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_marginStart="10dp"
-                                android:background="@color/LightBlue200"
-                                android:padding="2dp"
-                                android:src="@drawable/char_ex_blaze"
-                                app:shapeAppearanceOverlay="@style/CircularImageView"
-                                app:strokeColor="@color/LightBlue200"
-                                app:strokeWidth="2dp" />
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:padding="5dp">
-
-                                <TextView
-                                    android:id="@+id/NickName"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textColor="?attr/colorPrimary"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:id="@+id/LastLogin"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textSize="12sp" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <TextView
-                            android:id="@+id/Level"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="0dp"
-                            android:background="@drawable/stroke"
-                            android:padding="2dp"
-                            android:text="Lv120"
-                            android:textColor="@color/white"
-                            android:textSize="10sp" />
-                    </FrameLayout>
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/Avatar"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/char_ex_blaze"
+                        app:shapeAppearanceOverlay="@style/CircularImageView" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
                         android:orientation="vertical">
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
+                            android:gravity="center_vertical"
                             android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/Ap"
-                                android:layout_width="wrap_content"
+                                android:id="@+id/NickName"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:text="-"
-                                android:textAppearance="?attr/textAppearanceHeadline3"
-                                android:textColor="?attr/colorPrimary"
+                                android:layout_weight="1"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:textAppearance="?attr/textAppearanceSubtitle1"
+                                android:textColor="?android:attr/textColorPrimary"
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/ApMax"
+                                android:id="@+id/Server"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="end|bottom"
-                                android:text="/-"
-                                android:textAppearance="?attr/textAppearanceBody1"
+                                android:layout_height="18dp"
+                                android:layout_marginStart="6dp"
+                                android:background="@drawable/bg_asset_stat_chip"
+                                android:gravity="center"
+                                android:paddingStart="6dp"
+                                android:paddingEnd="6dp"
+                                android:textColor="@color/on_sec_con"
+                                android:textSize="9sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
 
-                        <View
-                            android:id="@+id/Line"
-                            android:layout_width="80dp"
-                            android:layout_height="1dp"
-                            android:layout_gravity="center"
-                            android:background="?android:attr/listDivider" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/Level"
+                                android:layout_width="wrap_content"
+                                android:layout_height="18dp"
+                                android:background="@drawable/bg_char_level"
+                                android:gravity="center"
+                                android:minWidth="30dp"
+                                android:paddingStart="5dp"
+                                android:paddingEnd="5dp"
+                                android:textColor="@color/tool_game_icon"
+                                android:textSize="9sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/LastLogin"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="7dp"
+                                android:layout_weight="1"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:textAppearance="?attr/textAppearanceCaption"
+                                android:textColor="?android:attr/textColorSecondary" />
+                        </LinearLayout>
 
                         <TextView
-                            android:id="@+id/ApResTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center" />
+                            android:layout_marginTop="2dp"
+                            android:text="@string/account_source_skland"
+                            android:textAppearance="?attr/textAppearanceCaption"
+                            android:textColor="?android:attr/textColorSecondary" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+            <TextView
+                style="@style/PreferenceHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/realtime_immediate_status" />
 
-                <GridLayout
+            <com.google.android.material.card.MaterialCardView
+                style="@style/CardViewContent"
+                android:layout_marginTop="4dp">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:columnCount="2"
-                    android:padding="10dp"
-                    android:rowCount="1">
+                    android:orientation="vertical"
+                    android:padding="12dp">
 
-                    <include
-                        android:id="@+id/Recruit"
-                        layout="@layout/info_card"
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_columnWeight="1" />
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="8dp"
+                        android:paddingTop="4dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="12dp">
 
-                    <include
-                        android:id="@+id/RecruitReFresh"
-                        layout="@layout/info_card"
-                        android:layout_width="0dp"
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/realtime_sanity"
+                                android:textAppearance="?attr/textAppearanceCaption"
+                                android:textColor="?android:attr/textColorSecondary" />
+
+                            <TextView
+                                android:id="@+id/ApFullTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="7dp"
+                                android:background="@drawable/bg_asset_stat_chip"
+                                android:paddingStart="9dp"
+                                android:paddingTop="4dp"
+                                android:paddingEnd="9dp"
+                                android:paddingBottom="4dp"
+                                android:textAppearance="?attr/textAppearanceCaption"
+                                android:textColor="@color/on_sec_con"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/ApResTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/bg_asset_stat_chip"
+                                android:paddingStart="9dp"
+                                android:paddingTop="4dp"
+                                android:paddingEnd="9dp"
+                                android:paddingBottom="4dp"
+                                android:textAppearance="?attr/textAppearanceCaption"
+                                android:textColor="@color/on_sec_con"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <FrameLayout
+                            android:layout_width="104dp"
+                            android:layout_height="104dp">
+
+                            <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                                android:id="@+id/CircularProgressBar"
+                                android:layout_width="104dp"
+                                android:layout_height="104dp"
+                                app:cpb_background_progressbar_color="@color/sec_con"
+                                app:cpb_background_progressbar_width="6dp"
+                                app:cpb_progress_direction="to_right"
+                                app:cpb_progressbar_color="?attr/colorPrimary"
+                                app:cpb_progressbar_width="6dp"
+                                app:cpb_round_border="true" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:gravity="bottom"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/Ap"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="-"
+                                    android:textAppearance="?attr/textAppearanceHeadline5"
+                                    android:textColor="?attr/colorPrimary"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/ApMax"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="2dp"
+                                    android:text="/-"
+                                    android:textAppearance="?attr/textAppearanceBody1"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+                        </FrameLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="?android:attr/listDivider" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_columnWeight="1" />
-                </GridLayout>
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
 
+                        <include
+                            android:id="@+id/Recruit"
+                            layout="@layout/info_card"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            android:layout_weight="1" />
+
+                        <include
+                            android:id="@+id/RecruitReFresh"
+                            layout="@layout/info_card"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            android:layout_weight="1" />
+                    </LinearLayout>
+                </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                style="@style/PreferenceHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/realtime_base_overview" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/Base"
-                style="@style/CardViewContent">
+                style="@style/CardViewContent"
+                android:layout_marginTop="4dp">
 
                 <GridLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:columnCount="2"
-                    android:padding="10dp"
+                    android:padding="8dp"
                     android:rowCount="4">
 
-                    <include
-                        android:id="@+id/Labor"
-                        layout="@layout/info_card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1" />
-
-                    <include
-                        android:id="@+id/Meeting"
-                        layout="@layout/info_card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1" />
-
-                    <include
-                        android:id="@+id/Manufactures"
-                        layout="@layout/info_card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1" />
-
-                    <include
-                        android:id="@+id/Trading"
-                        layout="@layout/info_card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1" />
-
-                    <include
-                        android:id="@+id/Dormitories"
-                        layout="@layout/info_card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1" />
-
-                    <include
-                        android:id="@+id/Tired"
-                        layout="@layout/info_card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1" />
-
-                    <include
-                        android:id="@+id/Train"
-                        layout="@layout/info_card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1" />
-
-                    <include
-                        android:id="@+id/Campaign"
-                        layout="@layout/info_card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1" />
-
+                    <include android:id="@+id/Labor" layout="@layout/info_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="4dp" android:layout_columnWeight="1" />
+                    <include android:id="@+id/Meeting" layout="@layout/info_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="4dp" android:layout_columnWeight="1" />
+                    <include android:id="@+id/Manufactures" layout="@layout/info_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="4dp" android:layout_columnWeight="1" />
+                    <include android:id="@+id/Trading" layout="@layout/info_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="4dp" android:layout_columnWeight="1" />
+                    <include android:id="@+id/Dormitories" layout="@layout/info_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="4dp" android:layout_columnWeight="1" />
+                    <include android:id="@+id/Tired" layout="@layout/info_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="4dp" android:layout_columnWeight="1" />
+                    <include android:id="@+id/Train" layout="@layout/info_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="4dp" android:layout_columnWeight="1" />
+                    <include android:id="@+id/Campaign" layout="@layout/info_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="4dp" android:layout_columnWeight="1" />
                 </GridLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/TrainChange"
                 style="@style/CardViewContent"
+                android:layout_marginTop="12dp"
                 android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="12dp">
 
-                    <include
-                        android:id="@+id/Logos"
-                        layout="@layout/train_change" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginBottom="4dp"
+                        android:text="@string/realtime_shift_reminder"
+                        android:textAppearance="?attr/textAppearanceCaption"
+                        android:textColor="?android:attr/textColorSecondary"
+                        android:textStyle="bold" />
 
-                    <include
-                        android:id="@+id/Irene"
-                        layout="@layout/train_change" />
-
+                    <include android:id="@+id/Logos" layout="@layout/train_change" />
+                    <include android:id="@+id/Irene" layout="@layout/train_change" />
                 </LinearLayout>
-
             </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
+                android:id="@+id/Starter"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="8dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
                 android:orientation="horizontal"
-                android:paddingStart="16dp"
-                android:paddingTop="8dp"
-                android:paddingEnd="16dp"
-                android:paddingBottom="8dp">
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:background="?android:attr/listDivider" />
+                    android:background="@color/out_line" />
 
-                <ImageView
-                    android:id="@+id/Starter"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="12dp"
-                    android:contentDescription="@string/text_default"
-                    android:src="@drawable/ic_starter" />
+                <LinearLayout
+                    android:layout_width="76dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_starter" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-2dp"
+                        android:text="@string/realtime_launch_game"
+                        android:textColor="@color/tool_game_icon"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_gravity="center"
                     android:layout_weight="1"
-
-                    android:background="?android:attr/listDivider" />
+                    android:background="@color/out_line" />
             </LinearLayout>
-
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -305,12 +390,42 @@
         android:layout_below="@id/Toolbar"
         android:visibility="visible">
 
-        <TextView
-            android:id="@+id/Message"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            app:drawableTopCompat="@mipmap/ic_rosm" />
+            android:orientation="vertical"
+            android:padding="@dimen/empty_content_padding">
+
+            <ImageView
+                android:id="@+id/StatusIllustration"
+                style="@style/Widget.ArkScreen.EmptyIllustration"
+                android:src="@mipmap/ic_rosm" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/StatusProgress"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:indeterminate="true"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/Message"
+                style="@style/Widget.ArkScreen.EmptyTitle" />
+
+            <TextView
+                android:id="@+id/EmptySummary"
+                style="@style/Widget.ArkScreen.EmptySummary"
+                android:text="@string/realtime_empty_summary"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/EmptyAction"
+                style="@style/Widget.ArkScreen.EmptyAction"
+                android:text="@string/go_add_account"
+                android:visibility="gone"
+                app:icon="@drawable/ic_add" />
+        </LinearLayout>
     </FrameLayout>
 </RelativeLayout>

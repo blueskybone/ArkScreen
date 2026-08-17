@@ -5,7 +5,7 @@
 
 #define DIRECT_MAX 8
 #define KERNEL_DIRECT 7
-#define BG_COLOR 0xff //TODO:change to black
+#define BG_COLOR 0xff // TODO：确认识别效果后改为黑色背景。
 #define THRESHOLD 250
 #define MIN_HEIGHT 20
 #define MIN_WIDTH 100
@@ -23,7 +23,7 @@ namespace arkscreen {
 
     /*
     * Don't change tags' order in tag_en and tag_cn.
-    * They are as the same order as target_std.dat's data.
+    * 顺序必须与 target_std.dat 中的数据保持一致。
     * */
     const char tag_en[TAG_NUM][20] =
             {"medic", "supporter", "caster", "guard",
@@ -47,7 +47,7 @@ namespace arkscreen {
         size_t rows = src.rows;
         size_t cols = src.cols;
         size_t row, col;
-        // top
+        // 上边界
         for (row = 0; row < rows; row++) {
             int sum = 0;
             for (col = 0; col < cols; col++) {
@@ -59,7 +59,7 @@ namespace arkscreen {
                 break;
             }
         }
-        // bottom
+        // 下边界
         for (row = rows - 1; row >= 0; row--) {
             int sum = 0;
             for (col = 0; col < cols; col++) {
@@ -71,7 +71,7 @@ namespace arkscreen {
                 break;
             }
         }
-        //left
+        // 左边界
         for (col = 0; col < cols; col++) {
             int sum = 0;
             for (row = 0; row < rows; row++) {
@@ -83,7 +83,7 @@ namespace arkscreen {
                 break;
             }
         }
-        //right
+        // 右边界
         for (col = cols - 1; col >= 0; col--) {
             int sum = 0;
             for (row = 0; row < rows; row++) {

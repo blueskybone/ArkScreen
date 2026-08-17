@@ -31,9 +31,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/red"
-                android:contentDescription="@string/text_default"
-                android:text="New"
-                android:textColor="@color/white" />
+                android:contentDescription="@null"
+                android:minWidth="14dp"
+                android:gravity="center"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:text="N"
+                android:textColor="@color/white"
+                android:textSize="9sp"
+                android:textStyle="bold" />
         </FrameLayout>
 
         <TextView

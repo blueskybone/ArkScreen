@@ -23,7 +23,7 @@
             android:text="@string/close"
             android:textColor="@color/blue_500" />
 
-        <com.blueskybone.arkscreen.common.FlowLayout
+        <com.blueskybone.arkscreen.ui.common.view.FlowLayout
             android:id="@+id/tag_view_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

@@ -36,19 +36,67 @@
                 app:drawableTint="?attr/colorOnBackground" />
         </FrameLayout>
 
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/LoginGuide"
+            style="@style/CardViewContent"
+            android:clickable="false"
+            android:focusable="false"
+            android:visibility="gone">
 
-<!--            <ImageView-->
-<!--                android:id="@+id/TitleImage"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="120dp"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:contentDescription="@string/text_default"-->
-<!--                android:scaleType="centerCrop"-->
-<!--                android:visibility="gone" />-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
 
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_asset_stat_chip"
+                    android:contentDescription="@null"
+                    android:padding="9dp"
+                    android:src="@drawable/ic_user"
+                    app:tint="?attr/colorPrimary" />
 
-            <com.blueskybone.arkscreen.common.NestedScrollableHost
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/home_login_guide_title"
+                        android:textAppearance="?attr/textAppearanceSubtitle1"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="@string/home_login_guide_summary"
+                        android:textAppearance="?attr/textAppearanceBody2" />
+                </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/LoginNow"
+                    style="@style/Widget.ArkScreen.SectionAction.Tonal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/login_now" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/BannerCard"
+            style="@style/CardViewContent"
+            android:layout_height="120dp">
+
+            <com.blueskybone.arkscreen.ui.common.view.NestedScrollableHost
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -56,7 +104,7 @@
                     android:id="@+id/TitleBanner"
                     android:layout_width="match_parent"
                     android:layout_height="120dp" />
-            </com.blueskybone.arkscreen.common.NestedScrollableHost>
+            </com.blueskybone.arkscreen.ui.common.view.NestedScrollableHost>
 
             <LinearLayout
                 android:id="@+id/BannerIdc"
@@ -65,31 +113,30 @@
                 android:layout_gravity="center|bottom"
                 android:gravity="center"
                 android:orientation="horizontal" />
-
         </com.google.android.material.card.MaterialCardView>
-
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                style="@style/PreferenceHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:text="@string/real_time_data" />
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/RefreshGame"
                 style="@style/PreferenceHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:text="@string/refresh" />
+                android:text="@string/refresh"
+                android:visibility="gone" />
         </FrameLayout>
 
+        <TextView
+            style="@style/PreferenceHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginTop="16dp"
+            android:text="@string/real_time_data" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/RealTimeData"
@@ -101,6 +148,7 @@
             <include
                 android:id="@+id/ApCacheCard"
                 layout="@layout/card_ap_cache" />
+
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
@@ -123,10 +171,10 @@
 
         <TextView
             style="@style/PreferenceHeader"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tools" />
-
+            android:layout_marginTop="16dp"
+            android:text="@string/core_data" />
 
         <com.google.android.material.card.MaterialCardView
             style="@style/CardViewContent"
@@ -136,68 +184,109 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:baselineAligned="false"
-                android:orientation="horizontal"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp"
-                android:weightSum="4">
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/CoreAssets"
+                    layout="@layout/home_core_entry" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="70dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="?android:attr/listDivider" />
+
+                <include
+                    android:id="@+id/CoreGacha"
+                    layout="@layout/home_core_entry" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            style="@style/PreferenceHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/tools" />
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/CardViewContent"
+            android:clickable="false"
+            android:focusable="false">
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:alignmentMode="alignBounds"
+                android:columnCount="4"
+                android:columnOrderPreserved="false"
+                android:padding="10dp"
+                android:rowCount="4"
+                android:useDefaultMargins="true">
 
                 <include
                     android:id="@+id/RecruitCalc"
                     layout="@layout/chip_round"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_columnWeight="1" />
 
                 <include
-                    android:id="@+id/OpeAssets"
+                    android:id="@+id/GameStarter"
                     layout="@layout/chip_round"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
-                <include
-                    android:id="@+id/GachaStat"
-                    layout="@layout/chip_round"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_columnWeight="1" />
 
                 <include
                     android:id="@+id/Attendance"
                     layout="@layout/chip_round"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-            </LinearLayout>
+                    android:layout_columnWeight="1" />
+
+                <include
+                    android:id="@+id/AccountManager"
+                    layout="@layout/chip_round"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1" />
+
+            </GridLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
 
             <TextView
                 android:id="@+id/LinkPreference"
                 style="@style/PreferenceHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
+                android:layout_gravity="start|center"
                 android:text="@string/tools_3rd" />
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/AddLink"
-                style="@style/PreferenceHeader"
+                style="@style/Widget.ArkScreen.SectionAction.Tonal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="@string/add" />
+                android:layout_height="36dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="16dp"
+                android:text="@string/add"
+                app:icon="@drawable/ic_add" />
         </FrameLayout>
 
-
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/LinkCard"
             style="@style/CardViewContent"
             android:clickable="false"
-            android:focusable="false">
+            android:focusable="false"
+            android:visibility="gone">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/ExLinks"
@@ -205,18 +294,21 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
-                android:visibility="visible"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                android:scrollbars="none"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="4" />
         </com.google.android.material.card.MaterialCardView>
-
 
         <TextView
             android:id="@+id/AnnounceTitle"
             style="@style/PreferenceHeader"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="@string/announcement" />
 
         <com.google.android.material.card.MaterialCardView
@@ -232,4 +324,3 @@
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
-
