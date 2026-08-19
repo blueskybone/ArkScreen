@@ -32,6 +32,8 @@ val viewModelModule = module {
             syncRecordsUseCase = get(),
             syncAccountGcUseCase = get(),
             backupCodec = get(),
+            importDecoder = get(),
+            importResolver = get(),
         )
     }
     viewModel {

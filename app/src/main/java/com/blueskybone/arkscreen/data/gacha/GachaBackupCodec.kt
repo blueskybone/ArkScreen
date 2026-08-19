@@ -9,6 +9,7 @@ data class GachaImportPayload(
     val sourceUid: String?,
     val sourceName: String?,
     val records: List<Record>,
+    val warnings: List<GachaImportWarning> = emptyList(),
 )
 
 class GachaBackupCodec(private val objectMapper: ObjectMapper) {

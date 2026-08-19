@@ -11,7 +11,7 @@ interface GachaRepository {
 
     fun observeRecords(uid: String): Flow<List<Record>>
 
-    suspend fun importRecords(account: AccountGc, records: List<Record>): Result<Unit>
+    suspend fun importRecords(account: AccountGc, records: List<Record>): Result<GachaImportResult>
 
     suspend fun deleteRecords(account: AccountGc): Result<Unit>
 
@@ -23,4 +23,11 @@ interface GachaRepository {
 
     suspend fun correctUnCateRecord(account: Account): Result<Int>
 
+}
+
+data class GachaImportResult(
+    val total: Int,
+    val inserted: Int,
+) {
+    val skipped: Int get() = total - inserted
 }

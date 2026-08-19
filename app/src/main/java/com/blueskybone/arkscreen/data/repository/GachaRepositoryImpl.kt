@@ -13,6 +13,7 @@ import com.blueskybone.arkscreen.data.common.repositoryResultOf
 import com.blueskybone.arkscreen.domain.model.account.Account
 import com.blueskybone.arkscreen.domain.model.gacha.Record
 import com.blueskybone.arkscreen.domain.repository.GachaRepository
+import com.blueskybone.arkscreen.domain.repository.GachaImportResult
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -85,15 +86,13 @@ class GachaRepositoryImpl(
     override suspend fun importRecords(
         account: DomainAccGc,
         records: List<Record>
-    ): Result<Unit> = repositoryResultOf {
-        withContext(Dispatchers.IO) {
+    ): Result<GachaImportResult> = repositoryResultOf {
+        withContext(dispatcher) {
             val importGachas = records.map { record ->
                 GachaMapper.toEntity(account.uid, record)
             }
-            val localGachas = gachaDao.getByUid(account.uid)
-            val combine = (importGachas + localGachas).distinctBy { Pair(it.ts, it.pos) }
-            gachaDao.deleteByUid(account.uid)
-            gachaDao.insert(combine)
+            val inserted = gachaDao.importIgnoringConflicts(importGachas)
+            GachaImportResult(total = importGachas.size, inserted = inserted)
         }
     }
 

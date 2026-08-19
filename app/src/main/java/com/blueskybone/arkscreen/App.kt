@@ -10,7 +10,6 @@ import coil.request.CachePolicy
 import coil.util.DebugLogger
 import com.blueskybone.arkscreen.core.logger.FileLoggingTree
 import com.blueskybone.arkscreen.core.logger.CrashLogger
-import com.blueskybone.arkscreen.data.network.equipCachePath
 import com.blueskybone.arkscreen.data.network.skillCachePath
 import com.blueskybone.arkscreen.data.network.skinCachePath
 import com.blueskybone.arkscreen.di.appModule
@@ -105,7 +104,6 @@ class App : Application() {
         )
 
         createFolder(skinCachePath)
-        createFolder(equipCachePath)
         createFolder(skillCachePath)
 
         setCoilDiskCache()
