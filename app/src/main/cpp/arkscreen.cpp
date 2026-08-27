@@ -45,6 +45,7 @@ Java_com_blueskybone_arkscreen_ui_recruit_ocr_ImageProcessor_getTagText(JNIEnv *
         bitmapReadErr = "WRONG,get bitmap wrong format.";
         return env->NewStringUTF(bitmapReadErr.c_str());
     }
+    bool pixelsLocked = true;
 
     try{
         arkscreen::Bitmap8 bitmap;
@@ -58,7 +59,9 @@ Java_com_blueskybone_arkscreen_ui_recruit_ocr_ImageProcessor_getTagText(JNIEnv *
         n_bitmap.release();
         if (rectList.size() != 5) {
             bitmap.release();
-            string getTagsWrong = "NONE,found numbers of tag not correct.";
+            AndroidBitmap_unlockPixels(env, jBitmap);
+            pixelsLocked = false;
+            string getTagsWrong = "NONE,rect_count=" + to_string(rectList.size());
             return env->NewStringUTF(getTagsWrong.c_str());
         }
 
@@ -67,8 +70,9 @@ Java_com_blueskybone_arkscreen_ui_recruit_ocr_ImageProcessor_getTagText(JNIEnv *
         FILE *fp;
         if (!(fp = fopen(filePath, "rb"))) {
             AndroidBitmap_unlockPixels(env, jBitmap);
+            pixelsLocked = false;
             (*env).ReleaseStringUTFChars(jDataPath, filePath);
-            return env->NewStringUTF(filePath);
+            return env->NewStringUTF("WRONG,open OCR asset failed");
         } else {
             // TODO：后续统一 JNI 识别结果格式。
             int cnt = 0;
@@ -94,12 +98,16 @@ Java_com_blueskybone_arkscreen_ui_recruit_ocr_ImageProcessor_getTagText(JNIEnv *
             bitmap.release();
             fclose(fp);
             AndroidBitmap_unlockPixels(env, jBitmap);
+            pixelsLocked = false;
             std::string result_str = result_tag_all;
             result_str.pop_back();
             (*env).ReleaseStringUTFChars(jDataPath, filePath);
             return env->NewStringUTF(result_str.c_str());
         }
     }catch (...){
+        if (pixelsLocked) {
+            AndroidBitmap_unlockPixels(env, jBitmap);
+        }
         string errorMsg = "WRONG, error in identification.";
         return env->NewStringUTF(errorMsg.c_str());
     }

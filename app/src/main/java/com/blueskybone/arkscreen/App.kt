@@ -90,6 +90,15 @@ class App : Application() {
         val fileLoggingTree = FileLoggingTree(
             context = this,
             minimumPriority = if (BuildConfig.DEBUG) Log.DEBUG else Log.WARN,
+            infoTags = setOf(
+                "Attendance",
+                "AppUpdate",
+                "AppStartup",
+                "RecruitCapture",
+                "RecruitFlow",
+                "RecruitOCR",
+                "Widget",
+            ),
         )
         Timber.plant(fileLoggingTree)
         CrashLogger.install(fileLoggingTree)

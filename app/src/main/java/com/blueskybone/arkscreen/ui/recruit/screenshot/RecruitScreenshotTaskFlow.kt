@@ -9,10 +9,11 @@ import com.blueskybone.arkscreen.platform.screenshot.ScreenshotTaskFlow
 class RecruitScreenshotTaskFlow(
     private val source: ScreenshotStartSource,
     private val recruitScreenshotFlow: RecruitScreenshotFlow,
+    override val captureDelayMillis: Long,
 ) : ScreenshotTaskFlow {
 
     override val keepCaptureSessionAlive: Boolean
-        get() = source == ScreenshotStartSource.FloatingBall
+        get() = true
 
     override suspend fun onScreenshot(bitmap: Bitmap) {
         recruitScreenshotFlow.run(

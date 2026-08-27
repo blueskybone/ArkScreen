@@ -1,7 +1,7 @@
 package com.blueskybone.arkscreen.platform.screenshot
 
 interface ScreenshotCapturer {
-    suspend fun captureOnce(): ScreenshotResult
+    suspend fun captureOnce(delayMillis: Long): ScreenshotResult
 
     fun close() = Unit
 }

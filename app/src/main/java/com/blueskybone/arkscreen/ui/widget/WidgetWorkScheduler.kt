@@ -11,6 +11,7 @@ import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetUpdateFreq
 import com.blueskybone.arkscreen.ui.widget.WidgetReceiver.Companion.WORKER_NAME
 import org.koin.java.KoinJavaComponent.getKoin
 import java.util.concurrent.TimeUnit
+import timber.log.Timber
 
 object WidgetWorkScheduler {
     fun onWidgetEnabled(context: Context) {
@@ -29,6 +30,7 @@ object WidgetWorkScheduler {
     private fun schedule(context: Context) {
         val settings: SettingPrefManager by getKoin().inject()
         val intervalSeconds = WidgetUpdateFreq.getValue(settings.widgetUpdateFreq.get()).toLong()
+        Timber.tag("Widget").i("Schedule refresh worker: intervalSeconds=%d", intervalSeconds)
         val request = PeriodicWorkRequestBuilder<WidgetRefreshWorker>(
             intervalSeconds,
             TimeUnit.SECONDS,
@@ -45,6 +47,7 @@ object WidgetWorkScheduler {
     }
 
     private fun cancelAll(context: Context) {
+        Timber.tag("Widget").i("Cancel refresh workers: no active widgets")
         WorkManager.getInstance(context.applicationContext).apply {
             cancelUniqueWork(WORKER_NAME)
             cancelUniqueWork(WidgetReceiver.ONE_TIME_WORKER_NAME)

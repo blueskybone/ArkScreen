@@ -44,7 +44,7 @@ class WidgetReceiver : BroadcastReceiver() {
                 Toaster.show(msg)
             }
             Toaster.show(receiverContext.getString(R.string.widget_updating))
-            Timber.i("WidgetReceiver onReceive")
+            Timber.tag("Widget").i("Manual refresh requested")
             enqueueUpdate(receiverContext)
         }
     }

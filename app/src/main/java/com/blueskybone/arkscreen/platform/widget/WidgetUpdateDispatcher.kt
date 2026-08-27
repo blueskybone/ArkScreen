@@ -8,6 +8,7 @@ import com.blueskybone.arkscreen.ui.widget.WidgetNext1
 import com.blueskybone.arkscreen.ui.widget.WidgetNext2
 import com.blueskybone.arkscreen.ui.widget.WidgetNext3
 import com.blueskybone.arkscreen.ui.widget.WidgetNext4
+import timber.log.Timber
 
 /** 使用最新本地缓存重绘所有已安装的桌面组件。 */
 class WidgetUpdateDispatcher(context: Context) {
@@ -15,10 +16,12 @@ class WidgetUpdateDispatcher(context: Context) {
 
     fun renderAll() {
         val manager = AppWidgetManager.getInstance(appContext)
+        var widgetCount = 0
         PROVIDERS.forEach { provider ->
             val component = ComponentName(appContext, provider)
             val ids = manager.getAppWidgetIds(component)
             if (ids.isNotEmpty()) {
+                widgetCount += ids.size
                 appContext.sendBroadcast(
                     Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
                         .setComponent(component)
@@ -26,6 +29,7 @@ class WidgetUpdateDispatcher(context: Context) {
                 )
             }
         }
+        Timber.tag("Widget").i("Render dispatched: widgetCount=%d", widgetCount)
     }
 
     fun hasWidgets(): Boolean {

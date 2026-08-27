@@ -34,19 +34,20 @@ val screenshotModule = module {
     single<ScreenshotCapturer> {
         MediaProjectionScreenshotCapturer(
             context = androidContext(),
-            screenshotSession = get()
+            screenshotSession = get(),
         )
     }
 }
 
 val recruitScreenshotModule = module {
     single { ImageProcessor(context = androidContext(), textTranslator = get()) }
-    single { RecruitTagRecognizer(context = androidContext(), imageProcessor = get()) }
+    single { RecruitTagRecognizer(imageProcessor = get()) }
     single { FloatWindowController(application = androidContext() as android.app.Application) }
     single {
         RecruitResultDisplayer(
             context = androidContext(),
             floatWindowController = get(),
+            settings = get(),
         )
     }
 
@@ -62,7 +63,8 @@ val recruitScreenshotModule = module {
         RecruitScreenshotStarter(
             screenshotSession = get(),
             taskFlowStore = get(),
-            recruitScreenshotFlow = get()
+            recruitScreenshotFlow = get(),
+            settings = get(),
         )
     }
 
@@ -70,6 +72,7 @@ val recruitScreenshotModule = module {
         RecruitFloatingBallController(
             application = androidContext() as android.app.Application,
             starter = get(),
+            floatWindowController = get(),
         )
     }
 }
