@@ -1,5 +1,5 @@
 {
-	"update": {"version": "8","date": "2026-8-11"},
+	"update": {"version": "9","date": "2026-8-19"},
 	"recruit": {
 		"top-ope": "高级资深干员",
 		"sen-ope": "资深干员",
@@ -45,7 +45,7 @@
 		"charger":"冲锋手",
 		"pioneer":"尖兵",
 		"tactician":"战术家",
-		"bearer":"执棋手",
+		"bearer":"执旗手",
 		"agent":"情报官",
 		"centurion":"强攻手",
 		"fighter":"斗士",

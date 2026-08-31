@@ -6,11 +6,14 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.platform.screenshot.ScreenshotStartSource
 import com.blueskybone.arkscreen.platform.screenshot.ScreenshotCaptureService
 import com.blueskybone.arkscreen.ui.recruit.screenshot.RecruitScreenshotStarter
+import com.blueskybone.arkscreen.ui.recruit.screenshot.FloatWindowController
 import com.hjq.window.EasyWindow
+import timber.log.Timber
 
 class RecruitFloatingBallController(
     private val application: Application,
     private val starter: RecruitScreenshotStarter,
+    private val floatWindowController: FloatWindowController,
 ) {
 
     private var isShowing = false
@@ -45,11 +48,14 @@ class RecruitFloatingBallController(
             .show()
 
         isShowing = true
+        Timber.tag("RecruitCapture").i("Floating recruit ball shown")
     }
 
     fun hide() {
         EasyWindow.cancelAll()
+        floatWindowController.close()
         ScreenshotCaptureService.stop(application)
         isShowing = false
+        Timber.tag("RecruitCapture").i("Floating recruit ball hidden and capture session stopped")
     }
 }

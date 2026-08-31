@@ -5,6 +5,8 @@ import com.blueskybone.arkscreen.data.network.RetrofitClient.sklandApiService
 import com.blueskybone.arkscreen.data.network.RetrofitClient.biliService
 import com.blueskybone.arkscreen.data.network.RetrofitClient.hypergryphService
 import com.blueskybone.arkscreen.data.gacha.GachaBackupCodec
+import com.blueskybone.arkscreen.data.gacha.GachaImportDecoder
+import com.blueskybone.arkscreen.data.gacha.GachaImportResolver
 import com.blueskybone.arkscreen.data.repository.AccountRepositoryImpl
 import com.blueskybone.arkscreen.data.repository.AttendanceStateRepositoryImpl
 import com.blueskybone.arkscreen.data.repository.GachaRepositoryImpl
@@ -18,6 +20,7 @@ import com.blueskybone.arkscreen.data.appupdate.AppUpdateRemoteDataSource
 import com.blueskybone.arkscreen.data.appupdate.AppUpdateRepositoryImpl
 import com.blueskybone.arkscreen.data.resource.ResourceUpdateChecker
 import com.blueskybone.arkscreen.data.resource.GameResourceRepositoryImpl
+import com.blueskybone.arkscreen.data.resource.GachaPoolCatalogParser
 import com.blueskybone.arkscreen.data.resource.GameResourceStore
 import com.blueskybone.arkscreen.data.resource.ResourceFileStore
 import com.blueskybone.arkscreen.data.resource.ResourceJsonReader
@@ -67,8 +70,17 @@ val repositoryModule = module {
     single { ObjectMapper().registerKotlinModule() }
     single { AppRemoteConfigParser(objectMapper = get()) }
     single { GachaBackupCodec(get()) }
+    single { GachaImportDecoder(get(), get()) }
+    single { GachaImportResolver(get()) }
     single { ResourceJsonReader(objectMapper = get()) }
-    single { ResourceFileStore(context = androidContext(), jsonReader = get()) }
+    single { GachaPoolCatalogParser(jsonReader = get()) }
+    single {
+        ResourceFileStore(
+            context = androidContext(),
+            jsonReader = get(),
+            gachaPoolCatalogParser = get(),
+        )
+    }
     single {
         GameResourceStore(
             fileStore = get(),
@@ -77,7 +89,11 @@ val repositoryModule = module {
         )
     }
     single<GameResourceRepository> {
-        GameResourceRepositoryImpl(gameResourceStore = get(), jsonReader = get())
+        GameResourceRepositoryImpl(
+            gameResourceStore = get(),
+            jsonReader = get(),
+            gachaPoolCatalogParser = get(),
+        )
     }
     single<LinkRepository> { LinkRepositoryImpl(linkDao = get(), dispatcher = get()) }
     single<LinkMetadataResolver> { WebLinkMetadataResolver(dispatcher = get()) }

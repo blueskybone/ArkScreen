@@ -11,6 +11,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 class ScreenshotCaptureService : Service() {
 
@@ -28,23 +29,32 @@ class ScreenshotCaptureService : Service() {
             NOTIFICATION_ID,
             notificationFactory.createNotification()
         )
+        Timber.tag(LOG_TAG).i("Screenshot service started")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == ACTION_STOP) {
+            Timber.tag(LOG_TAG).i("Screenshot session stopped from notification")
+            taskFlowStore.clear()
+            stopSelfSafely()
+            return START_NOT_STICKY
+        }
         serviceScope.launch {
             val flow = taskFlowStore.consume()
 
             if (flow == null) {
-                stopSelfSafely()
+                Timber.tag(LOG_TAG).w("Screenshot request ignored: no pending task")
                 return@launch
             }
 
-            when (val result = screenshotCapturer.captureOnce()) {
+            when (val result = screenshotCapturer.captureOnce(flow.captureDelayMillis)) {
                 is ScreenshotResult.Success -> {
+                    Timber.tag(LOG_TAG).i("Screenshot delivered to recognition flow")
                     flow.onScreenshot(result.bitmap)
                 }
 
                 is ScreenshotResult.Failure -> {
+                    Timber.tag(LOG_TAG).w("Screenshot failed: %s", result.error)
                     flow.onFailure(result.error)
                 }
             }
@@ -60,6 +70,7 @@ class ScreenshotCaptureService : Service() {
     override fun onDestroy() {
         serviceScope.cancel()
         screenshotCapturer.close()
+        Timber.tag(LOG_TAG).i("Screenshot service destroyed")
         super.onDestroy()
     }
 
@@ -71,7 +82,9 @@ class ScreenshotCaptureService : Service() {
     }
 
     companion object {
+        const val ACTION_STOP = "com.blueskybone.arkscreen.STOP_SCREENSHOT_CAPTURE"
         private const val NOTIFICATION_ID = 10086
+        private const val LOG_TAG = "RecruitCapture"
 
         fun start(context: Context) {
             val intent = Intent(context, ScreenshotCaptureService::class.java)

@@ -7,6 +7,8 @@ import com.blueskybone.arkscreen.domain.model.account.AccountGc
 import com.blueskybone.arkscreen.domain.model.gacha.Record
 import com.blueskybone.arkscreen.data.gacha.GachaBackupCodec
 import com.blueskybone.arkscreen.data.gacha.GachaImportPayload
+import com.blueskybone.arkscreen.data.gacha.GachaImportDecoder
+import com.blueskybone.arkscreen.data.gacha.GachaImportResolver
 import com.blueskybone.arkscreen.domain.repository.AccountRepository
 import com.blueskybone.arkscreen.domain.repository.GachaRepository
 import com.blueskybone.arkscreen.domain.usecase.gacha.SyncRecordsUseCase
@@ -43,6 +45,8 @@ class GachaModel(
     private val syncRecordsUseCase: SyncRecordsUseCase,
     private val syncAccountGcUseCase: SyncAccountGcUseCase,
     private val backupCodec: GachaBackupCodec,
+    private val importDecoder: GachaImportDecoder,
+    private val importResolver: GachaImportResolver,
 ) : ViewModel() {
     private val currentGcFlow = repoAcc.observeCurrentGcAcc() // 当前账号
 
@@ -303,24 +307,36 @@ class GachaModel(
         }
     }
 
-    suspend fun prepareImport(content: String): Result<GachaImportPayload> = try {
-        Result.success(withContext(Dispatchers.Default) { backupCodec.decode(content) })
+    suspend fun prepareImport(fileName: String?, content: String): Result<GachaImportPayload> = try {
+        val document = withContext(Dispatchers.Default) {
+            importDecoder.decode(fileName, content)
+        }
+        importResolver.resolve(document).map { it.payload }
     } catch (error: CancellationException) {
         throw error
     } catch (error: Exception) {
         Result.failure(error)
     }
 
-    fun importRecords(payload: GachaImportPayload) {
+    fun importRecords(payload: GachaImportPayload, expectedUid: String) {
         execute {
             if (_uiState.value.isSyncing) return@execute
             val account = requireCurrentAccount() ?: return@execute
+            if (account.uid != expectedUid) {
+                _event.send(GachaEvent.ShowError("当前寻访账号已切换，请重新选择导入文件"))
+                return@execute
+            }
             _uiState.update { it.copy(isSyncing = true) }
             repo.importRecords(account, payload.records).fold(
-                onSuccess = {
+                onSuccess = { result ->
                     _uiState.update { it.copy(isSyncing = false) }
+                    val message = if (result.skipped == 0) {
+                        "成功导入 ${result.inserted} 条寻访记录"
+                    } else {
+                        "新增 ${result.inserted} 条，跳过 ${result.skipped} 条重复记录"
+                    }
                     _event.send(
-                        GachaEvent.ShowMessage("成功导入 ${payload.records.size} 条寻访记录")
+                        GachaEvent.ShowMessage(message)
                     )
                 },
                 onFailure = { error ->

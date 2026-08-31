@@ -17,6 +17,7 @@ import java.net.URL
 class ResourceFileStore(
     private val context: Context,
     private val jsonReader: ResourceJsonReader,
+    private val gachaPoolCatalogParser: GachaPoolCatalogParser,
 ) {
 
     fun getValidFile(type: ConfigType): File {
@@ -27,7 +28,7 @@ class ResourceFileStore(
                 assetName = type.fileName,
                 targetFile = targetFile,
             )
-        } else if (type == ConfigType.I18N_DB && shouldReplaceI18nWithBundled(targetFile)) {
+        } else if (type in VERSIONED_JSON_TYPES && shouldReplaceWithBundled(type, targetFile)) {
             copyAssetToCache(
                 assetName = type.fileName,
                 targetFile = targetFile,
@@ -37,13 +38,13 @@ class ResourceFileStore(
         return targetFile
     }
 
-    private fun shouldReplaceI18nWithBundled(cachedFile: File): Boolean {
+    private fun shouldReplaceWithBundled(type: ConfigType, cachedFile: File): Boolean {
         val cachedNode = runCatching { jsonReader.readNode(cachedFile) }.getOrNull()
             ?: return true
-        if (!isValidI18n(cachedNode)) return true
+        if (!isValidResource(type, cachedNode, cachedFile)) return true
 
         val bundledNode = runCatching {
-            context.assets.open(ConfigType.I18N_DB.fileName).use(jsonReader::readNode)
+            context.assets.open(type.fileName).use(jsonReader::readNode)
         }.getOrNull() ?: return false
         return compareVersions(
             versionOf(bundledNode),
@@ -122,9 +123,21 @@ class ResourceFileStore(
 
     private fun validateDownloadedResource(type: ConfigType, file: File) {
         val root = jsonReader.readNode(file)
-        if (type == ConfigType.I18N_DB) {
-            require(isValidI18n(root)) { "i18n resource has an invalid schema" }
-        }
+        require(isValidResource(type, root, file)) { "${type.fileName} has an invalid schema" }
+    }
+
+    private fun isValidResource(
+        type: ConfigType,
+        root: com.fasterxml.jackson.databind.JsonNode,
+        file: File,
+    ): Boolean = when (type) {
+        ConfigType.I18N_DB -> isValidI18n(root)
+        ConfigType.CHAR_MAP -> isValidCharMap(root)
+        ConfigType.GACHA_POOL_CATALOG -> runCatching {
+            gachaPoolCatalogParser.parse(file)
+        }.isSuccess
+        ConfigType.RECRUIT_DB -> versionOf(root) != "0" && root.isObject
+        ConfigType.APP_INFO -> true
     }
 
     private fun isValidI18n(root: com.fasterxml.jackson.databind.JsonNode): Boolean {
@@ -140,6 +153,17 @@ class ResourceFileStore(
         }
         val recruit = root["recruit"] ?: return false
         return entriesValid && REQUIRED_RECRUIT_KEYS.all(recruit::has)
+    }
+
+    private fun isValidCharMap(root: com.fasterxml.jackson.databind.JsonNode): Boolean {
+        if (versionOf(root) == "0") return false
+        val map = root["charInfoMap"] ?: return false
+        return map.isObject && !map.isEmpty && map.fields().asSequence().all { (id, info) ->
+            id.isNotBlank() &&
+                info["name"]?.asText()?.isNotBlank() == true &&
+                info["rarity"]?.isIntegralNumber == true &&
+                info["profession"]?.asText()?.isNotBlank() == true
+        }
     }
 
     private fun versionOf(root: com.fasterxml.jackson.databind.JsonNode): String =
@@ -184,6 +208,12 @@ class ResourceFileStore(
     }
 
     private companion object {
+        val VERSIONED_JSON_TYPES = setOf(
+            ConfigType.CHAR_MAP,
+            ConfigType.GACHA_POOL_CATALOG,
+            ConfigType.RECRUIT_DB,
+            ConfigType.I18N_DB,
+        )
         val I18N_SECTIONS = listOf("recruit", "profession", "sub_profession")
 
         val REQUIRED_RECRUIT_KEYS = setOf(

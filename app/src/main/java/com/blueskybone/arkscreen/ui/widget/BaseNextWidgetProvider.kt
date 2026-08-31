@@ -31,6 +31,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.getKoin
 import timber.log.Timber
+import android.os.SystemClock
 
 data class NextWidgetRenderData(
     val items: List<WidgetInfoItem>,
@@ -68,6 +69,12 @@ abstract class BaseNextWidgetProvider : AppWidgetProvider() {
         appWidgetIds: IntArray,
     ) {
         if (appWidgetIds.isEmpty()) return
+        val startedAt = SystemClock.elapsedRealtime()
+        Timber.tag("Widget").i(
+            "Provider render started: provider=%s widgetCount=%d",
+            javaClass.simpleName,
+            appWidgetIds.size,
+        )
         val pendingResult = goAsync()
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
             try {
@@ -78,8 +85,19 @@ abstract class BaseNextWidgetProvider : AppWidgetProvider() {
                         createRemoteViews(context, appWidgetId, data),
                     )
                 }
+                Timber.tag("Widget").i(
+                    "Provider render completed: provider=%s widgetCount=%d durationMs=%d",
+                    javaClass.simpleName,
+                    appWidgetIds.size,
+                    SystemClock.elapsedRealtime() - startedAt,
+                )
             } catch (error: Exception) {
-                Timber.e(error, "Failed to render next-generation widget")
+                Timber.tag("Widget").e(
+                    error,
+                    "Provider render failed: provider=%s widgetCount=%d",
+                    javaClass.simpleName,
+                    appWidgetIds.size,
+                )
             } finally {
                 pendingResult.finish()
             }

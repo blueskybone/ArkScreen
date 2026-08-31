@@ -300,7 +300,7 @@ class GachaActivity : AppCompatActivity() {
                 setFileOperationRunning(true)
                 val result = runCatching {
                     val content = readImportFile(uri)
-                    model.prepareImport(content).getOrThrow()
+                    model.prepareImport(readDisplayName(uri), content).getOrThrow()
                 }
                 setFileOperationRunning(false)
                 result.onSuccess(::confirmImport)
@@ -354,6 +354,14 @@ class GachaActivity : AppCompatActivity() {
             } ?: error("无法读取导入文件")
         }
 
+    private fun readDisplayName(uri: android.net.Uri): String? {
+        val projection = arrayOf(android.provider.OpenableColumns.DISPLAY_NAME)
+        return contentResolver.query(uri, projection, null, null, null)?.use { cursor ->
+            if (!cursor.moveToFirst()) return@use null
+            cursor.getString(cursor.getColumnIndexOrThrow(android.provider.OpenableColumns.DISPLAY_NAME))
+        }
+    }
+
     private fun confirmImport(payload: com.blueskybone.arkscreen.data.gacha.GachaImportPayload) {
         val target = latestState.currAccount ?: run {
             Toaster.show(getString(R.string.select_gacha_account_first))
@@ -373,14 +381,19 @@ class GachaActivity : AppCompatActivity() {
         } else {
             ""
         }
+        val warningText = payload.warnings
+            .filter { warning -> warning.code in DISPLAYED_IMPORT_WARNING_CODES }
+            .takeIf(List<*>::isNotEmpty)
+            ?.joinToString(separator = "\n", prefix = "\n\n注意：\n") { "• ${it.message}" }
+            .orEmpty()
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.import_data)
             .setMessage(
-                "来源：$source\n目标：$targetLabel\n记录：${payload.records.size} 条$accountWarning"
+                "来源：$source\n目标：$targetLabel\n记录：${payload.records.size} 条$accountWarning$warningText"
             )
             .setNegativeButton(R.string.cancel, null)
             .setPositiveButton(R.string.import_data) { _, _ ->
-                model.importRecords(payload)
+                model.importRecords(payload, target.uid)
             }
             .show()
     }
@@ -415,5 +428,10 @@ class GachaActivity : AppCompatActivity() {
         const val KEY_TAB = "gacha_tab"
         const val MAX_IMPORT_BYTES = 20L * 1024L * 1024L
         const val MAX_IMPORT_CHARS = 20 * 1024 * 1024
+        val DISPLAYED_IMPORT_WARNING_CODES = setOf(
+            com.blueskybone.arkscreen.data.gacha.GachaImportWarning.Code.UNKNOWN_POOL,
+            com.blueskybone.arkscreen.data.gacha.GachaImportWarning.Code.UNMATCHED_OPERATOR,
+            com.blueskybone.arkscreen.data.gacha.GachaImportWarning.Code.AMBIGUOUS_OPERATOR,
+        )
     }
 }

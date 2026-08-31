@@ -19,6 +19,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class MediaProjectionScreenshotCapturer(
     private val context: Context,
@@ -34,6 +35,9 @@ class MediaProjectionScreenshotCapturer(
     private var mediaProjection: MediaProjection? = null
     private var imageReader: ImageReader? = null
     private var virtualDisplay: VirtualDisplay? = null
+    private var captureWidth = 0
+    private var captureHeight = 0
+    private var captureDensityDpi = 0
 
     private val projectionCallback = object : MediaProjection.Callback() {
         override fun onStop() {
@@ -41,16 +45,21 @@ class MediaProjectionScreenshotCapturer(
         }
     }
 
-    override suspend fun captureOnce(): ScreenshotResult = captureMutex.withLock {
+    override suspend fun captureOnce(delayMillis: Long): ScreenshotResult = captureMutex.withLock {
         withContext(Dispatchers.Default) {
             try {
+                val safeDelayMillis = delayMillis.coerceIn(
+                    MIN_CAPTURE_DELAY_MS,
+                    MAX_CAPTURE_DELAY_MS,
+                )
                 val reader = getOrCreateSession()
                     ?: return@withContext ScreenshotResult.Failure(
                         ScreenshotError.PermissionMissing
                     )
 
-                // 给持续存在的虚拟显示器留出时间发布最新画面。
-                delay(150)
+                Timber.tag(LOG_TAG).i("Capture requested: delayMs=%d", safeDelayMillis)
+                // 来源配置的延迟同时承担画面恢复和 ImageReader 等待首帧的职责。
+                delay(safeDelayMillis)
 
                 val image = reader.acquireLatestImage()
                     ?: return@withContext ScreenshotResult.Failure(
@@ -59,15 +68,17 @@ class MediaProjectionScreenshotCapturer(
 
                 val metrics = getDisplayMetrics()
                 val bitmap = image.use {
+                    val imageWidth = it.width
+                    val imageHeight = it.height
                     val plane = it.planes[0]
                     val buffer = plane.buffer
                     val pixelStride = plane.pixelStride
                     val rowStride = plane.rowStride
-                    val rowPadding = rowStride - pixelStride * metrics.widthPixels
+                    val rowPadding = rowStride - pixelStride * imageWidth
 
                     val rawBitmap = Bitmap.createBitmap(
-                        metrics.widthPixels + rowPadding / pixelStride,
-                        metrics.heightPixels,
+                        imageWidth + rowPadding / pixelStride,
+                        imageHeight,
                         Bitmap.Config.ARGB_8888
                     )
                     rawBitmap.copyPixelsFromBuffer(buffer)
@@ -76,16 +87,26 @@ class MediaProjectionScreenshotCapturer(
                         rawBitmap,
                         0,
                         0,
-                        metrics.widthPixels,
-                        metrics.heightPixels
+                        imageWidth,
+                        imageHeight
                     ).also { rawBitmap.recycle() }
                 }
+
+                Timber.tag(LOG_TAG).i(
+                    "Capture completed: display=%dx%d@%d bitmap=%dx%d",
+                    metrics.widthPixels,
+                    metrics.heightPixels,
+                    metrics.densityDpi,
+                    bitmap.width,
+                    bitmap.height,
+                )
 
                 ScreenshotResult.Success(bitmap)
             } catch (e: CancellationException) {
                 releaseSession(stopProjection = true)
                 throw e
             } catch (e: Throwable) {
+                Timber.tag(LOG_TAG).e(e, "Capture failed")
                 releaseSession(stopProjection = true)
                 ScreenshotResult.Failure(ScreenshotError.SystemError(e))
             }
@@ -98,11 +119,29 @@ class MediaProjectionScreenshotCapturer(
 
     private fun getOrCreateSession(): ImageReader? {
         synchronized(resourceLock) {
-            imageReader?.let { return it }
+            val metrics = getDisplayMetrics()
+            val existingProjection = mediaProjection
+            if (existingProjection != null) {
+                val dimensionsUnchanged =
+                    captureWidth == metrics.widthPixels &&
+                        captureHeight == metrics.heightPixels &&
+                        captureDensityDpi == metrics.densityDpi
+                if (dimensionsUnchanged) imageReader?.let { return it }
+
+                Timber.tag(LOG_TAG).i(
+                    "Display changed, rebuild capture target: old=%dx%d@%d new=%dx%d@%d",
+                    captureWidth,
+                    captureHeight,
+                    captureDensityDpi,
+                    metrics.widthPixels,
+                    metrics.heightPixels,
+                    metrics.densityDpi,
+                )
+                return resizeCaptureTargetLocked(metrics)
+            }
 
             val resultCode = screenshotSession.getResultCode() ?: return null
             val data = screenshotSession.getData() ?: return null
-            val metrics = getDisplayMetrics()
 
             val projection = mediaProjectionManager.getMediaProjection(resultCode, data)
                 ?: return null
@@ -111,28 +150,78 @@ class MediaProjectionScreenshotCapturer(
                 Handler(Looper.getMainLooper())
             )
             mediaProjection = projection
-
-            val reader = ImageReader.newInstance(
-                metrics.widthPixels,
-                metrics.heightPixels,
-                PixelFormat.RGBA_8888,
-                2
-            )
-            imageReader = reader
-            val display = projection.createVirtualDisplay(
-                "screen_capture",
+            Timber.tag(LOG_TAG).i(
+                "MediaProjection session created: display=%dx%d@%d",
                 metrics.widthPixels,
                 metrics.heightPixels,
                 metrics.densityDpi,
-                DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
-                reader.surface,
-                null,
-                null
             )
-
-            virtualDisplay = display
-            return reader
+            return createCaptureTargetsLocked(projection, metrics)
         }
+    }
+
+    private fun createCaptureTargetsLocked(
+        projection: MediaProjection,
+        metrics: DisplayMetrics,
+    ): ImageReader {
+        val reader = ImageReader.newInstance(
+            metrics.widthPixels,
+            metrics.heightPixels,
+            PixelFormat.RGBA_8888,
+            2,
+        )
+        imageReader = reader
+        virtualDisplay = projection.createVirtualDisplay(
+            "screen_capture",
+            metrics.widthPixels,
+            metrics.heightPixels,
+            metrics.densityDpi,
+            DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
+            reader.surface,
+            null,
+            null,
+        )
+        captureWidth = metrics.widthPixels
+        captureHeight = metrics.heightPixels
+        captureDensityDpi = metrics.densityDpi
+        return reader
+    }
+
+    private fun releaseCaptureTargetsLocked() {
+        virtualDisplay?.release()
+        virtualDisplay = null
+        imageReader?.close()
+        imageReader = null
+        captureWidth = 0
+        captureHeight = 0
+        captureDensityDpi = 0
+    }
+
+    /**
+     * Android 14 起一次授权只能创建一个 VirtualDisplay。方向变化时必须复用原实例，
+     * 通过 resize 和替换 Surface 调整采集尺寸，否则系统会拒绝第二次创建。
+     */
+    private fun resizeCaptureTargetLocked(metrics: DisplayMetrics): ImageReader {
+        val display = checkNotNull(virtualDisplay) { "VirtualDisplay is missing" }
+        val oldReader = imageReader
+        val newReader = ImageReader.newInstance(
+            metrics.widthPixels,
+            metrics.heightPixels,
+            PixelFormat.RGBA_8888,
+            2,
+        )
+        display.resize(
+            metrics.widthPixels,
+            metrics.heightPixels,
+            metrics.densityDpi,
+        )
+        display.surface = newReader.surface
+        imageReader = newReader
+        captureWidth = metrics.widthPixels
+        captureHeight = metrics.heightPixels
+        captureDensityDpi = metrics.densityDpi
+        oldReader?.close()
+        return newReader
     }
 
     private fun releaseSession(stopProjection: Boolean) {
@@ -140,15 +229,13 @@ class MediaProjectionScreenshotCapturer(
         synchronized(resourceLock) {
             projection = mediaProjection
             mediaProjection = null
-            virtualDisplay?.release()
-            virtualDisplay = null
-            imageReader?.close()
-            imageReader = null
+            releaseCaptureTargetsLocked()
             screenshotSession.clear()
         }
 
         projection?.unregisterCallback(projectionCallback)
         if (stopProjection) projection?.stop()
+        Timber.tag(LOG_TAG).i("MediaProjection session released: requested=%s", stopProjection)
     }
 
     private fun getDisplayMetrics(): DisplayMetrics {
@@ -166,5 +253,11 @@ class MediaProjectionScreenshotCapturer(
         }
 
         return metrics
+    }
+
+    private companion object {
+        const val LOG_TAG = "RecruitCapture"
+        const val MIN_CAPTURE_DELAY_MS = 0L
+        const val MAX_CAPTURE_DELAY_MS = 5_000L
     }
 }

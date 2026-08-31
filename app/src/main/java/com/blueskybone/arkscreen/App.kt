@@ -10,7 +10,6 @@ import coil.request.CachePolicy
 import coil.util.DebugLogger
 import com.blueskybone.arkscreen.core.logger.FileLoggingTree
 import com.blueskybone.arkscreen.core.logger.CrashLogger
-import com.blueskybone.arkscreen.data.network.equipCachePath
 import com.blueskybone.arkscreen.data.network.skillCachePath
 import com.blueskybone.arkscreen.data.network.skinCachePath
 import com.blueskybone.arkscreen.di.appModule
@@ -91,6 +90,15 @@ class App : Application() {
         val fileLoggingTree = FileLoggingTree(
             context = this,
             minimumPriority = if (BuildConfig.DEBUG) Log.DEBUG else Log.WARN,
+            infoTags = setOf(
+                "Attendance",
+                "AppUpdate",
+                "AppStartup",
+                "RecruitCapture",
+                "RecruitFlow",
+                "RecruitOCR",
+                "Widget",
+            ),
         )
         Timber.plant(fileLoggingTree)
         CrashLogger.install(fileLoggingTree)
@@ -105,7 +113,6 @@ class App : Application() {
         )
 
         createFolder(skinCachePath)
-        createFolder(equipCachePath)
         createFolder(skillCachePath)
 
         setCoilDiskCache()

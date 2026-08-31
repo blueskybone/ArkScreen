@@ -9,6 +9,7 @@ import com.blueskybone.arkscreen.domain.model.ConfigType
 import com.blueskybone.arkscreen.domain.model.I18nTranslations
 import com.blueskybone.arkscreen.domain.model.ResourceSyncStatus
 import com.blueskybone.arkscreen.domain.model.operator.OperatorBasicInfo
+import com.blueskybone.arkscreen.domain.model.gacha.GachaPoolCatalog
 import com.blueskybone.arkscreen.domain.model.recruit.RecruitDatabase
 import kotlinx.coroutines.flow.Flow
 
@@ -21,6 +22,8 @@ interface GameResourceRepository {
     suspend fun getI18nTranslations(): Result<I18nTranslations>
 
     suspend fun getOperatorBasicInfoMap(): Result<Map<String, OperatorBasicInfo>>
+
+    suspend fun getGachaPoolCatalog(): Result<GachaPoolCatalog>
 
     suspend fun getResourceDate(type: ConfigType): Result<String>
 

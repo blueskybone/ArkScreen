@@ -1,6 +1,6 @@
 {
-	"update": {"version": "10","date": "2025-11-1"},
-	"new_ope": {"name":["凯尔希","赤冬"]},
+	"update": {"version": "13","date": "2026-8-1"},
+	"new_ope": {"name":["水月","羽毛笔"]},
 	"operator_list": [
 		{"name": "安比尔","star": 4,"tag": ["远程位","输出","减速","狙击干员"],"skin":"char_302_glaze"},
 		{"name": "梅","star": 4,"tag": ["远程位","输出","减速","狙击干员"],"skin":"char_133_mm"},
@@ -42,6 +42,7 @@
 		{"name": "泡泡","star": 4,"tag": ["近战位","防护","重装干员"],"skin":"char_381_bubble"},
 		{"name": "松果","star": 4,"tag": ["远程位","群攻","输出","狙击干员"],"skin":"char_440_pinecn"},
 		{"name": "豆苗","star": 4,"tag": ["远程位","费用回复","召唤","先锋干员"],"skin":"char_452_bstalk"},
+		{"name": "深靛","star": 4,"tag": ["远程位","输出","控场","术师干员"],"skin":"char_469_indigo"},
 		{"name": "狮蝎","star": 5,"tag": ["近战位","输出","生存","特种干员","资深干员"],"skin":"char_215_mantic"},
 		{"name": "食铁兽","star": 5,"tag": ["近战位","位移","减速","特种干员","资深干员"],"skin":"char_241_panda"},
 		{"name": "蓝毒","star": 5,"tag": ["远程位","输出","狙击干员","资深干员"],"skin":"char_129_bluep"},
@@ -94,7 +95,9 @@
 		{"name": "爱丽丝","star": 5,"tag": ["远程位","输出","术师干员","资深干员"],"skin":"char_338_iris"},
 		{"name": "乌有","star": 5,"tag": ["近战位","快速复活","输出","特种干员","资深干员"],"skin":"char_455_nothin"},
 		{"name": "熔泉","star": 5,"tag": ["远程位","输出","狙击干员","资深干员"],"skin":"char_363_toddi"},
-		{"name": "赤冬","star": 5,"tag": ["近战位","生存","输出","近卫干员","资深干员"],"skin":"char_475_akafyu"}
+		{"name": "赤冬","star": 5,"tag": ["近战位","生存","输出","近卫干员","资深干员"],"skin":"char_475_akafyu"},
+		{"name": "绮良","star": 5,"tag": ["近战位","生存","输出","特种干员","资深干员"],"skin":"char_478_kirara"},
+		{"name": "羽毛笔","star": 5,"tag": ["近战位","输出","近卫干员","资深干员"],"skin":"char_421_crow"}
 	],
 	"operator_high_list": [
 		{"name": "能天使","star": 6,"tag": ["输出","远程位","狙击干员","高级资深干员"],"skin":"char_103_angel"},
@@ -128,7 +131,10 @@
 		{"name": "空弦","star": 6,"tag": ["远程位","输出","狙击干员","高级资深干员"],"skin":"char_332_archet"},
 		{"name": "嵯峨","star": 6,"tag": ["近战位","费用回复","输出","先锋干员","高级资深干员"],"skin":"char_362_saga"},
 		{"name": "异客","star": 6,"tag": ["远程位","输出","术师干员","高级资深干员"],"skin":"char_472_pasngr"},
-		{"name": "凯尔希","star": 6,"tag": ["远程位","召唤","治疗","医疗干员","高级资深干员"],"skin":"char_003_kalts"}
+		{"name": "凯尔希","star": 6,"tag": ["远程位","召唤","治疗","医疗干员","高级资深干员"],"skin":"char_003_kalts"},
+		{"name": "卡涅利安","star": 6,"tag": ["远程位","群攻","防护","术师干员","高级资深干员"],"skin":"char_426_billro"},
+		{"name": "帕拉斯","star": 6,"tag": ["近战位","输出","支援","近卫干员","高级资深干员"],"skin":"char_485_pallas"},
+		{"name": "水月","star": 6,"tag": ["近战位","输出","控场","特种干员","高级资深干员"],"skin":"char_437_mizuki"}
 	],
 	"operator_low_list": [
 		{"name": "芬","star": 3,"tag": ["近战位","费用回复","先锋干员"],"skin":"char_123_fang"},
@@ -160,7 +166,8 @@
 		{"name": "正义骑士号","star": 1,"tag": ["远程位","支援","支援机械","狙击干员"],"skin":"char_4000_jnight"},
 		{"name": "Friston-3","star": 1,"tag": ["近战位","防护","支援机械","重装干员"],"skin":"char_4093_frston"},
 		{"name": "PhonoR-0","star": 1,"tag": ["远程位","元素","支援机械","辅助干员"],"skin":"char_4136_phonor"},
-		{"name": "CONFESS-47","star": 1,"tag": ["近战位","控场","支援机械","先锋干员"],"skin":"char_4188_confes"}
+		{"name": "CONFESS-47","star": 1,"tag": ["近战位","控场","支援机械","先锋干员"],"skin":"char_4188_confes"},
+		{"name": "GALLUS²","star": 1,"tag": ["远程位","削弱","支援机械","术师干员"],"skin":"char_4227_gallus"}
 	]
 }
 	

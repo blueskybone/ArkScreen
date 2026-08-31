@@ -21,6 +21,5 @@ const val avatarUrl = "https://web.hycdn.cn/arknights/game/assets/char_skin/avat
 const val portraitUrl = "https://web.hycdn.cn/arknights/game/assets/char_skin/portrait/"
 val skinCachePath = "${APP.externalCacheDir}/skin_avatar"
 const val equipUrl = "https://cdn.jsdelivr.net/gh/blueskybone/ArkScreenResource@master/equip/"
-val equipCachePath = "${APP.externalCacheDir}/equip_icon"
 const val skillUrl = "https://web.hycdn.cn/arknights/game/assets/char_skill/"
 val skillCachePath = "${APP.externalCacheDir}/skill_icon"

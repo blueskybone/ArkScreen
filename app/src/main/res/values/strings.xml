@@ -442,6 +442,7 @@
     <string name="screenshot_capture_failed">截图失败</string>
     <string name="recruit_no_high_rarity_result">没有高稀有度组合</string>
     <string name="recruit_guaranteed_rarity">可锁%1$d★</string>
+    <string name="recruit_toast_result">%1$s → %2$d★ %3$s</string>
 
     <!-- 通知 -->
     <string name="attendance_notification_channel">签到通知</string>
@@ -467,6 +468,7 @@
     <string name="app_update_download_title">公招助手更新</string>
     <string name="app_update_download_description">正在下载新版本</string>
     <string name="screenshot_notification_channel">截图服务</string>
-    <string name="screenshot_recognizing">正在截图识别</string>
-    <string name="screenshot_in_progress">正在进行屏幕截图，请稍候</string>
+    <string name="screenshot_recognizing">快速公招录屏已启用</string>
+    <string name="screenshot_in_progress">点击磁贴或悬浮球可再次识别</string>
+    <string name="screenshot_stop">结束录屏</string>
 </resources>

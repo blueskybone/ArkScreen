@@ -40,9 +40,10 @@ class ImageProcessor(
 
     private external fun getTagText(bitmap: Bitmap, dataPath: String, num: Int): String
 
-    suspend fun getRecruitTags(bitmap: Bitmap, screenWidth: Int, screenHeight: Int): ImageRecruitData {
-        val roiBitmap = getRoiBitmap(bitmap, screenWidth, screenHeight)
-        val scale: Int = getScale(screenWidth)
+    suspend fun getRecruitTags(bitmap: Bitmap): ImageRecruitData {
+        val roi = getRoi(bitmap.width, bitmap.height)
+        val roiBitmap = Bitmap.createBitmap(bitmap, roi.x, roi.y, roi.width, roi.height)
+        val scale = getScale(bitmap.width)
         val stdTagFilepath = cacheAssetFile(context, "target_std.dat")
             .getOrElse { error ->
                 Timber.tag("RecruitOCR").e(error, "Failed to prepare OCR asset")
@@ -50,16 +51,30 @@ class ImageProcessor(
             }
             .absolutePath
 
-        val rawOutput = getTagText(roiBitmap, stdTagFilepath, scale)
-        Timber.tag("RecruitOCR").d(
-            "JNI output: screen=%dx%d roi=%dx%d scale=%d output=%s",
-            screenWidth,
-            screenHeight,
+        val rawOutput = try {
+            getTagText(roiBitmap, stdTagFilepath, scale)
+        } finally {
+            roiBitmap.recycle()
+        }
+        val rawStatus = rawOutput.substringBefore(',')
+        val diagnostic = if (rawStatus == "RECRUIT") {
+            "ok"
+        } else {
+            rawOutput.substringAfter(',', "")
+        }
+        Timber.tag("RecruitOCR").i(
+            "OCR input: bitmap=%dx%d roi=%d,%d %dx%d scale=%d status=%s message=%s",
+            bitmap.width,
+            bitmap.height,
+            roi.x,
+            roi.y,
             roiBitmap.width,
             roiBitmap.height,
             scale,
-            rawOutput,
+            rawStatus,
+            diagnostic,
         )
+        Timber.tag("RecruitOCR").d("JNI output=%s", rawOutput)
         val text = rawOutput.split(",".toRegex())
         val result = text
             .dropLastWhile { it.isEmpty() }
@@ -72,7 +87,11 @@ class ImageProcessor(
 
         return when (result[0]) {
             "NONE" -> {
-                ImageRecruitData(NONE_INFO, "未获取有效信息", listOf())
+                ImageRecruitData(
+                    NONE_INFO,
+                    result.getOrElse(1) { "未获取有效信息" },
+                    emptyList(),
+                )
             }
 
             "WRONG" -> {
@@ -106,7 +125,7 @@ class ImageProcessor(
         }
     }
 
-    private fun getRoiBitmap(source: Bitmap, width: Int, height: Int): Bitmap {
+    private fun getRoi(width: Int, height: Int): Roi {
         val (x, y, roiWidth, roiHeight) = if (width > 2 * height) {
             val targetHeight = (height / 5.143).toInt()
             listOf(
@@ -124,8 +143,18 @@ class ImageProcessor(
                 (targetWidth * 0.281).toInt(),
             )
         }
-        return Bitmap.createBitmap(source, x, y, roiWidth, roiHeight)
+        require(x >= 0 && y >= 0 && x + roiWidth <= width && y + roiHeight <= height) {
+            "公招识别区域超出截图范围：bitmap=${width}x$height roi=$x,$y ${roiWidth}x$roiHeight"
+        }
+        return Roi(x, y, roiWidth, roiHeight)
     }
 
-    private fun getScale(width: Int): Int = width / 640
+    private fun getScale(width: Int): Int = (width / 640).coerceAtLeast(1)
+
+    private data class Roi(
+        val x: Int,
+        val y: Int,
+        val width: Int,
+        val height: Int,
+    )
 }

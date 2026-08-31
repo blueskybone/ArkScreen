@@ -6,6 +6,7 @@ import com.blueskybone.arkscreen.domain.model.I18nTranslations
 import com.blueskybone.arkscreen.data.resource.model.RecruitDatabaseDto
 import com.blueskybone.arkscreen.domain.model.ResourceSyncStatus
 import com.blueskybone.arkscreen.domain.model.operator.OperatorBasicInfo
+import com.blueskybone.arkscreen.domain.model.gacha.GachaPoolCatalog
 import com.blueskybone.arkscreen.domain.model.recruit.RecruitDatabase
 import com.blueskybone.arkscreen.domain.repository.GameResourceRepository
 import kotlinx.coroutines.flow.Flow
@@ -19,6 +20,7 @@ import java.io.FileNotFoundException
 class GameResourceRepositoryImpl(
     private val gameResourceStore: GameResourceStore,
     private val jsonReader: ResourceJsonReader,
+    private val gachaPoolCatalogParser: GachaPoolCatalogParser,
 ) : GameResourceRepository {
 
     override fun syncResource(type: ConfigType): Flow<ResourceSyncStatus> {
@@ -62,6 +64,12 @@ class GameResourceRepositoryImpl(
                         profession = charInfo["profession"]?.asText().orEmpty(),
                     )
                 }
+        }
+    }
+
+    override suspend fun getGachaPoolCatalog(): Result<GachaPoolCatalog> {
+        return gameResourceStore.load(ConfigType.GACHA_POOL_CATALOG) { file ->
+            gachaPoolCatalogParser.parse(file)
         }
     }
 

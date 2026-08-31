@@ -3,7 +3,9 @@ package com.blueskybone.arkscreen.platform.screenshot
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.blueskybone.arkscreen.R
@@ -21,6 +23,18 @@ class ScreenshotNotificationFactory(
             .setContentText(context.getString(R.string.screenshot_in_progress))
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
+            .addAction(
+                0,
+                context.getString(R.string.screenshot_stop),
+                PendingIntent.getService(
+                    context,
+                    STOP_REQUEST_CODE,
+                    Intent(context, ScreenshotCaptureService::class.java).apply {
+                        action = ScreenshotCaptureService.ACTION_STOP
+                    },
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                ),
+            )
             .build()
     }
 
@@ -41,5 +55,6 @@ class ScreenshotNotificationFactory(
 
     companion object {
         private const val CHANNEL_ID = "screenshot_capture"
+        private const val STOP_REQUEST_CODE = 10087
     }
 }
