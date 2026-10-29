@@ -236,11 +236,16 @@ class MainModel(
         }
     }
 
-    fun fetchBiliVideos() {
+    fun fetchBiliVideos(game: HomeGame = HomeGame.ARKNIGHTS) {
         viewModelScope.launch {
-            homeContentRepository.fetchBiliVideos()
+            homeContentRepository.fetchBiliVideos(game.bilibiliUid)
                 .onSuccess { list ->
-                    _uiState.update { it.copy(biliVideos = list) }
+                    _uiState.update { state ->
+                        when (game) {
+                            HomeGame.ARKNIGHTS -> state.copy(biliVideos = list)
+                            HomeGame.ENDFIELD -> state.copy(endfieldBiliVideos = list)
+                        }
+                    }
                 }
                 .onFailure { error ->
                     Timber.tag("Home").e(error, "Bilibili video loading failed")

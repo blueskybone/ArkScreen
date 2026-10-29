@@ -128,7 +128,7 @@ class Function : Fragment() {
             startActivity(Intent(requireContext(), WidgetTemplateLabActivity::class.java))
         }
 
-        PreferenceBinder.bindPreference(
+        PreferenceBinder.bindPreferenceValue(
             binding = binding.WidgetRefresh,
             context = requireContext(),
             icon = R.drawable.ic_refresh,

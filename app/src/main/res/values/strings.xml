@@ -1,6 +1,14 @@
 <resources>
     <!-- App Info -->
     <string name="app_name">公招助手</string>
+    <string name="game_arknights">明日方舟</string>
+    <string name="game_endfield">终末地</string>
+    <string name="game_selector_label">%1$s ▾</string>
+    <string name="switch_game">切换游戏</string>
+    <string name="startup_game_suffix"> · 启动页</string>
+    <string name="set_current_game_as_startup">将当前游戏设为启动页</string>
+    <string name="startup_game_set">已将%s设为启动页</string>
+    <string name="endfield_home_pending">数据接入后将在这里显示</string>
 
     <!-- Dialogs Action-->
     <string name="cancel">取消</string>
@@ -185,11 +193,11 @@
     <string name="account_manager">账号管理</string>
     <string name="account_manager_summary">森空岛账号用于游戏数据与签到；寻访记录账号仅用于寻访统计。两者凭证互不通用。</string>
     <string name="skland_account_manage">森空岛账号</string>
-    <string name="skland_account_summary">用于同步实时数据、干员资产和森空岛签到</string>
+    <string name="skland_account_summary">用于同步游戏数据和森空岛签到</string>
     <string name="arknights_accounts">明日方舟</string>
     <string name="endfield_accounts">明日方舟：终末地</string>
     <string name="gacha_account_manage">寻访记录账号</string>
-    <string name="gacha_account_summary">独立于森空岛账号，仅同步明日方舟寻访记录</string>
+    <string name="gacha_account_summary">用于同步明日方舟寻访记录</string>
     <string name="add_skland_account">添加森空岛账号</string>
     <string name="add_gacha_account">添加寻访记录账号</string>
     <string name="no_arknights_account">暂无明日方舟角色，请先添加森空岛账号</string>
@@ -293,8 +301,9 @@
     <string name="account_source_skland">数据来自森空岛</string>
     <string name="account_source_gacha">数据来自明日方舟通行证</string>
     <string name="core_data">核心数据</string>
-    <string name="assets_entry_summary">查看持有、培养与缺失干员</string>
-    <string name="gacha_entry_summary">查看出货记录与寻访统计</string>
+    <string name="assets_entry_summary">持有与培养</string>
+    <string name="gacha_entry_summary">记录与统计</string>
+    <string name="endfield_entry_pending">即将开放</string>
     <string name="confirm_delete_account_detail">将删除该账号保存在本机的凭证和关联数据，不会影响游戏账号。此操作无法撤销。</string>
     <string name="confirm_clear_gacha_detail">将清空当前寻访记录账号的全部本地记录。此操作无法撤销，建议先导出备份。</string>
     <string name="confirm_delete_link_detail">将从首页移除此链接。此操作无法撤销。</string>

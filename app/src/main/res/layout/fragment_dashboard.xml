@@ -185,7 +185,7 @@
                     </LinearLayout>
 
                     <include android:id="@+id/PowerSavingMode" layout="@layout/preference_sub_switch" />
-                    <include android:id="@+id/WidgetRefresh" layout="@layout/preference" />
+                    <include android:id="@+id/WidgetRefresh" layout="@layout/preference_value" />
                     <include android:id="@+id/WidgetAppearance" layout="@layout/preference_icon" />
                     <include
                         android:id="@+id/TurnOffBatteryOptimization"

@@ -16,10 +16,14 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/GameSelector"
                 style="@style/TextView.Headline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/app_name" />
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:text="@string/game_arknights" />
 
             <TextView
                 android:id="@+id/CurrentAccount"
@@ -59,27 +63,14 @@
                     android:src="@drawable/ic_user"
                     app:tint="?attr/colorPrimary" />
 
-                <LinearLayout
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/home_login_guide_title"
-                        android:textAppearance="?attr/textAppearanceSubtitle1"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:text="@string/home_login_guide_summary"
-                        android:textAppearance="?attr/textAppearanceBody2" />
-                </LinearLayout>
+                    android:text="@string/home_login_guide_title"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
+                    android:textStyle="bold" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/LoginNow"
@@ -176,32 +167,31 @@
             android:layout_marginTop="16dp"
             android:text="@string/core_data" />
 
-        <com.google.android.material.card.MaterialCardView
-            style="@style/CardViewContent"
-            android:clickable="false"
-            android:focusable="false">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <include
+                android:id="@+id/CoreAssets"
+                layout="@layout/home_core_tile"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1" />
 
-                <include
-                    android:id="@+id/CoreAssets"
-                    layout="@layout/home_core_entry" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="70dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="?android:attr/listDivider" />
-
-                <include
-                    android:id="@+id/CoreGacha"
-                    layout="@layout/home_core_entry" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            <include
+                android:id="@+id/CoreGacha"
+                layout="@layout/home_core_tile"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1" />
+        </LinearLayout>
 
         <TextView
             style="@style/PreferenceHeader"

@@ -17,6 +17,7 @@ data class MainUiState(
     val status: UiStatus = UiStatus.Idle,
     val announce: String = "",
     val biliVideos: List<BiliVideo> = emptyList(),
+    val endfieldBiliVideos: List<BiliVideo> = emptyList(),
     val appRemoteConfig: AppRemoteConfig = AppRemoteConfig.Default,
     val links: List<Link> = emptyList(),
 

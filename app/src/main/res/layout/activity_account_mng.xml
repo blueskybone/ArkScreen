@@ -25,16 +25,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:text="@string/account_manager_summary"
-                    android:textAppearance="@style/TextAppearance.Body2" />
-            </com.google.android.material.card.MaterialCardView>
-
             <com.google.android.material.card.MaterialCardView
                 style="@style/CardViewContent"
                 android:layout_marginTop="10dp">
@@ -91,6 +81,7 @@
                             android:contentDescription="@string/account_info"
                             android:padding="10dp"
                             android:src="@drawable/ic_info"
+                            android:visibility="gone"
                             app:tint="?attr/colorOnSurface" />
                     </LinearLayout>
 
@@ -236,6 +227,7 @@
                             android:contentDescription="@string/account_info"
                             android:padding="10dp"
                             android:src="@drawable/ic_info"
+                            android:visibility="gone"
                             app:tint="?attr/colorOnSurface" />
                     </LinearLayout>
 

@@ -28,6 +28,7 @@ class SettingPrefManager() {
         alarmAtdMin = preferenceStore.getInt("alarm_attendance_min", 10)
         useInnerWeb = preferenceStore.getBoolean("use_inner_web", true)
         appTheme = preferenceStore.getString("app_theme", AppTheme.defaultValue)
+        defaultHomeGame = preferenceStore.getString("default_home_game", "ARKNIGHTS")
         assetsViewType = preferenceStore.getInt("assets_view_type", 0)
         showEmptyGachaPools = preferenceStore.getBoolean("show_empty_gacha_pools", true)
 
@@ -61,6 +62,7 @@ class SettingPrefManager() {
     lateinit var autoUpdateApp: Preference<Boolean>     //自动检查更新
     lateinit var useInnerWeb: Preference<Boolean>       //使用内置浏览器
     lateinit var appTheme: Preference<String>           //主题
+    lateinit var defaultHomeGame: Preference<String>    //启动时显示的游戏
     lateinit var showHomeAnnounce: Preference<Boolean>  //显示首页公告
     lateinit var assetsViewType: Preference<Int>        //干员资产列表展示模式
     lateinit var showEmptyGachaPools: Preference<Boolean>
