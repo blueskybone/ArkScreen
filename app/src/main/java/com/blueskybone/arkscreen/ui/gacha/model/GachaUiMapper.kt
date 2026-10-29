@@ -202,7 +202,7 @@ object GachaUiMapper {
     ): GachaOverview {
         val normal = recordsByPoolCate["NORMAL"].orEmpty()
         val classic = recordsByPoolCate["CLASSIC"].orEmpty()
-        val limited = recordsByPoolCate["LIMITED"].orEmpty()
+        val limited = sortedRecords.filter { it.poolCate.toGachaType() == GachaType.LIMITED }
 
         return GachaOverview(
             poolCountNormal = currentPity(normal),

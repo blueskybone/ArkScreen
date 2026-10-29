@@ -58,7 +58,7 @@ class GachaImportDecoderTest {
         assertEquals(GachaImportFormat.OFFICIAL_COMPRESSED, document.format)
         assertEquals("130667312", document.sourceUid)
         assertEquals(1_780_286_233_286L, document.records.first().timestamp)
-        assertEquals(listOf(0, 1), document.records.map { it.position })
+        assertEquals(listOf(8, 9), document.records.map { it.position })
         assertEquals("LINKAGE_74_0_1", document.records.first().poolId)
         assertTrue(document.records.last().isNew)
     }
@@ -72,6 +72,26 @@ class GachaImportDecoderTest {
 
         assertNull(document.records.single().poolId)
         assertTrue(document.warnings.any { it.code == GachaImportWarning.Code.MISSING_POOL_ID })
+    }
+
+    @Test
+    fun decodeOfficialCompressed_defaultsToArrayPositionsWhenPosIsMissing() {
+        val document = decoder.decode(
+            null,
+            """{"1777606331":{"p":"承诺","c":[["芬",2,0],["杜宾",3,0]]}}""",
+        )
+
+        assertEquals(listOf(0, 1), document.records.map { it.position })
+    }
+
+    @Test
+    fun decodeOfficialCompressed_rejectsPosShorterThanTheGroup() {
+        assertThrows(IllegalArgumentException::class.java) {
+            decoder.decode(
+                null,
+                """{"1777606331":{"p":"承诺","c":[["芬",2,0],["杜宾",3,0]],"pos":0}}""",
+            )
+        }
     }
 
     @Test

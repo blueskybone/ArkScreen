@@ -123,6 +123,18 @@ class GachaImportDecoder(
                 require(characters.isArray && characters.size() in 1..10) {
                     "时间 $timestampText 的干员列表格式错误"
                 }
+                // 压缩格式的 pos 对应这一组最后一条记录；没有 pos 的旧格式从 0 开始。
+                val firstPosition = if (readPoolId && group.has("pos")) {
+                    val lastPositionNode = group.path("pos")
+                    require(lastPositionNode.isIntegralNumber && lastPositionNode.canConvertToInt()) {
+                        "时间 $timestampText 的记录位置格式错误"
+                    }
+                    val lastPosition = lastPositionNode.asInt()
+                    require(lastPosition >= characters.size() - 1) {
+                        "时间 $timestampText 的记录位置无效"
+                    }
+                    lastPosition - characters.size() + 1
+                } else 0
                 characters.forEachIndexed { position, character ->
                     require(character.isArray && character.size() >= 3) {
                         "时间 $timestampText 的第 ${position + 1} 条记录格式错误"
@@ -145,7 +157,7 @@ class GachaImportDecoder(
                     add(
                         RawGachaRecord(
                             timestamp = timestamp,
-                            position = position,
+                            position = firstPosition + position,
                             poolName = poolName,
                             poolId = poolId,
                             charName = charName,
