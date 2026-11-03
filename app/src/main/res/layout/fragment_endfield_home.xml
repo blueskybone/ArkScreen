@@ -72,15 +72,15 @@
             android:text="@string/real_time_data" />
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/RealTimeData"
             style="@style/CardViewContent"
-            android:clickable="false"
-            android:focusable="false">
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:text="@string/endfield_home_pending" />
+            <include
+                android:id="@+id/EfStaminaCard"
+                layout="@layout/card_ap_cache" />
         </com.google.android.material.card.MaterialCardView>
 
         <TextView

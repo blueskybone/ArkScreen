@@ -17,6 +17,7 @@ data class EndfieldCardDetailData(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class EndfieldCardDetail(
+    val base: EndfieldPlayerBase? = null,
     val currentTs: String? = null,
     val dungeon: EndfieldStamina? = null,
     val dailyMission: EndfieldDailyMission? = null,
@@ -24,6 +25,17 @@ data class EndfieldCardDetail(
     val bpSystem: EndfieldBattlePass? = null,
     val domain: List<EndfieldDomain>? = null,
     val chars: List<EndfieldCharacter>? = null,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class EndfieldPlayerBase(
+    val roleId: String? = null,
+    val name: String? = null,
+    val serverName: String? = null,
+    val level: Int? = null,
+    val worldLevel: Int? = null,
+    val avatarUrl: String? = null,
+    val lastLoginTime: String? = null,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -56,6 +68,7 @@ data class EndfieldBattlePass(
 data class EndfieldDomain(
     val domainId: String? = null,
     val name: String? = null,
+    val level: Int? = null,
     val moneyMgr: EndfieldMoneyManager? = null,
     val settlements: List<EndfieldSettlement>? = null,
 )

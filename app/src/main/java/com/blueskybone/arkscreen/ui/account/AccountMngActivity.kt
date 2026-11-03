@@ -171,13 +171,9 @@ class AccountMngActivity : AppCompatActivity() {
     }
 
 
-    private fun createItemAction(type: AccountType): AccountItemAction {
+    private fun createItemAction(): AccountItemAction {
         return object : AccountItemAction {
             override fun onClick(account: Account) {
-                if (type == AccountType.EF) {
-                    Toaster.show(getString(R.string.not_support_set_default))
-                    return
-                }
                 model.setDefaultAccount(account)
                 Toaster.show(getString(R.string.set_default_account, account.nickName))
             }
@@ -217,9 +213,9 @@ class AccountMngActivity : AppCompatActivity() {
     }
 
     private fun initAdapters() {
-        skAdapter = AccountAdapter(createItemAction(AccountType.SK))
-        gcAdapter = AccountAdapter(createItemAction(AccountType.GC))
-        efAdapter = AccountAdapter(createItemAction(AccountType.EF))
+        skAdapter = AccountAdapter(createItemAction())
+        gcAdapter = AccountAdapter(createItemAction())
+        efAdapter = AccountAdapter(createItemAction())
 
         binding.RecyclerView.adapter = skAdapter
         binding.RecyclerViewGc.adapter = gcAdapter

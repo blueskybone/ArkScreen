@@ -40,7 +40,8 @@ data class AccountEf(
     val dId: String,
     val channelMasterId: String,
     val roleId: String,
-    val serverId: String
+    val serverId: String,
+    val bindingUid: String? = null
 ): Account
 
 data class AccountGc(

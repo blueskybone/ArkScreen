@@ -8,6 +8,7 @@ import com.blueskybone.arkscreen.data.network.model.BiliResponse
 import com.blueskybone.arkscreen.data.network.model.BindingResponse
 import com.blueskybone.arkscreen.data.network.model.CredRequest
 import com.blueskybone.arkscreen.data.network.model.CredResponse
+import com.blueskybone.arkscreen.data.network.model.EndfieldCardDetailResponse
 import com.blueskybone.arkscreen.data.network.model.GachaCateResponse
 import com.blueskybone.arkscreen.data.network.model.GachaResponse
 import com.blueskybone.arkscreen.data.network.model.GrantRequest
@@ -60,6 +61,13 @@ interface ApiService {
     suspend fun signEf(
         @HeaderMap headers: Map<String, String>
     ): Response<AttendanceEndfieldResponse>
+
+    @GET("/api/v1/game/endfield/card/detail")
+    suspend fun getEndfieldCardDetail(
+        @Query("roleId") roleId: String,
+        @Query("serverId") serverId: String,
+        @HeaderMap headers: Map<String, String>,
+    ): Response<EndfieldCardDetailResponse>
 
 //    // 获取玩家信息
 //    @Streaming

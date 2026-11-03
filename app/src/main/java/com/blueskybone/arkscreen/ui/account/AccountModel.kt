@@ -48,6 +48,7 @@ class AccountModel(
 
     private val currentSkFlow = repo.observeCurrentSkAcc()
     private val currentGcFlow = repo.observeCurrentGcAcc()
+    private val currentEfFlow = repo.observeCurrentEfAcc()
 
     val accountSkUiList: StateFlow<List<AccountItemUiModel>> =
         combine(skListFlow, currentSkFlow) { list, current ->
@@ -70,11 +71,11 @@ class AccountModel(
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val accountEfUiList: StateFlow<List<AccountItemUiModel>> =
-        efListFlow.map { list ->
+        combine(efListFlow, currentEfFlow) { list, current ->
             list.map { account ->
                 AccountItemUiModel(
                     account = account,
-                    isDefault = false
+                    isDefault = account.uid == current?.uid
                 )
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -171,8 +172,9 @@ class AccountModel(
             when (account) {
                 is AccountSk -> repo.setCurrentAccountSk(account)
                 is AccountGc -> repo.setCurrentAccountGc(account)
-                is AccountEf -> Unit
-            }
+                is AccountEf -> repo.setCurrentAccountEf(account)
+                else -> Result.failure(IllegalArgumentException("不支持的账号类型"))
+            }.getOrThrow()
         }
     }
 

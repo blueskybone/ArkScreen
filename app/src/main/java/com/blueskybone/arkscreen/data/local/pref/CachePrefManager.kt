@@ -3,6 +3,7 @@ package com.blueskybone.arkscreen.data.local.pref
 import com.blueskybone.arkscreen.data.local.pref.preference.Preference
 import com.blueskybone.arkscreen.data.local.pref.preference.PreferenceStore
 import com.blueskybone.arkscreen.domain.model.cache.ApCache
+import com.blueskybone.arkscreen.domain.model.cache.EndfieldStaminaCache
 import com.blueskybone.arkscreen.domain.model.cache.CacheAccountInfo
 import com.blueskybone.arkscreen.domain.model.cache.LaborCache
 import com.blueskybone.arkscreen.domain.model.cache.MeetCache
@@ -25,6 +26,17 @@ class CachePrefManager() {
         apCache = preferenceStore.getObject(
             "ap_cache",
             ApCache.default(), serializerAp(), deserializerAp()
+        )
+        endfieldStamina = preferenceStore.getObject(
+            "endfield_stamina_cache", EndfieldStaminaCache(),
+            { cache -> "${cache.uid}@${cache.sampledAt}@${cache.current}@${cache.maximum}@${cache.fullAt}" },
+            Function { raw ->
+                runCatching {
+                    val fields = raw.split('@')
+                    EndfieldStaminaCache(fields[0], fields[1].toLong(), fields[2].toLong(),
+                        fields[3].toLong(), fields[4].toLong())
+                }.getOrDefault(EndfieldStaminaCache())
+            },
         )
         laborCache = preferenceStore.getObject(
             "labor_cache",
@@ -55,6 +67,7 @@ class CachePrefManager() {
     }
 
     lateinit var apCache: Preference<ApCache>
+    lateinit var endfieldStamina: Preference<EndfieldStaminaCache>
     lateinit var laborCache: Preference<LaborCache>
     lateinit var trainCache: Preference<TrainCache>
     lateinit var recruitCache: Preference<RecruitCache>

@@ -11,6 +11,7 @@ import com.blueskybone.arkscreen.data.local.room.dao.AccountGcDao
 import com.blueskybone.arkscreen.data.local.room.dao.AccountSkDao
 import com.blueskybone.arkscreen.data.local.room.dao.AttendanceRecordDao
 import com.blueskybone.arkscreen.data.local.room.dao.GachaDao
+import com.blueskybone.arkscreen.data.local.room.dao.EndfieldGachaDao
 import com.blueskybone.arkscreen.data.local.room.dao.LinkDao
 
 /**
@@ -25,8 +26,10 @@ import com.blueskybone.arkscreen.data.local.room.dao.LinkDao
         Link::class,
         Gacha::class,
         AttendanceRecord::class,
+        EndfieldGachaRecord::class,
+        EndfieldGachaPool::class,
     ],
-    version = 7,
+    version = 10,
 )
 abstract class ArkDatabase : RoomDatabase() {
     abstract fun getAccountSkDao(): AccountSkDao
@@ -35,6 +38,7 @@ abstract class ArkDatabase : RoomDatabase() {
     abstract fun getLinkDao(): LinkDao
     abstract fun getGachaDao(): GachaDao
     abstract fun getAttendanceRecordDao(): AttendanceRecordDao
+    abstract fun getEndfieldGachaDao(): EndfieldGachaDao
 
     companion object {
 
@@ -51,6 +55,7 @@ abstract class ArkDatabase : RoomDatabase() {
                     DatabaseName
                 ).addMigrations(Migration2).addMigrations(Migration3).addMigrations(Migration4)
                     .addMigrations(Migration5).addMigrations(Migration6).addMigrations(Migration7)
+                    .addMigrations(Migration8).addMigrations(Migration9).addMigrations(Migration10)
                     .build()
                 INSTANCE = instance
                 instance
@@ -147,6 +152,52 @@ abstract class ArkDatabase : RoomDatabase() {
                     )
                     """.trimIndent()
                 )
+            }
+        }
+
+        object Migration8 : Migration(7, 8) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE AccountEf ADD COLUMN bindingUid TEXT")
+            }
+        }
+
+        object Migration9 : Migration(8, 9) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS `EndfieldGachaRecord` (
+                        `roleId` TEXT NOT NULL,
+                        `type` TEXT NOT NULL,
+                        `seqId` TEXT NOT NULL,
+                        `poolId` TEXT NOT NULL,
+                        `poolName` TEXT NOT NULL,
+                        `poolType` TEXT NOT NULL,
+                        `itemId` TEXT NOT NULL,
+                        `itemName` TEXT NOT NULL,
+                        `rarity` INTEGER NOT NULL,
+                        `gachaTs` TEXT NOT NULL,
+                        `kind` TEXT NOT NULL,
+                        `isNew` INTEGER NOT NULL,
+                        `isFree` INTEGER NOT NULL,
+                        PRIMARY KEY(`roleId`, `type`, `seqId`)
+                    )
+                """.trimIndent())
+            }
+        }
+
+        object Migration10 : Migration(9, 10) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE EndfieldGachaRecord ADD COLUMN poolVersion INTEGER")
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS `EndfieldGachaPool` (
+                        `roleId` TEXT NOT NULL,
+                        `type` TEXT NOT NULL,
+                        `poolId` TEXT NOT NULL,
+                        `poolName` TEXT NOT NULL,
+                        `up6Ids` TEXT NOT NULL,
+                        `officialCount` INTEGER,
+                        PRIMARY KEY(`roleId`, `type`, `poolId`)
+                    )
+                """.trimIndent())
             }
         }
     }

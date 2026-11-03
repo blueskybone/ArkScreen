@@ -147,10 +147,22 @@
             android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
+            android:name=".ui.character.EndfieldCharsActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.main.MainActivity" />
+        <activity
+            android:name=".ui.realtime.EndfieldRealtimeActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.main.MainActivity" />
+        <activity
             android:name=".ui.gacha.GachaActivity"
             android:exported="false"
             android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
+        <activity
+            android:name=".ui.gacha.EndfieldGachaActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.main.MainActivity" />
         <activity
             android:name=".ui.recruit.RecruitActivity"
             android:exported="false"

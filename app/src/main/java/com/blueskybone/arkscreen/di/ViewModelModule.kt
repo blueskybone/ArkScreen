@@ -2,14 +2,18 @@ package com.blueskybone.arkscreen.di
 
 import com.blueskybone.arkscreen.ui.account.AccountModel
 import com.blueskybone.arkscreen.ui.character.CharModel
+import com.blueskybone.arkscreen.ui.character.EndfieldCharModel
 import com.blueskybone.arkscreen.ui.gacha.GachaModel
+import com.blueskybone.arkscreen.ui.gacha.EndfieldGachaModel
 import com.blueskybone.arkscreen.ui.main.MainModel
 import com.blueskybone.arkscreen.ui.realtime.RealTimeModel
+import com.blueskybone.arkscreen.ui.realtime.EndfieldRealtimeModel
 import com.blueskybone.arkscreen.ui.recruit.RecruitModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val viewModelModule = module {
+    viewModel { EndfieldGachaModel(accounts = get(), repository = get()) }
     viewModel { AccountModel(get(), get(), get()) }
     viewModel {
         MainModel(
@@ -64,4 +68,6 @@ val viewModelModule = module {
             textTranslator = get(),
         )
     }
+    viewModel { EndfieldCharModel(accounts = get(), skland = get()) }
+    viewModel { EndfieldRealtimeModel(accounts = get(), skland = get()) }
 }

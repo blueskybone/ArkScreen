@@ -95,4 +95,16 @@
     <color name="recruit_metadata_chip_background">#E6E6E6</color>
     <color name="recruit_metadata_chip_text">#424242</color>
 
+    <color name="ef_skill_physical">#777777</color>
+    <color name="ef_skill_pulse">#F6C744</color>
+    <color name="ef_skill_natural">#B4CA40</color>
+    <color name="ef_skill_fire">#EC694B</color>
+    <color name="ef_skill_cryst">#58BFCA</color>
+    <color name="ef_talent_active">#F5D443</color>
+    <color name="ef_talent_locked">#A9A9A9</color>
+    <color name="ef_equip_green">#88B764</color>
+    <color name="ef_equip_purple">#A884C5</color>
+    <color name="ef_equip_gold">#E1BC5A</color>
+    <color name="ef_equip_unknown">#8E8E8E</color>
+    <color name="ef_item_icon_background">#696969</color>
 </resources>

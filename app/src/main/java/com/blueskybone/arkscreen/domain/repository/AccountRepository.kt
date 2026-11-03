@@ -19,6 +19,7 @@ interface AccountRepository {
 
     fun observeCurrentSkAcc(): Flow<AccountSk?>
     fun observeCurrentGcAcc(): Flow<AccountGc?>
+    fun observeCurrentEfAcc(): Flow<AccountEf?>
 
     //手机密码登入（森空岛）
     suspend fun loginByPhonePassword(phone: String, code: String): Result<Int>
@@ -42,6 +43,7 @@ interface AccountRepository {
     fun setCurrentAccountGc(account: AccountGc): Result<Unit>
 
     fun setCurrentAccountSk(account: AccountSk): Result<Unit>
+    fun setCurrentAccountEf(account: AccountEf): Result<Unit>
 
     suspend fun deleteAccount(account: Account): Result<Unit>
 }
