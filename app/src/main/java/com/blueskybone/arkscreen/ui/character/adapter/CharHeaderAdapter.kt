@@ -1,7 +1,6 @@
 package com.blueskybone.arkscreen.ui.character.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
@@ -15,7 +14,6 @@ class CharHeaderAdapter : RecyclerView.Adapter<CharHeaderAdapter.HeaderViewHolde
     private var statistic = CharStatistic()
     private var account: AccountSk? = null
     private var accountAvatarUrl: String? = null
-    private var viewType = ViewType.GRID
 
     fun submitStatistic(value: CharStatistic) {
         statistic = value
@@ -32,12 +30,6 @@ class CharHeaderAdapter : RecyclerView.Adapter<CharHeaderAdapter.HeaderViewHolde
         notifyItemChanged(0)
     }
 
-    fun setViewType(value: ViewType) {
-        if (viewType == value) return
-        viewType = value
-        notifyItemChanged(0)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HeaderViewHolder =
         HeaderViewHolder(
             ItemCharHeaderBinding.inflate(
@@ -48,7 +40,7 @@ class CharHeaderAdapter : RecyclerView.Adapter<CharHeaderAdapter.HeaderViewHolde
         )
 
     override fun onBindViewHolder(holder: HeaderViewHolder, position: Int) {
-        holder.bind(account, accountAvatarUrl, statistic, viewType)
+        holder.bind(account, accountAvatarUrl, statistic)
     }
 
     override fun getItemCount(): Int = 1
@@ -61,7 +53,6 @@ class CharHeaderAdapter : RecyclerView.Adapter<CharHeaderAdapter.HeaderViewHolde
             account: AccountSk?,
             accountAvatarUrl: String?,
             statistic: CharStatistic,
-            viewType: ViewType,
         ) {
             val context = binding.root.context
             binding.AccountNickName.text = account?.nickName.orEmpty()
@@ -85,11 +76,15 @@ class CharHeaderAdapter : RecyclerView.Adapter<CharHeaderAdapter.HeaderViewHolde
                     else R.drawable.bili_icon_75x71
                 )
             }
-            binding.TotalOwn.text =
+            binding.OwnedStat.Title.setText(R.string.assets_owned)
+            binding.E2Stat.Title.setText(R.string.assets_e2)
+            binding.M3Stat.Title.setText(R.string.assets_m3)
+            binding.Module3Stat.Title.setText(R.string.assets_module3_short)
+            binding.OwnedStat.Value.text =
                 "${statistic.totalOwn}/${statistic.totalOwn + statistic.totalMiss}"
-            binding.TotalE2.text = statistic.totalE2.toString()
-            binding.TotalM3.text = statistic.totalM3.toString()
-            binding.TotalModule3.text = statistic.totalModule3.toString()
+            binding.E2Stat.Value.text = statistic.totalE2.toString()
+            binding.M3Stat.Value.text = statistic.totalM3.toString()
+            binding.Module3Stat.Value.text = statistic.totalModule3.toString()
             binding.R6Progress.text = context.getString(
                 R.string.assets_rarity_progress,
                 6,
@@ -108,8 +103,6 @@ class CharHeaderAdapter : RecyclerView.Adapter<CharHeaderAdapter.HeaderViewHolde
                 statistic.r4Own,
                 statistic.r4Own + statistic.r4Miss,
             )
-            binding.TableHeader.visibility =
-                if (viewType == ViewType.LIST) View.VISIBLE else View.GONE
         }
     }
 }

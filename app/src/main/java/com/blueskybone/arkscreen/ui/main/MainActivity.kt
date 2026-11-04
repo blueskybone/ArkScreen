@@ -10,6 +10,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import android.view.MenuItem
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +32,7 @@ import com.blueskybone.arkscreen.platform.installer.ApkInstaller
 import com.blueskybone.arkscreen.platform.notification.DownloadNotificationController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.button.MaterialButton
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -45,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         private const val KEY_PENDING_INSTALL_APK = "pending_install_apk"
         private const val KEY_CURRENT_PAGE = "current_page"
         private const val KEY_CURRENT_HOME_GAME = "current_home_game"
+        private const val KEY_ANIMATE_HOME_ENTER = "animate_home_enter"
         const val ACTION_INSTALL_DOWNLOADED_UPDATE =
             "com.blueskybone.arkscreen.action.INSTALL_DOWNLOADED_UPDATE"
         const val EXTRA_APK_PATH = "downloaded_update_apk_path"
@@ -69,6 +73,7 @@ class MainActivity : AppCompatActivity() {
     private var pendingInstallApkPath: String? = null
     private var updateDialog: AlertDialog? = null
     private lateinit var currentHomeGame: HomeGame
+    private var switchingHomeGame = false
 
     override fun onResume() {
         super.onResume()
@@ -90,10 +95,21 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         pendingInstallApkPath = savedInstanceState?.getString(KEY_PENDING_INSTALL_APK)
         setContentView(binding.root)
+        if (savedInstanceState?.getBoolean(KEY_ANIMATE_HOME_ENTER) == true) {
+            binding.ViewPager.alpha = 0f
+            binding.ViewPager.translationX = 12f * resources.displayMetrics.density
+        }
         observeEvent()
         observeUpdateState()
         observeDownloadState()
         setUpNavigation(savedInstanceState?.getInt(KEY_CURRENT_PAGE) ?: 0)
+        if (savedInstanceState?.getBoolean(KEY_ANIMATE_HOME_ENTER) == true) {
+            binding.ViewPager.animate()
+                .alpha(1f)
+                .translationX(0f)
+                .setDuration(180L)
+                .start()
+        }
         if (settingPrefManager.autoUpdateApp.get()) {
             model.checkAppUpdate()
         }
@@ -253,30 +269,43 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun showGameSelector() {
-        val games = HomeGame.entries
-        val defaultGame = HomeGame.fromStored(settingPrefManager.defaultHomeGame.get())
-        val labels = games.map { game ->
-            getString(game.titleRes) +
-                if (game == defaultGame) getString(R.string.startup_game_suffix) else ""
-        }.toTypedArray()
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.switch_game)
-            .setSingleChoiceItems(labels, games.indexOf(currentHomeGame)) { dialog, which ->
-                dialog.dismiss()
-                val selected = games[which]
-                if (selected != currentHomeGame) {
-                    currentHomeGame = selected
-                    binding.ViewPager.setCurrentItem(0, false)
-                    recreate()
+    fun bindHomeGameControls(title: TextView, switch: ImageButton, defaultButton: MaterialButton) {
+        title.setText(currentHomeGame.titleRes)
+        switch.setOnClickListener { switchHomeGame() }
+        updateDefaultButton(defaultButton)
+        defaultButton.setOnClickListener {
+            settingPrefManager.defaultHomeGame.set(currentHomeGame.name)
+            updateDefaultButton(defaultButton)
+            Toaster.show(getString(R.string.startup_game_set, getString(currentHomeGame.titleRes)))
+        }
+    }
+
+    private fun updateDefaultButton(button: MaterialButton) {
+        val isDefault = HomeGame.fromStored(settingPrefManager.defaultHomeGame.get()) == currentHomeGame
+        button.isEnabled = !isDefault
+        button.setText(
+            if (isDefault) R.string.current_default_startup_page
+            else R.string.set_default_startup_page
+        )
+    }
+
+    private fun switchHomeGame() {
+        if (switchingHomeGame) return
+        switchingHomeGame = true
+        binding.ViewPager.animate()
+            .alpha(0f)
+            .translationX(-12f * resources.displayMetrics.density)
+            .setDuration(130L)
+            .withEndAction {
+                currentHomeGame = if (currentHomeGame == HomeGame.ARKNIGHTS) {
+                    HomeGame.ENDFIELD
+                } else {
+                    HomeGame.ARKNIGHTS
                 }
+                binding.ViewPager.setCurrentItem(0, false)
+                recreate()
             }
-            .setNeutralButton(R.string.set_current_game_as_startup) { _, _ ->
-                settingPrefManager.defaultHomeGame.set(currentHomeGame.name)
-                Toaster.show(getString(R.string.startup_game_set, getString(currentHomeGame.titleRes)))
-            }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
+            .start()
     }
 
     class ViewPagerFragmentAdapter(
@@ -311,6 +340,7 @@ class MainActivity : AppCompatActivity() {
         pendingInstallApkPath?.let { outState.putString(KEY_PENDING_INSTALL_APK, it) }
         outState.putInt(KEY_CURRENT_PAGE, binding.ViewPager.currentItem)
         outState.putString(KEY_CURRENT_HOME_GAME, currentHomeGame.name)
+        outState.putBoolean(KEY_ANIMATE_HOME_ENTER, switchingHomeGame)
         super.onSaveInstanceState(outState)
     }
 

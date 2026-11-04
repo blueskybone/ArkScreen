@@ -174,7 +174,6 @@ class CharOwn : Fragment() {
                 binding.ViewChanger.setIconResource(R.drawable.ic_grid)
             }
         }
-        headerAdapter.setViewType(viewType)
         binding.RecyclerView.invalidateItemDecorations()
     }
 

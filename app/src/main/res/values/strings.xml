@@ -5,6 +5,8 @@
     <string name="game_endfield">终末地</string>
     <string name="game_selector_label">%1$s ▾</string>
     <string name="switch_game">切换游戏</string>
+    <string name="set_default_startup_page">设置默认启动页</string>
+    <string name="current_default_startup_page">当前默认</string>
     <string name="startup_game_suffix"> · 启动页</string>
     <string name="set_current_game_as_startup">将当前游戏设为启动页</string>
     <string name="startup_game_set">已将%s设为启动页</string>
@@ -228,7 +230,7 @@
     <string name="manufactures">制造站</string>
     <string name="labor">无人机</string>
     <string name="ap">理智</string>
-    <string name="campaign">剿灭</string>
+    <string name="weekly_campaign">本周剿灭</string>
 
     <!-- About Page -->
     <string name="check_update">检查更新</string>
@@ -379,13 +381,21 @@
     <string name="official_game_not_found">未检测到官服游戏安装</string>
     <string name="bilibili_game_not_found">未检测到B服游戏安装</string>
     <string name="realtime_immediate_status">即时状态</string>
+    <string name="realtime_recovery_overview">招募与恢复</string>
     <string name="realtime_base_overview">基建概览</string>
+    <string name="realtime_daily_mission">本日任务</string>
+    <string name="realtime_module_block">保全派驻</string>
+    <string name="realtime_module_higher">%1$s</string>
+    <string name="realtime_module_lower">%1$s</string>
+    <string name="realtime_uid">UID %1$s</string>
+    <string name="realtime_under_one_minute">不足 1 分钟</string>
+    <string name="realtime_training_trainer">陪同训练</string>
+    <string name="realtime_training_target_skill">专精技能 %1$d</string>
     <string name="realtime_sanity">理智</string>
     <string name="realtime_ap_full_at">回满： %1$s</string>
     <string name="realtime_ap_remaining">剩余： %1$s</string>
     <string name="realtime_ap_full_recovered">回满： 已恢复</string>
     <string name="realtime_ap_remaining_recovered">剩余： 已恢复</string>
-    <string name="realtime_shift_reminder">训练换班提醒</string>
     <string name="realtime_launch_game">启动游戏</string>
     <string name="official_server">官服</string>
     <string name="bilibili_server">B服</string>
@@ -393,6 +403,9 @@
     <string name="assets_e2">精二</string>
     <string name="assets_m3">专三</string>
     <string name="assets_module3_short">三模</string>
+    <string name="assets_trust_compact">信赖 %1$d%%</string>
+    <string name="assets_skills_short">技能</string>
+    <string name="assets_modules_short">模组</string>
     <string name="assets_rarity_progress">%1$d★  %2$d/%3$d</string>
     <string name="export_cookie">导出Cookie（包含登录凭证，请勿告知他人）</string>
     <string name="import_cookie">导入Cookie</string>

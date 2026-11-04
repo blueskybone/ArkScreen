@@ -106,6 +106,23 @@ object RealTimeMapper {
                 this.routine.campaignTotal = campaign.reward.total
                 this.routine.campaignCurrent = campaign.reward.current
             }
+
+            dataTree.routine?.daily?.let { daily ->
+                this.routine.dailyCurrent = daily.current
+                this.routine.dailyTotal = daily.total
+            }
+            dataTree.routine?.weekly?.let { weekly ->
+                this.routine.weeklyCurrent = weekly.current
+                this.routine.weeklyTotal = weekly.total
+            }
+            dataTree.tower?.reward?.higherItem?.let { higher ->
+                this.routine.towerHigherCurrent = higher.current
+                this.routine.towerHigherTotal = higher.total
+            }
+            dataTree.tower?.reward?.lowerItem?.let { lower ->
+                this.routine.towerLowerCurrent = lower.current
+                this.routine.towerLowerTotal = lower.total
+            }
         }
     }
 
@@ -150,10 +167,10 @@ object RealTimeMapper {
             trainerIsNull = train.trainer == null
 
             train.trainee?.let { trainee ->
+                targetSkill = trainee.targetSkill + 1
                 charInfoMap?.get(trainee.charId)?.let { charInfo ->
                     this.trainee = charInfo.name
                     profession = charInfo.profession
-                    targetSkill = trainee.targetSkill + 1
                 }
             }
 

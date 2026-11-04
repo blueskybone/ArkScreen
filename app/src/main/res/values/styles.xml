@@ -22,7 +22,7 @@
     </style>
 
     <style name="AppTheme.Endfield" parent="AppTheme">
-        <item name="colorPrimary">@color/endfield_primary</item>
+        <item name="colorPrimary">@color/endfield_on_surface_accent</item>
         <item name="colorPrimaryDark">@color/endfield_primary_dark</item>
         <item name="colorSecondary">@color/endfield_primary</item>
         <item name="colorOnPrimary">@color/grey_900</item>
@@ -49,6 +49,42 @@
 
     <style name="TextView.Headline3" parent="TextAppearance.MaterialComponents.Headline6">
         <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Widget.ArkScreen.InlineHint" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:background">@drawable/bg_inline_chip</item>
+        <item name="android:backgroundTint">@color/inline_chip_background</item>
+        <item name="android:textColor">@color/inline_chip_text</item>
+        <item name="android:paddingStart">7dp</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:paddingEnd">7dp</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.ArkScreen.InlineAction" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="backgroundTint">@color/inline_chip_background</item>
+        <item name="android:textColor">@color/inline_chip_text</item>
+        <item name="cornerRadius">7dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="Widget.ArkScreen.MetadataLabel" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">18dp</item>
+        <item name="android:background">@drawable/bg_asset_stat_chip</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">6dp</item>
+        <item name="android:paddingEnd">6dp</item>
+        <item name="android:textColor">@color/on_sec_con</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="PopupDownAnim" parent="android:Animation">
@@ -246,16 +282,17 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
-        <item name="android:textSize">13sp</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="Widget.ArkScreen.AssetStatValue" parent="TextAppearance.MaterialComponents.Headline6">
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginStart">10dp</item>
-        <item name="android:minWidth">64dp</item>
-        <item name="android:textColor">?attr/colorPrimary</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:layout_marginTop">3dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 

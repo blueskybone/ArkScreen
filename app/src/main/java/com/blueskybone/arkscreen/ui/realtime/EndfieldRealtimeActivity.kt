@@ -130,20 +130,23 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
         )
         card.Name.text = profile.name?.takeIf(String::isNotBlank)
             ?: getString(R.string.endfield_unnamed_player)
-        val levels = listOfNotNull(
-            profile.level?.let { getString(R.string.realtime_level, it) },
-            profile.worldLevel?.let { getString(R.string.endfield_world_level, it) },
-        )
-        card.Levels.text = levels.joinToString(" · ")
-        card.Levels.visibility = if (levels.isEmpty()) View.GONE else View.VISIBLE
-        val identity = listOfNotNull(
-            profile.serverName?.takeIf(String::isNotBlank),
-            profile.roleId?.takeIf(String::isNotBlank)?.let {
-                getString(R.string.endfield_player_id, it)
-            },
-        )
-        card.Server.text = identity.joinToString(" · ")
-        card.Server.visibility = if (identity.isEmpty()) View.GONE else View.VISIBLE
+        card.Level.visibility = if (profile.level == null) View.GONE else View.VISIBLE
+        profile.level?.let { card.Level.text = getString(R.string.realtime_level, it) }
+        card.WorldLevel.visibility = if (profile.worldLevel == null) View.GONE else View.VISIBLE
+        profile.worldLevel?.let {
+            card.WorldLevel.text = getString(R.string.endfield_world_level, it)
+        }
+        val serverName = profile.serverName?.takeIf(String::isNotBlank)
+        card.Server.visibility = if (serverName == null) View.GONE else View.VISIBLE
+        card.Server.text = serverName.orEmpty()
+        card.Metadata.visibility = if (profile.level == null && profile.worldLevel == null && serverName == null) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
+        val roleId = profile.roleId?.takeIf(String::isNotBlank)
+        card.RoleId.visibility = if (roleId == null) View.GONE else View.VISIBLE
+        card.RoleId.text = roleId?.let { getString(R.string.endfield_player_id, it) }.orEmpty()
         val lastLogin = profile.lastLoginAt?.takeIf { it > 0L }
         card.LastLogin.visibility = if (lastLogin == null) View.GONE else View.VISIBLE
         if (lastLogin != null) {

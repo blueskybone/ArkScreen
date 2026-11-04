@@ -21,6 +21,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceHeadline6"
-            android:textColor="?attr/colorPrimary" />
+            android:textColor="?android:attr/textColorPrimary" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

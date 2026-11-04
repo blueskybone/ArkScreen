@@ -30,31 +30,19 @@
 
                 <TextView
                     android:id="@+id/FullTime"
+                    style="@style/Widget.ArkScreen.InlineHint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="7dp"
-                    android:background="@drawable/bg_asset_stat_chip"
-                    android:paddingStart="9dp"
-                    android:paddingTop="4dp"
-                    android:paddingEnd="9dp"
-                    android:paddingBottom="4dp"
-                    android:textAppearance="?attr/textAppearanceCaption"
-                    android:textColor="@color/on_sec_con"
-                    android:textStyle="bold" />
+                    android:layout_marginTop="5dp" />
 
                 <TextView
                     android:id="@+id/RemainingTime"
+                    style="@style/Widget.ArkScreen.InlineHint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/bg_asset_stat_chip"
-                    android:paddingStart="9dp"
-                    android:paddingTop="4dp"
-                    android:paddingEnd="9dp"
-                    android:paddingBottom="4dp"
-                    android:textAppearance="?attr/textAppearanceCaption"
-                    android:textColor="@color/on_sec_con"
-                    android:textStyle="bold" />
+                    android:layout_marginTop="5dp" />
+
+
             </LinearLayout>
 
             <FrameLayout
@@ -68,7 +56,7 @@
                     app:cpb_background_progressbar_color="@color/sec_con"
                     app:cpb_background_progressbar_width="6dp"
                     app:cpb_progress_direction="to_right"
-                    app:cpb_progressbar_color="?attr/colorPrimary"
+                    app:cpb_progressbar_color="@color/endfield_primary"
                     app:cpb_progressbar_width="6dp"
                     app:cpb_round_border="true" />
 
@@ -78,7 +66,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:textAppearance="?attr/textAppearanceBody1"
-                    android:textColor="?attr/colorPrimary"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:textStyle="bold" />
             </FrameLayout>
         </LinearLayout>

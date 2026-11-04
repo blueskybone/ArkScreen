@@ -33,19 +33,43 @@
                 android:maxLines="1"
                 android:textAppearance="?attr/textAppearanceHeadline6" />
 
-            <TextView
-                android:id="@+id/Levels"
+            <LinearLayout
+                android:id="@+id/Metadata"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:textAppearance="?attr/textAppearanceBody2" />
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/Level"
+                    style="@style/Widget.ArkScreen.MetadataLabel"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/WorldLevel"
+                    style="@style/Widget.ArkScreen.MetadataLabel"
+                    android:layout_marginStart="6dp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/Server"
+                    style="@style/Widget.ArkScreen.MetadataLabel"
+                    android:layout_marginStart="6dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:maxWidth="80dp"
+                    android:visibility="gone" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/Server"
+                android:id="@+id/RoleId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:textAppearance="?attr/textAppearanceCaption" />
+                android:textAppearance="?attr/textAppearanceCaption"
+                android:textColor="?android:attr/textColorSecondary"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/LastLogin"

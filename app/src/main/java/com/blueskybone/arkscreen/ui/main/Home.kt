@@ -253,13 +253,11 @@ class Home : Fragment() {
     }
 
     private fun setupBinding() {
-        binding.GameSelector.text = getString(
-            R.string.game_selector_label,
-            getString(R.string.game_arknights),
+        (requireActivity() as MainActivity).bindHomeGameControls(
+            binding.GameSelector,
+            binding.SwitchGame,
+            binding.DefaultStartup,
         )
-        binding.GameSelector.setOnClickListener {
-            (requireActivity() as MainActivity).showGameSelector()
-        }
         binding.RealTimeData.setOnClickListener {
             startActivity(Intent(requireContext(), RealTimeActivity::class.java))
         }

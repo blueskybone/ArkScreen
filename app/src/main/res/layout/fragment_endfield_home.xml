@@ -10,34 +10,75 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="16dp">
 
-            <TextView
-                android:id="@+id/GameSelector"
-                style="@style/TextView.Headline"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground"
-                android:text="@string/game_endfield" />
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp">
+
+                    <TextView
+                        android:id="@+id/GameSelector"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/game_endfield"
+                        android:textAppearance="?attr/textAppearanceHeadline6"
+                        android:textSize="25sp"
+                        android:textStyle="bold" />
+
+                    <ImageButton
+                        android:id="@+id/SwitchGame"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="2dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/switch_game"
+                        android:padding="9dp"
+                        android:src="@drawable/ic_update"
+                        app:tint="?attr/colorPrimary" />
+                </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/DefaultStartup"
+                    style="@style/Widget.ArkScreen.InlineAction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/set_default_startup_page" />
+
+
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/CurrentAccount"
                 style="@style/TextView.Headline3"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|center"
+                android:layout_height="36dp"
+                android:layout_gravity="end"
                 android:clickable="true"
                 android:drawablePadding="10dp"
+                android:gravity="center_vertical"
                 android:maxWidth="200dp"
-                android:padding="20dp"
-                android:textColor="?attr/colorPrimary"
+                android:paddingStart="12dp"
+                android:paddingEnd="20dp"
+                android:textColor="@color/endfield_on_surface_accent"
                 app:drawableRightCompat="@drawable/ic_exchange"
                 app:drawableTint="?attr/colorOnBackground" />
-        </FrameLayout>
+        </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/BannerCard"
@@ -94,8 +135,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
             android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
             android:baselineAligned="false"
             android:orientation="horizontal">
 

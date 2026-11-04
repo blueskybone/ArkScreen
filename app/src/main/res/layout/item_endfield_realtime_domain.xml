@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/CardViewContent">
 
     <LinearLayout
@@ -38,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?attr/textAppearanceBody2"
-                android:textColor="?attr/colorPrimary" />
+                android:textColor="?android:attr/textColorPrimary" />
         </LinearLayout>
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
@@ -47,6 +48,8 @@
             android:layout_height="4dp"
             android:layout_marginTop="8dp"
             android:max="100"
+            app:indicatorColor="@color/endfield_primary"
+            app:trackColor="@color/endfield_progress_track"
             android:visibility="gone" />
 
         <LinearLayout

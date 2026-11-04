@@ -9,12 +9,8 @@
 
     <TextView
         android:id="@+id/Text"
+        style="@style/Widget.ArkScreen.InlineHint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="4dp"
-        android:paddingTop="4dp"
-        android:paddingEnd="4dp"
-        android:paddingBottom="4dp"
-        android:textAppearance="?attr/textAppearanceBody2"
-        android:textColor="?android:attr/textColorPrimary" />
+        android:text="ceshiwenben "/>
 </LinearLayout>

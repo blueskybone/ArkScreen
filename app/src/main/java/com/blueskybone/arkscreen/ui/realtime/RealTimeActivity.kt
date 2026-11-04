@@ -14,7 +14,8 @@ import coil.load
 import com.blueskybone.arkscreen.util.launchApp
 import com.blueskybone.arkscreen.databinding.ActivityRealTimeBinding
 import com.blueskybone.arkscreen.databinding.InfoCardBinding
-import com.blueskybone.arkscreen.ui.common.bindinginfo.Campaign
+import com.blueskybone.arkscreen.databinding.InfoCardCompactBinding
+import com.blueskybone.arkscreen.databinding.ItemRealtimeTrainingBinding
 import com.blueskybone.arkscreen.ui.common.bindinginfo.DataInfo
 import com.blueskybone.arkscreen.ui.common.bindinginfo.Dormitories
 import com.blueskybone.arkscreen.ui.common.bindinginfo.Labor
@@ -24,7 +25,6 @@ import com.blueskybone.arkscreen.ui.common.bindinginfo.Recruit
 import com.blueskybone.arkscreen.ui.common.bindinginfo.RecruitRefresh
 import com.blueskybone.arkscreen.ui.common.bindinginfo.Tired
 import com.blueskybone.arkscreen.ui.common.bindinginfo.Trading
-import com.blueskybone.arkscreen.ui.common.bindinginfo.Train
 import com.blueskybone.arkscreen.ui.account.AccountMngActivity
 import com.blueskybone.arkscreen.ui.common.LogManagerActivity
 import com.blueskybone.arkscreen.ui.common.formatSyncTime
@@ -81,8 +81,6 @@ class RealTimeActivity : AppCompatActivity() {
         binding.Trading.setUp(Trading)
         binding.Dormitories.setUp(Dormitories)
         binding.Tired.setUp(Tired)
-        binding.Train.setUp(Train)
-        binding.Campaign.setUp(Campaign)
         binding.Starter.setOnClickListener {
             if (currentOfficial) {
                 launchApp("com.hypergryph.arknights") {
@@ -100,13 +98,35 @@ class RealTimeActivity : AppCompatActivity() {
 
     private fun InfoCardBinding.setUp(dataInfo: DataInfo) {
         Title.text = getString(dataInfo.title)
-        Value.setTextColor(getColor(dataInfo.color))
+    }
+
+    private fun InfoCardCompactBinding.setUp(dataInfo: DataInfo) {
+        Title.text = getString(dataInfo.title)
     }
 
     private fun InfoCardBinding.setUp(pairInfo: RealTimeUi.PairInfo) {
         Time.text = pairInfo.time.resolve(this@RealTimeActivity)
+        Time.visibility = if (Time.text.isNullOrBlank()) View.GONE else View.VISIBLE
         Value.text = pairInfo.value.resolve(this@RealTimeActivity)
-        Notify.visibility = if(pairInfo.notify) View.VISIBLE else View.GONE
+        Notify.visibility = if (pairInfo.notify) View.VISIBLE else View.GONE
+    }
+
+    private fun InfoCardCompactBinding.setUp(pairInfo: RealTimeUi.PairInfo) {
+        Value.text = pairInfo.value.resolve(this@RealTimeActivity)
+        Notify.visibility = if (pairInfo.notify) View.VISIBLE else View.GONE
+    }
+
+    private fun ItemRealtimeTrainingBinding.setUp(info: RealTimeUi.TrainingInfo) {
+        Trainee.text = info.trainee.resolve(this@RealTimeActivity)
+        TrainerGroup.visibility = if (info.trainer == null) View.GONE else View.VISIBLE
+        Trainer.text = info.trainer?.resolve(this@RealTimeActivity).orEmpty()
+        TargetSkill.visibility = if (info.targetSkill == null) View.GONE else View.VISIBLE
+        TargetSkill.text = info.targetSkill?.let {
+            getString(com.blueskybone.arkscreen.R.string.realtime_training_target_skill, it)
+        }.orEmpty()
+        Time.text = info.time.resolve(this@RealTimeActivity)
+        Time.visibility = if (Time.text.isNullOrBlank()) View.GONE else View.VISIBLE
+        Notify.visibility = if (info.notify) View.VISIBLE else View.GONE
     }
 
     private fun setupObserver() {
@@ -229,8 +249,20 @@ class RealTimeActivity : AppCompatActivity() {
         binding.Level.text = getString(com.blueskybone.arkscreen.R.string.realtime_level, data.level)
         binding.ApFullTime.text = data.apFullTime.resolve(this)
         binding.ApResTime.text = data.apResTime.resolve(this)
+        binding.DailyValue.text = data.daily.value.resolve(this)
+        binding.CampaignValue.text = data.campaign.value.resolve(this)
+        binding.TowerHigherValue.text = getString(
+            com.blueskybone.arkscreen.R.string.realtime_module_higher,
+            data.towerHigher.value.resolve(this),
+        )
+        binding.TowerLowerValue.text = getString(
+            com.blueskybone.arkscreen.R.string.realtime_module_lower,
+            data.towerLower.value.resolve(this),
+        )
         binding.NickName.text = data.nickName
         binding.LastLogin.text = data.lastLogin.resolve(this)
+        binding.Uid.text = getString(com.blueskybone.arkscreen.R.string.realtime_uid, data.uid)
+        binding.Uid.visibility = if (data.uid.isBlank()) View.GONE else View.VISIBLE
         binding.Server.setText(
             if (data.official) {
                 com.blueskybone.arkscreen.R.string.official_server
@@ -247,7 +279,6 @@ class RealTimeActivity : AppCompatActivity() {
         binding.Dormitories.setUp(data.dormitories)
         binding.Tired.setUp(data.tired)
         binding.Train.setUp(data.train)
-        binding.Campaign.setUp(data.campaign)
 
         binding.TrainChange.visibility =
             if (data.logosChange != null || data.ireneChange != null) View.VISIBLE else View.GONE

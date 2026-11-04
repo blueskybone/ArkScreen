@@ -43,7 +43,6 @@ import com.blueskybone.arkscreen.util.launchApp
 import com.blueskybone.arkscreen.platform.time.TimeUtils.getLastUpdateStr
 import com.blueskybone.arkscreen.platform.time.TimeUtils.getRemainTimeStr
 import com.hjq.toast.Toaster
-import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -87,13 +86,11 @@ class EndfieldHome : Fragment() {
 
             override fun onLongClick(account: Account) = Unit
         })
-        binding.GameSelector.text = getString(
-            R.string.game_selector_label,
-            getString(R.string.game_endfield),
+        (requireActivity() as MainActivity).bindHomeGameControls(
+            binding.GameSelector,
+            binding.SwitchGame,
+            binding.DefaultStartup,
         )
-        binding.GameSelector.setOnClickListener {
-            (requireActivity() as MainActivity).showGameSelector()
-        }
         binding.CurrentAccount.setOnClickListener { anchor ->
             if (viewModel.uiState.value.accountEfList.isEmpty()) {
                 startActivity(Intent(requireContext(), AccountMngActivity::class.java))
@@ -160,6 +157,12 @@ class EndfieldHome : Fragment() {
 
     private fun renderStaminaCache(state: MainUiState) {
         val card: CardApCacheBinding = binding.EfStaminaCard
+        card.Current.setTextColor(ContextCompat.getColor(requireContext(), R.color.endfield_on_surface_accent))
+        card.SanityProgress.setIndicatorColor(
+            ContextCompat.getColor(requireContext(), R.color.endfield_primary),
+        )
+        card.SanityProgress.trackColor =
+            ContextCompat.getColor(requireContext(), R.color.endfield_progress_track)
         val account = state.currentAccountEf
             ?: state.accountEfList.firstOrNull()?.account as? AccountEf
         card.AccountName.text = account?.nickName ?: getString(R.string.endfield_stamina)
@@ -232,13 +235,11 @@ class EndfieldHome : Fragment() {
         Icon.setImageResource(info.icon)
         ImageViewCompat.setImageTintList(
             Icon,
-            android.content.res.ColorStateList.valueOf(
-                MaterialColors.getColor(Icon, com.google.android.material.R.attr.colorPrimary),
-            ),
+            ContextCompat.getColorStateList(requireContext(), R.color.endfield_on_surface_accent),
         )
         ViewCompat.setBackgroundTintList(
             Icon,
-            ContextCompat.getColorStateList(requireContext(), R.color.sec_con),
+            ContextCompat.getColorStateList(requireContext(), R.color.endfield_accent_container),
         )
         Title.setText(info.title)
         Subtitle.setText(R.string.endfield_entry_pending)

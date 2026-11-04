@@ -11,6 +11,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
+import android.transition.AutoTransition
+import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -316,12 +318,24 @@ class Function : Fragment() {
 
     private fun toggleGroup(group: FunctionGroup) {
         val current = innerPrefManager.functionExpandedGroup.get().coerceAtLeast(0)
-        renderExpandedGroups(current xor group.storedValue)
+        renderExpandedGroups(current xor group.storedValue, animate = true)
     }
 
-    private fun renderExpandedGroups(expandedGroups: Int, persist: Boolean = true) {
+    private fun renderExpandedGroups(
+        expandedGroups: Int,
+        persist: Boolean = true,
+        animate: Boolean = false,
+    ) {
         fun isExpanded(group: FunctionGroup) =
             expandedGroups and group.storedValue != 0
+
+        if (animate) {
+            TransitionManager.endTransitions(binding.root)
+            TransitionManager.beginDelayedTransition(
+                binding.root,
+                AutoTransition().setDuration(220L),
+            )
+        }
 
         binding.RecruitContent.visibility =
             if (isExpanded(FunctionGroup.RECRUIT)) View.VISIBLE else View.GONE
@@ -330,15 +344,20 @@ class Function : Fragment() {
         binding.AttendanceContent.visibility =
             if (isExpanded(FunctionGroup.ATTENDANCE)) View.VISIBLE else View.GONE
 
-        binding.RecruitExpand.animateToGroupState(isExpanded(FunctionGroup.RECRUIT))
-        binding.WidgetExpand.animateToGroupState(isExpanded(FunctionGroup.WIDGET))
-        binding.AttendanceExpand.animateToGroupState(isExpanded(FunctionGroup.ATTENDANCE))
+        binding.RecruitExpand.animateToGroupState(isExpanded(FunctionGroup.RECRUIT), animate)
+        binding.WidgetExpand.animateToGroupState(isExpanded(FunctionGroup.WIDGET), animate)
+        binding.AttendanceExpand.animateToGroupState(isExpanded(FunctionGroup.ATTENDANCE), animate)
 
         if (persist) innerPrefManager.functionExpandedGroup.set(expandedGroups)
     }
 
-    private fun View.animateToGroupState(expanded: Boolean) {
-        animate().rotation(if (expanded) 90f else 0f).setDuration(160L).start()
+    private fun View.animateToGroupState(expanded: Boolean, animated: Boolean) {
+        animate().cancel()
+        if (animated) {
+            animate().rotation(if (expanded) 90f else 0f).setDuration(220L).start()
+        } else {
+            rotation = if (expanded) 90f else 0f
+        }
     }
 
     private fun firstGroupNeedingAttention(): FunctionGroup? {
