@@ -181,9 +181,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.coordinatorlayout)
-    implementation(libs.androidx.paging.runtime)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.work.runtime)
 
     // Material Design
@@ -197,7 +194,6 @@ dependencies {
     // Koin DI
     implementation(libs.koin.core)
     implementation(libs.koin.android)
-    implementation(libs.koin.android.compat)
 
     // Room 数据库
     ksp(libs.androidx.room.compiler)
@@ -218,7 +214,6 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.easy.window)
     implementation(libs.toaster)
-    implementation(libs.androidx.webkit)
     implementation(libs.mp.android.chart)
     implementation(libs.circular.progressbar)
 
