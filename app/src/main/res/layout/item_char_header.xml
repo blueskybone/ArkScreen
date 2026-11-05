@@ -7,8 +7,10 @@
 
     <com.google.android.material.card.MaterialCardView
         style="@style/CardViewContent"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="6dp"
         android:clickable="false"
         android:focusable="false">
 
@@ -16,11 +18,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingStart="14dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="10dp">
 
             <LinearLayout
+                android:id="@+id/AccountRow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -42,20 +51,27 @@
                         android:id="@+id/AccountNickName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:textAppearance="?attr/textAppearanceSubtitle1"
                         android:textColor="?android:attr/textColorPrimary"
                         android:textStyle="bold" />
                 </LinearLayout>
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:contentDescription="@null"
+                    android:rotation="90"
+                    android:src="@drawable/ic_right_arrow"
+                    app:tint="?attr/colorOnSurface" />
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="14dp"
+                android:layout_marginTop="9dp"
+                android:layout_marginBottom="8dp"
                 android:background="?android:attr/listDivider" />
 
             <LinearLayout
@@ -95,7 +111,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="6dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -119,6 +135,57 @@
                     android:layout_marginStart="4dp"
                     android:backgroundTint="@color/rare_4_surface"
                     android:textColor="@color/rare_4" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="8dp"
+                android:background="?android:attr/listDivider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/Filter"
+                    style="@style/Widget.ArkScreen.InlineAction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter"
+                    app:icon="@drawable/ic_filter"
+                    app:iconGravity="textStart"
+                    app:iconPadding="4dp"
+                    app:iconSize="14dp"
+                    app:iconTint="@color/inline_chip_text" />
+
+                <ImageButton
+                    android:id="@+id/ViewChanger"
+                    android:layout_width="30dp"
+                    android:layout_height="28dp"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_inline_chip"
+                    android:backgroundTint="@color/inline_chip_background"
+                    android:contentDescription="@string/change_view"
+                    android:padding="6dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_grid"
+                    app:tint="@color/inline_chip_text" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/MissingButton"
+                    style="@style/Widget.ArkScreen.InlineAction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/not_own" />
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

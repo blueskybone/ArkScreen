@@ -86,10 +86,18 @@ class EndfieldCharDetailFragment : Fragment() {
             ?: character.id.orEmpty()
         binding.Rarity.text = EndfieldCharDisplay.stars(data?.rarity?.value, data?.rarity?.key)
         binding.Rarity.visibility = if (binding.Rarity.text.isEmpty()) View.GONE else View.VISIBLE
-        binding.Traits.text = listOfNotNull(
-            data?.profession?.value?.takeIf(String::isNotBlank),
-            data?.property?.value?.takeIf(String::isNotBlank),
-        ).joinToString(" · ")
+        val professionIcon = EndfieldCharacterVisuals.professionIcon(
+            data?.profession?.key, data?.profession?.value,
+        )
+        binding.ProfessionIcon.visibility = if (professionIcon == null) View.GONE else View.VISIBLE
+        professionIcon?.let(binding.ProfessionIcon::setImageResource)
+        binding.ProfessionIcon.contentDescription = data?.profession?.value
+        val propertyIcon = EndfieldCharacterVisuals.propertyIcon(
+            data?.property?.key, data?.property?.value,
+        )
+        binding.PropertyIcon.visibility = if (propertyIcon == null) View.GONE else View.VISIBLE
+        propertyIcon?.let(binding.PropertyIcon::setImageResource)
+        binding.PropertyIcon.contentDescription = data?.property?.value
         binding.Tags.removeAllViews()
         data?.tags.orEmpty().filter(String::isNotBlank).forEach { tag ->
             binding.Tags.addView(createTag(tag))

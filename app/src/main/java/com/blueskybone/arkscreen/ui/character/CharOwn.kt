@@ -3,6 +3,8 @@ package com.blueskybone.arkscreen.ui.character
 import android.content.ClipData
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.os.Bundle
 import android.os.Parcelable
 import android.graphics.Rect
@@ -10,11 +12,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.LinearLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -65,7 +67,12 @@ class CharOwn : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: CharAdapter
-    private val headerAdapter = CharHeaderAdapter()
+    private val headerAdapter = CharHeaderAdapter(
+        onAccountClick = { (activity as? CharAssets)?.chooseAccount() },
+        onFilterClick = { showFilterDialog() },
+        onViewClick = { model.toggleViewType() },
+        onMissingClick = { (activity as? CharAssets)?.openMissing() },
+    )
     private val launcherForTxt =
         registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
             val context = context ?: return@registerForActivityResult
@@ -153,33 +160,35 @@ class CharOwn : Fragment() {
         adapter = CharAdapter(requireContext(), 24, adapterListener)
         setupBinding()
         setUpObserver()
-        setButtonLayout()
-        restoreFilterSelection()
+        renderFilterLabel()
         setupListener()
+        (activity as? CharAssets)?.registerExportAction(::showExportOptions)
     }
 
     private fun updateLayout(viewType: ViewType) {
         if (currentViewType == viewType) return
         currentViewType = viewType
         adapter.setViewType(viewType)
+        headerAdapter.submitViewType(viewType)
 
         when (viewType) {
             ViewType.LIST -> {
                 binding.RecyclerView.layoutManager = LinearLayoutManager(requireContext())
-                binding.ViewChanger.setIconResource(R.drawable.ic_list)
             }
 
             ViewType.GRID -> {
                 binding.RecyclerView.layoutManager = createGridLayoutManager()
-                binding.ViewChanger.setIconResource(R.drawable.ic_grid)
             }
         }
         binding.RecyclerView.invalidateItemDecorations()
     }
 
-    private fun setButtonLayout() {
-        val linearLayout = binding.FilterContent
-        linearLayout.removeAllViews()
+    private fun createFilterContent(): LinearLayout {
+        val padding = (16 * resources.displayMetrics.density).toInt()
+        val linearLayout = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(padding, padding, padding, padding)
+        }
         profRadioGroup = getFlowRadioGroup(requireContext())
         for ((idx, prof) in profList.withIndex()) {
             val but = profImageButton(requireContext(), profListIcon[idx], prof)
@@ -200,6 +209,23 @@ class CharOwn : Fragment() {
             rarityRadioGroup.addView(but)
         }
         linearLayout.addView(rarityRadioGroup)
+        return linearLayout
+    }
+
+    private fun showFilterDialog() {
+        val content = createFilterContent()
+        restoreFilterSelection()
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.filter)
+            .setView(content)
+            .setPositiveButton(R.string.confirm) { _, _ -> submitFilter() }
+            .setNegativeButton(R.string.cancel, null)
+            .setNeutralButton(R.string.clear) { _, _ ->
+                scrollToTopOnNextData = true
+                model.applyFilter(null, CharModel.EvolveFilter.ALL, CharModel.RarityFilter.ALL)
+                renderFilterLabel()
+            }
+            .show()
     }
 
     private fun setupListener() {
@@ -221,6 +247,58 @@ class CharOwn : Fragment() {
         binding.RecyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
             private val outer = (11 * resources.displayMetrics.density).toInt()
             private val inner = (2 * resources.displayMetrics.density).toInt()
+            private val radius = 15 * resources.displayMetrics.density
+            private val dividerInset = (8 * resources.displayMetrics.density).toInt()
+            private val cardPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = ContextCompat.getColor(requireContext(), R.color.asset_list_card_surface)
+            }
+            private val listDivider = requireContext()
+                .obtainStyledAttributes(intArrayOf(android.R.attr.listDivider))
+                .let { attributes ->
+                    attributes.getDrawable(0).also { attributes.recycle() }
+                }
+
+            override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+                if (currentViewType != ViewType.LIST) return
+                val lastPosition = parent.adapter?.itemCount?.minus(1) ?: return
+                for (index in 0 until parent.childCount) {
+                    val child = parent.getChildAt(index)
+                    val position = parent.getChildAdapterPosition(child)
+                    if (position <= 0) continue // Position 0 is the separate statistics header.
+                    val left = child.left.toFloat()
+                    val top = child.top.toFloat()
+                    val right = child.right.toFloat()
+                    val bottom = child.bottom.toFloat()
+                    when {
+                        position == 1 && position == lastPosition ->
+                            canvas.drawRoundRect(left, top, right, bottom, radius, radius, cardPaint)
+                        position == 1 -> {
+                            canvas.drawRoundRect(left, top, right, bottom, radius, radius, cardPaint)
+                            canvas.drawRect(left, top + radius, right, bottom, cardPaint)
+                        }
+                        position == lastPosition -> {
+                            canvas.drawRoundRect(left, top, right, bottom, radius, radius, cardPaint)
+                            canvas.drawRect(left, top, right, bottom - radius, cardPaint)
+                        }
+                        else -> canvas.drawRect(left, top, right, bottom, cardPaint)
+                    }
+                }
+            }
+
+            override fun onDrawOver(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+                if (currentViewType != ViewType.LIST) return
+                val lastPosition = parent.adapter?.itemCount?.minus(1) ?: return
+                for (index in 0 until parent.childCount) {
+                    val child = parent.getChildAt(index)
+                    val position = parent.getChildAdapterPosition(child)
+                    if (position <= 0 || position >= lastPosition) continue
+                    val y = child.bottom - 1
+                    listDivider?.apply {
+                        setBounds(child.left + dividerInset, y, child.right - dividerInset, y + 1)
+                        draw(canvas)
+                    }
+                }
+            }
 
             override fun getItemOffsets(
                 outRect: Rect,
@@ -240,36 +318,6 @@ class CharOwn : Fragment() {
             }
         })
 
-        binding.Filter.setOnClickListener {
-            if (binding.ButtonLayout.isGone) {
-                binding.ButtonLayout.visibility = View.VISIBLE
-                binding.FrameDialog.visibility = View.VISIBLE
-                binding.ButtonLayout.requestFocus()
-            } else {
-                binding.ButtonLayout.visibility = View.GONE
-                binding.FrameDialog.visibility = View.GONE
-
-                submitFilter()
-            }
-        }
-
-        binding.ButtonLayout.setOnClickListener {
-            // 空实现，拦截点击，防止点击事件穿透
-        }
-
-
-        binding.Export.setOnClickListener {
-            showExportOptions()
-        }
-        binding.FrameDialog.setOnClickListener {
-            binding.ButtonLayout.visibility = View.GONE
-            binding.FrameDialog.visibility = View.GONE
-
-            submitFilter()
-        }
-        binding.ViewChanger.setOnClickListener {
-            model.toggleViewType()
-        }
     }
 
     private fun showExportOptions() {
@@ -302,7 +350,7 @@ class CharOwn : Fragment() {
             return
         }
 
-        binding.Export.isEnabled = false
+        (activity as? CharAssets)?.setExportEnabled(false)
         val appContext = requireContext().applicationContext
         val progressView = layoutInflater.inflate(R.layout.dialog_operator_poster_loading, null)
         val progressText = progressView.findViewById<TextView>(R.id.PosterProgress)
@@ -352,7 +400,7 @@ class CharOwn : Fragment() {
                 posterJob = null
                 posterLoadingDialog?.dismiss()
                 posterLoadingDialog = null
-                _binding?.Export?.isEnabled = true
+                (activity as? CharAssets)?.setExportEnabled(true)
             }
         }
     }
@@ -480,6 +528,17 @@ class CharOwn : Fragment() {
 
         scrollToTopOnNextData = true
         model.applyFilter(filter1, filter2, filter3)
+        renderFilterLabel()
+    }
+
+    private fun renderFilterLabel() {
+        val filter = model.currentFilter
+        val count = listOf(
+            filter.profession != null,
+            filter.evolve != CharModel.EvolveFilter.ALL,
+            filter.rarity != CharModel.RarityFilter.ALL,
+        ).count { it }
+        headerAdapter.submitFilterCount(count)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -612,6 +671,7 @@ class CharOwn : Fragment() {
     }
 
     override fun onDestroyView() {
+        (activity as? CharAssets)?.registerExportAction(null)
         posterJob?.cancel()
         posterJob = null
         posterLoadingDialog?.dismiss()

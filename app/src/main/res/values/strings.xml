@@ -198,7 +198,7 @@
     <string name="skland_account_summary">用于同步游戏数据、签到及终末地寻访记录</string>
     <string name="arknights_accounts">明日方舟</string>
     <string name="endfield_accounts">明日方舟：终末地</string>
-    <string name="gacha_account_manage">明日方舟寻访记录账号</string>
+    <string name="gacha_account_manage">寻访记录账号</string>
     <string name="gacha_account_summary">用于同步明日方舟寻访记录</string>
     <string name="add_skland_account">添加森空岛账号</string>
     <string name="add_gacha_account">添加明日方舟寻访记录账号</string>
@@ -274,6 +274,9 @@
     <string name="qq_not_install">未安装QQ</string>
 
     <string name="export">导出</string>
+    <string name="assets_filter_count">筛选 %1$d</string>
+    <string name="assets_missing_count">暂未获取 %1$d ›</string>
+    <string name="back_to_assets">返回干员资产</string>
     <string name="export_text">文字（TXT）</string>
     <string name="export_operator_poster">六星精二资产图片</string>
     <string name="operator_poster_preview">干员资产图片预览</string>
@@ -291,8 +294,8 @@
     <string name="realtime_last_login_today">上次登录 今天 %1$s</string>
     <string name="realtime_last_login_yesterday">上次登录 昨天</string>
     <string name="realtime_last_login_date">上次登录 %1$s</string>
-    <string name="realtime_recruit_complete">已完成招募</string>
-    <string name="realtime_refresh_complete">同步完成</string>
+    <string name="realtime_recruit_complete">已完成</string>
+    <string name="realtime_refresh_complete">可刷新</string>
     <string name="realtime_meeting_complete">交流完成</string>
     <string name="realtime_training_complete">专精完成</string>
     <string name="realtime_idle">空闲中</string>
@@ -308,6 +311,7 @@
     <string name="endfield_entry_pending">即将开放</string>
     <string name="endfield_chars_entry">角色列表</string>
     <string name="endfield_choose_account">选择终末地账号</string>
+    <string name="skland_choose_account">选择森空岛账号</string>
     <string name="endfield_chars_no_account">还没有终末地账号，点击上方按钮添加</string>
     <string name="endfield_chars_loading">正在加载角色…</string>
     <string name="endfield_chars_empty">该账号暂无角色数据</string>
@@ -315,7 +319,7 @@
     <string name="endfield_char_detail">角色详情</string>
     <string name="endfield_char_unavailable">角色数据暂不可用，请返回列表重试</string>
     <string name="endfield_char_level">Lv.%1$d</string>
-    <string name="endfield_char_evolve">晋升 %1$d</string>
+    <string name="endfield_char_evolve">精英化 %1$d</string>
     <string name="endfield_char_potential">潜能 %1$d</string>
     <string name="endfield_char_obtained">获得于 %1$s</string>
     <string name="endfield_char_weapon">武器</string>
@@ -477,6 +481,7 @@
     <string name="time_calibration_failed">时间校准失败</string>
     <string name="enter_phone_and_password">请输入手机号和密码</string>
     <string name="uid_copied">UID已复制</string>
+    <string name="copy_uid_action">点击复制</string>
     <string name="nickname_copied">昵称已复制</string>
     <string name="token_fetch_failed">获取 Token 失败</string>
     <string name="notification_permission_denied_attendance_continues">未授予通知权限，签到仍会继续</string>

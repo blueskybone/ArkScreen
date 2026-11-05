@@ -133,7 +133,7 @@ class EndfieldHome : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     val videos = state.endfieldBiliVideos
-                    binding.BannerCard.visibility = if (videos.isEmpty()) View.GONE else View.VISIBLE
+                    binding.BannerCard.visibility = View.VISIBLE
                     bannerController.submitList(videos)
                     binding.Announce.text = state.announce
                     binding.CurrentAccount.text = state.currentAccountEf?.nickName

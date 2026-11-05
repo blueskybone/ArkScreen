@@ -24,7 +24,10 @@ import com.blueskybone.arkscreen.domain.model.realtime.EndfieldRecoverableValue
 import com.blueskybone.arkscreen.ui.account.AccountMngActivity
 import com.blueskybone.arkscreen.platform.time.TimeUtils.getTimeStr
 import com.blueskybone.arkscreen.platform.time.TimeUtils.getRemainTimeStr
+import com.blueskybone.arkscreen.util.copyToClipboard
+import com.blueskybone.arkscreen.util.launchApp
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.hjq.toast.Toaster
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -42,6 +45,11 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.AccountButton.setOnClickListener { chooseAccount() }
         binding.RefreshButton.setOnClickListener { model.refresh() }
+        binding.Starter.setOnClickListener {
+            launchApp("com.hypergryph.endfield") {
+                Toaster.show(getString(R.string.game_not_found))
+            }
+        }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 model.uiState.collect(::render)
@@ -145,8 +153,14 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
             View.VISIBLE
         }
         val roleId = profile.roleId?.takeIf(String::isNotBlank)
-        card.RoleId.visibility = if (roleId == null) View.GONE else View.VISIBLE
+        card.RoleIdRow.visibility = if (roleId == null) View.GONE else View.VISIBLE
         card.RoleId.text = roleId?.let { getString(R.string.endfield_player_id, it) }.orEmpty()
+        card.CopyRoleId.setOnClickListener {
+            roleId?.let { id ->
+                copyToClipboard(this, id)
+                Toaster.show(getString(R.string.uid_copied))
+            }
+        }
         val lastLogin = profile.lastLoginAt?.takeIf { it > 0L }
         card.LastLogin.visibility = if (lastLogin == null) View.GONE else View.VISIBLE
         if (lastLogin != null) {

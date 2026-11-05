@@ -233,12 +233,12 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/AddAccountGc"
-                        style="@style/Widget.ArkScreen.SectionAction.Outlined"
+                        style="@style/Widget.ArkScreen.SectionAction.Tonal"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="12dp"
+                        android:layout_marginBottom="16dp"
                         android:text="@string/add_gacha_account"
                         app:icon="@drawable/ic_add" />
 

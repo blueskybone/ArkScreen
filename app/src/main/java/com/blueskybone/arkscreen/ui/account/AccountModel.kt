@@ -75,7 +75,7 @@ class AccountModel(
             list.map { account ->
                 AccountItemUiModel(
                     account = account,
-                    isDefault = account.uid == current?.uid
+                    isDefault = account.uid == (current?.uid ?: list.firstOrNull()?.uid)
                 )
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())

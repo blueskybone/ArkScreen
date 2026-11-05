@@ -2,6 +2,9 @@ package com.blueskybone.arkscreen.ui.character
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import androidx.activity.OnBackPressedCallback
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -18,11 +21,9 @@ import com.blueskybone.arkscreen.ui.account.LoginWeb
 import com.blueskybone.arkscreen.ui.common.ErrorRecovery
 import com.blueskybone.arkscreen.ui.common.LogManagerActivity
 import com.blueskybone.arkscreen.ui.common.recoveryFor
-import com.blueskybone.arkscreen.ui.common.formatSyncTime
 import com.blueskybone.arkscreen.ui.UiStatus
 import com.hjq.toast.Toaster
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlinx.coroutines.launch
 
@@ -37,6 +38,9 @@ class CharAssets : AppCompatActivity() {
     private val model: CharModel by viewModel()
     private var _binding: ActivityCharAssetsBinding? = null
     private val binding get() = _binding!!
+    private var exportAction: (() -> Unit)? = null
+    private var exportEnabled = true
+    private var exportMenuItem: MenuItem? = null
     private val reauthLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -49,7 +53,12 @@ class CharAssets : AppCompatActivity() {
     }
     private val pageChangeCallback = object : OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
-            binding.TabLayout.selectTab(binding.TabLayout.getTabAt(position))
+            binding.Toolbar.setTitle(
+                if (position == 0) com.blueskybone.arkscreen.R.string.operator_assets
+                else com.blueskybone.arkscreen.R.string.not_own
+            )
+            binding.AccountButton.visibility = if (position == 0) View.GONE else View.VISIBLE
+            invalidateOptionsMenu()
         }
     }
 
@@ -58,6 +67,11 @@ class CharAssets : AppCompatActivity() {
         _binding = ActivityCharAssetsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupBinding()
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (binding.ViewPager.currentItem == 1) openAssets() else finish()
+            }
+        })
         binding.ViewPager.setCurrentItem(savedInstanceState?.getInt(KEY_TAB) ?: 0, false)
         setupObserver()
         lifecycleScope.launch {
@@ -69,24 +83,61 @@ class CharAssets : AppCompatActivity() {
 
     private fun setupBinding() {
         val vp = binding.ViewPager
-        val ta = binding.TabLayout
         vp.adapter = ViewPagerFragmentAdapter(this)
-
-        ta.addOnTabSelectedListener(object : OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                vp.currentItem = tab.position
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {}
-            override fun onTabReselected(tab: TabLayout.Tab) {}
-        })
-
+        vp.isUserInputEnabled = false
         vp.registerOnPageChangeCallback(pageChangeCallback)
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.AccountButton.setOnClickListener { chooseAccount() }
+    }
+
+    fun openMissing() {
+        binding.ViewPager.setCurrentItem(1, false)
+    }
+
+    fun openAssets() {
+        binding.ViewPager.setCurrentItem(0, false)
+    }
+
+    fun registerExportAction(action: (() -> Unit)?) {
+        exportAction = action
+        invalidateOptionsMenu()
+    }
+
+    fun setExportEnabled(enabled: Boolean) {
+        exportEnabled = enabled
+        exportMenuItem?.isEnabled = enabled
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(com.blueskybone.arkscreen.R.menu.toolbar_char_assets, menu)
+        exportMenuItem = menu.findItem(com.blueskybone.arkscreen.R.id.menu_export_assets)
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        menu.findItem(com.blueskybone.arkscreen.R.id.menu_export_assets)?.apply {
+            isVisible = binding.ViewPager.currentItem == 0
+            isEnabled = exportEnabled && exportAction != null
+        }
+        return super.onPrepareOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == com.blueskybone.arkscreen.R.id.menu_export_assets) {
+            exportAction?.invoke()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        if (binding.ViewPager.currentItem == 1) openAssets() else finish()
+        return true
     }
 
     private fun setupObserver() {
+        model.accounts.observe(this) { /* Keep account choices current for the picker. */ }
         model.uiState.observe(this) { value ->
             when (value) {
                 is UiStatus.Loading -> displayLoadingView(value.message ?: "加载中...")
@@ -96,33 +147,49 @@ class CharAssets : AppCompatActivity() {
                 UiStatus.Idle -> Unit
             }
         }
-        model.lastSyncAt.observe(this) {
-            renderToolbarSubtitle()
+        model.currentAccount.observe(this) { account ->
+            binding.AccountButton.text = account?.nickName ?: getString(com.blueskybone.arkscreen.R.string.skland_choose_account)
         }
         model.syncingState.observe(this) {
-            renderToolbarSubtitle()
+            renderLoading()
         }
     }
 
-    private fun renderToolbarSubtitle() {
-        binding.Toolbar.subtitle = when {
-            model.syncingState.value == true ->
-                getString(com.blueskybone.arkscreen.R.string.syncing)
-
-            model.lastSyncAt.value != null ->
-                getString(
-                    com.blueskybone.arkscreen.R.string.last_synced_at,
-                    formatSyncTime(requireNotNull(model.lastSyncAt.value)),
-                )
-
-            else -> null
+    private fun renderLoading() {
+        val syncing = model.syncingState.value == true
+        if (binding.Page.visibility != View.VISIBLE || binding.Loading.visibility == View.VISIBLE) {
+            binding.Loading.visibility = if (syncing) View.VISIBLE else View.GONE
+            binding.LoadingMessage.visibility = if (syncing) View.VISIBLE else View.GONE
+            if (syncing && binding.ViewPager.visibility == View.VISIBLE) {
+                binding.LoadingMessage.setText(com.blueskybone.arkscreen.R.string.syncing)
+            }
         }
+    }
+
+    fun chooseAccount() {
+        val accounts = model.accounts.value.orEmpty()
+        if (accounts.isEmpty()) {
+            startActivity(Intent(this, AccountMngActivity::class.java))
+            return
+        }
+        MaterialAlertDialogBuilder(this)
+            .setTitle(com.blueskybone.arkscreen.R.string.skland_choose_account)
+            .setSingleChoiceItems(
+                accounts.map { it.nickName }.toTypedArray(),
+                accounts.indexOfFirst { it.uid == model.currentAccount.value?.uid },
+            ) { dialog, index ->
+                model.selectAccount(accounts[index])
+                dialog.dismiss()
+            }
+            .show()
     }
 
     private fun displayLoadingView(msg: String) {
-        binding.StatusProgress.visibility = View.VISIBLE
+        binding.Loading.visibility = View.VISIBLE
+        binding.LoadingMessage.visibility = View.VISIBLE
+        binding.LoadingMessage.text = msg
         binding.StatusIllustration.visibility = View.GONE
-        binding.Page.visibility = View.VISIBLE
+        binding.Page.visibility = View.GONE
         binding.ViewPager.visibility = View.GONE
         binding.EmptySummary.visibility = View.GONE
         binding.EmptyAction.visibility = View.GONE
@@ -130,7 +197,8 @@ class CharAssets : AppCompatActivity() {
     }
 
     private fun displayErrorView(msg: String) {
-        binding.StatusProgress.visibility = View.GONE
+        binding.Loading.visibility = View.GONE
+        binding.LoadingMessage.visibility = View.GONE
         binding.StatusIllustration.visibility = View.VISIBLE
         binding.Page.visibility = View.VISIBLE
         binding.ViewPager.visibility = View.GONE
@@ -140,7 +208,8 @@ class CharAssets : AppCompatActivity() {
     }
 
     private fun displayEmptyView(msg: String) {
-        binding.StatusProgress.visibility = View.GONE
+        binding.Loading.visibility = View.GONE
+        binding.LoadingMessage.visibility = View.GONE
         binding.StatusIllustration.visibility = View.VISIBLE
         binding.Page.visibility = View.VISIBLE
         binding.ViewPager.visibility = View.GONE
@@ -158,9 +227,7 @@ class CharAssets : AppCompatActivity() {
         binding.EmptyAction.visibility = View.VISIBLE
         when (recoveryFor(message)) {
             ErrorRecovery.RETRY -> {
-                binding.EmptyAction.setText(com.blueskybone.arkscreen.R.string.retry)
-                binding.EmptyAction.setIconResource(com.blueskybone.arkscreen.R.drawable.ic_refresh)
-                binding.EmptyAction.setOnClickListener { model.refresh() }
+                binding.EmptyAction.visibility = View.GONE
             }
             ErrorRecovery.RELOGIN -> {
                 binding.EmptyAction.setText(com.blueskybone.arkscreen.R.string.relogin)
@@ -182,6 +249,10 @@ class CharAssets : AppCompatActivity() {
     }
 
     private fun displayView() {
+        val syncing = model.syncingState.value == true
+        binding.Loading.visibility = if (syncing) View.VISIBLE else View.GONE
+        binding.LoadingMessage.visibility = if (syncing) View.VISIBLE else View.GONE
+        if (syncing) binding.LoadingMessage.setText(com.blueskybone.arkscreen.R.string.syncing)
         binding.Page.visibility = View.GONE
         binding.ViewPager.visibility = View.VISIBLE
     }
@@ -203,6 +274,8 @@ class CharAssets : AppCompatActivity() {
     override fun onDestroy() {
         binding.ViewPager.unregisterOnPageChangeCallback(pageChangeCallback)
         binding.ViewPager.adapter = null
+        exportAction = null
+        exportMenuItem = null
         _binding = null
         super.onDestroy()
     }

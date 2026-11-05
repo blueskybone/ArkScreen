@@ -65,12 +65,29 @@
                         android:textStyle="bold"
                         android:visibility="gone" />
 
-                    <TextView
-                        android:id="@+id/Traits"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:textAppearance="?attr/textAppearanceBody2" />
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/ProfessionIcon"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:contentDescription="@null"
+                            android:visibility="gone" />
+
+                        <ImageView
+                            android:id="@+id/PropertyIcon"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_marginStart="8dp"
+                            android:contentDescription="@null"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
 
                     <com.google.android.material.chip.ChipGroup
                         android:id="@+id/Tags"

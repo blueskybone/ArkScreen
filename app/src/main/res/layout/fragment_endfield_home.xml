@@ -83,8 +83,7 @@
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/BannerCard"
             style="@style/CardViewContent"
-            android:layout_height="120dp"
-            android:visibility="gone">
+            android:layout_height="120dp">
 
             <com.blueskybone.arkscreen.ui.common.view.NestedScrollableHost
                 android:layout_width="match_parent"

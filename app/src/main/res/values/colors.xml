@@ -44,6 +44,7 @@
     <color name="dark_on_surface">#dde4e3</color>
 
     <color name="day_surface">#F0F0F2</color>
+    <color name="asset_list_card_surface">#FFFFFF</color>
     <!--    <color name="day_surface">#f9f9ff</color>-->
     <color name="day_text_primary">#292c33</color>
 

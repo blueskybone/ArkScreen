@@ -11,11 +11,30 @@
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/gacha_statistics" />
 
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/Loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Toolbar"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/LoadingMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Loading"
+        android:paddingStart="20dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="20dp"
+        android:textAppearance="?attr/textAppearanceBody2"
+        android:visibility="gone" />
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/TabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/Toolbar"
+        android:layout_below="@id/LoadingMessage"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/transparent">
@@ -64,13 +83,6 @@
                 android:id="@+id/StatusIllustration"
                 style="@style/Widget.ArkScreen.EmptyIllustration"
                 android:src="@mipmap/ic_rosm" />
-
-            <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/StatusProgress"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:indeterminate="true"
-                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/Message"

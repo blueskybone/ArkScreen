@@ -138,14 +138,23 @@ class EndfieldCharsActivity : AppCompatActivity() {
                 val data = character.charData
                 binding.Name.text = data?.name?.takeIf(String::isNotBlank)
                     ?: character.id.orEmpty()
-                binding.Traits.text = listOfNotNull(
-                    data?.rarity?.value?.takeIf(String::isNotBlank),
-                    data?.profession?.value?.takeIf(String::isNotBlank),
-                    data?.property?.value?.takeIf(String::isNotBlank),
-                ).joinToString(" · ")
+                binding.RarityText.text = data?.rarity?.value.orEmpty()
+                binding.RarityText.visibility = if (binding.RarityText.text.isBlank()) View.GONE else View.VISIBLE
+                val professionIcon = EndfieldCharacterVisuals.professionIcon(
+                    data?.profession?.key, data?.profession?.value,
+                )
+                binding.ProfessionIcon.visibility = if (professionIcon == null) View.GONE else View.VISIBLE
+                professionIcon?.let(binding.ProfessionIcon::setImageResource)
+                binding.ProfessionIcon.contentDescription = data?.profession?.value
+                val propertyIcon = EndfieldCharacterVisuals.propertyIcon(
+                    data?.property?.key, data?.property?.value,
+                )
+                binding.PropertyIcon.visibility = if (propertyIcon == null) View.GONE else View.VISIBLE
+                propertyIcon?.let(binding.PropertyIcon::setImageResource)
+                binding.PropertyIcon.contentDescription = data?.property?.value
                 binding.Progress.text = listOfNotNull(
                     character.level?.let { "Lv.$it" },
-                    character.evolvePhase?.let { "晋升 $it" },
+                    character.evolvePhase?.let { binding.root.context.getString(R.string.endfield_char_evolve, it) },
                     character.potentialLevel?.let { "潜能 $it" },
                 ).joinToString(" · ")
                 binding.Avatar.load(data?.avatarSqUrl?.takeIf(String::isNotBlank)) {

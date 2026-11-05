@@ -9,11 +9,28 @@ import com.blueskybone.arkscreen.databinding.ItemCharHeaderBinding
 import com.blueskybone.arkscreen.domain.model.account.AccountSk
 import com.blueskybone.arkscreen.ui.character.model.CharStatistic
 
-class CharHeaderAdapter : RecyclerView.Adapter<CharHeaderAdapter.HeaderViewHolder>() {
+class CharHeaderAdapter(
+    private val onAccountClick: () -> Unit,
+    private val onFilterClick: () -> Unit,
+    private val onViewClick: () -> Unit,
+    private val onMissingClick: () -> Unit,
+) : RecyclerView.Adapter<CharHeaderAdapter.HeaderViewHolder>() {
 
     private var statistic = CharStatistic()
     private var account: AccountSk? = null
     private var accountAvatarUrl: String? = null
+    private var filterCount = 0
+    private var viewType = ViewType.GRID
+
+    fun submitFilterCount(value: Int) {
+        filterCount = value
+        notifyItemChanged(0)
+    }
+
+    fun submitViewType(value: ViewType) {
+        viewType = value
+        notifyItemChanged(0)
+    }
 
     fun submitStatistic(value: CharStatistic) {
         statistic = value
@@ -40,7 +57,8 @@ class CharHeaderAdapter : RecyclerView.Adapter<CharHeaderAdapter.HeaderViewHolde
         )
 
     override fun onBindViewHolder(holder: HeaderViewHolder, position: Int) {
-        holder.bind(account, accountAvatarUrl, statistic)
+        holder.bind(account, accountAvatarUrl, statistic, filterCount, viewType,
+            onAccountClick, onFilterClick, onViewClick, onMissingClick)
     }
 
     override fun getItemCount(): Int = 1
@@ -53,8 +71,25 @@ class CharHeaderAdapter : RecyclerView.Adapter<CharHeaderAdapter.HeaderViewHolde
             account: AccountSk?,
             accountAvatarUrl: String?,
             statistic: CharStatistic,
+            filterCount: Int,
+            viewType: ViewType,
+            onAccountClick: () -> Unit,
+            onFilterClick: () -> Unit,
+            onViewClick: () -> Unit,
+            onMissingClick: () -> Unit,
         ) {
             val context = binding.root.context
+            binding.AccountRow.setOnClickListener { onAccountClick() }
+            binding.Filter.setOnClickListener { onFilterClick() }
+            binding.ViewChanger.setOnClickListener { onViewClick() }
+            binding.MissingButton.setOnClickListener { onMissingClick() }
+            binding.Filter.text = if (filterCount == 0) context.getString(R.string.filter)
+                else context.getString(R.string.assets_filter_count, filterCount)
+            binding.ViewChanger.setImageResource(
+                if (viewType == ViewType.LIST) R.drawable.ic_list else R.drawable.ic_grid
+            )
+            binding.MissingButton.text = context.getString(R.string.assets_missing_count, statistic.totalMiss)
+            binding.AccountRow.contentDescription = context.getString(R.string.skland_choose_account)
             binding.AccountNickName.text = account?.nickName.orEmpty()
             if (account == null) {
                 binding.AccountIcon.setImageDrawable(null)

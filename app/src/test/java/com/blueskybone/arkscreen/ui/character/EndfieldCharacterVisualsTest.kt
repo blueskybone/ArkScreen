@@ -8,6 +8,23 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class EndfieldCharacterVisualsTest {
+    @Test fun mapsProvidedProfessionAndPropertyIcons() {
+        assertEquals(R.drawable.ef_profession_caster, EndfieldCharacterVisuals.professionIcon("caster", "术师"))
+        assertEquals(R.drawable.ef_profession_tank, EndfieldCharacterVisuals.professionIcon(null, "重装"))
+        assertEquals(R.drawable.ef_profession_vanguard, EndfieldCharacterVisuals.professionIcon(null, "先锋"))
+        assertEquals(R.drawable.ef_profession_guard, EndfieldCharacterVisuals.professionIcon("guard", "近卫"))
+        assertEquals(R.drawable.ef_profession_support, EndfieldCharacterVisuals.professionIcon(null, "辅助"))
+        assertEquals(R.drawable.ef_profession_striker, EndfieldCharacterVisuals.professionIcon(null, "突击"))
+        assertEquals(R.drawable.ef_property_cold, EndfieldCharacterVisuals.propertyIcon("char_property_cryst", "寒冷"))
+        assertEquals(R.drawable.ef_property_pulse, EndfieldCharacterVisuals.propertyIcon("char_property_pulse", "电磁"))
+        assertEquals(R.drawable.ef_property_physical, EndfieldCharacterVisuals.propertyIcon(null, "物理"))
+        assertEquals(R.drawable.ef_property_fire, EndfieldCharacterVisuals.propertyIcon("char_property_fire", "灼热"))
+        assertEquals(R.drawable.ef_property_natural, EndfieldCharacterVisuals.propertyIcon(null, "腐蚀"))
+        assertEquals(null, EndfieldCharacterVisuals.professionIcon("caster", "术士"))
+        assertEquals(null, EndfieldCharacterVisuals.propertyIcon("char_property_fire", "灼燃"))
+        assertEquals(null, EndfieldCharacterVisuals.propertyIcon(null, null))
+    }
+
     @Test fun ordersFourSkillsAndMapsFiveProperties() {
         assertEquals(0, EndfieldCharacterVisuals.skillOrder("skill_type_normal_attack"))
         assertEquals(1, EndfieldCharacterVisuals.skillOrder("skill_type_normal_skill"))

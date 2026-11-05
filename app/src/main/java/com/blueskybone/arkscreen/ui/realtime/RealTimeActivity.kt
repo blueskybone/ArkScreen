@@ -3,8 +3,6 @@ package com.blueskybone.arkscreen.ui.realtime
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.Menu
-import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -27,11 +25,11 @@ import com.blueskybone.arkscreen.ui.common.bindinginfo.Tired
 import com.blueskybone.arkscreen.ui.common.bindinginfo.Trading
 import com.blueskybone.arkscreen.ui.account.AccountMngActivity
 import com.blueskybone.arkscreen.ui.common.LogManagerActivity
-import com.blueskybone.arkscreen.ui.common.formatSyncTime
-import com.blueskybone.arkscreen.ui.common.renderSyncing
+import com.blueskybone.arkscreen.util.copyToClipboard
 import com.blueskybone.arkscreen.ui.account.LoginWeb
 import com.blueskybone.arkscreen.ui.realtime.model.RealTimeUi
 import com.hjq.toast.Toaster
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlinx.coroutines.launch
 
@@ -46,7 +44,6 @@ class RealTimeActivity : AppCompatActivity() {
     private val binding get() = _binding!!
 
     private val model: RealTimeModel by viewModel()
-    private var refreshMenuItem: MenuItem? = null
     private var currentOfficial = true
     private val reauthLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -94,6 +91,8 @@ class RealTimeActivity : AppCompatActivity() {
         }
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.AccountButton.setOnClickListener { chooseAccount() }
+        binding.RefreshButton.setOnClickListener { model.refresh() }
     }
 
     private fun InfoCardBinding.setUp(dataInfo: DataInfo) {
@@ -130,49 +129,49 @@ class RealTimeActivity : AppCompatActivity() {
     }
 
     private fun setupObserver() {
+        model.accounts.observe(this) { /* Keep account choices current for the picker. */ }
         model.state.observe(this) { state ->
             when (state) {
                 RealTimeScreenState.Loading -> displayLoadingView()
                 RealTimeScreenState.Empty ->
                     displayWarningView(getString(com.blueskybone.arkscreen.R.string.realtime_no_account))
                 is RealTimeScreenState.Error -> displayErrorView(state.kind)
-                is RealTimeScreenState.Content -> {
-                    binding.Toolbar.subtitle =
-                        getString(com.blueskybone.arkscreen.R.string.last_synced_at, formatSyncTime(state.syncedAt))
-                    displayView(state.data)
-                }
+                is RealTimeScreenState.Content -> displayView(state.data)
             }
+        }
+        model.currentAccount.observe(this) { account ->
+            binding.AccountButton.text = account?.nickName ?: getString(com.blueskybone.arkscreen.R.string.skland_choose_account)
         }
         model.syncingState.observe(this) { syncing ->
-            refreshMenuItem?.renderSyncing(this, syncing)
-            if (syncing) {
-                binding.Toolbar.subtitle = getString(com.blueskybone.arkscreen.R.string.syncing)
-            }
+            binding.RefreshButton.isEnabled = !syncing
+            binding.Loading.visibility = if (syncing) View.VISIBLE else View.GONE
+            binding.LoadingMessage.visibility = if (syncing) View.VISIBLE else View.GONE
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(com.blueskybone.arkscreen.R.menu.toolbar_sync_menu, menu)
-        refreshMenuItem = menu.findItem(com.blueskybone.arkscreen.R.id.menu_refresh)
-        refreshMenuItem?.renderSyncing(this, model.syncingState.value == true)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            com.blueskybone.arkscreen.R.id.menu_refresh -> {
-                binding.Toolbar.subtitle = getString(com.blueskybone.arkscreen.R.string.syncing)
-                model.refresh()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+    private fun chooseAccount() {
+        val accounts = model.accounts.value.orEmpty()
+        if (accounts.isEmpty()) {
+            startActivity(Intent(this, AccountMngActivity::class.java))
+            return
         }
+        MaterialAlertDialogBuilder(this)
+            .setTitle(com.blueskybone.arkscreen.R.string.skland_choose_account)
+            .setSingleChoiceItems(
+                accounts.map { it.nickName }.toTypedArray(),
+                accounts.indexOfFirst { it.uid == model.currentAccount.value?.uid },
+            ) { dialog, index ->
+                model.selectAccount(accounts[index])
+                dialog.dismiss()
+            }
+            .show()
     }
 
     private fun displayLoadingView() {
-        binding.StatusProgress.visibility = View.VISIBLE
+        binding.Loading.visibility = View.VISIBLE
+        binding.LoadingMessage.visibility = View.VISIBLE
         binding.StatusIllustration.visibility = View.GONE
-        binding.Page.visibility = View.VISIBLE
+        binding.Page.visibility = View.GONE
         binding.ScrollView.visibility = View.GONE
         binding.EmptySummary.visibility = View.GONE
         binding.EmptyAction.visibility = View.GONE
@@ -180,7 +179,8 @@ class RealTimeActivity : AppCompatActivity() {
     }
 
     private fun displayErrorView(kind: RealTimeFailureKind) {
-        binding.StatusProgress.visibility = View.GONE
+        binding.Loading.visibility = View.GONE
+        binding.LoadingMessage.visibility = View.GONE
         binding.StatusIllustration.visibility = View.VISIBLE
         binding.Page.visibility = View.VISIBLE
         binding.ScrollView.visibility = View.GONE
@@ -197,7 +197,8 @@ class RealTimeActivity : AppCompatActivity() {
     }
 
     private fun displayWarningView(msg: String) {
-        binding.StatusProgress.visibility = View.GONE
+        binding.Loading.visibility = View.GONE
+        binding.LoadingMessage.visibility = View.GONE
         binding.StatusIllustration.visibility = View.VISIBLE
         binding.Page.visibility = View.VISIBLE
         binding.ScrollView.visibility = View.GONE
@@ -238,6 +239,10 @@ class RealTimeActivity : AppCompatActivity() {
     }
 
     private fun displayView(data: RealTimeUi) {
+        if (model.syncingState.value != true) {
+            binding.Loading.visibility = View.GONE
+            binding.LoadingMessage.visibility = View.GONE
+        }
         binding.Ap.text = data.apNow.toString()
         binding.ApMax.text =
             getString(com.blueskybone.arkscreen.R.string.realtime_ap_max, data.apMax)
@@ -262,7 +267,11 @@ class RealTimeActivity : AppCompatActivity() {
         binding.NickName.text = data.nickName
         binding.LastLogin.text = data.lastLogin.resolve(this)
         binding.Uid.text = getString(com.blueskybone.arkscreen.R.string.realtime_uid, data.uid)
-        binding.Uid.visibility = if (data.uid.isBlank()) View.GONE else View.VISIBLE
+        binding.UidRow.visibility = if (data.uid.isBlank()) View.GONE else View.VISIBLE
+        binding.CopyUid.setOnClickListener {
+            copyToClipboard(this, data.uid)
+            Toaster.show(getString(com.blueskybone.arkscreen.R.string.uid_copied))
+        }
         binding.Server.setText(
             if (data.official) {
                 com.blueskybone.arkscreen.R.string.official_server
