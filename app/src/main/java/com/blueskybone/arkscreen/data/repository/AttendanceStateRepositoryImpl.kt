@@ -6,6 +6,8 @@ import com.blueskybone.arkscreen.domain.model.account.AccountType
 import com.blueskybone.arkscreen.domain.model.attendance.AccountAttendanceState
 import com.blueskybone.arkscreen.domain.model.attendance.AttendanceAccountResult
 import com.blueskybone.arkscreen.domain.repository.AttendanceStateRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class AttendanceStateRepositoryImpl(
     private val dao: AttendanceRecordDao,
@@ -15,6 +17,12 @@ class AttendanceStateRepositoryImpl(
         accountUid: String,
     ): AccountAttendanceState? =
         dao.get(accountType.name, accountUid)?.toDomain()
+
+    override fun observe(
+        accountType: AccountType,
+        accountUid: String,
+    ): Flow<AccountAttendanceState?> =
+        dao.observe(accountType.name, accountUid).map { it?.toDomain() }
 
     override suspend fun record(result: AttendanceAccountResult, attemptedAt: Long) {
         val previous = dao.get(result.accountType.name, result.accountUid)

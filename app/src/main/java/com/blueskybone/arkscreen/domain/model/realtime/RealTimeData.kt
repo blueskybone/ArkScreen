@@ -70,7 +70,8 @@ data class RealTimeData(
         var max: Int = -1,
         var complete: Int = -1,
         var remainSecs: Long = 0L,
-        var completeTime: Long = -1L
+        var completeTime: Long = -1L,
+        var pendingCompleteTimes: List<Long> = emptyList(),
     )
 
     data class Hire(

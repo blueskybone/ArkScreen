@@ -20,6 +20,11 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.domain.model.account.Account
 import com.blueskybone.arkscreen.domain.model.account.AccountEf
+import com.blueskybone.arkscreen.domain.model.account.AccountType
+import com.blueskybone.arkscreen.domain.repository.AttendanceStateRepository
+import com.blueskybone.arkscreen.ui.common.view.InfoStatusTone
+import com.blueskybone.arkscreen.ui.common.view.attendedToday
+import com.blueskybone.arkscreen.ui.common.view.renderInfoStatus
 import com.blueskybone.arkscreen.databinding.ChipRoundBinding
 import com.blueskybone.arkscreen.databinding.CardApCacheBinding
 import com.blueskybone.arkscreen.databinding.FragmentEndfieldHomeBinding
@@ -44,6 +49,10 @@ import com.blueskybone.arkscreen.platform.time.TimeUtils.getLastUpdateStr
 import com.blueskybone.arkscreen.platform.time.TimeUtils.getRemainTimeStr
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.catch
+import java.time.LocalDate
+import java.time.ZoneId
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
@@ -51,12 +60,15 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 class EndfieldHome : Fragment() {
     private companion object { const val CACHE_STALE_SECONDS = 24 * 60 * 60L }
     private val prefManager: SettingPrefManager by getKoin().inject()
+    private val attendanceStates: AttendanceStateRepository by getKoin().inject()
     private val viewModel: MainModel by activityViewModel()
     private var _binding: FragmentEndfieldHomeBinding? = null
     private val binding get() = requireNotNull(_binding)
     private lateinit var bannerController: HomeBannerController
     private lateinit var accountAdapter: AccountAdapter
     private var accountPopup: AccountPickerPopup? = null
+    private var attendanceKey: String? = null
+    private var attendanceJob: Job? = null
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
@@ -153,6 +165,8 @@ class EndfieldHome : Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.loadEndfieldStaminaCache()
+        val state = viewModel.uiState.value
+        updateAttendanceStatus(effectiveAccount(state), force = true)
     }
 
     private fun renderStaminaCache(state: MainUiState) {
@@ -163,8 +177,8 @@ class EndfieldHome : Fragment() {
         )
         card.SanityProgress.trackColor =
             ContextCompat.getColor(requireContext(), R.color.endfield_progress_track)
-        val account = state.currentAccountEf
-            ?: state.accountEfList.firstOrNull()?.account as? AccountEf
+        val account = effectiveAccount(state)
+        updateAttendanceStatus(account)
         card.AccountName.text = account?.nickName ?: getString(R.string.endfield_stamina)
         card.Server.setText(R.string.endfield_stamina)
         card.Server.visibility = if (account == null) View.GONE else View.VISIBLE
@@ -198,6 +212,37 @@ class EndfieldHome : Fragment() {
         card.SanityProgress.max = cache.maximum.coerceAtLeast(1).coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
         card.SanityProgress.progress = current.coerceIn(0, card.SanityProgress.max.toLong()).toInt()
         card.Freshness.visibility = if (age >= CACHE_STALE_SECONDS) View.VISIBLE else View.GONE
+    }
+
+    private fun effectiveAccount(state: MainUiState): AccountEf? = state.currentAccountEf
+        ?: state.accountEfList.firstOrNull()?.account as? AccountEf
+
+    private fun updateAttendanceStatus(account: AccountEf?, force: Boolean = false) {
+        val chip = binding.EfStaminaCard.AttendanceStatus
+        if (account == null) {
+            attendanceJob?.cancel()
+            attendanceKey = null
+            chip.visibility = View.GONE
+            return
+        }
+        val key = "${account.uid}:${LocalDate.now(ZoneId.of("Asia/Shanghai"))}"
+        if (!force && attendanceKey == key) return
+        attendanceKey = key
+        attendanceJob?.cancel()
+        chip.visibility = View.GONE
+        attendanceJob = viewLifecycleOwner.lifecycleScope.launch {
+            attendanceStates.observe(AccountType.EF, account.uid)
+                .catch { emit(null) }
+                .collect { state ->
+                    if (_binding == null || effectiveAccount(viewModel.uiState.value)?.uid != account.uid) return@collect
+                    val signed = attendedToday(state?.lastSuccessTs ?: 0L)
+                    chip.renderInfoStatus(
+                        if (signed) R.string.status_attended_today else R.string.status_not_attended_today,
+                        if (signed) InfoStatusTone.SUCCESS else InfoStatusTone.WARNING,
+                    )
+                    chip.visibility = View.VISIBLE
+                }
+        }
     }
 
     private fun startManualAttendance() {

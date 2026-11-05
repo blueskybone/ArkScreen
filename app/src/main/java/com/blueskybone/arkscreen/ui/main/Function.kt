@@ -5,7 +5,6 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -16,7 +15,6 @@ import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -38,6 +36,9 @@ import com.blueskybone.arkscreen.ui.common.bindinginfo.ScreenshotDelay
 import com.blueskybone.arkscreen.ui.common.bindinginfo.SetAtdTime
 import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetUpdateFreq
 import com.blueskybone.arkscreen.ui.common.view.PreferenceDialog
+import com.blueskybone.arkscreen.ui.common.view.InfoStatusTone
+import com.blueskybone.arkscreen.ui.common.view.attendedToday
+import com.blueskybone.arkscreen.ui.common.view.renderInfoStatus
 import com.blueskybone.arkscreen.ui.main.common.PreferenceBinder
 import com.blueskybone.arkscreen.ui.widget.WidgetTemplateLabActivity
 import com.blueskybone.arkscreen.ui.widget.WidgetNext1
@@ -51,8 +52,6 @@ import com.hjq.toast.Toaster
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.util.Locale
-import java.time.Instant
-import java.time.ZoneId
 import timber.log.Timber
 
 /**
@@ -128,6 +127,9 @@ class Function : Fragment() {
         }
         binding.WidgetAppearance.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), WidgetTemplateLabActivity::class.java))
+        }
+        binding.RecoveryNotificationEntry.setOnClickListener {
+            startActivity(Intent(requireContext(), RecoveryNotificationSettingsActivity::class.java))
         }
 
         PreferenceBinder.bindPreferenceValue(
@@ -246,57 +248,55 @@ class Function : Fragment() {
 
         when {
             !Settings.canDrawOverlays(requireContext()) ->
-                binding.RecruitStatus.renderStatus(
+                binding.RecruitStatus.renderInfoStatus(
                     R.string.status_overlay_required,
-                    StatusTone.ERROR,
+                    InfoStatusTone.ERROR,
                 )
             !notificationGranted ->
-                binding.RecruitStatus.renderStatus(
+                binding.RecruitStatus.renderInfoStatus(
                     R.string.status_notification_recommended,
-                    StatusTone.WARNING,
+                    InfoStatusTone.WARNING,
                 )
             else ->
-                binding.RecruitStatus.renderStatus(R.string.status_ready, StatusTone.SUCCESS)
+                binding.RecruitStatus.renderInfoStatus(R.string.status_ready, InfoStatusTone.SUCCESS)
         }
 
         val powerManager =
             requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
         when {
             !hasInstalledWidget() ->
-                binding.WidgetStatus.renderStatus(
+                binding.WidgetStatus.renderInfoStatus(
                     R.string.status_widget_not_added,
-                    StatusTone.NEUTRAL,
+                    InfoStatusTone.NEUTRAL,
                 )
             !powerManager.isIgnoringBatteryOptimizations(requireContext().packageName) ->
-                binding.WidgetStatus.renderStatus(R.string.status_restricted, StatusTone.WARNING)
-            else -> binding.WidgetStatus.renderStatus(R.string.status_ready, StatusTone.SUCCESS)
+                binding.WidgetStatus.renderInfoStatus(R.string.status_restricted, InfoStatusTone.WARNING)
+            else -> binding.WidgetStatus.renderInfoStatus(R.string.status_ready, InfoStatusTone.SUCCESS)
         }
 
         when {
             !prefManager.backAutoAtd.get() ->
-                binding.AttendanceStatus.renderStatus(
+                binding.AttendanceStatus.renderInfoStatus(
                     R.string.status_disabled,
-                    StatusTone.NEUTRAL,
+                    InfoStatusTone.NEUTRAL,
                 )
             !notificationGranted ->
-                binding.AttendanceStatus.renderStatus(
+                binding.AttendanceStatus.renderInfoStatus(
                     R.string.status_permission_required,
-                    StatusTone.ERROR,
+                    InfoStatusTone.ERROR,
                 )
             hasAttendedToday() ->
-                binding.AttendanceStatus.renderStatus(
+                binding.AttendanceStatus.renderInfoStatus(
                     R.string.status_attended_today,
-                    StatusTone.SUCCESS,
+                    InfoStatusTone.SUCCESS,
                 )
             else ->
-                binding.AttendanceStatus.renderStatus(
-                    R.string.status_enabled,
-                    StatusTone.SUCCESS,
+                binding.AttendanceStatus.renderInfoStatus(
+                    R.string.status_not_attended_today,
+                    InfoStatusTone.WARNING,
                 )
         }
     }
-
-    private enum class StatusTone { SUCCESS, WARNING, ERROR, NEUTRAL }
 
     private enum class FunctionGroup(val storedValue: Int) {
         RECRUIT(1),
@@ -384,24 +384,6 @@ class Function : Fragment() {
         return null
     }
 
-    private fun TextView.renderStatus(textRes: Int, tone: StatusTone) {
-        val (container, content) = when (tone) {
-            StatusTone.SUCCESS ->
-                R.color.status_success_container to R.color.status_success_content
-            StatusTone.WARNING ->
-                R.color.status_warning_container to R.color.status_warning_content
-            StatusTone.ERROR ->
-                R.color.status_error_container to R.color.status_error_content
-            StatusTone.NEUTRAL ->
-                R.color.status_neutral_container to R.color.status_neutral_content
-        }
-        setText(textRes)
-        backgroundTintList = ColorStateList.valueOf(
-            ContextCompat.getColor(requireContext(), container)
-        )
-        setTextColor(ContextCompat.getColor(requireContext(), content))
-    }
-
     private fun hasInstalledWidget(): Boolean {
         val manager = AppWidgetManager.getInstance(requireContext())
         return listOf(
@@ -416,11 +398,7 @@ class Function : Fragment() {
     }
 
     private fun hasAttendedToday(): Boolean {
-        val timestamp = innerPrefManager.lastAttendanceTs.get()
-        if (timestamp <= 0) return false
-        val zone = ZoneId.of("Asia/Shanghai")
-        return Instant.ofEpochSecond(timestamp).atZone(zone).toLocalDate() ==
-            Instant.now().atZone(zone).toLocalDate()
+        return attendedToday(innerPrefManager.lastAttendanceTs.get())
     }
 
     override fun onDestroy() {

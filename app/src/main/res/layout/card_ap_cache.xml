@@ -107,13 +107,15 @@
             android:layout_weight="1" />
 
         <TextView
+            android:id="@+id/AttendanceStatus"
+            style="@style/Widget.ArkScreen.InfoStatusChip"
+            android:visibility="gone" />
+
+        <TextView
             android:id="@+id/Freshness"
-            style="@style/Widget.ArkScreen.StatusChip"
-            android:layout_height="20dp"
-            android:paddingStart="7dp"
-            android:paddingEnd="7dp"
+            style="@style/Widget.ArkScreen.InfoStatusChip.Warning"
+            android:layout_marginStart="6dp"
             android:text="@string/data_may_be_stale"
-            android:textSize="10sp"
             android:visibility="gone" />
     </LinearLayout>
 </LinearLayout>

@@ -20,6 +20,12 @@ import com.blueskybone.arkscreen.di.useCaseModule
 import com.blueskybone.arkscreen.di.viewModelModule
 import com.blueskybone.arkscreen.di.screenshotModule
 import com.blueskybone.arkscreen.platform.theme.AppThemeController
+import com.blueskybone.arkscreen.platform.notification.RecoveryReminderController
+import com.blueskybone.arkscreen.data.local.pref.InnerPrefManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import com.blueskybone.arkscreen.di.recruitScreenshotModule
 import com.blueskybone.arkscreen.util.getDensityDpi
 import com.hjq.toast.Toaster
@@ -82,6 +88,13 @@ class App : Application() {
         }
         // 必须在首个 Activity 创建前恢复主题，否则启动页会先使用错误主题再重建。
         koinApplication.koin.get<AppThemeController>().applySavedTheme()
+        CoroutineScope(SupervisorJob() + Dispatchers.Default).launch {
+            val inner = koinApplication.koin.get<InnerPrefManager>()
+            val reminders = koinApplication.koin.get<RecoveryReminderController>()
+            inner.currentAccountSkUid.flow().collect { uid ->
+                reminders.onAccountChanged(uid)
+            }
+        }
         val screenDensityDpi = getDensityDpi(this)
         setScreenDpi(screenDensityDpi)
 

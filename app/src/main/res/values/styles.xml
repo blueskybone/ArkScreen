@@ -260,15 +260,33 @@
         <item name="android:layout_marginTop">16dp</item>
     </style>
 
-    <style name="Widget.ArkScreen.StatusChip" parent="TextAppearance.MaterialComponents.Caption">
+    <style name="Widget.ArkScreen.InfoStatusChip" parent="Widget.ArkScreen.MetadataLabel">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">24dp</item>
+        <item name="android:layout_height">20dp</item>
         <item name="android:gravity">center</item>
-        <item name="android:paddingStart">9dp</item>
-        <item name="android:paddingEnd">9dp</item>
-        <item name="android:textSize">11sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:paddingStart">7dp</item>
+        <item name="android:paddingEnd">7dp</item>
         <item name="android:background">@drawable/bg_asset_stat_chip</item>
+    </style>
+
+    <style name="Widget.ArkScreen.InfoStatusChip.Success">
+        <item name="android:backgroundTint">@color/status_success_container</item>
+        <item name="android:textColor">@color/status_success_content</item>
+    </style>
+
+    <style name="Widget.ArkScreen.InfoStatusChip.Warning">
+        <item name="android:backgroundTint">@color/status_warning_container</item>
+        <item name="android:textColor">@color/status_warning_content</item>
+    </style>
+
+    <style name="Widget.ArkScreen.InfoStatusChip.Error">
+        <item name="android:backgroundTint">@color/status_error_container</item>
+        <item name="android:textColor">@color/status_error_content</item>
+    </style>
+
+    <style name="Widget.ArkScreen.InfoStatusChip.Neutral">
+        <item name="android:backgroundTint">@color/status_neutral_container</item>
+        <item name="android:textColor">@color/status_neutral_content</item>
     </style>
 
     <style name="Widget.ArkScreen.TableHeaderText" parent="TextAppearance.MaterialComponents.Caption">

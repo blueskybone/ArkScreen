@@ -3,6 +3,8 @@ package com.blueskybone.arkscreen.di
 import android.os.Build
 import com.blueskybone.arkscreen.domain.model.AppVersion
 import com.blueskybone.arkscreen.platform.notification.AttendanceNotificationController
+import com.blueskybone.arkscreen.platform.notification.RecoveryReminderController
+import com.blueskybone.arkscreen.domain.service.RecoveryReminderScheduler
 import com.blueskybone.arkscreen.platform.schedule.AttendanceAlarmController
 import com.blueskybone.arkscreen.platform.theme.AppThemeController
 import com.blueskybone.arkscreen.platform.widget.WidgetUpdateDispatcher
@@ -31,6 +33,8 @@ val appModule = module {
 
     single { Dispatchers.IO }
     single { AttendanceNotificationController(androidContext()) }
+    single { RecoveryReminderController(androidContext(), get(), get(), get()) }
+    single<RecoveryReminderScheduler> { get<RecoveryReminderController>() }
     single { AttendanceAlarmController(androidContext(), get()) }
     single { AppThemeController(get()) }
     single { WidgetUpdateDispatcher(androidContext()) }

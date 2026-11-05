@@ -27,6 +27,8 @@ import com.blueskybone.arkscreen.databinding.ChipRoundBinding
 import com.blueskybone.arkscreen.databinding.FragmentHomeBinding
 import com.blueskybone.arkscreen.domain.model.account.Account
 import com.blueskybone.arkscreen.domain.model.account.AccountSk
+import com.blueskybone.arkscreen.domain.model.account.AccountType
+import com.blueskybone.arkscreen.domain.repository.AttendanceStateRepository
 import com.blueskybone.arkscreen.domain.model.cache.ApCache
 import com.blueskybone.arkscreen.domain.service.AppClock
 import com.blueskybone.arkscreen.domain.usecase.account.SyncAccountSkUseCase
@@ -44,6 +46,9 @@ import com.blueskybone.arkscreen.ui.common.bindinginfo.GameStarter
 import com.blueskybone.arkscreen.ui.common.bindinginfo.OpeAssets
 import com.blueskybone.arkscreen.ui.common.bindinginfo.RecruitCal
 import com.blueskybone.arkscreen.ui.common.view.MenuDialog
+import com.blueskybone.arkscreen.ui.common.view.InfoStatusTone
+import com.blueskybone.arkscreen.ui.common.view.attendedToday
+import com.blueskybone.arkscreen.ui.common.view.renderInfoStatus
 import com.blueskybone.arkscreen.ui.gacha.GachaActivity
 import com.blueskybone.arkscreen.ui.main.common.HomeBannerController
 import com.blueskybone.arkscreen.ui.main.common.HomeDialogController
@@ -57,6 +62,10 @@ import com.blueskybone.arkscreen.util.launchApp
 import com.blueskybone.arkscreen.ui.common.openLink
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.catch
+import java.time.LocalDate
+import java.time.ZoneId
 import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
@@ -68,6 +77,7 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 class Home : Fragment() {
 
     private val prefManager: SettingPrefManager by getKoin().inject()
+    private val attendanceStates: AttendanceStateRepository by getKoin().inject()
     private val appClock: AppClock by getKoin().inject()
     private val viewModel: MainModel by activityViewModel()
     private var _binding: FragmentHomeBinding? = null
@@ -77,6 +87,8 @@ class Home : Fragment() {
     private lateinit var dialogController: HomeDialogController
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var bannerController: HomeBannerController
+    private var attendanceKey: String? = null
+    private var attendanceJob: Job? = null
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
@@ -110,6 +122,7 @@ class Home : Fragment() {
         // 实时数据页会更新持久化快照；首页每次重新可见时都应读取一次，
         // 这样卡片能展示最近一次成功请求的数据。
         viewModel.loadApCache()
+        updateAttendanceStatus(viewModel.uiState.value.currentAccountSk, force = true)
     }
 
     private fun initController() {
@@ -226,6 +239,7 @@ class Home : Fragment() {
             )
         }
         val account = state.currentAccountSk
+        updateAttendanceStatus(account)
         val value = state.apCache
         when {
             account == null -> {
@@ -249,6 +263,34 @@ class Home : Fragment() {
                 card.Max.visibility = View.VISIBLE
                 card.bind(value)
             }
+        }
+    }
+
+    private fun updateAttendanceStatus(account: AccountSk?, force: Boolean = false) {
+        val chip = binding.ApCacheCard.AttendanceStatus
+        if (account == null) {
+            attendanceJob?.cancel()
+            attendanceKey = null
+            chip.visibility = View.GONE
+            return
+        }
+        val key = "${account.uid}:${LocalDate.now(ZoneId.of("Asia/Shanghai"))}"
+        if (!force && attendanceKey == key) return
+        attendanceKey = key
+        attendanceJob?.cancel()
+        chip.visibility = View.GONE
+        attendanceJob = viewLifecycleOwner.lifecycleScope.launch {
+            attendanceStates.observe(AccountType.SK, account.uid)
+                .catch { emit(null) }
+                .collect { state ->
+                    if (_binding == null || viewModel.uiState.value.currentAccountSk?.uid != account.uid) return@collect
+                    val signed = attendedToday(state?.lastSuccessTs ?: 0L)
+                    chip.renderInfoStatus(
+                        if (signed) R.string.status_attended_today else R.string.status_not_attended_today,
+                        if (signed) InfoStatusTone.SUCCESS else InfoStatusTone.WARNING,
+                    )
+                    chip.visibility = View.VISIBLE
+                }
         }
     }
 

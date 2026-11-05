@@ -39,7 +39,7 @@ val useCaseModule = module {
     factory { BuildOperatorPosterUseCase() }
 
     // 实时数据
-    factory { GetRealTimeUseCase(get()) }
+    factory { GetRealTimeUseCase(get(), get()) }
 
     // 公招
     factory { CalcResultUseCase(get()) }

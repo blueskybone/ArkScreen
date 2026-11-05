@@ -44,7 +44,7 @@
 
                     <TextView
                         android:id="@+id/RecruitStatus"
-                        style="@style/Widget.ArkScreen.StatusChip" />
+                        style="@style/Widget.ArkScreen.InfoStatusChip" />
 
                     <Space
                         android:layout_width="0dp"
@@ -146,7 +146,7 @@
 
                     <TextView
                         android:id="@+id/WidgetStatus"
-                        style="@style/Widget.ArkScreen.StatusChip" />
+                        style="@style/Widget.ArkScreen.InfoStatusChip" />
 
                     <Space
                         android:layout_width="0dp"
@@ -235,7 +235,7 @@
 
                     <TextView
                         android:id="@+id/AttendanceStatus"
-                        style="@style/Widget.ArkScreen.StatusChip" />
+                        style="@style/Widget.ArkScreen.InfoStatusChip" />
 
                     <Space
                         android:layout_width="0dp"
@@ -284,6 +284,55 @@
                         layout="@layout/preference"
                         android:visibility="gone" />
                 </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.card.MaterialCardView
+            style="@style/CardViewContent">
+
+            <LinearLayout
+                android:id="@+id/RecoveryNotificationEntry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/recovery_notifications"
+                        android:textAppearance="?attr/textAppearanceSubtitle1"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/bg_inline_chip"
+                        android:backgroundTint="@color/inline_chip_background"
+                        android:paddingStart="8dp"
+                        android:paddingTop="4dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="4dp"
+                        android:text="@string/recovery_notifications_experimental"
+                        android:textColor="@color/inline_chip_text"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_right_arrow" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>

@@ -31,6 +31,17 @@ class SettingPrefManager() {
         defaultHomeGame = preferenceStore.getString("default_home_game", "ARKNIGHTS")
         assetsViewType = preferenceStore.getInt("assets_view_type", 0)
         showEmptyGachaPools = preferenceStore.getBoolean("show_empty_gacha_pools", true)
+        recoveryNotificationsEnabled = preferenceStore.getBoolean("recovery_notifications_enabled", false)
+        notifyApFull = preferenceStore.getBoolean("notify_ap_full", true)
+        notifyApEarly = preferenceStore.getBoolean("notify_ap_early", false)
+        notifyApEarlyMinutes = preferenceStore.getInt("notify_ap_early_minutes", 30)
+        notifyTrainingComplete = preferenceStore.getBoolean("notify_training_complete", false)
+        notifyTrainingShift = preferenceStore.getBoolean("notify_training_shift", false)
+        notifyTrainingShiftMinutes = preferenceStore.getInt("notify_training_shift_minutes", 30)
+        notifyLaborFull = preferenceStore.getBoolean("notify_labor_full", false)
+        notifyMeetingComplete = preferenceStore.getBoolean("notify_meeting_complete", false)
+        notifyRecruitComplete = preferenceStore.getBoolean("notify_recruit_complete", false)
+        notifyRecruitRefresh = preferenceStore.getBoolean("notify_recruit_refresh", false)
 
 
         widgetUpdateFreq = preferenceStore.getString(
@@ -66,6 +77,17 @@ class SettingPrefManager() {
     lateinit var showHomeAnnounce: Preference<Boolean>  //显示首页公告
     lateinit var assetsViewType: Preference<Int>        //干员资产列表展示模式
     lateinit var showEmptyGachaPools: Preference<Boolean>
+    lateinit var recoveryNotificationsEnabled: Preference<Boolean>
+    lateinit var notifyApFull: Preference<Boolean>
+    lateinit var notifyApEarly: Preference<Boolean>
+    lateinit var notifyApEarlyMinutes: Preference<Int>
+    lateinit var notifyTrainingComplete: Preference<Boolean>
+    lateinit var notifyTrainingShift: Preference<Boolean>
+    lateinit var notifyTrainingShiftMinutes: Preference<Int>
+    lateinit var notifyLaborFull: Preference<Boolean>
+    lateinit var notifyMeetingComplete: Preference<Boolean>
+    lateinit var notifyRecruitComplete: Preference<Boolean>
+    lateinit var notifyRecruitRefresh: Preference<Boolean>
 
     lateinit var widgetUpdateFreq: Preference<String>  // 更新频率：15 分钟、30 分钟或 1 小时
 

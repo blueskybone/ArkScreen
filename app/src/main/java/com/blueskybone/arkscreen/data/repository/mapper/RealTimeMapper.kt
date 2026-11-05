@@ -244,6 +244,7 @@ object RealTimeMapper {
             var unable = 0
             var complete = 0
             var maxFinishTs = -1L
+            val pendingFinishTimes = mutableListOf<Long>()
 
             recruitNode.forEach { node ->
                 when (node.state) {
@@ -252,6 +253,7 @@ object RealTimeMapper {
                     2 -> {
                         node.finishTs?.let { finishTs ->
                             if (finishTs < currentTs) complete++
+                            else pendingFinishTimes.add(finishTs)
                             maxFinishTs = maxFinishTs.coerceAtLeast(finishTs)
                         }
                     }
@@ -260,6 +262,7 @@ object RealTimeMapper {
 
             max = 4 - unable
             this.complete = complete
+            pendingCompleteTimes = pendingFinishTimes.distinct().sorted()
 
             if (maxFinishTs == -1L || maxFinishTs < currentTs) {
                 remainSecs = -1
