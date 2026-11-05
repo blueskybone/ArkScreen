@@ -40,6 +40,14 @@ android {
                 "proguard-rules.pro"
             )
         }
+        create("r8Probe") {
+            initWith(getByName("release"))
+            isMinifyEnabled = true
+            isShrinkResources = false
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += listOf("release")
+            proguardFiles("proguard-r8-probe.pro")
+        }
     }
 
     buildFeatures {
@@ -167,8 +175,11 @@ val generateThirdPartyLicenses by tasks.registering {
 tasks.configureEach {
     if (
         name == "mergeDebugAssets" ||
+        name == "mergeR8ProbeAssets" ||
         name == "mergeReleaseAssets" ||
+        name == "lintVitalAnalyzeR8Probe" ||
         name == "lintVitalAnalyzeRelease" ||
+        name == "generateR8ProbeLintVitalReportModel" ||
         name == "generateReleaseLintVitalReportModel"
     ) {
         dependsOn(generateThirdPartyLicenses)
