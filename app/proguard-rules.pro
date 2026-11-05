@@ -33,5 +33,10 @@
 -keepattributes RuntimeVisibleAnnotations,RuntimeInvisibleAnnotations,AnnotationDefault
 -keepattributes RuntimeVisibleParameterAnnotations,RuntimeInvisibleParameterAnnotations,MethodParameters
 
+# Retrofit 2.9.0's bundled rules predate the R8 full-mode rules for suspend
+# services. Retrofit reads Continuation<Response<T>> from generic signatures.
+-keep,allowoptimization,allowshrinking,allowobfuscation class kotlin.coroutines.Continuation
+-keep,allowoptimization,allowshrinking,allowobfuscation class retrofit2.Response
+
 # JNI exports use the fully-qualified ImageProcessor class and method names.
 -keep class com.blueskybone.arkscreen.ui.recruit.ocr.ImageProcessor { *; }
