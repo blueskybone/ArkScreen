@@ -3,7 +3,9 @@ package com.blueskybone.arkscreen.ui.main
 import com.blueskybone.arkscreen.domain.model.BiliVideo
 import com.blueskybone.arkscreen.domain.model.AppRemoteConfig
 import com.blueskybone.arkscreen.domain.model.account.AccountSk
+import com.blueskybone.arkscreen.domain.model.account.AccountEf
 import com.blueskybone.arkscreen.domain.model.cache.ApCache
+import com.blueskybone.arkscreen.domain.model.cache.EndfieldStaminaCache
 import com.blueskybone.arkscreen.domain.model.cache.CacheAccountInfo
 import com.blueskybone.arkscreen.domain.model.link.Link
 import com.blueskybone.arkscreen.ui.account.model.AccountItemUiModel
@@ -17,14 +19,17 @@ data class MainUiState(
     val status: UiStatus = UiStatus.Idle,
     val announce: String = "",
     val biliVideos: List<BiliVideo> = emptyList(),
+    val endfieldBiliVideos: List<BiliVideo> = emptyList(),
     val appRemoteConfig: AppRemoteConfig = AppRemoteConfig.Default,
     val links: List<Link> = emptyList(),
 
     val accountSkList: List<AccountItemUiModel> = emptyList(),
     val accountEfList: List<AccountItemUiModel> = emptyList(),
     val currentAccountSk: AccountSk? = null,
+    val currentAccountEf: AccountEf? = null,
 
     val apCache: ApCache? = null,
+    val endfieldStaminaCache: EndfieldStaminaCache? = null,
     val cacheAccountInfo: CacheAccountInfo? = null,
 
     val loginStatus: UiStatus = UiStatus.Idle,

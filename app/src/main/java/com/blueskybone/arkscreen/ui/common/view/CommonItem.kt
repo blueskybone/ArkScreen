@@ -13,7 +13,6 @@ import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.Space
 import androidx.core.content.ContextCompat
-import androidx.core.view.marginBottom
 import androidx.core.view.updateMargins
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.util.dpToPx
@@ -74,12 +73,7 @@ fun getFlowRadioGroup(context: Context): FlowRadioGroup {
         layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
-        ).apply {
-            val sectionView = findViewById<View>(R.id.Section)
-            (layoutParams as? FrameLayout.LayoutParams)?.apply {
-                topMargin = sectionView.bottom + sectionView.marginBottom
-            }
-        }
+        )
         // 设置可聚焦
         isFocusable = true
         // 设置内边距

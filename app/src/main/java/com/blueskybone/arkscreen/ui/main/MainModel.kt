@@ -3,6 +3,7 @@ package com.blueskybone.arkscreen.ui.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.domain.model.account.AccountSk
+import com.blueskybone.arkscreen.domain.model.account.AccountEf
 import com.blueskybone.arkscreen.domain.model.link.Link
 import com.blueskybone.arkscreen.domain.model.link.LinkUrl
 import com.blueskybone.arkscreen.domain.repository.AccountRepository
@@ -52,6 +53,13 @@ class MainModel(
     private val syncAccountSkUseCase: SyncAccountSkUseCase,
     private val innerPrefManager: InnerPrefManager,
 ) : ViewModel() {
+
+    private data class AccountSelection(
+        val skItems: List<AccountItemUiModel>,
+        val efItems: List<AccountItemUiModel>,
+        val currentSk: AccountSk?,
+        val currentEf: AccountEf?,
+    )
 
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState
@@ -114,18 +122,22 @@ class MainModel(
                 repoAcc.observeSkAcc(),
                 repoAcc.observeEfAcc(),
                 repoAcc.observeCurrentSkAcc(),
-            ) { skAccounts, efAccounts, current ->
-                Triple(skAccounts, efAccounts, current)
-            }.collect { (skAccounts, efAccounts, current) ->
+                repoAcc.observeCurrentEfAcc(),
+            ) { skAccounts, efAccounts, currentSk, currentEf ->
                 val skItems = skAccounts.map { account ->
-                    AccountItemUiModel(account, account.uid == current?.uid)
+                    AccountItemUiModel(account, account.uid == currentSk?.uid)
                 }
-                val efItems = efAccounts.map { account -> AccountItemUiModel(account, false) }
+                val efItems = efAccounts.map { account ->
+                    AccountItemUiModel(account, account.uid == currentEf?.uid)
+                }
+                AccountSelection(skItems, efItems, currentSk, currentEf)
+            }.collect { selection ->
                 _uiState.update {
                     it.copy(
-                        accountSkList = skItems,
-                        accountEfList = efItems,
-                        currentAccountSk = current,
+                        accountSkList = selection.skItems,
+                        accountEfList = selection.efItems,
+                        currentAccountSk = selection.currentSk,
+                        currentAccountEf = selection.currentEf,
                     )
                 }
             }
@@ -190,6 +202,16 @@ class MainModel(
         }
     }
 
+    fun setDefaultAccountEf(account: AccountEf) {
+        viewModelScope.launch {
+            repoAcc.setCurrentAccountEf(account)
+                .onFailure { error ->
+                    Timber.tag("Account").e(error, "Default Endfield account switch failed")
+                    _event.send(MainEvent.ShowError(error.message ?: "切换账号失败"))
+                }
+        }
+    }
+
     fun loginSkland(way: SyncAccountSkUseCase.LoginWay) {
         viewModelScope.launch {
             _uiState.update { it.copy(loginStatus = UiStatus.Loading()) }
@@ -236,11 +258,16 @@ class MainModel(
         }
     }
 
-    fun fetchBiliVideos() {
+    fun fetchBiliVideos(game: HomeGame = HomeGame.ARKNIGHTS) {
         viewModelScope.launch {
-            homeContentRepository.fetchBiliVideos()
+            homeContentRepository.fetchBiliVideos(game.bilibiliUid)
                 .onSuccess { list ->
-                    _uiState.update { it.copy(biliVideos = list) }
+                    _uiState.update { state ->
+                        when (game) {
+                            HomeGame.ARKNIGHTS -> state.copy(biliVideos = list)
+                            HomeGame.ENDFIELD -> state.copy(endfieldBiliVideos = list)
+                        }
+                    }
                 }
                 .onFailure { error ->
                     Timber.tag("Home").e(error, "Bilibili video loading failed")
@@ -261,6 +288,13 @@ class MainModel(
                     cacheAccountInfo = cacheAccountInfo.takeIf { owner -> owner.uid.isNotBlank() },
                 )
             }
+        }
+    }
+
+    fun loadEndfieldStaminaCache() {
+        viewModelScope.launch {
+            val cache = repoSkland.getEndfieldStaminaCache().takeIf { it.isValid }
+            _uiState.update { it.copy(endfieldStaminaCache = cache) }
         }
     }
 

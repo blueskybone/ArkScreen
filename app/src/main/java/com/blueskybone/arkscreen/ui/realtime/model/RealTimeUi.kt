@@ -17,6 +17,7 @@ sealed interface UiText {
 }
 
 data class RealTimeUi(
+    val uid: String,
     val nickName: String,
     val lastLogin: UiText,
     val level: Int,
@@ -25,6 +26,9 @@ data class RealTimeUi(
     val apNow: Int,
     val apFullTime: UiText,
     val apResTime: UiText,
+    val daily: PairInfo,
+    val towerHigher: PairInfo,
+    val towerLower: PairInfo,
     val recruit: PairInfo,
     val recruitRefresh: PairInfo,
     val labor: PairInfo,
@@ -33,7 +37,7 @@ data class RealTimeUi(
     val trading: PairInfo,
     val dormitories: PairInfo,
     val tired: PairInfo,
-    val train: PairInfo,
+    val train: TrainingInfo,
     val campaign: PairInfo,
     val logosChange: TrainChange?,
     val ireneChange: TrainChange?,
@@ -41,6 +45,14 @@ data class RealTimeUi(
 ) {
     data class PairInfo(
         val value: UiText,
+        val time: UiText = UiText.Raw(""),
+        val notify: Boolean = false,
+    )
+
+    data class TrainingInfo(
+        val trainee: UiText,
+        val trainer: UiText? = null,
+        val targetSkill: Int? = null,
         val time: UiText = UiText.Raw(""),
         val notify: Boolean = false,
     )

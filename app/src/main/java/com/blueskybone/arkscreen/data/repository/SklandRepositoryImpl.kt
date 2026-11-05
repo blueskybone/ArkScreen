@@ -5,6 +5,8 @@ import com.blueskybone.arkscreen.data.network.ApiService
 import com.blueskybone.arkscreen.data.network.auth.HeaderProvider
 import com.blueskybone.arkscreen.data.network.auth.SklandAuthRemoteDataSource
 import com.blueskybone.arkscreen.data.network.model.AttendanceEndfieldResponse
+import com.blueskybone.arkscreen.data.network.model.EndfieldCharacter
+import com.blueskybone.arkscreen.data.network.model.EndfieldCardDetail
 import com.blueskybone.arkscreen.data.network.model.Awards
 import com.fasterxml.jackson.databind.JsonNode
 import com.blueskybone.arkscreen.data.network.model.AttendanceRequest
@@ -12,11 +14,13 @@ import com.blueskybone.arkscreen.data.network.model.AttendanceResponse
 import com.blueskybone.arkscreen.data.network.model.PlayerInfoResp
 import com.blueskybone.arkscreen.data.network.safeApiCall
 import com.blueskybone.arkscreen.data.repository.mapper.OperatorMapper
+import com.blueskybone.arkscreen.data.repository.mapper.EndfieldRealtimeMapper
 import com.blueskybone.arkscreen.data.repository.mapper.RealTimeMapper
 import com.blueskybone.arkscreen.data.common.repositoryResultOf
 import com.blueskybone.arkscreen.domain.model.account.AccountEf
 import com.blueskybone.arkscreen.domain.model.account.AccountSk
 import com.blueskybone.arkscreen.domain.model.cache.ApCache
+import com.blueskybone.arkscreen.domain.model.cache.EndfieldStaminaCache
 import com.blueskybone.arkscreen.domain.model.cache.CacheAccountInfo
 import com.blueskybone.arkscreen.domain.model.cache.LaborCache
 import com.blueskybone.arkscreen.domain.model.cache.MeetCache
@@ -26,6 +30,7 @@ import com.blueskybone.arkscreen.domain.model.cache.TrainCache
 import com.blueskybone.arkscreen.domain.model.operator.Operator
 import com.blueskybone.arkscreen.domain.model.operator.OperatorAssets
 import com.blueskybone.arkscreen.domain.model.realtime.RealTimeData
+import com.blueskybone.arkscreen.domain.model.realtime.EndfieldRealtimeSnapshot
 import com.blueskybone.arkscreen.domain.repository.SklandRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -203,6 +208,54 @@ class SklandRepositoryImpl(
                 )
             }
         }
+
+    override suspend fun fetchEndfieldCharacters(account: AccountEf): Result<List<EndfieldCharacter>> =
+        repositoryResultOf {
+            withContext(Dispatchers.IO) {
+                requireNotNull(fetchEndfieldCardDetail(account).chars) {
+                    "终末地角色数据缺少 chars 字段"
+                }
+            }
+        }
+
+    override suspend fun fetchEndfieldRealtime(account: AccountEf): Result<EndfieldRealtimeSnapshot> =
+        repositoryResultOf {
+            withContext(Dispatchers.IO) {
+                EndfieldRealtimeMapper.toDomain(fetchEndfieldCardDetail(account)).also { snapshot ->
+                    snapshot.stamina?.let { stamina ->
+                        val current = stamina.baseValue
+                        val maximum = stamina.maxValue
+                        val sampledAt = stamina.sampledAt
+                        if (current != null && maximum != null && sampledAt != null) {
+                            prefManager.endfieldStamina.set(EndfieldStaminaCache(
+                                uid = account.uid,
+                                sampledAt = sampledAt,
+                                current = current,
+                                maximum = maximum,
+                                fullAt = stamina.fullAt ?: 0,
+                            ))
+                        }
+                    }
+                }
+            }
+        }
+
+    override fun getEndfieldStaminaCache(): EndfieldStaminaCache = prefManager.endfieldStamina.get()
+
+    private suspend fun fetchEndfieldCardDetail(account: AccountEf): EndfieldCardDetail {
+        val cred = authRemoteDataSource.fetchCredential(account.token, account.dId)
+        val path = "/api/v1/game/endfield/card/detail"
+        val params = "roleId=${account.roleId}&serverId=${account.serverId}"
+        val headers = headerProvider.createSignHeaders(
+            path, cred.cred, cred.token, params, account.dId,
+        ) + ("sk-game-role" to "3_${account.roleId}_${account.serverId}")
+        val response = safeApiCall(
+            call = { api.getEndfieldCardDetail(account.roleId, account.serverId, headers) },
+            errorMessage = "获取终末地数据失败",
+        )
+        check(response.code == 0) { response.message ?: "终末地数据加载失败" }
+        return requireNotNull(response.data?.detail) { "终末地数据缺少 detail 字段" }
+    }
 
     override suspend fun fetchAkCheckResult(account: AccountSk): Result<String> = repositoryResultOf {
         withContext(Dispatchers.IO) {

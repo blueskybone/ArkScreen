@@ -101,6 +101,11 @@ class GachaActivity : AppCompatActivity() {
                         is UiStatus.Success -> showContent()
                         UiStatus.Idle -> Unit
                     }
+                    if (hasCachedRecords && state.isSyncing) {
+                        binding.Loading.visibility = View.VISIBLE
+                        binding.LoadingMessage.visibility = View.VISIBLE
+                        binding.LoadingMessage.setText(R.string.syncing)
+                    }
                 }
             }
         }
@@ -111,7 +116,9 @@ class GachaActivity : AppCompatActivity() {
         showAction: Boolean = false,
         loading: Boolean = false,
     ) {
-        binding.StatusProgress.visibility = if (loading) View.VISIBLE else View.GONE
+        binding.Loading.visibility = if (loading) View.VISIBLE else View.GONE
+        binding.LoadingMessage.visibility = if (loading) View.VISIBLE else View.GONE
+        binding.LoadingMessage.text = message
         binding.StatusIllustration.visibility = if (loading) View.GONE else View.VISIBLE
         binding.Message.text = message
         binding.EmptySummary.visibility = if (showAction) View.VISIBLE else View.GONE
@@ -123,12 +130,14 @@ class GachaActivity : AppCompatActivity() {
                 startActivity(Intent(this, AccountMngActivity::class.java))
             }
         }
-        binding.Page.visibility = View.VISIBLE
+        binding.Page.visibility = if (loading) View.GONE else View.VISIBLE
         binding.TabLayout.visibility = View.GONE
         binding.ViewPager.visibility = View.GONE
     }
 
     private fun showContent() {
+        binding.Loading.visibility = View.GONE
+        binding.LoadingMessage.visibility = View.GONE
         binding.Page.visibility = View.GONE
         binding.TabLayout.visibility = View.VISIBLE
         binding.ViewPager.visibility = View.VISIBLE

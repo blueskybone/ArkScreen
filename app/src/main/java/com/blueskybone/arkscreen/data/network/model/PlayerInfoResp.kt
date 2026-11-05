@@ -20,7 +20,9 @@ data class PlayerInfoData(
     var chars: List<CharsDetail>,
     val charInfoMap: Map<String, CharInfo>,
     val equipmentInfoMap: Map<String, EquipmentInfo>,
-    val campaign: Campaign?
+    val campaign: Campaign?,
+    val routine: RoutineProgress? = null,
+    val tower: TowerProgress? = null,
 
 )
 
@@ -268,6 +270,20 @@ data class Campaign(
 data class Reward(
     var current: Int,
     var total: Int
+)
+
+data class RoutineProgress(
+    val daily: Reward? = null,
+    val weekly: Reward? = null,
+)
+
+data class TowerProgress(
+    val reward: TowerReward? = null,
+)
+
+data class TowerReward(
+    val higherItem: Reward? = null,
+    val lowerItem: Reward? = null,
 )
 
 

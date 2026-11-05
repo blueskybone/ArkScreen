@@ -45,6 +45,9 @@ class CharNotOwn : Fragment() {
     }
 
     private fun setupBinding() {
+        binding.BackToAssets.setOnClickListener {
+            (activity as? CharAssets)?.openAssets()
+        }
         model.charsNotOwnList.observe(viewLifecycleOwner) { value ->
             adapterFlow.submitList(value)
             binding.FlowLayout.post {

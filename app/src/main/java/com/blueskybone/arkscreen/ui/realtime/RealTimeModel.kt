@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.domain.AppError
 import com.blueskybone.arkscreen.domain.repository.AccountRepository
@@ -17,6 +18,7 @@ import com.blueskybone.arkscreen.ui.realtime.model.RealTimeUi
 import com.fasterxml.jackson.core.JsonProcessingException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -54,6 +56,8 @@ class RealTimeModel(
 
     private val _state = MutableLiveData<RealTimeScreenState>(RealTimeScreenState.Loading)
     val state: LiveData<RealTimeScreenState> get() = _state
+    val accounts: LiveData<List<AccountSk>> = repo.observeSkAcc().asLiveData()
+    val currentAccount: LiveData<AccountSk?> = repo.observeCurrentSkAcc().asLiveData()
 
     private var loadJob: Job? = null
     private var lastContent: RealTimeScreenState.Content? = null
@@ -71,7 +75,10 @@ class RealTimeModel(
                 .collectLatest { account ->
                     val accountChanged = currentUid != account?.uid
                     currentUid = account?.uid
-                    if (accountChanged) lastContent = null
+                    if (accountChanged) {
+                        loadJob?.cancelAndJoin()
+                        lastContent = null
+                    }
                     loadAccount(account, accountChanged)
                 }
         }
@@ -82,6 +89,12 @@ class RealTimeModel(
         loadJob?.cancel()
         loadJob = viewModelScope.launch {
             loadAccount(repo.observeCurrentSkAcc().first(), accountChanged = false)
+        }
+    }
+
+    fun selectAccount(account: AccountSk) {
+        repo.setCurrentAccountSk(account).onFailure { error ->
+            _event.tryEmit(error.message ?: "切换账号失败")
         }
     }
 

@@ -16,6 +16,7 @@ class InnerPrefManager() {
 
         currentAccountSkUid = preferenceStore.getString("default_acc_sk_uid", "")
         currentAccountGcUid = preferenceStore.getString("default_acc_gc_uid", "")
+        currentAccountEfUid = preferenceStore.getString("default_acc_ef_uid", "")
 
         lastCheckTs = preferenceStore.getLong("last_check_ts", 0L)
         lastAttendanceTs = preferenceStore.getLong("last_attendance_ts", 0L)
@@ -30,6 +31,7 @@ class InnerPrefManager() {
     lateinit var warnOverlayPermission: Preference<Boolean>  //开屏不再提示悬浮窗权限
     lateinit var currentAccountSkUid: Preference<String>        //不再deepcopy，只记录uid，自己去找
     lateinit var currentAccountGcUid: Preference<String>        //不再deepcopy，只记录uid，自己去找
+    lateinit var currentAccountEfUid: Preference<String>
     lateinit var lastCheckTs: Preference<Long>     //记录签到时间，避免同一天重复签到
     lateinit var lastAttendanceTs: Preference<Long> //最后一次自动签到时间
     lateinit var lastWidgetRefreshTs: Preference<Long>

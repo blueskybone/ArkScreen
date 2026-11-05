@@ -52,7 +52,12 @@ object RealTimeMapper {
 
         val labor = RealTimeUi.PairInfo(
             value = raw("${data.labor.current}/${data.labor.max}"),
-            time = if (data.labor.remainSecs == -1L) raw("") else remain(data.labor.remainSecs),
+            time = when {
+                data.labor.max <= 0 -> res(R.string.realtime_no_data)
+                data.labor.current >= data.labor.max -> res(R.string.duration_restored)
+                data.labor.remainSecs < 60L -> res(R.string.realtime_under_one_minute)
+                else -> remain(data.labor.remainSecs)
+            },
             notify = data.labor.current == data.labor.max,
         )
 
@@ -72,17 +77,21 @@ object RealTimeMapper {
         }
 
         val train = if (data.train.isNull) {
-            RealTimeUi.PairInfo(value = res(R.string.realtime_no_data))
+            RealTimeUi.TrainingInfo(trainee = res(R.string.realtime_no_data))
         } else {
-            RealTimeUi.PairInfo(
-                value = if (data.train.traineeIsNull) {
+            RealTimeUi.TrainingInfo(
+                trainee = if (data.train.traineeIsNull) {
                     res(R.string.realtime_idle)
                 } else {
-                    raw(data.train.trainee)
+                    raw(data.train.trainee.ifBlank { "—" })
                 },
+                trainer = data.train.trainer.takeIf { !data.train.trainerIsNull && it.isNotBlank() }
+                    ?.let(::raw),
+                targetSkill = data.train.targetSkill.takeIf { !data.train.traineeIsNull && it > 0 },
                 time = when (data.train.remainSecs) {
-                    -1L -> res(R.string.realtime_idle)
+                    -1L -> raw("")
                     0L -> res(R.string.realtime_training_complete)
+                    in 1L..59L -> res(R.string.realtime_under_one_minute)
                     else -> remain(data.train.remainSecs)
                 },
                 notify = data.train.remainSecs == 0L,
@@ -90,6 +99,7 @@ object RealTimeMapper {
         }
 
         return RealTimeUi(
+            uid = data.playerStatus.uid,
             nickName = data.playerStatus.nickname,
             lastLogin = lastLoginValue,
             level = data.playerStatus.level,
@@ -112,6 +122,9 @@ object RealTimeMapper {
                     listOf(getRemainTimeStr(data.apInfo.remainSecs)),
                 )
             },
+            daily = progress(data.routine.dailyCurrent, data.routine.dailyTotal),
+            towerHigher = progress(data.routine.towerHigherCurrent, data.routine.towerHigherTotal),
+            towerLower = progress(data.routine.towerLowerCurrent, data.routine.towerLowerTotal),
             recruit = recruit,
             recruitRefresh = recruitRefresh,
             labor = labor,
@@ -132,9 +145,7 @@ object RealTimeMapper {
                 notify = data.tired.current > 0,
             ),
             train = train,
-            campaign = RealTimeUi.PairInfo(
-                value = raw("${data.routine.campaignCurrent}/${data.routine.campaignTotal}"),
-            ),
+            campaign = progress(data.routine.campaignCurrent, data.routine.campaignTotal),
             logosChange = data.train.changeTimeLogos.takeIf { it != -1L }?.let {
                 RealTimeUi.TrainChange(
                     text = UiText.Resource(
@@ -160,4 +171,8 @@ object RealTimeMapper {
     private fun raw(value: String) = UiText.Raw(value)
     private fun res(id: Int) = UiText.Resource(id)
     private fun remain(seconds: Long) = raw(getRemainTimeStr(seconds.coerceAtLeast(0L)))
+    private fun progress(current: Int, total: Int) = RealTimeUi.PairInfo(
+        value = if (current < 0 || total < 0) res(R.string.realtime_no_data)
+        else raw("$current/$total"),
+    )
 }

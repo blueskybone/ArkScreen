@@ -10,6 +10,7 @@ import com.blueskybone.arkscreen.data.gacha.GachaImportResolver
 import com.blueskybone.arkscreen.data.repository.AccountRepositoryImpl
 import com.blueskybone.arkscreen.data.repository.AttendanceStateRepositoryImpl
 import com.blueskybone.arkscreen.data.repository.GachaRepositoryImpl
+import com.blueskybone.arkscreen.data.repository.EndfieldGachaRepository
 import com.blueskybone.arkscreen.data.repository.HomeContentRepositoryImpl
 import com.blueskybone.arkscreen.data.repository.RemoteConfigRepositoryImpl
 import com.blueskybone.arkscreen.data.repository.AppRemoteConfigParser
@@ -54,6 +55,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 
 val repositoryModule = module {
+    single { EndfieldGachaRepository(dao = get(), accountDao = get(), mapper = get()) }
     single<AttendanceStateRepository> { AttendanceStateRepositoryImpl(get()) }
     single<AppClock> { PreferenceAppClock(get(), get()) }
     single { HeaderProvider(get()) }

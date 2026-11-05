@@ -37,10 +37,11 @@ class HomeContentRepositoryImpl(
         }
     }
 
-    override suspend fun fetchBiliVideos(): Result<List<BiliVideo>> = repositoryResultOf {
+    override suspend fun fetchBiliVideos(uid: String): Result<List<BiliVideo>> = repositoryResultOf {
         withContext(dispatcher) {
+            require(uid.isNotBlank()) { "B站账号 UID 不能为空" }
             val params = mutableMapOf(
-                "vmid" to "161775300",
+                "vmid" to uid,
                 "order" to "pubdate",
                 "ps" to "3",
                 "ts" to (System.currentTimeMillis() / 1000).toString(),

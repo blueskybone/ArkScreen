@@ -28,7 +28,7 @@
                     android:id="@+id/RecruitHeader"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:background="?attr/selectableItemBackground"
+                    android:background="@android:color/transparent"
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center_vertical"
@@ -76,20 +76,28 @@
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/OverlayPermissionChip"
-                            style="@style/Widget.ArkScreen.SectionAction.Tonal"
+                            style="@style/Widget.ArkScreen.InlineAction"
                             android:layout_width="wrap_content"
-                            android:layout_height="36dp"
+                            android:layout_height="wrap_content"
                             android:text="@string/check_permission"
-                            app:icon="@drawable/ic_permission" />
+                            app:icon="@drawable/ic_permission"
+                            app:iconGravity="textStart"
+                            app:iconPadding="4dp"
+                            app:iconSize="14dp"
+                            app:iconTint="@color/inline_chip_text" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/RecruitVideo"
-                            style="@style/Widget.ArkScreen.SectionAction.Outlined"
+                            style="@style/Widget.ArkScreen.InlineAction"
                             android:layout_width="wrap_content"
-                            android:layout_height="36dp"
-                            android:layout_marginStart="8dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
                             android:text="@string/recruit_video"
-                            app:icon="@drawable/ic_play_circle" />
+                            app:icon="@drawable/ic_play_circle"
+                            app:iconGravity="textStart"
+                            app:iconPadding="4dp"
+                            app:iconSize="14dp"
+                            app:iconTint="@color/inline_chip_text" />
                     </LinearLayout>
 
                     <include android:id="@+id/RecruitMode" layout="@layout/preference_value" />
@@ -122,7 +130,7 @@
                     android:id="@+id/WidgetHeader"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:background="?attr/selectableItemBackground"
+                    android:background="@android:color/transparent"
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center_vertical"
@@ -169,11 +177,15 @@
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/WidgetPermission"
-                            style="@style/Widget.ArkScreen.SectionAction.Tonal"
+                            style="@style/Widget.ArkScreen.InlineAction"
                             android:layout_width="wrap_content"
-                            android:layout_height="36dp"
+                            android:layout_height="wrap_content"
                             android:text="@string/runtime_settings"
-                            app:icon="@drawable/ic_permission" />
+                            app:icon="@drawable/ic_permission"
+                            app:iconGravity="textStart"
+                            app:iconPadding="4dp"
+                            app:iconSize="14dp"
+                            app:iconTint="@color/inline_chip_text" />
 
                         <ImageView
                             android:id="@+id/WidgetInfo"
@@ -185,7 +197,7 @@
                     </LinearLayout>
 
                     <include android:id="@+id/PowerSavingMode" layout="@layout/preference_sub_switch" />
-                    <include android:id="@+id/WidgetRefresh" layout="@layout/preference" />
+                    <include android:id="@+id/WidgetRefresh" layout="@layout/preference_value" />
                     <include android:id="@+id/WidgetAppearance" layout="@layout/preference_icon" />
                     <include
                         android:id="@+id/TurnOffBatteryOptimization"
@@ -207,7 +219,7 @@
                     android:id="@+id/AttendanceHeader"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:background="?attr/selectableItemBackground"
+                    android:background="@android:color/transparent"
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center_vertical"
@@ -254,11 +266,15 @@
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/AttdPermission"
-                            style="@style/Widget.ArkScreen.SectionAction.Tonal"
+                            style="@style/Widget.ArkScreen.InlineAction"
                             android:layout_width="wrap_content"
-                            android:layout_height="36dp"
+                            android:layout_height="wrap_content"
                             android:text="@string/runtime_settings"
-                            app:icon="@drawable/ic_permission" />
+                            app:icon="@drawable/ic_permission"
+                            app:iconGravity="textStart"
+                            app:iconPadding="4dp"
+                            app:iconSize="14dp"
+                            app:iconTint="@color/inline_chip_text" />
                     </LinearLayout>
 
                     <include android:id="@+id/BackAutoAtd" layout="@layout/preference_sub_switch" />

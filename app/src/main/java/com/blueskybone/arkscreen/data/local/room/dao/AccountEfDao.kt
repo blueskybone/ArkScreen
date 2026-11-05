@@ -30,11 +30,17 @@ interface AccountEfDao {
     @Query("SELECT * FROM AccountEf")
     fun getAllFlowData(): Flow<List<AccountEf>>
 
+    @Query("SELECT * FROM AccountEf WHERE uid = :uid LIMIT 1")
+    fun getAccountFlowByUid(uid: String): Flow<AccountEf?>
+
     @Query("DELETE FROM AccountEf WHERE id = :id")
     suspend fun delete(id: Long)
 
     @Query("DELETE FROM AccountEf WHERE uid = :uid")
     suspend fun deleteByUid(uid: String)
+
+    @Query("UPDATE AccountEf SET bindingUid = :bindingUid WHERE roleId = :roleId")
+    suspend fun updateBindingUid(roleId: String, bindingUid: String)
 
     @Query("DELETE FROM AccountEf WHERE uid = :uid AND id != (SELECT MIN(id) FROM AccountEf WHERE uid = :uid)")
     suspend fun deleteDuplicatesByUid(uid: String)
@@ -48,7 +54,8 @@ interface AccountEfDao {
             dId = :dId,
             official = :official,
             roleId = :roleId,
-            serverId = :serverId
+            serverId = :serverId,
+            bindingUid = :bindingUid
         WHERE uid = :uid
         """
     )
@@ -61,6 +68,7 @@ interface AccountEfDao {
         official: Boolean,
         roleId: String,
         serverId: String,
+        bindingUid: String?,
     ): Int
 
     @Transaction
@@ -74,6 +82,7 @@ interface AccountEfDao {
             official = account.official,
             roleId = account.roleId,
             serverId = account.serverId,
+            bindingUid = account.bindingUid,
         )
         if (updated == 0) insert(account)
         deleteDuplicatesByUid(account.uid)

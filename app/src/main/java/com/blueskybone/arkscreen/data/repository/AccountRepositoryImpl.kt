@@ -51,6 +51,7 @@ class AccountRepositoryImpl(
 
     private val currentSkAccIdFlow: Flow<String?> = preference.currentAccountSkUid.flow()
     private val currentGcAccIdFlow: Flow<String?> = preference.currentAccountGcUid.flow()
+    private val currentEfAccIdFlow: Flow<String?> = preference.currentAccountEfUid.flow()
 
     private suspend fun fetchPlayerBinding(
         cred: String,
@@ -196,6 +197,18 @@ class AccountRepositoryImpl(
         }.flowOn(Dispatchers.IO) // 确保数据库操作在 IO 线程
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun observeCurrentEfAcc(): Flow<DomainAccEf?> =
+        currentEfAccIdFlow.flatMapLatest { accId ->
+            if (accId.isNullOrEmpty()) flowOf(null)
+            else accountEfDao.getAccountFlowByUid(accId)
+                .map { entity -> entity?.let(AccountMapper::toDomain) }
+        }.retryWhen { error, attempt ->
+            Timber.e(error, "Failed to observe current Endfield account; retrying")
+            delay(accountFlowRetryDelay(attempt))
+            true
+        }.flowOn(dispatcher)
+
     /**
      * 密码登录森空岛账号
      * 参考 ZOOT 项目的登录流程
@@ -281,6 +294,10 @@ class AccountRepositoryImpl(
 
     override fun setCurrentAccountSk(account: DomainAccSk): Result<Unit> = repositoryResult {
         preference.currentAccountSkUid.set(account.uid)
+    }
+
+    override fun setCurrentAccountEf(account: DomainAccEf): Result<Unit> = repositoryResult {
+        preference.currentAccountEfUid.set(account.uid)
     }
 
     private fun accountFlowRetryDelay(attempt: Long): Long =

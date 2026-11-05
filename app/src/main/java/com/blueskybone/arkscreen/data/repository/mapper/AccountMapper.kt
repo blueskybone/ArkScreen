@@ -67,6 +67,7 @@ object AccountMapper {
             dId = acc.dId,
             roleId = acc.roleId,
             serverId = acc.serverId,
+            bindingUid = acc.bindingUid,
         )
     }
 
@@ -80,6 +81,7 @@ object AccountMapper {
             dId = acc.dId,
             roleId = acc.roleId,
             serverId = acc.serverId,
+            bindingUid = acc.bindingUid,
         )
     }
 
@@ -103,8 +105,9 @@ object AccountMapper {
                     token = token, dId = dId,
                     nickName = role.nickname,
                     channelMasterId = user.channelMasterId,
-                    uid = role.roleId, roleId = role.roleId, //uid没用，还是用roleId
+                    uid = role.roleId, roleId = role.roleId,
                     serverId = role.serverId,
+                    bindingUid = user.uid,
                     official = user.isOfficial
                 )
             }

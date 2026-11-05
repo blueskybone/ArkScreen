@@ -18,6 +18,7 @@ val databaseModule = module {
     single { get<ArkDatabase>().getAccountEfDao() }
     single { get<ArkDatabase>().getGachaDao() }
     single { get<ArkDatabase>().getAttendanceRecordDao() }
+    single { get<ArkDatabase>().getEndfieldGachaDao() }
 }
 
 val preferenceModule = module {

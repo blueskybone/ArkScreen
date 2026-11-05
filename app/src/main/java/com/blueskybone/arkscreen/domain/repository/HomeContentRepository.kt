@@ -4,5 +4,5 @@ import com.blueskybone.arkscreen.domain.model.BiliVideo
 
 interface HomeContentRepository {
     suspend fun fetchAnnouncement(): Result<String>
-    suspend fun fetchBiliVideos(): Result<List<BiliVideo>>
+    suspend fun fetchBiliVideos(uid: String): Result<List<BiliVideo>>
 }

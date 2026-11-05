@@ -53,7 +53,8 @@ data class AccountEf(
     val dId: String,
     val official: Boolean,
     val roleId: String,
-    val serverId: String
+    val serverId: String,
+    val bindingUid: String? = null
 ){
     companion object {
         fun default(): AccountEf {

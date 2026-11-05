@@ -18,6 +18,12 @@
         <item name="textAppearanceHeadline4">@style/TextAppearance.Headline4</item>
         <item name="textAppearanceSubtitle2">@style/TextAppearance.Subtitle2</item>
     </style>
+    <style name="AppTheme.Endfield" parent="AppTheme">
+        <item name="colorPrimary">@color/endfield_primary</item>
+        <item name="colorPrimaryDark">@color/endfield_primary_dark</item>
+        <item name="colorSecondary">@color/endfield_primary</item>
+        <item name="colorOnPrimary">@color/grey_900</item>
+    </style>
     <style name="CardViewContent" parent="Widget.MaterialComponents.CardView">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

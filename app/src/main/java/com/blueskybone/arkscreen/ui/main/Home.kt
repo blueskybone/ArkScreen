@@ -253,6 +253,11 @@ class Home : Fragment() {
     }
 
     private fun setupBinding() {
+        (requireActivity() as MainActivity).bindHomeGameControls(
+            binding.GameSelector,
+            binding.SwitchGame,
+            binding.DefaultStartup,
+        )
         binding.RealTimeData.setOnClickListener {
             startActivity(Intent(requireContext(), RealTimeActivity::class.java))
         }

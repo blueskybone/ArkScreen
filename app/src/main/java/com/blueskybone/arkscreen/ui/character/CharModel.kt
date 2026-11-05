@@ -3,6 +3,7 @@ package com.blueskybone.arkscreen.ui.character
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.data.network.resolveUrl
@@ -70,6 +71,7 @@ class CharModel(
 
     private val _uiState = MutableLiveData<UiStatus>(UiStatus.Idle)
     val uiState: LiveData<UiStatus> get() = _uiState
+    val accounts: LiveData<List<AccountSk>> = repoAcc.observeSkAcc().asLiveData()
 
     private val _charsList = MutableLiveData<List<Operator>>()
     val charsList: LiveData<List<Operator>> get() = _charsList
@@ -127,6 +129,12 @@ class CharModel(
         if (syncing) return
         viewModelScope.launch {
             startLoad(repoAcc.observeCurrentSkAcc().first())
+        }
+    }
+
+    fun selectAccount(account: AccountSk) {
+        repoAcc.setCurrentAccountSk(account).onFailure { error ->
+            _event.tryEmit(error.message ?: "切换账号失败")
         }
     }
 

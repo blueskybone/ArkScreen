@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="endfield_primary">#F8DE05</color>
+    <color name="endfield_primary_dark">#C7AD00</color>
+    <color name="endfield_on_surface_accent">#F8DE05</color>
+    <color name="endfield_accent_container">#3F3A18</color>
+    <color name="endfield_progress_track">#514E3F</color>
     <color name="pie_text">#F7F9FF</color>
+    <color name="asset_list_card_surface">#1E1F25</color>
 
     <color name="tool_recruit_icon">#9CCAFF</color>
     <color name="tool_recruit_container">#233A54</color>

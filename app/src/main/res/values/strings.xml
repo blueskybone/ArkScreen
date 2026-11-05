@@ -1,6 +1,16 @@
 <resources>
     <!-- App Info -->
     <string name="app_name">公招助手</string>
+    <string name="game_arknights">明日方舟</string>
+    <string name="game_endfield">终末地</string>
+    <string name="game_selector_label">%1$s ▾</string>
+    <string name="switch_game">切换游戏</string>
+    <string name="set_default_startup_page">设置默认启动页</string>
+    <string name="current_default_startup_page">当前默认</string>
+    <string name="startup_game_suffix"> · 启动页</string>
+    <string name="set_current_game_as_startup">将当前游戏设为启动页</string>
+    <string name="startup_game_set">已将%s设为启动页</string>
+    <string name="endfield_home_pending">数据接入后将在这里显示</string>
 
     <!-- Dialogs Action-->
     <string name="cancel">取消</string>
@@ -183,23 +193,23 @@
 
     <!-- Account Page-->
     <string name="account_manager">账号管理</string>
-    <string name="account_manager_summary">森空岛账号用于游戏数据与签到；寻访记录账号仅用于寻访统计。两者凭证互不通用。</string>
+    <string name="account_manager_summary">森空岛账号用于明日方舟和终末地的游戏数据与签到，也用于终末地寻访记录；明日方舟寻访记录需单独添加账号。</string>
     <string name="skland_account_manage">森空岛账号</string>
-    <string name="skland_account_summary">用于同步实时数据、干员资产和森空岛签到</string>
+    <string name="skland_account_summary">用于同步游戏数据、签到及终末地寻访记录</string>
     <string name="arknights_accounts">明日方舟</string>
     <string name="endfield_accounts">明日方舟：终末地</string>
     <string name="gacha_account_manage">寻访记录账号</string>
-    <string name="gacha_account_summary">独立于森空岛账号，仅同步明日方舟寻访记录</string>
+    <string name="gacha_account_summary">用于同步明日方舟寻访记录</string>
     <string name="add_skland_account">添加森空岛账号</string>
-    <string name="add_gacha_account">添加寻访记录账号</string>
+    <string name="add_gacha_account">添加明日方舟寻访记录账号</string>
     <string name="no_arknights_account">暂无明日方舟角色，请先添加森空岛账号</string>
     <string name="no_endfield_account">暂无明日方舟：终末地角色</string>
-    <string name="no_gacha_account">暂无寻访记录账号</string>
+    <string name="no_gacha_account">暂无明日方舟寻访记录账号</string>
     <string name="text_web_skland">滑动到最右端，点击“发图文”，登录后将自动跳转。如未跳转，请手动点击此处。</string>
     <string name="text_web_ark">登录后将自动跳转。如未跳转，请手动点击此处。</string>
     <string name="getting_info">获取信息中</string>
-    <string name="sk_account_info">森空岛账号用于同步关联的明日方舟和终末地角色。明日方舟角色可用于查询游戏数据与签到；终末地角色目前仅用于签到。\n\n登录可能会使森空岛 App 的登录状态失效。</string>
-    <string name="gc_account_info">寻访记录账号独立于森空岛账号，仅用于同步和统计明日方舟寻访记录。</string>
+    <string name="sk_account_info">森空岛账号用于同步关联的明日方舟和终末地角色。明日方舟角色可用于查询游戏数据与签到；终末地角色还可用于同步寻访记录，三项功能共用同一角色账号。\n\n登录可能会使森空岛 App 的登录状态失效。</string>
+    <string name="gc_account_info">明日方舟寻访记录账号独立于森空岛账号，仅用于同步和统计明日方舟寻访记录。终末地寻访记录使用森空岛终末地角色账号。</string>
     <string name="account_info">说明</string>
     <string name="add_site">添加网址</string>
     <string name="edit_site">编辑网址</string>
@@ -220,7 +230,7 @@
     <string name="manufactures">制造站</string>
     <string name="labor">无人机</string>
     <string name="ap">理智</string>
-    <string name="campaign">剿灭</string>
+    <string name="weekly_campaign">本周剿灭</string>
 
     <!-- About Page -->
     <string name="check_update">检查更新</string>
@@ -264,6 +274,9 @@
     <string name="qq_not_install">未安装QQ</string>
 
     <string name="export">导出</string>
+    <string name="assets_filter_count">筛选 %1$d</string>
+    <string name="assets_missing_count">暂未获取 %1$d ›</string>
+    <string name="back_to_assets">返回干员资产</string>
     <string name="export_text">文字（TXT）</string>
     <string name="export_operator_poster">六星精二资产图片</string>
     <string name="operator_poster_preview">干员资产图片预览</string>
@@ -281,8 +294,8 @@
     <string name="realtime_last_login_today">上次登录 今天 %1$s</string>
     <string name="realtime_last_login_yesterday">上次登录 昨天</string>
     <string name="realtime_last_login_date">上次登录 %1$s</string>
-    <string name="realtime_recruit_complete">已完成招募</string>
-    <string name="realtime_refresh_complete">同步完成</string>
+    <string name="realtime_recruit_complete">已完成</string>
+    <string name="realtime_refresh_complete">可刷新</string>
     <string name="realtime_meeting_complete">交流完成</string>
     <string name="realtime_training_complete">专精完成</string>
     <string name="realtime_idle">空闲中</string>
@@ -293,8 +306,58 @@
     <string name="account_source_skland">数据来自森空岛</string>
     <string name="account_source_gacha">数据来自明日方舟通行证</string>
     <string name="core_data">核心数据</string>
-    <string name="assets_entry_summary">查看持有、培养与缺失干员</string>
-    <string name="gacha_entry_summary">查看出货记录与寻访统计</string>
+    <string name="assets_entry_summary">持有与培养</string>
+    <string name="gacha_entry_summary">记录与统计</string>
+    <string name="endfield_entry_pending">即将开放</string>
+    <string name="endfield_chars_entry">角色列表</string>
+    <string name="endfield_choose_account">选择终末地账号</string>
+    <string name="skland_choose_account">选择森空岛账号</string>
+    <string name="endfield_chars_no_account">还没有终末地账号，点击上方按钮添加</string>
+    <string name="endfield_chars_loading">正在加载角色…</string>
+    <string name="endfield_chars_empty">该账号暂无角色数据</string>
+    <string name="endfield_chars_count">已持有 %1$d 位角色</string>
+    <string name="endfield_char_detail">角色详情</string>
+    <string name="endfield_char_unavailable">角色数据暂不可用，请返回列表重试</string>
+    <string name="endfield_char_level">Lv.%1$d</string>
+    <string name="endfield_char_evolve">精英化 %1$d</string>
+    <string name="endfield_char_potential">潜能 %1$d</string>
+    <string name="endfield_char_obtained">获得于 %1$s</string>
+    <string name="endfield_char_weapon">武器</string>
+    <string name="endfield_char_gem">基质</string>
+    <string name="endfield_char_unknown_weapon">未识别的武器</string>
+    <string name="endfield_char_refine">精炼 %1$d</string>
+    <string name="endfield_char_breakthrough">突破 %1$d</string>
+    <string name="endfield_char_equipment">装备</string>
+    <string name="endfield_char_unequipped">未装备</string>
+    <string name="endfield_char_equipment_level">Lv.%1$s</string>
+    <string name="endfield_char_equipment_refine_progress">精炼 %1$d%%</string>
+    <string name="endfield_char_body_equip">护甲</string>
+    <string name="endfield_char_arm_equip">护手</string>
+    <string name="endfield_char_first_accessory">配件一</string>
+    <string name="endfield_char_second_accessory">配件二</string>
+    <string name="endfield_char_equipment_slot">%1$s · %2$s</string>
+    <string name="endfield_char_tactical_item">战术道具</string>
+    <string name="endfield_char_unknown_item">未识别的道具</string>
+    <string name="endfield_char_skills">技能</string>
+    <string name="endfield_char_unknown_skill">未识别的技能</string>
+    <string name="endfield_char_skill_level">Lv.%1$d/%2$d</string>
+    <string name="endfield_char_talents">天赋阵列</string>
+    <string name="endfield_char_ability_talent">能力</string>
+    <string name="endfield_char_combat_talent">战斗</string>
+    <string name="endfield_char_cultivation_talent">培养</string>
+    <string name="endfield_realtime_entry">查看体力、任务、通行证和地区调度券</string>
+    <string name="endfield_realtime_loading">正在加载实时数据…</string>
+    <string name="endfield_stamina">理智</string>
+    <string name="endfield_daily_mission">每日任务</string>
+    <string name="endfield_weekly_mission">每周任务</string>
+    <string name="endfield_battle_pass">通行证</string>
+    <string name="endfield_dispatch_tickets">地区调度券</string>
+    <string name="endfield_unnamed_domain">未命名地区</string>
+    <string name="endfield_unnamed_settlement">未命名调度站</string>
+    <string name="endfield_unnamed_player">终末地角色</string>
+    <string name="endfield_world_level">世界等级 %1$d</string>
+    <string name="endfield_player_id">ID %1$s</string>
+    <string name="endfield_last_login">上次登录 %1$s</string>
     <string name="confirm_delete_account_detail">将删除该账号保存在本机的凭证和关联数据，不会影响游戏账号。此操作无法撤销。</string>
     <string name="confirm_clear_gacha_detail">将清空当前寻访记录账号的全部本地记录。此操作无法撤销，建议先导出备份。</string>
     <string name="confirm_delete_link_detail">将从首页移除此链接。此操作无法撤销。</string>
@@ -322,13 +385,21 @@
     <string name="official_game_not_found">未检测到官服游戏安装</string>
     <string name="bilibili_game_not_found">未检测到B服游戏安装</string>
     <string name="realtime_immediate_status">即时状态</string>
+    <string name="realtime_recovery_overview">招募与恢复</string>
     <string name="realtime_base_overview">基建概览</string>
+    <string name="realtime_daily_mission">本日任务</string>
+    <string name="realtime_module_block">保全派驻</string>
+    <string name="realtime_module_higher">%1$s</string>
+    <string name="realtime_module_lower">%1$s</string>
+    <string name="realtime_uid">UID %1$s</string>
+    <string name="realtime_under_one_minute">不足 1 分钟</string>
+    <string name="realtime_training_trainer">陪同训练</string>
+    <string name="realtime_training_target_skill">专精技能 %1$d</string>
     <string name="realtime_sanity">理智</string>
     <string name="realtime_ap_full_at">回满： %1$s</string>
     <string name="realtime_ap_remaining">剩余： %1$s</string>
     <string name="realtime_ap_full_recovered">回满： 已恢复</string>
     <string name="realtime_ap_remaining_recovered">剩余： 已恢复</string>
-    <string name="realtime_shift_reminder">训练换班提醒</string>
     <string name="realtime_launch_game">启动游戏</string>
     <string name="official_server">官服</string>
     <string name="bilibili_server">B服</string>
@@ -336,6 +407,9 @@
     <string name="assets_e2">精二</string>
     <string name="assets_m3">专三</string>
     <string name="assets_module3_short">三模</string>
+    <string name="assets_trust_compact">信赖 %1$d%%</string>
+    <string name="assets_skills_short">技能</string>
+    <string name="assets_modules_short">模组</string>
     <string name="assets_rarity_progress">%1$d★  %2$d/%3$d</string>
     <string name="export_cookie">导出Cookie（包含登录凭证，请勿告知他人）</string>
     <string name="import_cookie">导入Cookie</string>
@@ -364,7 +438,6 @@
     <string name="illegal_url">无法解析该网址</string>
 
     <string name="set_default_account">默认账号设置为%1$s</string>
-    <string name="not_support_set_default">暂不支持将终末地角色设为默认账号</string>
     <string name="gacha_count">%1$d抽</string>
     <string name="gacha_unit">抽</string>
     <string name="limited">[限定]</string>
@@ -408,6 +481,7 @@
     <string name="time_calibration_failed">时间校准失败</string>
     <string name="enter_phone_and_password">请输入手机号和密码</string>
     <string name="uid_copied">UID已复制</string>
+    <string name="copy_uid_action">点击复制</string>
     <string name="nickname_copied">昵称已复制</string>
     <string name="token_fetch_failed">获取 Token 失败</string>
     <string name="notification_permission_denied_attendance_continues">未授予通知权限，签到仍会继续</string>
@@ -471,4 +545,11 @@
     <string name="screenshot_recognizing">快速公招录屏已启用</string>
     <string name="screenshot_in_progress">点击磁贴或悬浮球可再次识别</string>
     <string name="screenshot_stop">结束录屏</string>
+    <string name="endfield_gacha_title">寻访记录</string>
+    <string name="endfield_gacha_char">角色寻访</string>
+    <string name="endfield_gacha_weapon">武器申领</string>
+    <string name="endfield_gacha_empty">暂无记录，点击刷新同步</string>
+    <string name="endfield_gacha_summary">共 %1$d 次 · 6★ %2$d · 5★ %3$d</string>
+    <string name="endfield_gacha_raw_records">原始记录</string>
+    <string name="endfield_gacha_pool_overview">卡池统计</string>
 </resources>

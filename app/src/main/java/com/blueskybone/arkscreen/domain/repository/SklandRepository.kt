@@ -2,8 +2,10 @@ package com.blueskybone.arkscreen.domain.repository
 
 
 import com.blueskybone.arkscreen.domain.model.account.AccountEf
+import com.blueskybone.arkscreen.data.network.model.EndfieldCharacter
 import com.blueskybone.arkscreen.domain.model.account.AccountSk
 import com.blueskybone.arkscreen.domain.model.cache.ApCache
+import com.blueskybone.arkscreen.domain.model.cache.EndfieldStaminaCache
 import com.blueskybone.arkscreen.domain.model.cache.CacheAccountInfo
 import com.blueskybone.arkscreen.domain.model.cache.LaborCache
 import com.blueskybone.arkscreen.domain.model.cache.MeetCache
@@ -13,6 +15,7 @@ import com.blueskybone.arkscreen.domain.model.cache.TrainCache
 import com.blueskybone.arkscreen.domain.model.operator.Operator
 import com.blueskybone.arkscreen.domain.model.operator.OperatorAssets
 import com.blueskybone.arkscreen.domain.model.realtime.RealTimeData
+import com.blueskybone.arkscreen.domain.model.realtime.EndfieldRealtimeSnapshot
 
 
 /**
@@ -24,6 +27,12 @@ interface SklandRepository {
     suspend fun fetchRealTimeData(account: AccountSk): Result<RealTimeData>  //解析实时数据
 
     suspend fun fetchCharAssets(account: AccountSk): Result<OperatorAssets>    //解析干员资产
+
+    suspend fun fetchEndfieldCharacters(account: AccountEf): Result<List<EndfieldCharacter>>
+
+    suspend fun fetchEndfieldRealtime(account: AccountEf): Result<EndfieldRealtimeSnapshot>
+
+    fun getEndfieldStaminaCache(): EndfieldStaminaCache
 
     suspend fun fetchAkCheckResult(account: AccountSk): Result<String> //明日方舟签到结果
 

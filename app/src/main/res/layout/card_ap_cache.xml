@@ -23,16 +23,8 @@
 
         <TextView
             android:id="@+id/Server"
-            android:layout_width="wrap_content"
-            android:layout_height="18dp"
-            android:layout_marginStart="6dp"
-            android:background="@drawable/bg_asset_stat_chip"
-            android:gravity="center"
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp"
-            android:textColor="@color/on_sec_con"
-            android:textSize="9sp"
-            android:textStyle="bold" />
+            style="@style/Widget.ArkScreen.MetadataLabel"
+            android:layout_marginStart="6dp" />
 
         <Space
             android:layout_width="0dp"

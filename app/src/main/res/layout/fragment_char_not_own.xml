@@ -8,14 +8,34 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/Update"
-            style="@style/Widget.ArkScreen.MetadataChip.Primary"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginEnd="16dp"
+            android:gravity="center_vertical"
+            android:minHeight="40dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/BackToAssets"
+                style="@style/Widget.ArkScreen.InlineAction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/back_to_assets" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/Update"
+                style="@style/Widget.ArkScreen.InlineHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
 
         <com.nex3z.flowlayout.FlowLayout
             android:id="@+id/FlowLayout"

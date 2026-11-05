@@ -2,6 +2,7 @@ package com.blueskybone.arkscreen.ui.character.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -188,7 +189,7 @@ class CharAdapter(
         fun bind(item: Operator) {
 
             binding.Name.text = item.name
-            binding.Level.text = item.level.toString()
+            binding.Level.text = context.getString(R.string.realtime_level, item.level)
 
             binding.Profession.setImageResource(
                 profIconMap[item.profession] ?: R.drawable.skill_icon_default
@@ -199,7 +200,11 @@ class CharAdapter(
             binding.Evolve.setImageResource(
                 evolveIconMap[item.evolvePhase] ?: R.drawable.skill_icon_default
             )
-            binding.Favor.text = item.favorPercent.toString()
+            binding.Favor.text = context.getString(R.string.assets_trust_compact, item.favorPercent)
+            binding.SkillsGroup.visibility = if (item.skills.isEmpty()) View.GONE else View.VISIBLE
+            binding.EquipsGroup.visibility = if (item.equips.isEmpty()) View.GONE else View.VISIBLE
+            binding.IconDivider.visibility =
+                if (item.skills.isEmpty() || item.equips.isEmpty()) View.GONE else View.VISIBLE
 
             val colorId = rarityColorMap[item.rarity + 1] ?: R.color.rare_1
             val draw = ContextCompat.getDrawable(context, colorId)
