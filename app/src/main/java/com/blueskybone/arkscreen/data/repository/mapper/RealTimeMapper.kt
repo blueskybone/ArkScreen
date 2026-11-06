@@ -436,7 +436,8 @@ object RealTimeMapper {
             val laborRemain = labor.remainSecs - (currentTs - labor.lastUpdateTime)
 
             current = if (labor.remainSecs <= 0L) {
-                labor.value.coerceIn(0, max)
+                // 回满后 value 仍可能是上次更新时的数量；零剩余时间表示已满。
+                max
             } else {
                 ((currentTs - labor.lastUpdateTime) * (max - labor.value) /
                         labor.remainSecs + labor.value).toInt().coerceIn(0, max)

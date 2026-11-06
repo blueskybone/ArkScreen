@@ -29,6 +29,7 @@ import kotlinx.coroutines.launch
 import com.blueskybone.arkscreen.di.recruitScreenshotModule
 import com.blueskybone.arkscreen.util.getDensityDpi
 import com.hjq.toast.Toaster
+import android.view.Gravity
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -72,6 +73,11 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        Toaster.setGravity(
+            Gravity.TOP or Gravity.CENTER_HORIZONTAL,
+            0,
+            (64 * resources.displayMetrics.density).toInt(),
+        )
         val koinApplication = startKoin {
             if (BuildConfig.DEBUG) androidLogger()
             androidContext(this@App)

@@ -306,8 +306,11 @@ class CharOwn : Fragment() {
                 parent: RecyclerView,
                 state: RecyclerView.State,
             ) {
-                if ((currentViewType ?: ViewType.GRID) != ViewType.GRID) return
                 val position = parent.getChildAdapterPosition(view)
+                if (currentViewType == ViewType.LIST) {
+                    if (position == 1) outRect.top = (16 * resources.displayMetrics.density).toInt()
+                    return
+                }
                 if (position <= 0) return
                 val gridPosition = position - 1
                 if (gridPosition % 2 == 0) {
@@ -477,6 +480,7 @@ class CharOwn : Fragment() {
     private fun setUpObserver() {
         model.charsList.observe(viewLifecycleOwner) { value ->
             adapter.refreshData(value)
+            renderFilterLabel()
             val scrollState = pendingScrollState
             if (scrollState != null) {
                 binding.RecyclerView.layoutManager?.onRestoreInstanceState(scrollState)
@@ -533,12 +537,12 @@ class CharOwn : Fragment() {
 
     private fun renderFilterLabel() {
         val filter = model.currentFilter
-        val count = listOf(
+        val active = listOf(
             filter.profession != null,
             filter.evolve != CharModel.EvolveFilter.ALL,
             filter.rarity != CharModel.RarityFilter.ALL,
-        ).count { it }
-        headerAdapter.submitFilterCount(count)
+        ).any { it }
+        headerAdapter.submitFilterCount(if (active) model.charsList.value?.size ?: 0 else -1)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

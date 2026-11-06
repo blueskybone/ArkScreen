@@ -63,6 +63,11 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
         binding.AccountButton.text = selected?.nickName ?: getString(R.string.endfield_choose_account)
         binding.RefreshButton.isEnabled = selected != null && !state.loading
         binding.Loading.visibility = if (state.loading) View.VISIBLE else View.GONE
+        binding.Starter.visibility = if (state.snapshot != null && !state.loading && state.error == null) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
         binding.ProfileContainer.removeAllViews()
         binding.MetricsContainer.removeAllViews()
         binding.DomainsContainer.removeAllViews()

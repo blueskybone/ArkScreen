@@ -92,11 +92,11 @@ class CharAssets : AppCompatActivity() {
     }
 
     fun openMissing() {
-        binding.ViewPager.setCurrentItem(1, false)
+        binding.ViewPager.setCurrentItem(1, true)
     }
 
     fun openAssets() {
-        binding.ViewPager.setCurrentItem(0, false)
+        binding.ViewPager.setCurrentItem(0, true)
     }
 
     fun registerExportAction(action: (() -> Unit)?) {

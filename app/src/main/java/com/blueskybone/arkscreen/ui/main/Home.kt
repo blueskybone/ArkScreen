@@ -122,7 +122,7 @@ class Home : Fragment() {
         // 实时数据页会更新持久化快照；首页每次重新可见时都应读取一次，
         // 这样卡片能展示最近一次成功请求的数据。
         viewModel.loadApCache()
-        updateAttendanceStatus(viewModel.uiState.value.currentAccountSk, force = true)
+        updateAttendanceStatus(viewModel.uiState.value.currentAccountSk)
     }
 
     private fun initController() {
@@ -266,7 +266,7 @@ class Home : Fragment() {
         }
     }
 
-    private fun updateAttendanceStatus(account: AccountSk?, force: Boolean = false) {
+    private fun updateAttendanceStatus(account: AccountSk?) {
         val chip = binding.ApCacheCard.AttendanceStatus
         if (account == null) {
             attendanceJob?.cancel()
@@ -275,7 +275,7 @@ class Home : Fragment() {
             return
         }
         val key = "${account.uid}:${LocalDate.now(ZoneId.of("Asia/Shanghai"))}"
-        if (!force && attendanceKey == key) return
+        if (attendanceKey == key && attendanceJob?.isActive == true) return
         attendanceKey = key
         attendanceJob?.cancel()
         chip.visibility = View.GONE

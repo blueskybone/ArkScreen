@@ -66,7 +66,7 @@
         android:clipToPadding="false"
         android:fillViewport="true"
         android:paddingBottom="16dp"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -163,23 +163,19 @@
             </com.google.android.material.card.MaterialCardView>
             <com.google.android.material.card.MaterialCardView
                 style="@style/CardViewContent"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="12dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="18dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="8dp"
-                        android:paddingTop="4dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="12dp">
+                        android:orientation="horizontal">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -199,7 +195,7 @@
                                 style="@style/Widget.ArkScreen.InlineHint"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="7dp" />
+                            android:layout_marginTop="5dp" />
 
                             <TextView
                                 android:id="@+id/ApResTime"
@@ -210,13 +206,13 @@
                         </LinearLayout>
 
                         <FrameLayout
-                            android:layout_width="104dp"
-                            android:layout_height="104dp">
+                            android:layout_width="96dp"
+                            android:layout_height="96dp">
 
                             <com.mikhaellopez.circularprogressbar.CircularProgressBar
                                 android:id="@+id/CircularProgressBar"
-                                android:layout_width="104dp"
-                                android:layout_height="104dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
                                 app:cpb_background_progressbar_color="@color/sec_con"
                                 app:cpb_background_progressbar_width="6dp"
                                 app:cpb_progress_direction="to_right"
@@ -254,9 +250,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginTop="14dp"
                         android:layout_marginBottom="12dp"
                         android:background="?android:attr/listDivider" />
 
@@ -509,6 +503,7 @@
                 android:id="@+id/Starter"
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
+                android:visibility="gone"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
@@ -563,7 +558,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/LoadingMessage"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"

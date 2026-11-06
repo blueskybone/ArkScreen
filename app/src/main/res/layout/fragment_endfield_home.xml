@@ -76,7 +76,7 @@
                 android:paddingStart="12dp"
                 android:paddingEnd="20dp"
                 android:textColor="@color/endfield_on_surface_accent"
-                app:drawableRightCompat="@drawable/ic_exchange"
+                app:drawableRightCompat="@drawable/ic_account_dropdown"
                 app:drawableTint="?attr/colorOnBackground" />
         </LinearLayout>
 

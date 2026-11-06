@@ -19,7 +19,7 @@ class CharHeaderAdapter(
     private var statistic = CharStatistic()
     private var account: AccountSk? = null
     private var accountAvatarUrl: String? = null
-    private var filterCount = 0
+    private var filterCount = -1
     private var viewType = ViewType.GRID
 
     fun submitFilterCount(value: Int) {
@@ -83,7 +83,7 @@ class CharHeaderAdapter(
             binding.Filter.setOnClickListener { onFilterClick() }
             binding.ViewChanger.setOnClickListener { onViewClick() }
             binding.MissingButton.setOnClickListener { onMissingClick() }
-            binding.Filter.text = if (filterCount == 0) context.getString(R.string.filter)
+            binding.Filter.text = if (filterCount < 0) context.getString(R.string.filter)
                 else context.getString(R.string.assets_filter_count, filterCount)
             binding.ViewChanger.setImageResource(
                 if (viewType == ViewType.LIST) R.drawable.ic_list else R.drawable.ic_grid

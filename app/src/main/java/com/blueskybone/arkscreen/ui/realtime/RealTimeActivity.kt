@@ -146,6 +146,10 @@ class RealTimeActivity : AppCompatActivity() {
             binding.RefreshButton.isEnabled = !syncing
             binding.Loading.visibility = if (syncing) View.VISIBLE else View.GONE
             binding.LoadingMessage.visibility = if (syncing) View.VISIBLE else View.GONE
+            val showContent = !syncing && model.state.value is RealTimeScreenState.Content
+            binding.ScrollView.visibility = if (showContent) View.VISIBLE else View.GONE
+            binding.Starter.visibility = if (showContent) View.VISIBLE else View.GONE
+            if (syncing) binding.Page.visibility = View.GONE
         }
     }
 
@@ -173,6 +177,7 @@ class RealTimeActivity : AppCompatActivity() {
         binding.StatusIllustration.visibility = View.GONE
         binding.Page.visibility = View.GONE
         binding.ScrollView.visibility = View.GONE
+        binding.Starter.visibility = View.GONE
         binding.EmptySummary.visibility = View.GONE
         binding.EmptyAction.visibility = View.GONE
         binding.Message.setText(com.blueskybone.arkscreen.R.string.loading)
@@ -184,6 +189,7 @@ class RealTimeActivity : AppCompatActivity() {
         binding.StatusIllustration.visibility = View.VISIBLE
         binding.Page.visibility = View.VISIBLE
         binding.ScrollView.visibility = View.GONE
+        binding.Starter.visibility = View.GONE
         binding.EmptySummary.visibility = View.GONE
         configureRecoveryAction(kind)
         binding.Message.setText(
@@ -202,6 +208,7 @@ class RealTimeActivity : AppCompatActivity() {
         binding.StatusIllustration.visibility = View.VISIBLE
         binding.Page.visibility = View.VISIBLE
         binding.ScrollView.visibility = View.GONE
+        binding.Starter.visibility = View.GONE
         binding.EmptySummary.visibility = View.VISIBLE
         binding.EmptyAction.visibility = View.VISIBLE
         binding.EmptyAction.setText(com.blueskybone.arkscreen.R.string.add_skland_account)
@@ -299,7 +306,9 @@ class RealTimeActivity : AppCompatActivity() {
         binding.Irene.Text.text = data.ireneChange?.text?.resolve(this).orEmpty()
         currentOfficial = data.official
         binding.Page.visibility = View.GONE
-        binding.ScrollView.visibility = View.VISIBLE
+        val showContent = model.syncingState.value != true
+        binding.ScrollView.visibility = if (showContent) View.VISIBLE else View.GONE
+        binding.Starter.visibility = if (showContent) View.VISIBLE else View.GONE
     }
 
     override fun onDestroy() {

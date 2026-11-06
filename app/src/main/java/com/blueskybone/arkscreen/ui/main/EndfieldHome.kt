@@ -166,7 +166,7 @@ class EndfieldHome : Fragment() {
         super.onResume()
         viewModel.loadEndfieldStaminaCache()
         val state = viewModel.uiState.value
-        updateAttendanceStatus(effectiveAccount(state), force = true)
+        updateAttendanceStatus(effectiveAccount(state))
     }
 
     private fun renderStaminaCache(state: MainUiState) {
@@ -217,7 +217,7 @@ class EndfieldHome : Fragment() {
     private fun effectiveAccount(state: MainUiState): AccountEf? = state.currentAccountEf
         ?: state.accountEfList.firstOrNull()?.account as? AccountEf
 
-    private fun updateAttendanceStatus(account: AccountEf?, force: Boolean = false) {
+    private fun updateAttendanceStatus(account: AccountEf?) {
         val chip = binding.EfStaminaCard.AttendanceStatus
         if (account == null) {
             attendanceJob?.cancel()
@@ -226,7 +226,7 @@ class EndfieldHome : Fragment() {
             return
         }
         val key = "${account.uid}:${LocalDate.now(ZoneId.of("Asia/Shanghai"))}"
-        if (!force && attendanceKey == key) return
+        if (attendanceKey == key && attendanceJob?.isActive == true) return
         attendanceKey = key
         attendanceJob?.cancel()
         chip.visibility = View.GONE
