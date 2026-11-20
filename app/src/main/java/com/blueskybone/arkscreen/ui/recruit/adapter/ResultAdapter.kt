@@ -25,6 +25,7 @@ class ResultAdapter(
 
     override fun onBindViewHolder(holder: ResultViewHolder, position: Int) {
         holder.bind(getItem(position))
+        holder.itemView.findViewById<View>(R.id.Divider).visibility = if (position == itemCount - 1) View.GONE else View.VISIBLE
     }
 
     private class DiffCallback : DiffUtil.ItemCallback<RecruitResult>() {
@@ -73,11 +74,11 @@ class ResultAdapter(
         }
 
         fun bind(result: RecruitResult) {
-            val tags = buildList {
-                add("${result.rare}★")
-                addAll(result.tags)
-            }
-            tagAdapter.submitList(tags)
+            val guarantee = itemView.findViewById<android.widget.TextView>(R.id.Guarantee)
+            guarantee.text = "${result.rare}★"
+            guarantee.setTextColor(androidx.core.content.ContextCompat.getColor(itemView.context,
+                when (result.rare) { 6 -> R.color.rare_6_line; 5 -> R.color.rare_5_line; 4 -> R.color.rare_4_line; else -> R.color.inline_chip_text }))
+            tagAdapter.submitList(result.tags)
             operatorAdapter.submitList(result.operators)
         }
     }

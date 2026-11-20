@@ -80,47 +80,59 @@ class RecoveryNotificationSettingsActivity : AppCompatActivity() {
             textSize = 13f
             setPadding(dp(8), dp(6), dp(8), dp(6))
         })
-        enabled = addSwitch(content, R.string.recovery_notifications_enable,
+        val general = addCard(content, R.string.recovery_notifications)
+        enabled = addSwitch(general, R.string.recovery_notifications_enable,
             settings.recoveryNotificationsEnabled.get())
-        addSection(content, R.string.recovery_notifications_ap_full)
-        apFull = addSwitch(content, R.string.recovery_notifications_ap_full,
+        val sanity = addCard(content, R.string.realtime_sanity)
+        apFull = addSwitch(sanity, R.string.recovery_notifications_ap_full,
             settings.notifyApFull.get())
-        apEarly = addSwitch(content, R.string.recovery_notifications_ap_early,
+        apEarly = addSwitch(sanity, R.string.recovery_notifications_ap_early,
             settings.notifyApEarly.get())
         apLead = settings.notifyApEarlyMinutes.get()
-        apLeadButton = addLeadButton(content, apLead) {
+        apLeadButton = addLeadButton(sanity, apLead) {
             chooseLead(intArrayOf(5, 10, 15, 30, 60, 120), apLead) {
                 apLead = it
                 apLeadButton.text = getString(R.string.recovery_notifications_advance, it)
             }
         }
-        addSection(content, R.string.recovery_notifications_training_done)
-        trainDone = addSwitch(content, R.string.recovery_notifications_training_done,
+        val training = addCard(content, R.string.train)
+        trainDone = addSwitch(training, R.string.recovery_notifications_training_done,
             settings.notifyTrainingComplete.get())
-        trainShift = addSwitch(content, R.string.recovery_notifications_training_shift,
+        trainShift = addSwitch(training, R.string.recovery_notifications_training_shift,
             settings.notifyTrainingShift.get())
         shiftLead = settings.notifyTrainingShiftMinutes.get()
-        shiftLeadButton = addLeadButton(content, shiftLead) {
+        shiftLeadButton = addLeadButton(training, shiftLead) {
             chooseLead(intArrayOf(0, 5, 10, 15, 30, 60), shiftLead) {
                 shiftLead = it
                 shiftLeadButton.text = getString(R.string.recovery_notifications_advance, it)
             }
         }
-        addSection(content, R.string.recovery_notifications_labor)
-        labor = addSwitch(content, R.string.recovery_notifications_labor,
+        val other = addCard(content, R.string.recovery_other_events)
+        labor = addSwitch(other, R.string.recovery_notifications_labor,
             settings.notifyLaborFull.get())
-        meeting = addSwitch(content, R.string.recovery_notifications_meeting,
+        meeting = addSwitch(other, R.string.recovery_notifications_meeting,
             settings.notifyMeetingComplete.get())
-        recruit = addSwitch(content, R.string.recovery_notifications_recruit,
+        recruit = addSwitch(other, R.string.recovery_notifications_recruit,
             settings.notifyRecruitComplete.get())
-        refresh = addSwitch(content, R.string.recovery_notifications_refresh,
+        refresh = addSwitch(other, R.string.recovery_notifications_refresh,
             settings.notifyRecruitRefresh.get())
 
-        val save = MaterialButton(this).apply {
+        fun updateControls() {
+            listOf(apFull, apEarly, trainDone, trainShift, labor, meeting, recruit, refresh)
+                .forEach { it.isEnabled = enabled.isChecked }
+            apLeadButton.isEnabled = enabled.isChecked && apEarly.isChecked
+            shiftLeadButton.isEnabled = enabled.isChecked && trainShift.isChecked
+        }
+        enabled.setOnCheckedChangeListener { _, _ -> updateControls() }
+        apEarly.setOnCheckedChangeListener { _, _ -> updateControls() }
+        trainShift.setOnCheckedChangeListener { _, _ -> updateControls() }
+        updateControls()
+
+        val save = (layoutInflater.inflate(R.layout.item_recovery_action, content, false) as MaterialButton).apply {
             setText(R.string.save)
             setOnClickListener { saveSettings() }
         }
-        content.addView(save, LinearLayout.LayoutParams(-1, dp(48)).apply { topMargin = dp(20) })
+        content.addView(save, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(16); gravity = android.view.Gravity.END })
     }
 
     private fun saveSettings() {
@@ -153,14 +165,17 @@ class RecoveryNotificationSettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun addSection(parent: LinearLayout, title: Int) {
-        parent.addView(TextView(this).apply {
+    private fun addCard(parent: LinearLayout, title: Int): LinearLayout {
+        val card = layoutInflater.inflate(R.layout.item_recovery_settings_card, parent, false) as com.google.android.material.card.MaterialCardView
+        parent.addView(card)
+        val body = card.getChildAt(0) as LinearLayout
+        body.addView(TextView(this).apply {
             setText(title)
-            textSize = 14f
-            setPadding(0, dp(16), 0, dp(4))
-            setTextColor(ContextCompat.getColor(this@RecoveryNotificationSettingsActivity,
-                R.color.inline_chip_text))
+            setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Subtitle1)
+            setTypeface(typeface, android.graphics.Typeface.BOLD)
+            setPadding(0, 0, 0, dp(4))
         })
+        return body
     }
 
     private fun addSwitch(parent: LinearLayout, title: Int, checked: Boolean): SwitchMaterial =
@@ -168,14 +183,16 @@ class RecoveryNotificationSettingsActivity : AppCompatActivity() {
             setText(title)
             isChecked = checked
             minimumHeight = dp(48)
+            textSize = 14f
+            setPadding(0, dp(4), 0, dp(4))
             parent.addView(this, LinearLayout.LayoutParams(-1, -2))
         }
 
     private fun addLeadButton(parent: LinearLayout, minutes: Int, onClick: () -> Unit): MaterialButton =
-        MaterialButton(this, null, com.google.android.material.R.attr.materialButtonOutlinedStyle).apply {
+        (layoutInflater.inflate(R.layout.item_recovery_action, parent, false) as MaterialButton).apply {
             text = getString(R.string.recovery_notifications_advance, minutes)
             setOnClickListener { onClick() }
-            parent.addView(this, LinearLayout.LayoutParams(-1, -2))
+            parent.addView(this, LinearLayout.LayoutParams(-2, -2).apply { gravity = android.view.Gravity.END })
         }
 
     private fun chooseLead(options: IntArray, selected: Int, onChosen: (Int) -> Unit) {

@@ -135,7 +135,8 @@ val repositoryModule = module {
             apiAk = akHypergryphService,
             headerProvider = get(),
             authRemoteDataSource = get(),
-            preference = get()
+            preference = get(),
+            cacheStore = get()
         )
     }
 
@@ -144,7 +145,7 @@ val repositoryModule = module {
             api = sklandApiService,
             headerProvider = get(),
             authRemoteDataSource = get(),
-            prefManager = get()
+            cacheStore = get()
         )
     }
 

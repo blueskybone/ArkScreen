@@ -90,8 +90,7 @@ class GachaActivity : AppCompatActivity() {
                     val hasCachedRecords = state.gachaUiSnapshot?.records?.isNotEmpty() == true
                     when (val status = state.status) {
                         is UiStatus.Loading -> {
-                            if (hasCachedRecords) showContent()
-                            else showStatus(status.message ?: "加载中...", loading = true)
+                            showStatus(status.message ?: "加载中...", loading = true)
                         }
                         is UiStatus.Empty -> showStatus(status.message, showAction = true)
                         is UiStatus.Error -> {
@@ -101,10 +100,8 @@ class GachaActivity : AppCompatActivity() {
                         is UiStatus.Success -> showContent()
                         UiStatus.Idle -> Unit
                     }
-                    if (hasCachedRecords && state.isSyncing) {
-                        binding.Loading.visibility = View.VISIBLE
-                        binding.LoadingMessage.visibility = View.VISIBLE
-                        binding.LoadingMessage.setText(R.string.syncing)
+                    if (state.isSyncing) {
+                        showStatus(getString(R.string.syncing), loading = true)
                     }
                 }
             }

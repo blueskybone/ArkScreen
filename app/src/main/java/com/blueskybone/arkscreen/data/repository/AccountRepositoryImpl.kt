@@ -46,6 +46,7 @@ class AccountRepositoryImpl(
     private val headerProvider: HeaderProvider,
     private val authRemoteDataSource: SklandAuthRemoteDataSource,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val cacheStore: com.blueskybone.arkscreen.data.local.cache.RealtimeCacheStore,
     private val preference: InnerPrefManager
 ) : AccountRepository {
 
@@ -308,9 +309,15 @@ class AccountRepositoryImpl(
     override suspend fun deleteAccount(account: DomainAcc): Result<Unit> = repositoryResultOf {
         //先识别一下类型。然后根据类型去删对应表单。
         when (account) {
-            is DomainAccSk -> accountSkDao.deleteByUid(account.uid)
+            is DomainAccSk -> {
+                accountSkDao.deleteByUid(account.uid)
+                cacheStore.delete("arknights", account.channelMasterId, account.uid)
+            }
             is DomainAccGc -> accountGcDao.deleteByUid(account.uid)
-            is DomainAccEf -> accountEfDao.deleteByUid(account.uid)
+            is DomainAccEf -> {
+                accountEfDao.deleteByUid(account.uid)
+                cacheStore.delete("endfield", account.serverId, account.uid)
+            }
         }
     }
 

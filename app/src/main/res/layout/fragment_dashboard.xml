@@ -105,7 +105,7 @@
                         android:id="@+id/FloatWindowAppearance"
                         layout="@layout/preference"
                         android:visibility="gone" />
-                    <include android:id="@+id/ScreenShotDelay" layout="@layout/preference_sub_value" />
+                    <include android:id="@+id/ScreenShotDelay" layout="@layout/preference_value" />
                     <include
                         android:id="@+id/OverlayPermission"
                         layout="@layout/preference"
@@ -196,7 +196,7 @@
                             android:visibility="gone" />
                     </LinearLayout>
 
-                    <include android:id="@+id/PowerSavingMode" layout="@layout/preference_sub_switch" />
+                    <include android:id="@+id/PowerSavingMode" layout="@layout/preference_switch" />
                     <include android:id="@+id/WidgetRefresh" layout="@layout/preference_value" />
                     <include android:id="@+id/WidgetAppearance" layout="@layout/preference_icon" />
                     <include
@@ -277,7 +277,7 @@
                             app:iconTint="@color/inline_chip_text" />
                     </LinearLayout>
 
-                    <include android:id="@+id/BackAutoAtd" layout="@layout/preference_sub_switch" />
+                    <include android:id="@+id/BackAutoAtd" layout="@layout/preference_switch" />
                     <include android:id="@+id/SetAtdTime" layout="@layout/preference_sub_value" />
                     <include
                         android:id="@+id/OpenAutoStartSettings"
@@ -307,11 +307,17 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="match_parent"
+                        style="@style/PreferenceHeader"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/recovery_notifications"
-                        android:textAppearance="?attr/textAppearanceSubtitle1"
-                        android:textStyle="bold" />
+                        android:paddingEnd="4dp"
+                        android:text="@string/recovery_notifications" />
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="@string/recovery_notifications"-->
+<!--                        android:textAppearance="?attr/textAppearanceSubtitle1"-->
+<!--                        android:textStyle="bold" />-->
 
                     <TextView
                         android:layout_width="wrap_content"

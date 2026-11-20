@@ -231,6 +231,7 @@ class EndfieldCharDetailFragment : Fragment() {
         )
         section.WeaponName.text = info?.name?.takeIf(String::isNotBlank)
             ?: getString(R.string.endfield_char_unknown_weapon)
+        section.WeaponIconFrame.background = qualityFrame(info?.rarity?.key)
         section.WeaponRarity.text = EndfieldCharDisplay.stars(
             info?.rarity?.value, info?.rarity?.key,
         )
@@ -250,6 +251,7 @@ class EndfieldCharDetailFragment : Fragment() {
             section.GemContainer.visibility = View.VISIBLE
             section.GemName.text = gem.gemData?.name?.takeIf(String::isNotBlank)
                 ?: getString(R.string.endfield_char_gem)
+            section.GemIconFrame.background = qualityFrame(gem.gemData?.templateId)
             section.GemQuality.text = EndfieldCharDisplay.gemQuality(gem.gemData?.templateId)
             val gemIcon = gem.gemData?.icon?.takeIf { it.startsWith("http") }
                 ?: gem.icon?.takeIf { it.startsWith("http") }

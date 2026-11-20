@@ -1,6 +1,5 @@
 package com.blueskybone.arkscreen.data.repository
 
-import com.blueskybone.arkscreen.data.local.pref.CachePrefManager
 import com.blueskybone.arkscreen.data.network.ApiService
 import com.blueskybone.arkscreen.data.network.auth.HeaderProvider
 import com.blueskybone.arkscreen.data.network.auth.SklandAuthRemoteDataSource
@@ -48,7 +47,7 @@ class SklandRepositoryImpl(
     private val api: ApiService,
     private val headerProvider: HeaderProvider,
     private val authRemoteDataSource: SklandAuthRemoteDataSource,
-    private val prefManager: CachePrefManager
+    private val cacheStore: com.blueskybone.arkscreen.data.local.cache.RealtimeCacheStore
 ) : SklandRepository {
 
 
@@ -227,7 +226,7 @@ class SklandRepositoryImpl(
                         val maximum = stamina.maxValue
                         val sampledAt = stamina.sampledAt
                         if (current != null && maximum != null && sampledAt != null) {
-                            prefManager.endfieldStamina.set(EndfieldStaminaCache(
+                            cacheStore.writeEndfield(account, EndfieldStaminaCache(
                                 uid = account.uid,
                                 sampledAt = sampledAt,
                                 current = current,
@@ -240,7 +239,7 @@ class SklandRepositoryImpl(
             }
         }
 
-    override fun getEndfieldStaminaCache(): EndfieldStaminaCache = prefManager.endfieldStamina.get()
+    override suspend fun getEndfieldStaminaCache(account: AccountEf): EndfieldStaminaCache = cacheStore.readEndfield(account)
 
     private suspend fun fetchEndfieldCardDetail(account: AccountEf): EndfieldCardDetail {
         val cred = authRemoteDataSource.fetchCredential(account.token, account.dId)
@@ -341,7 +340,7 @@ class SklandRepositoryImpl(
             normalized.contains("socket is closed")
     }
 
-    override fun setRealTimeCache(account: AccountSk, realTimeData: RealTimeData) {
+    override suspend fun setRealTimeCache(account: AccountSk, realTimeData: RealTimeData) {
         val apCache = ApCache(
             realTimeData.currentTs,
             realTimeData.apInfo.remainSecs,
@@ -386,47 +385,13 @@ class SklandRepositoryImpl(
             realTimeData.meeting.isNull
         )
 
-        prefManager.apCache.set(apCache)
-        prefManager.laborCache.set(laborCache)
-        prefManager.trainCache.set(trainCache)
-        prefManager.recruitCache.set(recruitCache)
-        prefManager.refreshCache.set(refreshCache)
-        prefManager.meetCache.set(meetCache)
-        // 最后写入缓存所属账号，确保消费者只在完整快照落盘后切换展示对象。
-        prefManager.accountInfo.set(
-            CacheAccountInfo(
-                uid = account.uid,
-                nickname = account.nickName,
-                official = account.official,
-            )
-        )
+        cacheStore.write(account, com.blueskybone.arkscreen.domain.model.cache.RealtimeCacheSnapshot(
+            CacheAccountInfo(account.uid, account.nickName, account.official),
+            apCache, laborCache, trainCache, recruitCache, refreshCache, meetCache,
+        ))
     }
 
-    override fun getApCache(): ApCache {
-        return prefManager.apCache.get()
-    }
-
-    override fun getCacheAccountInfo(): CacheAccountInfo = prefManager.accountInfo.get()
-
-    override fun getTrainCache(): TrainCache {
-        return prefManager.trainCache.get()
-    }
-
-    override fun getLaborCache(): LaborCache {
-        return prefManager.laborCache.get()
-    }
-
-    override fun getRecruitCache(): RecruitCache {
-        return prefManager.recruitCache.get()
-    }
-
-    override fun getRefreshCache(): RefreshCache {
-        return prefManager.refreshCache.get()
-    }
-
-    override fun getMeetCache(): MeetCache {
-        return prefManager.meetCache.get()
-    }
+    override suspend fun getRealtimeCache(account: AccountSk) = cacheStore.read(account)
 
     private companion object {
         const val ATTENDANCE_MAX_ATTEMPTS = 2

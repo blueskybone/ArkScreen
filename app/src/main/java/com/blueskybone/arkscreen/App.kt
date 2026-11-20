@@ -101,6 +101,14 @@ class App : Application() {
                 reminders.onAccountChanged(uid)
             }
         }
+        CoroutineScope(SupervisorJob() + Dispatchers.Default).launch {
+            val accounts = koinApplication.koin.get<com.blueskybone.arkscreen.domain.repository.AccountRepository>()
+            kotlinx.coroutines.flow.combine(accounts.observeSkAcc(), accounts.observeCurrentSkAcc()) { list, selected ->
+                list.map { it.channelMasterId to it.uid } to (selected?.channelMasterId to selected?.uid)
+            }.collect {
+                koinApplication.koin.get<com.blueskybone.arkscreen.platform.widget.WidgetUpdateDispatcher>().renderAll()
+            }
+        }
         val screenDensityDpi = getDensityDpi(this)
         setScreenDpi(screenDensityDpi)
 
@@ -117,10 +125,12 @@ class App : Application() {
                 "RecruitFlow",
                 "RecruitOCR",
                 "Widget",
+                "RecoveryReminder",
             ),
         )
         Timber.plant(fileLoggingTree)
         CrashLogger.install(fileLoggingTree)
+        koinApplication.koin.get<RecoveryReminderController>().restoreAfterBoot()
         Timber.tag("AppStartup").i(
             "App started: version=%s versionCode=%d sdk=%d device=%s/%s debug=%s",
             BuildConfig.VERSION_NAME,

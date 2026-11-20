@@ -1,25 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingTop="6dp"
     android:paddingBottom="6dp">
-    <TextView
-        android:id="@+id/Name"
+    <LinearLayout
         android:layout_width="96dp"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textAppearance="?attr/textAppearanceBody2" />
-    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="?attr/textAppearanceBody2" />
+        <TextView
+            android:id="@+id/Date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:textColor="?android:attr/textColorSecondary" />
+    </LinearLayout>
+    <ProgressBar
         android:id="@+id/Progress"
         android:layout_width="0dp"
-        android:layout_height="6dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        style="@style/GachaProgressBar" />
     <TextView
         android:id="@+id/Count"
         android:layout_width="wrap_content"

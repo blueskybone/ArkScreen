@@ -499,7 +499,7 @@
     <string name="time_calibration_failed">时间校准失败</string>
     <string name="enter_phone_and_password">请输入手机号和密码</string>
     <string name="uid_copied">UID已复制</string>
-    <string name="copy_uid_action">点击复制</string>
+    <string name="copy_uid_action">复制</string>
     <string name="nickname_copied">昵称已复制</string>
     <string name="token_fetch_failed">获取 Token 失败</string>
     <string name="notification_permission_denied_attendance_continues">未授予通知权限，签到仍会继续</string>
@@ -570,4 +570,10 @@
     <string name="endfield_gacha_summary">共 %1$d 次 · 6★ %2$d · 5★ %3$d</string>
     <string name="endfield_gacha_raw_records">原始记录</string>
     <string name="endfield_gacha_pool_overview">卡池统计</string>
+    <string name="gacha_current_pity">当前水位</string>
+    <string name="recovery_other_events">基建与公招</string>
+    <string name="recovery_planned_time">计划提醒时间：%1$s</string>
+    <string name="recruit_results_title">计算结果</string>
+    <string name="recruit_select_hint">选择招聘标签，自动计算可招募干员</string>
+    <string name="recruit_no_match">当前标签组合没有匹配结果</string>
 </resources>

@@ -54,6 +54,7 @@
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
 
@@ -185,6 +186,9 @@
             android:exported="false"
             android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustNothing" />
+        <activity android:name=".ui.widget.WidgetAccountConfigActivity" android:exported="true">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" /></intent-filter>
+        </activity>
         <activity
             android:name=".ui.widget.WidgetTemplateLabActivity"
             android:exported="false"

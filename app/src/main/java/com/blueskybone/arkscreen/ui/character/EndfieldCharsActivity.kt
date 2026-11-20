@@ -29,6 +29,10 @@ class EndfieldCharsActivity : AppCompatActivity() {
     private val adapter = CharacterAdapter(::openDetail)
     private var currentState = EndfieldCharUiState()
 
+    private var rarityFilter: String? = null
+    private var professionFilter: String? = null
+    private var propertyFilter: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_Endfield)
         super.onCreate(savedInstanceState)
@@ -36,7 +40,13 @@ class EndfieldCharsActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        rarityFilter = savedInstanceState?.getString("rarityFilter")
+        professionFilter = savedInstanceState?.getString("professionFilter")
+        propertyFilter = savedInstanceState?.getString("propertyFilter")
         binding.Characters.adapter = adapter
+        binding.RarityFilter.setOnClickListener { chooseFilter(0) }
+        binding.ProfessionFilter.setOnClickListener { chooseFilter(1) }
+        binding.PropertyFilter.setOnClickListener { chooseFilter(2) }
         supportFragmentManager.addOnBackStackChangedListener { updatePage() }
         updatePage()
         binding.AccountButton.setOnClickListener { chooseAccount() }
@@ -54,14 +64,63 @@ class EndfieldCharsActivity : AppCompatActivity() {
         binding.AccountButton.text = selected?.nickName ?: getString(R.string.endfield_choose_account)
         binding.Loading.visibility = if (state.loading) View.VISIBLE else View.GONE
         binding.RefreshButton.isEnabled = selected != null && !state.loading
-        adapter.submitList(state.characters)
+        val filtered = state.characters.filter { character ->
+            (rarityFilter == null || filterValue(character, 0) == rarityFilter) &&
+                (professionFilter == null || filterValue(character, 1) == professionFilter) &&
+                (propertyFilter == null || filterValue(character, 2) == propertyFilter)
+        }
+        adapter.submitList(filtered)
+        binding.Filters.visibility = if (state.characters.isNotEmpty() && !state.loading) View.VISIBLE else View.GONE
+        binding.RarityFilter.text = rarityFilter ?: "稀有度"
+        binding.ProfessionFilter.text = professionFilter ?: "职业"
+        binding.PropertyFilter.text = propertyFilter ?: "属性"
+        binding.RarityFilter.isSelected = rarityFilter != null
+        binding.ProfessionFilter.isSelected = professionFilter != null
+        binding.PropertyFilter.isSelected = propertyFilter != null
         binding.Summary.text = when {
             state.accounts.isEmpty() -> getString(R.string.endfield_chars_no_account)
             state.loading -> getString(R.string.endfield_chars_loading)
             state.error != null -> state.error
             state.characters.isEmpty() -> getString(R.string.endfield_chars_empty)
+            rarityFilter != null || professionFilter != null || propertyFilter != null ->
+                "筛选结果 ${filtered.size} / ${state.characters.size}"
             else -> getString(R.string.endfield_chars_count, state.characters.size)
         }
+    }
+
+    private fun filterValue(character: EndfieldCharacter, kind: Int): String? = when (kind) {
+        0 -> EndfieldCharDisplay.stars(character.charData?.rarity?.value, character.charData?.rarity?.key)
+        1 -> character.charData?.profession?.value
+        else -> character.charData?.property?.value
+    }?.takeIf(String::isNotBlank)
+
+    private fun chooseFilter(kind: Int) {
+        val options = currentState.characters.mapNotNull { filterValue(it, kind) }.distinct().sortedDescending()
+        val selected = when (kind) {
+            0 -> rarityFilter
+            1 -> professionFilter
+            else -> propertyFilter
+        }
+        MaterialAlertDialogBuilder(this)
+            .setTitle(listOf("稀有度", "职业", "属性")[kind])
+            .setSingleChoiceItems((listOf("全部") + options).toTypedArray(),
+                if (selected == null) 0 else options.indexOf(selected) + 1) { dialog, index ->
+                val value = options.getOrNull(index - 1)
+                when (kind) {
+                    0 -> rarityFilter = value
+                    1 -> professionFilter = value
+                    else -> propertyFilter = value
+                }
+                render(currentState)
+                dialog.dismiss()
+            }.show()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString("rarityFilter", rarityFilter)
+        outState.putString("professionFilter", professionFilter)
+        outState.putString("propertyFilter", propertyFilter)
+        super.onSaveInstanceState(outState)
     }
 
     private fun chooseAccount() {

@@ -7,9 +7,10 @@ import org.koin.java.KoinJavaComponent.getKoin
 
 class RecoveryReminderReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
+        timber.log.Timber.tag("RecoveryReminder").i("Receiver: action=%s", intent.action)
         val controller = getKoin().get<RecoveryReminderController>()
         when (intent.action) {
-            Intent.ACTION_BOOT_COMPLETED -> controller.restoreAfterBoot()
+            Intent.ACTION_BOOT_COMPLETED, Intent.ACTION_MY_PACKAGE_REPLACED -> controller.restoreAfterBoot()
             RecoveryReminderController.ACTION_FIRE -> controller.onAlarm(
                 intent.getStringExtra(RecoveryReminderController.EXTRA_KEY) ?: return,
                 intent.getStringExtra(RecoveryReminderController.EXTRA_UID) ?: return,

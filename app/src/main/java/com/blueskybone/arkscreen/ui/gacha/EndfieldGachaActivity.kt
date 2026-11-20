@@ -47,7 +47,7 @@ class EndfieldGachaActivity : AppCompatActivity() {
         binding.CharButton.isCheckable = true
         binding.WeaponButton.isCheckable = true
         binding.AccountButton.setOnClickListener { chooseAccount() }
-        binding.RefreshButton.setOnClickListener { model.refresh() }
+        binding.AccountRow.setOnClickListener { chooseAccount() }
         binding.CharButton.setOnClickListener { type = "char"; render(current) }
         binding.WeaponButton.setOnClickListener { type = "weapon"; render(current) }
         binding.ModeButton.setOnClickListener {
@@ -63,7 +63,9 @@ class EndfieldGachaActivity : AppCompatActivity() {
         current = state
         binding.AccountButton.text = state.accounts.firstOrNull { it.uid == state.selectedUid }
             ?.nickName ?: getString(R.string.endfield_choose_account)
-        binding.RefreshButton.isEnabled = state.selectedUid != null && !state.loading
+        invalidateOptionsMenu()
+        binding.Content.visibility = if (state.loading) View.GONE else View.VISIBLE
+        binding.AccountIcon.setImageResource(R.drawable.hg_icon_80x80)
         binding.Loading.visibility = if (state.loading) View.VISIBLE else View.GONE
         binding.CharButton.isChecked = type == "char"
         binding.WeaponButton.isChecked = type == "weapon"
@@ -85,11 +87,31 @@ class EndfieldGachaActivity : AppCompatActivity() {
             records.isEmpty() -> getString(R.string.endfield_gacha_empty)
             else -> getString(R.string.endfield_gacha_summary, records.size, six, five)
         }
-        binding.TotalCount.text = "总计\n${records.size} 次"
-        binding.SixCount.text = "6★\n$six"
-        binding.AverageCount.text = "平均 6★\n${if (six == 0) "-" else "${records.size / six} 次"}"
+        binding.TotalCount.text = "${records.size} 次"
+        binding.SixCount.text = "$six"
+        binding.AverageCount.text = if (six == 0) "-" else "${records.size / six} 次"
+        binding.Status.visibility = if (state.loading || state.error != null || records.isEmpty()) View.VISIBLE else View.GONE
+        binding.DateRange.text = if (records.isEmpty()) getString(R.string.endfield_gacha_empty) else
+            getString(R.string.date_range, "${formatGachaTime(records.last().gachaTs, "yyyy-MM-dd")} ~ ${formatGachaTime(records.first().gachaTs, "yyyy-MM-dd")}")
+        poolAdapter.setAccount(state.selectedUid)
         val progress = EndfieldPityCalculator.calculate(state.records, state.pools, type)
         poolAdapter.submitList(progress)
+    }
+
+    override fun onCreateOptionsMenu(menu: android.view.Menu): Boolean {
+        menu.add(0, 1, 0, R.string.refresh).setIcon(R.drawable.ic_refresh)
+            .setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_ALWAYS)
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: android.view.Menu): Boolean {
+        menu.findItem(1)?.isEnabled = current.selectedUid != null && !current.loading
+        return super.onPrepareOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
+        if (item.itemId == 1) { model.refresh(); return true }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun chooseAccount() {
@@ -122,6 +144,10 @@ private class EndfieldPoolAdapter : ListAdapter<EndfieldPoolProgress, EndfieldPo
     },
 ) {
     private val expanded = mutableSetOf<String>()
+    private var accountUid: String? = null
+    fun setAccount(uid: String?) {
+        if (accountUid != uid) { expanded.clear(); accountUid = uid }
+    }
 
     class Holder(val binding: ItemEndfieldGachaPoolBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -139,6 +165,7 @@ private class EndfieldPoolAdapter : ListAdapter<EndfieldPoolProgress, EndfieldPo
             if (pool.free > 0) append("  ·  免费 ").append(pool.free)
         }
         binding.Pity.text = buildString {
+            if (pool.smallMax != null || pool.bigMax != null) append("当前水位 · ")
             pool.smallMax?.let { max ->
                 append("6★ 保底 ").append(pool.smallCount).append("/").append(max)
             }
@@ -157,6 +184,7 @@ private class EndfieldPoolAdapter : ListAdapter<EndfieldPoolProgress, EndfieldPo
             val row = ItemEndfieldGachaHitBinding.inflate(
                 LayoutInflater.from(binding.Hits.context), binding.Hits, false,
             )
+            row.Date.text = formatGachaTime(hit.gachaTs, "MM-dd")
             row.Name.text = hit.name + if (hit.isNew) " · N" else ""
             row.Progress.max = pool.smallMax ?: 80
             row.Progress.progress = hit.pity.coerceAtMost(row.Progress.max)
@@ -196,27 +224,20 @@ private class RecordAdapter : ListAdapter<EndfieldGachaRecord, RecordAdapter.Hol
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val record = getItem(position)
-        holder.binding.Name.text = record.itemName.ifBlank { record.itemId.ifBlank { "未知物品" } }
-        holder.binding.Pool.text = record.poolName.ifBlank { record.poolType }
-        holder.binding.Detail.text = buildString {
-            append(record.rarity).append("★")
-            if (record.isNew) append(" · 新获得")
-            if (record.isFree) append(" · 免费")
-            if (record.kind.startsWith("gift")) append(" · 奖励")
-            if (record.gachaTs.isNotBlank()) append(" · ").append(formatTime(record.gachaTs))
-        }
-        holder.binding.Name.setTextColor(
-            com.google.android.material.color.MaterialColors.getColor(
-                holder.binding.Name,
-                if (record.rarity >= 6) com.google.android.material.R.attr.colorPrimary
-                else com.google.android.material.R.attr.colorOnSurface,
-            ),
-        )
+        holder.binding.OperatorName.text = record.itemName.ifBlank { record.itemId.ifBlank { "未知物品" } }
+        holder.binding.PoolInfo.text = record.poolName.ifBlank { record.poolType }
+        holder.binding.Rarity.text = "★".repeat(record.rarity.coerceIn(0, 6))
+        holder.binding.GainTime.text = formatGachaTime(record.gachaTs, "yyyy-MM-dd HH:mm")
+        holder.binding.PoolCount.text = if (record.isFree) "免费" else ""
+        holder.binding.IsNew.visibility = if (record.isNew) View.VISIBLE else View.GONE
+        holder.binding.Rarity.setTextColor(androidx.core.content.ContextCompat.getColor(holder.itemView.context,
+            when (record.rarity) { 6 -> R.color.rare_6; 5 -> R.color.rare_5; else -> R.color.rare_4 }))
     }
 
-    private fun formatTime(raw: String): String {
-        val timestamp = raw.toLongOrNull() ?: return raw
-        val millis = if (timestamp < 10_000_000_000L) timestamp * 1000 else timestamp
-        return SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date(millis))
-    }
+}
+
+private fun formatGachaTime(raw: String, pattern: String): String {
+    val timestamp = raw.toLongOrNull() ?: return raw
+    val millis = if (timestamp < 10_000_000_000L) timestamp * 1000 else timestamp
+    return SimpleDateFormat(pattern, Locale.getDefault()).format(Date(millis))
 }

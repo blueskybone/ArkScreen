@@ -32,6 +32,11 @@ class WidgetUpdateDispatcher(context: Context) {
         Timber.tag("Widget").i("Render dispatched: widgetCount=%d", widgetCount)
     }
 
+    fun widgetIds(): List<Int> {
+        val manager = AppWidgetManager.getInstance(appContext)
+        return PROVIDERS.flatMap { manager.getAppWidgetIds(ComponentName(appContext, it)).toList() }
+    }
+
     fun hasWidgets(): Boolean {
         val manager = AppWidgetManager.getInstance(appContext)
         return PROVIDERS.any { provider ->

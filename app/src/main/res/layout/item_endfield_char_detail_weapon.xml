@@ -56,10 +56,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
-                    android:background="@drawable/bg_char_rarity_badge"
-                    android:paddingStart="7dp"
-                    android:paddingEnd="7dp"
-                    android:textColor="?attr/colorPrimary"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:visibility="gone" />
 
                 <TextView

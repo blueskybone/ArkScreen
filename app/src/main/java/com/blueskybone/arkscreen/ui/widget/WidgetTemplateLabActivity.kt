@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.core.view.setPadding
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.data.local.pref.CachePrefManager
 import com.blueskybone.arkscreen.data.local.pref.InnerPrefManager
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.data.local.pref.WidgetTemplatePrefManager
@@ -33,17 +32,20 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.ext.android.getKoin
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
 
 class WidgetTemplateLabActivity : AppCompatActivity() {
     private lateinit var binding: ActivityWidgetTemplateLabBinding
-    private val cache: CachePrefManager by getKoin().inject()
+    private var cache = com.blueskybone.arkscreen.domain.model.cache.RealtimeCacheSnapshot()
+    private val snapshots: com.blueskybone.arkscreen.data.local.cache.RealtimeCacheStore by getKoin().inject()
+    private val accounts: com.blueskybone.arkscreen.domain.repository.AccountRepository by getKoin().inject()
     private val settings: SettingPrefManager by getKoin().inject()
     private val innerPrefs: InnerPrefManager by getKoin().inject()
     private val templatePrefs: WidgetTemplatePrefManager by getKoin().inject()
     private val attendanceStates: AttendanceStateRepository by getKoin().inject()
     private val appClock: AppClock by getKoin().inject()
-    private val infoMapper by lazy { WidgetInfoMapper(this, cache, settings, appClock) }
-    private val compactInfoMapper by lazy { WidgetCompactInfoMapper(cache, appClock) }
+    private val infoMapper get() = WidgetInfoMapper(this, cache, settings, appClock)
+    private val compactInfoMapper get() = WidgetCompactInfoMapper(cache, appClock)
     private var currentAttendanceState: AccountAttendanceState? = null
 
     private var selectedSize = WidgetPreviewSize.TWO_BY_THREE
@@ -68,9 +70,44 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
         loadCurrentAttendanceState()
     }
 
+    override fun onCreateOptionsMenu(menu: android.view.Menu): Boolean {
+        menu.add("组件账号").setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_NEVER)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
+        if (item.title == "组件账号") {
+            lifecycleScope.launch {
+                val ids = com.blueskybone.arkscreen.platform.widget.WidgetUpdateDispatcher(this@WidgetTemplateLabActivity).widgetIds()
+                if (ids.isEmpty()) {
+                    com.hjq.toast.Toaster.show("请先在桌面添加组件")
+                    return@launch
+                }
+                val configs: com.blueskybone.arkscreen.data.local.room.dao.WidgetConfigDao = getKoin().get()
+                val all = accounts.observeSkAcc().first()
+                val labels = ids.map { id ->
+                    val config = configs.get(id)
+                    val name = if (config == null || config.accountMode == com.blueskybone.arkscreen.data.local.room.WidgetConfig.FOLLOW_CURRENT) "跟随当前账号" else
+                        all.firstOrNull { it.uid == config.roleUid && it.channelMasterId == config.serverKey }?.nickName ?: "账号已删除"
+                    val info = android.appwidget.AppWidgetManager.getInstance(this@WidgetTemplateLabActivity).getAppWidgetInfo(id)
+                    "${info?.loadLabel(packageManager).orEmpty()} · #$id · $name"
+                }
+                MaterialAlertDialogBuilder(this@WidgetTemplateLabActivity).setTitle("选择组件")
+                    .setItems(labels.toTypedArray()) { _, index ->
+                        startActivity(android.content.Intent(this@WidgetTemplateLabActivity, WidgetAccountConfigActivity::class.java)
+                            .putExtra(android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID, ids[index]))
+                    }.show()
+            }
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun loadCurrentAttendanceState() {
         lifecycleScope.launch {
-            val uid = cache.accountInfo.get().uid
+            val account = accounts.observeCurrentSkAcc().first()
+            cache = account?.let { snapshots.read(it) } ?: com.blueskybone.arkscreen.domain.model.cache.RealtimeCacheSnapshot()
+            val uid = account?.uid.orEmpty()
             currentAttendanceState = if (uid.isBlank()) {
                 null
             } else {
@@ -640,7 +677,7 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT,
             )
-            cache.accountInfo.get()
+            cache.accountInfo
                 .takeIf { it.uid.isNotBlank() }
                 ?.let { account ->
                     addView(

@@ -24,15 +24,12 @@ import com.blueskybone.arkscreen.data.local.pref.InnerPrefManager
 import com.blueskybone.arkscreen.platform.schedule.AttendanceAlarmController
 import com.blueskybone.arkscreen.databinding.DialogTimepickerBinding
 import com.blueskybone.arkscreen.databinding.FragmentDashboardBinding
-import com.blueskybone.arkscreen.ui.common.bindinginfo.BackAutoAtd
 import com.blueskybone.arkscreen.ui.common.bindinginfo.FloatWindowAppearance
 import com.blueskybone.arkscreen.ui.common.bindinginfo.NotifyPermission
 import com.blueskybone.arkscreen.ui.common.bindinginfo.OpenAutoStartSettings
 import com.blueskybone.arkscreen.ui.common.bindinginfo.OverlayPermission
-import com.blueskybone.arkscreen.ui.common.bindinginfo.PowerSavingMode
 import com.blueskybone.arkscreen.ui.common.bindinginfo.RecruitMode
 import com.blueskybone.arkscreen.ui.common.bindinginfo.ScDelay
-import com.blueskybone.arkscreen.ui.common.bindinginfo.ScreenshotDelay
 import com.blueskybone.arkscreen.ui.common.bindinginfo.SetAtdTime
 import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetUpdateFreq
 import com.blueskybone.arkscreen.ui.common.view.PreferenceDialog
@@ -110,11 +107,10 @@ class Function : Fragment() {
         )
 
 
-        PreferenceBinder.bindSubValue(
+        PreferenceBinder.bindPreferenceValue(
             binding = binding.ScreenShotDelay,
             context = requireContext(),
             icon = R.drawable.ic_delay,
-            textInfo = ScreenshotDelay,
             listInfo = ScDelay,
             pref = prefManager.screenShotDelay,
             onClick = null
@@ -154,10 +150,10 @@ class Function : Fragment() {
             textInfo = NotifyPermission
         )
 
-        PreferenceBinder.bindSubSwitch(
+        PreferenceBinder.bindSwitch(
             binding = binding.PowerSavingMode,
             icon = R.drawable.ic_data_saver,
-            textInfo = PowerSavingMode,
+            text = R.string.power_saving_mode,
             pref = prefManager.powerSavingMode,
             onCall = null,
             offCall = null
@@ -182,10 +178,10 @@ class Function : Fragment() {
             }
         }
 
-        PreferenceBinder.bindSubSwitch(
+        PreferenceBinder.bindSwitch(
             binding = binding.BackAutoAtd,
             icon = R.drawable.ic_check,
-            textInfo = BackAutoAtd,
+            text = R.string.back_auto_attendance,
             pref = prefManager.backAutoAtd,
             onCall = {
                 alarmController.schedule()

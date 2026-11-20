@@ -23,9 +23,11 @@ object PreferenceBinder {
         binding: PreferenceSwitchBinding,
         icon: Int?,
         text: Int,
-        pref: Preference<Boolean>
+        pref: Preference<Boolean>,
+        onCall: (() -> Unit)? = null,
+        offCall: (() -> Unit)? = null,
     ) {
-        binding.setUp(icon, text, pref)
+        binding.setUp(icon, text, pref, onCall, offCall)
     }
 
     fun bindSubValue(
@@ -185,7 +187,9 @@ object PreferenceBinder {
     private fun PreferenceSwitchBinding.setUp(
         icon: Int?,
         text: Int,
-        pref: Preference<Boolean>
+        pref: Preference<Boolean>,
+        onCall: (() -> Unit)?,
+        offCall: (() -> Unit)?,
     ) {
         Icon.bindIcon(icon)
         Title.setText(text)
@@ -194,6 +198,7 @@ object PreferenceBinder {
         Switch.isChecked = pref.get()
         Switch.setOnCheckedChangeListener { _, isChecked ->
             pref.set(isChecked)
+            if (isChecked) onCall?.invoke() else offCall?.invoke()
         }
     }
 

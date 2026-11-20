@@ -21,6 +21,8 @@ import com.blueskybone.arkscreen.data.local.room.dao.LinkDao
 @Database(
     entities = [
         AccountSk::class,
+        RealtimeCacheEntity::class,
+        WidgetConfig::class,
         AccountGc::class,
         AccountEf::class,
         Link::class,
@@ -29,9 +31,11 @@ import com.blueskybone.arkscreen.data.local.room.dao.LinkDao
         EndfieldGachaRecord::class,
         EndfieldGachaPool::class,
     ],
-    version = 10,
+    version = 11,
 )
 abstract class ArkDatabase : RoomDatabase() {
+    abstract fun getRealtimeCacheDao(): com.blueskybone.arkscreen.data.local.room.dao.RealtimeCacheDao
+    abstract fun getWidgetConfigDao(): com.blueskybone.arkscreen.data.local.room.dao.WidgetConfigDao
     abstract fun getAccountSkDao(): AccountSkDao
     abstract fun getAccountGcDao(): AccountGcDao
     abstract fun getAccountEfDao(): AccountEfDao
@@ -55,10 +59,17 @@ abstract class ArkDatabase : RoomDatabase() {
                     DatabaseName
                 ).addMigrations(Migration2).addMigrations(Migration3).addMigrations(Migration4)
                     .addMigrations(Migration5).addMigrations(Migration6).addMigrations(Migration7)
-                    .addMigrations(Migration8).addMigrations(Migration9).addMigrations(Migration10)
+                    .addMigrations(Migration8).addMigrations(Migration9).addMigrations(Migration10).addMigrations(Migration11)
                     .build()
                 INSTANCE = instance
                 instance
+            }
+        }
+
+        object Migration11 : Migration(10, 11) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("CREATE TABLE IF NOT EXISTS RealtimeCache (game TEXT NOT NULL, serverKey TEXT NOT NULL, roleUid TEXT NOT NULL, syncedAt INTEGER NOT NULL, dataTimestamp INTEGER NOT NULL, schemaVersion INTEGER NOT NULL, payload TEXT NOT NULL, PRIMARY KEY(game, serverKey, roleUid))")
+                db.execSQL("CREATE TABLE IF NOT EXISTS WidgetConfig (appWidgetId INTEGER NOT NULL PRIMARY KEY, accountMode TEXT NOT NULL, game TEXT NOT NULL, serverKey TEXT, roleUid TEXT)")
             }
         }
 

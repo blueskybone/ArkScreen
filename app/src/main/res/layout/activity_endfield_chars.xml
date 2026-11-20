@@ -62,6 +62,45 @@
         android:paddingBottom="8dp"
         android:textAppearance="?attr/textAppearanceBody2" />
 
+        <LinearLayout
+            android:id="@+id/Filters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/RarityFilter"
+                style="@style/Widget.ArkScreen.InlineAction"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:text="稀有度" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ProfessionFilter"
+                style="@style/Widget.ArkScreen.InlineAction"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:text="职业" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/PropertyFilter"
+                style="@style/Widget.ArkScreen.InlineAction"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:text="属性" />
+        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/Characters"
         android:layout_width="match_parent"

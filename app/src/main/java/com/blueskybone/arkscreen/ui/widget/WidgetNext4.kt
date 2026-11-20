@@ -204,8 +204,12 @@ class WidgetNext4 : BaseNextWidgetProvider() {
         val pendingResult = goAsync()
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
             try {
-                val account = accountRepository.observeCurrentSkAcc().first()
-                val packageName = if (account?.official != false) {
+                val configs: com.blueskybone.arkscreen.data.local.room.dao.WidgetConfigDao = KoinJavaComponent.getKoin().get()
+                val config = configs.get(appWidgetId) ?: com.blueskybone.arkscreen.data.local.room.WidgetConfig(appWidgetId)
+                val account = com.blueskybone.arkscreen.platform.widget.WidgetAccountResolver.resolve(
+                    config, accountRepository.observeSkAcc().first(), accountRepository.observeCurrentSkAcc().first(),
+                ) ?: return@launch
+                val packageName = if (account.official) {
                     "com.hypergryph.arknights"
                 } else {
                     "com.hypergryph.arknights.bilibili"

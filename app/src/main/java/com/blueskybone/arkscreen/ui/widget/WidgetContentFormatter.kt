@@ -1,6 +1,6 @@
 package com.blueskybone.arkscreen.ui.widget
 
-import com.blueskybone.arkscreen.data.local.pref.CachePrefManager
+import com.blueskybone.arkscreen.domain.model.cache.RealtimeCacheSnapshot
 import com.blueskybone.arkscreen.domain.service.AppClock
 import com.blueskybone.arkscreen.platform.time.TimeUtils
 import com.blueskybone.arkscreen.platform.time.TimeUtils.getCurrentTs
@@ -13,14 +13,14 @@ data class WidgetContentText(
 
 /** 将缓存的游戏状态转换为紧凑型桌面组件共用的统一文本模型。 */
 class WidgetContentFormatter(
-    private val cache: CachePrefManager,
+    private val cache: RealtimeCacheSnapshot,
     private val appClock: AppClock,
 ) {
     fun format(content: String, compact: Boolean = false): WidgetContentText {
         val now = getCurrentTs(appClock)
         return when (content) {
             "ap" -> {
-                val value = cache.apCache.get()
+                val value = cache.apCache
                 if (value.isnull) return WidgetContentText("暂无数据", "")
                 val current = when {
                     value.current >= value.max -> value.current.toLong()
@@ -35,7 +35,7 @@ class WidgetContentFormatter(
             }
 
             "labor" -> {
-                val value = cache.laborCache.get()
+                val value = cache.laborCache
                 if (value.isnull) return WidgetContentText("暂无数据", "")
                 val remaining = (value.remainSec - now + value.lastSyncTs).coerceAtLeast(0)
                 val current = if (value.remainSec <= 0 || remaining == 0L) {
@@ -52,7 +52,7 @@ class WidgetContentFormatter(
             }
 
             "recruit" -> {
-                val value = cache.recruitCache.get()
+                val value = cache.recruitCache
                 if (value.isNull) return WidgetContentText("暂无数据", "")
                 val completed = when {
                     value.completeTime == -1L -> value.complete
@@ -74,7 +74,7 @@ class WidgetContentFormatter(
             }
 
             "refresh" -> {
-                val value = cache.refreshCache.get()
+                val value = cache.refreshCache
                 if (value.isNull) return WidgetContentText("暂无数据", "")
                 val count = when {
                     value.completeTime == -1L -> value.count
@@ -96,7 +96,7 @@ class WidgetContentFormatter(
             }
 
             "train" -> {
-                val value = cache.trainCache.get()
+                val value = cache.trainCache
                 when {
                     value.isnull -> WidgetContentText("暂无数据", "")
                     value.status == -1L -> WidgetContentText("空闲中", "")
@@ -109,7 +109,7 @@ class WidgetContentFormatter(
             }
 
             "meet" -> {
-                val value = cache.meetCache.get()
+                val value = cache.meetCache
                 when {
                     value.isnull -> WidgetContentText("暂无数据", "")
                     value.stats == 0 -> WidgetContentText("空闲中", "")

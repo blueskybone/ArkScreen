@@ -14,6 +14,8 @@ internal object EndfieldEquipmentDisplay {
 
     fun qualityColor(rarityKey: String?): Int = when (rarityKey?.substringAfterLast('_')) {
         "2" -> R.color.ef_equip_green
+        "3" -> R.color.ef_equip_blue
+        "6" -> R.color.ef_equip_orange
         "4" -> R.color.ef_equip_purple
         "5" -> R.color.ef_equip_gold
         else -> R.color.ef_equip_unknown

@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.data.local.pref.CachePrefManager
 import com.blueskybone.arkscreen.data.local.pref.InnerPrefManager
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.data.local.pref.WidgetTemplatePrefManager
@@ -29,6 +28,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
 import org.koin.java.KoinJavaComponent.getKoin
 import timber.log.Timber
 import android.os.SystemClock
@@ -48,9 +48,10 @@ data class NextWidgetRenderData(
  * 子类只负责选择已配置的信息槽位，并渲染对应尺寸的 RemoteViews 层级。
  */
 abstract class BaseNextWidgetProvider : AppWidgetProvider() {
-    private val cache: CachePrefManager by getKoin().inject()
+    private val snapshots: com.blueskybone.arkscreen.data.local.cache.RealtimeCacheStore by getKoin().inject()
+    private val configs: com.blueskybone.arkscreen.data.local.room.dao.WidgetConfigDao by getKoin().inject()
+    private val accounts: com.blueskybone.arkscreen.domain.repository.AccountRepository by getKoin().inject()
     private val settings: SettingPrefManager by getKoin().inject()
-    private val innerPrefs: InnerPrefManager by getKoin().inject()
     private val attendanceStates: AttendanceStateRepository by getKoin().inject()
     protected val templatePrefs: WidgetTemplatePrefManager by getKoin().inject()
 
@@ -78,8 +79,18 @@ abstract class BaseNextWidgetProvider : AppWidgetProvider() {
         val pendingResult = goAsync()
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
             try {
-                val data = loadRenderData(context)
+                val accountList = accounts.observeSkAcc().first()
+                val current = accounts.observeCurrentSkAcc().first()
                 appWidgetIds.forEach { appWidgetId ->
+                    val config = configs.getOrCreate(appWidgetId)
+                    val account = com.blueskybone.arkscreen.platform.widget.WidgetAccountResolver.resolve(config, accountList, current)
+                    if (account == null) {
+                        val views = RemoteViews(context.packageName, R.layout.widget_account_missing)
+                        views.setOnClickPendingIntent(R.id.widget_root, WidgetAccountConfigActivity.pendingIntent(context, appWidgetId))
+                        appWidgetManager.updateAppWidget(appWidgetId, views)
+                        return@forEach
+                    }
+                    val data = loadRenderData(context, account)
                     appWidgetManager.updateAppWidget(
                         appWidgetId,
                         createRemoteViews(context, appWidgetId, data),
@@ -114,11 +125,29 @@ abstract class BaseNextWidgetProvider : AppWidgetProvider() {
         super.onDisabled(context)
     }
 
-    private suspend fun loadRenderData(context: Context): NextWidgetRenderData {
-        val cacheAccountInfo = cache.accountInfo.get().takeIf { it.uid.isNotBlank() }
+    final override fun onDeleted(context: Context, appWidgetIds: IntArray) {
+        val pending = goAsync()
+        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+            try { configs.delete(appWidgetIds.toList()) } finally { pending.finish() }
+        }
+    }
+
+    final override fun onRestored(context: Context, oldWidgetIds: IntArray, newWidgetIds: IntArray) {
+        val pending = goAsync()
+        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+            try {
+                configs.restore(oldWidgetIds, newWidgetIds)
+                com.blueskybone.arkscreen.platform.widget.WidgetUpdateDispatcher(context).renderAll()
+            } finally { pending.finish() }
+        }
+    }
+
+    private suspend fun loadRenderData(context: Context, account: com.blueskybone.arkscreen.domain.model.account.AccountSk): NextWidgetRenderData {
+        val cache = snapshots.read(account)
+        val cacheAccountInfo = CacheAccountInfo(account.uid, account.nickName, account.official)
         val attendanceState = cacheAccountInfo
-            ?.uid
-            ?.takeIf(String::isNotBlank)
+            .uid
+            .takeIf(String::isNotBlank)
             ?.let { attendanceStates.get(AccountType.SK, it) }
         val parsedTypes = selectedTypeNames()
             .mapNotNull { name -> runCatching { WidgetInfoType.valueOf(name) }.getOrNull() }
@@ -137,7 +166,7 @@ abstract class BaseNextWidgetProvider : AppWidgetProvider() {
             },
             attendance = items[WidgetInfoType.ATTENDANCE]
                 .takeIf { settings.backAutoAtd.get() },
-            lastRefreshTs = innerPrefs.lastWidgetRefreshTs.get(),
+            lastRefreshTs = cache.apCache.lastSyncTs,
             cacheAccountInfo = cacheAccountInfo,
             visualStyle = WidgetVisualStyle.fromKey(templatePrefs.style.get()),
         )

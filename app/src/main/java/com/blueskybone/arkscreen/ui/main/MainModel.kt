@@ -140,6 +140,8 @@ class MainModel(
                         currentAccountEf = selection.currentEf,
                     )
                 }
+                loadApCache()
+                loadEndfieldStaminaCache()
             }
         }
     }
@@ -280,12 +282,15 @@ class MainModel(
 
     fun loadApCache() {
         viewModelScope.launch {
-            val cache = repoSkland.getApCache()
-            val cacheAccountInfo = repoSkland.getCacheAccountInfo()
+            val account = _uiState.value.currentAccountSk
+            val snapshot = account?.let { repoSkland.getRealtimeCache(it) }
+            if (_uiState.value.currentAccountSk != account) return@launch
+            val cache = snapshot?.apCache
+            val cacheAccountInfo = snapshot?.accountInfo
             _uiState.update {
                 it.copy(
                     apCache = cache,
-                    cacheAccountInfo = cacheAccountInfo.takeIf { owner -> owner.uid.isNotBlank() },
+                    cacheAccountInfo = cacheAccountInfo?.takeIf { owner -> owner.uid.isNotBlank() },
                 )
             }
         }
@@ -293,7 +298,9 @@ class MainModel(
 
     fun loadEndfieldStaminaCache() {
         viewModelScope.launch {
-            val cache = repoSkland.getEndfieldStaminaCache().takeIf { it.isValid }
+            val account = _uiState.value.currentAccountEf
+            val cache = account?.let { repoSkland.getEndfieldStaminaCache(it) }?.takeIf { it.isValid }
+            if (_uiState.value.currentAccountEf != account) return@launch
             _uiState.update { it.copy(endfieldStaminaCache = cache) }
         }
     }

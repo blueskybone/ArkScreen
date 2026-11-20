@@ -1,6 +1,6 @@
 package com.blueskybone.arkscreen.ui.widget.model
 
-import com.blueskybone.arkscreen.data.local.pref.CachePrefManager
+import com.blueskybone.arkscreen.domain.model.cache.RealtimeCacheSnapshot
 import com.blueskybone.arkscreen.domain.service.AppClock
 import com.blueskybone.arkscreen.ui.widget.WidgetContentFormatter
 
@@ -9,7 +9,7 @@ import com.blueskybone.arkscreen.ui.widget.WidgetContentFormatter
  * 不从 [WidgetInfoItem.value] 反向解析，避免展示格式变化影响业务数据。
  */
 class WidgetCompactInfoMapper(
-    cache: CachePrefManager,
+    cache: RealtimeCacheSnapshot,
     appClock: AppClock,
 ) {
     private val formatter = WidgetContentFormatter(cache, appClock)

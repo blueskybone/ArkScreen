@@ -13,6 +13,9 @@ val databaseModule = module {
 
     single { ArkDatabase.getDatabase(APP) }
     single { get<ArkDatabase>().getAccountSkDao() }
+    single { get<ArkDatabase>().getRealtimeCacheDao() }
+    single { get<ArkDatabase>().getWidgetConfigDao() }
+    single { com.blueskybone.arkscreen.data.local.cache.RealtimeCacheStore(get(), get()) }
     single { get<ArkDatabase>().getAccountGcDao() }
     single { get<ArkDatabase>().getLinkDao() }
     single { get<ArkDatabase>().getAccountEfDao() }

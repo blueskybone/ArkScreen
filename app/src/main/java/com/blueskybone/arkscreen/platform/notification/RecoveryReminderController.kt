@@ -38,17 +38,24 @@ class RecoveryReminderController(
     private val storage = appContext.getSharedPreferences("recovery_reminders", Context.MODE_PRIVATE)
 
     override suspend fun onRealtimeSynced(account: AccountSk, data: RealTimeData) {
+        Timber.tag("RecoveryReminder").i("Sync received: sampledAt=%d enabled=%s currentAccount=%s ap=%d/%d labor=%d/%d", data.currentTs,
+            settings.recoveryNotificationsEnabled.get(), innerPrefs.currentAccountSkUid.get() == account.uid,
+            data.apInfo.current, data.apInfo.max, data.labor.current, data.labor.max)
+        if (innerPrefs.currentAccountSkUid.get() != account.uid) {
+            Timber.tag("RecoveryReminder").i("Sync skipped: non-current account")
+            return
+        }
         if (!settings.recoveryNotificationsEnabled.get()) {
             cancelAll()
             return
         }
-        if (innerPrefs.currentAccountSkUid.get() != account.uid) return
         val now = System.currentTimeMillis() / 1000
         val name = data.playerStatus.nickname.ifBlank { account.nickName }
         val events = mutableListOf<Event>()
         fun add(key: String, at: Long, message: String, expiresAt: Long = Long.MAX_VALUE) {
-            if (at > now) events += Event(key, account.uid, data.currentTs, at, name, message,
-                expiresAt)
+            if (at > now) {
+                events += Event(key, account.uid, data.currentTs, at, name, message, expiresAt)
+            } else Timber.tag("RecoveryReminder").i("Candidate skipped: key=%s at=%d now=%d reason=already_due", key, at, now)
         }
 
         val ap = data.apInfo
@@ -130,11 +137,17 @@ class RecoveryReminderController(
         val previous = readEvents()
         if (storage.getString(KEY_LAST_UID, null) == uid &&
             storage.getLong(KEY_LAST_SYNC, -1L) > sampledAt) return
+        val now = System.currentTimeMillis() / 1000
+        // Keep overdue, undelivered events when the fresh snapshot no longer creates them.
+        // A new future event with the same key supersedes the old one (e.g. sanity spent again).
+        val overdue = previous.filter { it.uid == uid && ReminderTiming.keepOverdue(it.at, it.expiresAt, now, events.any { fresh -> fresh.key == it.key }) }
+        Timber.tag("RecoveryReminder").i("Replace: previous=%d new=%d overdueRetained=%d sampledAt=%d", previous.size, events.size, overdue.size, sampledAt)
+        val next = events + overdue
         previous.forEach { cancelAlarm(it.key) }
-        storage.edit().putString(KEY_EVENTS, encode(events))
+        storage.edit().putString(KEY_EVENTS, encode(next))
             .putString(KEY_LAST_UID, uid).putLong(KEY_LAST_SYNC, sampledAt).apply()
-        events.forEach(::scheduleAlarm)
-        Timber.tag("RecoveryReminder").i("Scheduled %d reminders for current account", events.size)
+        next.forEach(::scheduleAlarm)
+        Timber.tag("RecoveryReminder").i("Scheduled %d reminders for current account", next.size)
     }
 
     @Synchronized
@@ -145,7 +158,9 @@ class RecoveryReminderController(
 
     @Synchronized
     fun cancelAll() {
-        readEvents().forEach { cancelAlarm(it.key) }
+        val pending = readEvents()
+        Timber.tag("RecoveryReminder").i("Cancel all: count=%d enabled=%s", pending.size, settings.recoveryNotificationsEnabled.get())
+        pending.forEach { cancelAlarm(it.key) }
         storage.edit().remove(KEY_EVENTS).remove(KEY_LAST_UID).remove(KEY_LAST_SYNC).apply()
     }
 
@@ -156,9 +171,11 @@ class RecoveryReminderController(
             cancelAll()
             return
         }
-        readEvents().filter { it.uid == currentUid &&
-            it.at > System.currentTimeMillis() / 1000 &&
-            it.expiresAt > System.currentTimeMillis() / 1000 }
+        val now = System.currentTimeMillis() / 1000
+        val saved = readEvents()
+        Timber.tag("RecoveryReminder").i("Restore: saved=%d notificationsEnabled=%s", saved.size,
+            NotificationManagerCompat.from(appContext).areNotificationsEnabled())
+        saved.filter { it.uid == currentUid && ReminderTiming.canRestore(it.at, it.expiresAt, now) }
             .also { valid ->
                 storage.edit().putString(KEY_EVENTS, encode(valid)).apply()
                 valid.forEach(::scheduleAlarm)
@@ -168,16 +185,33 @@ class RecoveryReminderController(
     @Synchronized
     fun onAlarm(key: String, uid: String, at: Long) {
         val events = readEvents()
-        val event = events.firstOrNull { it.key == key && it.uid == uid && it.at == at } ?: return
-        if (System.currentTimeMillis() / 1000 < event.at) return
+        val now = System.currentTimeMillis() / 1000
+        Timber.tag("RecoveryReminder").i("Alarm received: key=%s plannedAt=%d now=%d delaySeconds=%d pending=%d", key, at, now, now - at, events.size)
+        val event = events.firstOrNull { it.key == key && it.uid == uid && it.at == at } ?: run {
+            Timber.tag("RecoveryReminder").i("Alarm ignored: stale or cancelled key=%s", key)
+            return
+        }
+        if (now < event.at) { scheduleAlarm(event); return }
         storage.edit().putString(KEY_EVENTS, encode(events - event)).apply()
         if (!settings.recoveryNotificationsEnabled.get() ||
-            innerPrefs.currentAccountSkUid.get() != uid) return
-        if (System.currentTimeMillis() / 1000 >= event.expiresAt) return
+            innerPrefs.currentAccountSkUid.get() != uid) {
+            Timber.tag("RecoveryReminder").i("Delivery skipped: disabled or account changed key=%s", key)
+            return
+        }
+        if (now >= event.expiresAt) {
+            Timber.tag("RecoveryReminder").i("Delivery skipped: expired key=%s expiresAt=%d", key, event.expiresAt)
+            return
+        }
         if (Build.VERSION.SDK_INT >= 33 && ContextCompat.checkSelfPermission(
                 appContext, Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED) return
-        if (!NotificationManagerCompat.from(appContext).areNotificationsEnabled()) return
+            ) != PackageManager.PERMISSION_GRANTED) {
+            Timber.tag("RecoveryReminder").w("Delivery blocked: POST_NOTIFICATIONS denied key=%s", key)
+            return
+        }
+        if (!NotificationManagerCompat.from(appContext).areNotificationsEnabled()) {
+            Timber.tag("RecoveryReminder").w("Delivery blocked: app notifications disabled key=%s", key)
+            return
+        }
         notifications.createNotificationChannel(NotificationChannel(
             CHANNEL_ID, appContext.getString(R.string.recovery_notification_channel),
             NotificationManager.IMPORTANCE_DEFAULT,
@@ -186,25 +220,38 @@ class RecoveryReminderController(
             appContext, 0, Intent(appContext, MainActivity::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
+        val plannedTime = java.text.SimpleDateFormat("MM-dd HH:mm", java.util.Locale.getDefault())
+            .format(java.util.Date(event.at * 1000))
+        val message = event.message + "\n" + appContext.getString(R.string.recovery_planned_time, plannedTime)
         val notification = NotificationCompat.Builder(appContext, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(appContext.getString(R.string.recovery_notification_title))
-            .setContentText(event.message)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(event.message))
+            .setContentText(message)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(message))
+            .setWhen(event.at * 1000)
+            .setShowWhen(true)
             .setContentIntent(openApp)
             .setAutoCancel(true)
             .build()
+        if (notifications.getNotificationChannel(CHANNEL_ID)?.importance == NotificationManager.IMPORTANCE_NONE) {
+            Timber.tag("RecoveryReminder").w("Delivery blocked: channel disabled key=%s", key)
+            return
+        }
         notifications.notify(key.hashCode(), notification)
+        Timber.tag("RecoveryReminder").i("Notification posted: key=%s plannedAt=%d delaySeconds=%d", key, event.at, now - event.at)
     }
 
     private fun scheduleAlarm(event: Event) {
+        val scheduledAt = maxOf(event.at * 1000, System.currentTimeMillis() + 1000)
+        Timber.tag("RecoveryReminder").i("Schedule: key=%s sampledAt=%d plannedAt=%d alarmAtMs=%d expiresAt=%d", event.key, event.sampledAt, event.at, scheduledAt, event.expiresAt)
         alarms.setAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP, event.at * 1000,
+            AlarmManager.RTC_WAKEUP, scheduledAt,
             pendingIntent(event.key, event.uid, event.at),
         )
     }
 
     private fun cancelAlarm(key: String) {
+        Timber.tag("RecoveryReminder").i("Cancel alarm: key=%s", key)
         val intent = Intent(appContext, RecoveryReminderReceiver::class.java).apply {
             action = ACTION_FIRE
             data = android.net.Uri.parse("arkscreen://recovery/$key")
@@ -237,7 +284,7 @@ class RecoveryReminderController(
                 item.getLong("at"), item.getString("name"), item.getString("message"),
                 item.optLong("expiresAt", Long.MAX_VALUE))
         }
-    }.getOrDefault(emptyList())
+    }.onFailure { Timber.tag("RecoveryReminder").e(it, "Failed to read persisted reminders") }.getOrDefault(emptyList())
 
     private fun encode(events: List<Event>): String = JSONArray().apply {
         events.forEach { event ->

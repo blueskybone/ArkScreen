@@ -32,26 +32,13 @@ interface SklandRepository {
 
     suspend fun fetchEndfieldRealtime(account: AccountEf): Result<EndfieldRealtimeSnapshot>
 
-    fun getEndfieldStaminaCache(): EndfieldStaminaCache
+    suspend fun getEndfieldStaminaCache(account: AccountEf): EndfieldStaminaCache
 
     suspend fun fetchAkCheckResult(account: AccountSk): Result<String> //明日方舟签到结果
 
     suspend fun fetchEfCheckResult(account: AccountEf): Result<String> //终末地签到结果
 
-    fun setRealTimeCache(account: AccountSk, realTimeData: RealTimeData)
+    suspend fun setRealTimeCache(account: AccountSk, realTimeData: RealTimeData)
 
-    fun getApCache(): ApCache
-
-    fun getCacheAccountInfo(): CacheAccountInfo
-
-    fun getTrainCache(): TrainCache
-
-    fun getLaborCache(): LaborCache
-
-    fun getRecruitCache(): RecruitCache
-
-    fun getRefreshCache(): RefreshCache
-
-    fun getMeetCache(): MeetCache
-
+    suspend fun getRealtimeCache(account: AccountSk): com.blueskybone.arkscreen.domain.model.cache.RealtimeCacheSnapshot
 }

@@ -2,7 +2,7 @@ package com.blueskybone.arkscreen.ui.widget.model
 
 import android.content.Context
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.data.local.pref.CachePrefManager
+import com.blueskybone.arkscreen.domain.model.cache.RealtimeCacheSnapshot
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.domain.model.attendance.AccountAttendanceState
 import com.blueskybone.arkscreen.domain.service.AppClock
@@ -11,7 +11,7 @@ import com.blueskybone.arkscreen.platform.time.TimeUtils
 /** 将当前缓存快照映射为可直接展示的桌面组件信息。 */
 class WidgetInfoMapper(
     private val context: Context,
-    private val cache: CachePrefManager,
+    private val cache: RealtimeCacheSnapshot,
     private val settings: SettingPrefManager,
     private val appClock: AppClock,
 ) {
@@ -29,7 +29,7 @@ class WidgetInfoMapper(
     )
 
     private fun mapSanity(now: Long): WidgetInfoItem {
-        val source = cache.apCache.get()
+        val source = cache.apCache
         if (source.isnull) return unavailable(WidgetInfoType.SANITY, R.string.ap)
         val current = when {
             source.current >= source.max -> source.current.toLong()
@@ -48,7 +48,7 @@ class WidgetInfoMapper(
     }
 
     private fun mapDrone(now: Long): WidgetInfoItem {
-        val source = cache.laborCache.get()
+        val source = cache.laborCache
         if (source.isnull) return unavailable(WidgetInfoType.DRONE, R.string.labor)
         val remainingSeconds = (source.remainSec - now + source.lastSyncTs).coerceAtLeast(0L)
         val current = if (source.remainSec <= 0 || remainingSeconds == 0L) {
@@ -69,7 +69,7 @@ class WidgetInfoMapper(
     }
 
     private fun mapRecruitment(now: Long): WidgetInfoItem {
-        val source = cache.recruitCache.get()
+        val source = cache.recruitCache
         if (source.isNull) return unavailable(WidgetInfoType.RECRUITMENT, R.string.recruit)
         val completedCount = when {
             source.completeTime == -1L -> source.complete
@@ -91,7 +91,7 @@ class WidgetInfoMapper(
     }
 
     private fun mapRecruitmentRefresh(now: Long): WidgetInfoItem {
-        val source = cache.refreshCache.get()
+        val source = cache.refreshCache
         if (source.isNull) {
             return unavailable(WidgetInfoType.RECRUITMENT_REFRESH, R.string.recruit_refresh)
         }
@@ -114,7 +114,7 @@ class WidgetInfoMapper(
     }
 
     private fun mapTraining(now: Long): WidgetInfoItem {
-        val source = cache.trainCache.get()
+        val source = cache.trainCache
         if (source.isnull) return unavailable(WidgetInfoType.TRAINING, R.string.train)
         return when {
             source.status == -1L -> item(
@@ -143,7 +143,7 @@ class WidgetInfoMapper(
     }
 
     private fun mapMeeting(now: Long): WidgetInfoItem {
-        val source = cache.meetCache.get()
+        val source = cache.meetCache
         if (source.isnull) return unavailable(WidgetInfoType.MEETING, R.string.meeting)
         return when {
             source.stats == 0 -> item(

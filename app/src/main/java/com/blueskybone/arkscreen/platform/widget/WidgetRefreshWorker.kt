@@ -23,6 +23,8 @@ class WidgetRefreshWorker(context: Context, params: WorkerParameters) : Coroutin
     private val widgetUpdates: WidgetUpdateDispatcher by getKoin().inject()
     private val appClock: AppClock by getKoin().inject()
 
+    private val configs: com.blueskybone.arkscreen.data.local.room.dao.WidgetConfigDao by getKoin().inject()
+
     override suspend fun doWork(): Result {
         val startedAt = SystemClock.elapsedRealtime()
         if (!widgetUpdates.hasWidgets()) {
@@ -34,9 +36,22 @@ class WidgetRefreshWorker(context: Context, params: WorkerParameters) : Coroutin
         var dataSource = if (powerSaving) "cache" else "network"
         try {
             if (!powerSaving) {
-                accountRepository.observeCurrentSkAcc().first()?.let { account ->
-                    getRealTime(account).getOrThrow()
-                } ?: run { dataSource = "cache_no_account" }
+                val all = accountRepository.observeSkAcc().first()
+                val current = accountRepository.observeCurrentSkAcc().first()
+                val selected = widgetUpdates.widgetIds().mapNotNull { id ->
+                    val config = configs.get(id) ?: com.blueskybone.arkscreen.data.local.room.WidgetConfig(id)
+                    WidgetAccountResolver.resolve(config, all, current)
+                }.distinctBy { it.channelMasterId to it.uid }
+                for (account in selected) {
+                    try {
+                        getRealTime(account).getOrThrow()
+                    } catch (error: CancellationException) {
+                        throw error
+                    } catch (error: Exception) {
+                        dataSource = "cache_after_failure"
+                        Timber.tag("Widget").w(error, "Account refresh failed; retaining its own snapshot")
+                    }
+                }
             }
         } catch (error: CancellationException) {
             throw error

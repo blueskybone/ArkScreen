@@ -1,37 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/Toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/recruit_calc" />
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-
         <LinearLayout
             android:id="@+id/loadingContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:indeterminate="true" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
                 android:text="@string/loading"
-                app:drawableTopCompat="@mipmap/ic_rosm" />
+                android:textAppearance="?attr/textAppearanceBody2" />
         </LinearLayout>
-
         <androidx.core.widget.NestedScrollView
             android:id="@+id/contentContainer"
             android:layout_width="match_parent"
@@ -40,12 +39,10 @@
             android:fillViewport="true"
             android:paddingBottom="24dp"
             android:visibility="gone">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
                 <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/recruitMetadataChips"
                     android:layout_width="match_parent"
@@ -56,10 +53,9 @@
                     app:alignItems="flex_start"
                     app:flexDirection="row"
                     app:flexWrap="wrap">
-
-                    <com.google.android.material.chip.Chip
+                    <TextView
                         android:id="@+id/tvUpdate"
-                        style="@style/Widget.ArkScreen.MetadataChip.Primary"
+                        style="@style/Widget.ArkScreen.InlineHint"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="6dp"
@@ -67,73 +63,97 @@
                         android:clickable="false"
                         android:focusable="false" />
                 </com.google.android.flexbox.FlexboxLayout>
-
-                <LinearLayout
-                    android:id="@+id/tagGroupsContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerTagsPrimary"
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_marginTop="12dp"
+                    style="@style/CardViewContent">
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never"
-                        android:scrollbars="none" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerTagsProfession"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never"
-                        android:scrollbars="none" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerTagsPosition"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never"
-                        android:scrollbars="none" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerTagsAbility"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never"
-                        android:scrollbars="none" />
-                </LinearLayout>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnReset"
-                    style="@style/Widget.ArkScreen.SectionAction.Outlined"
-                    android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/reset" />
-
+                        android:orientation="vertical"
+                        android:padding="16dp">
+                        <LinearLayout
+                            android:id="@+id/tagGroupsContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingStart="0dp"
+                            android:paddingEnd="0dp">
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/recyclerTagsPrimary"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:nestedScrollingEnabled="false"
+                                android:overScrollMode="never"
+                                android:scrollbars="none" />
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/recyclerTagsProfession"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:nestedScrollingEnabled="false"
+                                android:overScrollMode="never"
+                                android:scrollbars="none" />
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/recyclerTagsPosition"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:nestedScrollingEnabled="false"
+                                android:overScrollMode="never"
+                                android:scrollbars="none" />
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/recyclerTagsAbility"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:nestedScrollingEnabled="false"
+                                android:overScrollMode="never"
+                                android:scrollbars="none" />
+                        </LinearLayout>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnReset"
+                            style="@style/Widget.ArkScreen.InlineAction"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="@string/reset"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="6dp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/resultCard"
                     style="@style/CardViewContent"
                     android:layout_marginTop="12dp"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     app:cardElevation="0dp">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerResult"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clipToPadding="false"
-                        android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never"
-                        android:paddingTop="4dp"
-                        android:paddingBottom="4dp" />
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="16dp"
+                            android:text="@string/recruit_results_title"
+                            android:textAppearance="?attr/textAppearanceSubtitle1"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/resultEmpty"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:paddingBottom="16dp"
+                            android:text="@string/recruit_select_hint"
+                            android:textAppearance="?attr/textAppearanceBody2"
+                            android:textColor="?android:attr/textColorSecondary" />
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerResult"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clipToPadding="false"
+                            android:nestedScrollingEnabled="false"
+                            android:overScrollMode="never"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="4dp" />
+                    </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

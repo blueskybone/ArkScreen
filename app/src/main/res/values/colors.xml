@@ -111,4 +111,6 @@
     <color name="ef_equip_gold">#E1BC5A</color>
     <color name="ef_equip_unknown">#8E8E8E</color>
     <color name="ef_item_icon_background">#696969</color>
+    <color name="ef_equip_blue">#64A8D8</color>
+    <color name="ef_equip_orange">#E88C55</color>
 </resources>
