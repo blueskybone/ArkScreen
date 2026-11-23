@@ -91,7 +91,7 @@ class RealTimeActivity : AppCompatActivity() {
         }
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.AccountButton.setOnClickListener { chooseAccount() }
+        binding.AccountSelector.root.setOnClickListener { chooseAccount() }
         binding.RefreshButton.setOnClickListener { model.refresh() }
     }
 
@@ -140,7 +140,9 @@ class RealTimeActivity : AppCompatActivity() {
             }
         }
         model.currentAccount.observe(this) { account ->
-            binding.AccountButton.text = account?.nickName ?: getString(com.blueskybone.arkscreen.R.string.skland_choose_account)
+            binding.AccountSelector.CurrentAccount.text = account?.nickName ?: getString(com.blueskybone.arkscreen.R.string.skland_choose_account)
+            binding.AccountSelector.Server.visibility = if (account == null) View.GONE else View.VISIBLE
+            binding.AccountSelector.Server.setText(if (account?.official == true) com.blueskybone.arkscreen.R.string.official_server else com.blueskybone.arkscreen.R.string.bilibili_server)
         }
         model.syncingState.observe(this) { syncing ->
             binding.RefreshButton.isEnabled = !syncing
@@ -279,13 +281,6 @@ class RealTimeActivity : AppCompatActivity() {
             copyToClipboard(this, data.uid)
             Toaster.show(getString(com.blueskybone.arkscreen.R.string.uid_copied))
         }
-        binding.Server.setText(
-            if (data.official) {
-                com.blueskybone.arkscreen.R.string.official_server
-            } else {
-                com.blueskybone.arkscreen.R.string.bilibili_server
-            }
-        )
         binding.Recruit.setUp(data.recruit)
         binding.RecruitReFresh.setUp(data.recruitRefresh)
         binding.Labor.setUp(data.labor)

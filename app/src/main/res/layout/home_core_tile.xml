@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/app_background"
+    app:strokeWidth="0dp"
     android:id="@+id/Layout"
     style="@style/CardViewContent"
     android:layout_width="match_parent"
@@ -19,16 +21,16 @@
         android:gravity="center_vertical"
         android:minHeight="80dp"
         android:orientation="horizontal"
-        android:padding="14dp">
+        android:padding="8dp">
 
         <ImageView
             android:id="@+id/Icon"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:background="@drawable/text_chip"
             android:contentDescription="@null"
             android:padding="8dp"
-            android:layout_margin="8dp"
+            android:layout_marginEnd="6dp"
             app:tint="?attr/colorPrimary" />
         <LinearLayout
             android:layout_width="match_parent"

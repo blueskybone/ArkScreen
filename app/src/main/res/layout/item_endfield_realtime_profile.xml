@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/CardViewContent">
+    style="@style/RealtimeCard">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -10,13 +10,19 @@
         android:orientation="horizontal"
         android:padding="16dp">
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center_horizontal">
+                        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/Avatar"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:contentDescription="@null"
             android:src="@drawable/ic_user"
             app:shapeAppearanceOverlay="@style/RoundedImageView" />
+                        <TextView
+                    android:id="@+id/Level"
+                    android:layout_marginTop="4dp" style="@style/Widget.ArkScreen.MetadataLabel"
+                    android:visibility="gone" />
+                    </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -26,48 +32,21 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/Name"
+                android:id="@+id/Name" android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textAppearance="?attr/textAppearanceHeadline6" />
-
-            <LinearLayout
-                android:id="@+id/Metadata"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/Level"
-                    style="@style/Widget.ArkScreen.MetadataLabel"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/WorldLevel"
-                    style="@style/Widget.ArkScreen.MetadataLabel"
-                    android:layout_marginStart="6dp"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/Server"
-                    style="@style/Widget.ArkScreen.MetadataLabel"
-                    android:layout_marginStart="6dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:maxWidth="80dp"
-                    android:visibility="gone" />
-            </LinearLayout>
+                android:textSize="16sp" android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/LastLogin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:textAppearance="?attr/textAppearanceCaption" />
+                    android:id="@+id/WorldLevel"
+                    style="@style/Widget.ArkScreen.MetadataLabel"
+                    android:layout_marginTop="4dp"
+                    android:visibility="gone" />
+
+            <TextView android:id="@+id/LastLogin" style="@style/Widget.ArkScreen.InlineHint"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="5dp" />
 
             <LinearLayout
                 android:id="@+id/RoleIdRow"
@@ -80,7 +59,7 @@
 
                 <TextView
                     android:id="@+id/RoleId"
-                    style="@style/Widget.ArkScreen.MetadataLabel"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content" android:textAppearance="?attr/textAppearanceCaption"
                     android:ellipsize="end"
                     android:maxLines="1" />
 

@@ -2,13 +2,16 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/blue_500</item>
-        <item name="colorPrimaryDark">@color/blue_600</item>
+        <item name="colorPrimary">@color/arknights_primary_light</item>
+        <item name="colorPrimaryDark">@color/arknights_primary_dark_light</item>
         <item name="colorSecondary">?attr/colorPrimary</item>
-        <item name="colorSurface">@color/day_surface</item>
+        <item name="materialAlertDialogTheme">@style/ArkAlertTheme</item>
+        <item name="bottomSheetDialogTheme">@style/ArkSheetTheme</item>
+        <item name="materialSwitchStyle">@style/Widget.ArkScreen.Switch</item>
+        <item name="colorSurface">@color/app_surface</item>
         <item name="colorOnSurface">@color/day_text_primary</item>
 
-        <item name="android:colorBackground">@color/day_surface</item>
+        <item name="android:colorBackground">@color/app_background</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/transparent</item>
         <item name="textAppearanceBody1">@style/TextAppearance.Body1</item>
@@ -98,10 +101,10 @@
         <item name="android:layout_marginTop">@dimen/card_vertical_spacing</item>
         <item name="android:layout_marginStart">@dimen/page_horizontal_spacing</item>
         <item name="android:layout_marginEnd">@dimen/page_horizontal_spacing</item>
-        <item name="cardCornerRadius">15dp</item>
+        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
         <item name="cardElevation">0dp</item>
 <!--        <item name="cardBackgroundColor">?attr/android:colorBackground</item>-->
-        <item name="cardBackgroundColor">@color/white</item>
+        <item name="cardBackgroundColor">@color/app_surface</item>
         <item name="strokeWidth">1dp</item>
     </style>
 
@@ -166,7 +169,7 @@
         <item name="cardBackgroundColor">@color/white</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="cardCornerRadius">5dp</item>
+        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
         <item name="android:layout_margin">5dp</item>
         <item name="cardElevation">0dp</item>
     </style>
@@ -392,4 +395,27 @@
         <item name="android:textSize">9sp</item>
     </style>
 
+    <style name="Widget.ArkScreen.Switch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
+        <item name="android:textAppearance">?attr/textAppearanceBody2</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="thumbTint">@color/switch_thumb</item>
+        <item name="trackTint">@color/switch_track</item>
+        <item name="trackDecorationTint">@color/switch_outline</item>
+        <item name="thumbIconTint">?attr/colorOnSurface</item>
+    </style>
+    <style name="HomeSectionHeader" parent="PreferenceHeader">
+        <item name="android:textColor">@color/home_text_primary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    <style name="RealtimeCard" parent="CardViewContent">
+        <item name="strokeWidth">0dp</item>
+    </style>
+    <style name="RealtimeRefreshButton" parent="Widget.MaterialComponents.Button">
+        <item name="cornerRadius">24dp</item>
+        <item name="icon">@drawable/ic_function_refresh</item>
+        <item name="iconSize">18dp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
 </resources>

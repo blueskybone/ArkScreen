@@ -5,6 +5,7 @@ package com.blueskybone.arkscreen.ui.main
  * Date: 2026/4/2
  */
 sealed interface MainEvent {
+    object AppUpToDate : MainEvent
     data class ShowToast(val message: String) : MainEvent
     data class ShowError(val message: String) : MainEvent
 }

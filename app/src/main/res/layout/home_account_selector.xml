@@ -1,0 +1,22 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minHeight="48dp"
+    android:gravity="center_vertical"
+    android:clickable="true"
+    android:focusable="true">
+    <TextView android:id="@+id/CurrentAccount"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_weight="1" android:maxLines="1" android:ellipsize="end"
+        android:textSize="18sp" android:textStyle="bold" android:textColor="@color/home_text_primary" />
+    <TextView android:id="@+id/Server"
+        style="@style/Widget.ArkScreen.InfoStatusChip"
+        android:layout_marginStart="6dp" android:backgroundTint="@color/sec_con"
+        android:textColor="?attr/colorPrimary" />
+    <TextView android:id="@+id/AttendanceStatus" style="@style/Widget.ArkScreen.InfoStatusChip"
+        android:layout_marginStart="6dp" android:visibility="gone" />
+    <ImageView android:layout_width="12dp" android:layout_height="8dp"
+        android:layout_marginStart="6dp" android:contentDescription="@null"
+        android:src="@drawable/ic_account_dropdown" app:tint="@color/home_text_secondary" />
+</LinearLayout>

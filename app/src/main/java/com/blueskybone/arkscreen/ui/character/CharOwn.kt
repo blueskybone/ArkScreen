@@ -247,7 +247,7 @@ class CharOwn : Fragment() {
         binding.RecyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
             private val outer = (11 * resources.displayMetrics.density).toInt()
             private val inner = (2 * resources.displayMetrics.density).toInt()
-            private val radius = 15 * resources.displayMetrics.density
+            private val radius = resources.getDimension(R.dimen.card_corner_radius)
             private val dividerInset = (8 * resources.displayMetrics.density).toInt()
             private val cardPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 color = ContextCompat.getColor(requireContext(), R.color.asset_list_card_surface)

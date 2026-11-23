@@ -312,7 +312,7 @@ class MainModel(
                     when (check) {
                         null -> {
                             if (showNoUpdate) {
-                                _event.send(MainEvent.ShowToast("当前已是最新版本"))
+                                _event.send(MainEvent.AppUpToDate)
                             }
                         }
 

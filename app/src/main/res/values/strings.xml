@@ -403,8 +403,8 @@
     <string name="realtime_ap_remaining_recovered">剩余： 已恢复</string>
     <string name="realtime_launch_game">启动游戏</string>
     <string name="recovery_notification_channel">恢复提醒</string>
-    <string name="recovery_notification_title">明日方舟恢复提醒</string>
-    <string name="recovery_notifications">明日方舟恢复提醒</string>
+    <string name="recovery_notification_title">恢复提醒</string>
+    <string name="recovery_notifications">恢复提醒</string>
     <string name="recovery_notifications_experimental">实验性功能 · 通知可能因系统省电策略延迟</string>
     <string name="recovery_notifications_enable">开启恢复提醒</string>
     <string name="recovery_notifications_ap_full">理智已满</string>
@@ -576,4 +576,26 @@
     <string name="recruit_results_title">计算结果</string>
     <string name="recruit_select_hint">选择招聘标签，自动计算可招募干员</string>
     <string name="recruit_no_match">当前标签组合没有匹配结果</string>
+    <string name="permission_requirements">权限需求</string>
+    <string name="experimental_feature_short">实验性功能</string>
+    <string name="recovery_settings_entry">设置</string>
+    <string name="more_general_settings">常规</string>
+    <string name="about_page_title">关于</string>
+    <string name="about_tagline">明日方舟与终末地的日常数据助手</string>
+    <string name="about_development">开发版</string>
+    <string name="about_versions">版本更新</string>
+    <string name="about_help">反馈</string>
+    <string name="about_project">更多</string>
+    <string name="about_release_notes">更新记录</string>
+    <string name="about_community">QQ交流群</string>
+    <string name="about_diagnostics">复制诊断信息</string>
+    <string name="about_data_info">数据与权限说明</string>
+    <string name="about_source">项目地址</string>
+    <string name="about_support">赞助开发者</string>
+    <string name="about_unofficial">公招助手是独立开发的第三方工具，与游戏官方无隶属关系。</string>
+    <string name="about_open_failed">无法打开链接，请检查是否已安装浏览器</string>
+    <string name="about_diagnostics_note">仅包含以下版本和设备信息，不包含账号、登录凭据或日志。复制后可粘贴到问题反馈中。</string>
+    <string name="about_diagnostics_copied">诊断信息已复制</string>
+    <string name="about_data_description">账号登录信息与游戏数据缓存在本机保存，用于登录、展示数据及桌面组件。同步数据、加载官方动态和检查更新需要联网。\n\n通知权限用于恢复提醒和下载通知；悬浮窗及屏幕截图相关权限用于快速公招。相关功能需要时再授予权限。\n\n反馈诊断信息仅复制版本和设备型号。日志请在“更多 → 日志”中查看，分享前确认其中内容。</string>
+    <string name="app_up_to_date">当前已是最新版本。</string>
 </resources>

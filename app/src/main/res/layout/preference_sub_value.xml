@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/Layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/preference_detail_height"
     android:gravity="center"
     android:orientation="horizontal"
     android:padding="20dp">
@@ -36,6 +36,8 @@
             android:id="@+id/SubTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:textSize="13sp" />
     </LinearLayout>
 

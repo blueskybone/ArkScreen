@@ -6,7 +6,7 @@
     <color name="endfield_accent_container">#3F3A18</color>
     <color name="endfield_progress_track">#514E3F</color>
     <color name="pie_text">#F7F9FF</color>
-    <color name="asset_list_card_surface">#1E1F25</color>
+    <color name="asset_list_card_surface">@color/app_surface</color>
 
     <color name="tool_recruit_icon">#9CCAFF</color>
     <color name="tool_recruit_container">#233A54</color>
@@ -37,4 +37,12 @@
     <color name="status_error_content">#F2B2AE</color>
     <color name="status_neutral_container">#30333C</color>
     <color name="status_neutral_content">#C5C8D1</color>
+    <color name="app_background">#131315</color>
+    <color name="app_surface">#252628</color>
+    <color name="function_divider">#18FFFFFF</color>
+    <color name="function_text_primary">#ECECEE</color>
+    <color name="function_text_secondary">#B5B5BD</color>
+    <color name="function_section_title">@color/function_text_secondary</color>
+    <color name="home_text_primary">#ECECEE</color>
+    <color name="home_text_secondary">#B5B5BD</color>
 </resources>

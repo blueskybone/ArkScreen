@@ -134,6 +134,12 @@ class MainActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 model.event.collect { event ->
                     when (event) {
+                        MainEvent.AppUpToDate -> MaterialAlertDialogBuilder(this@MainActivity)
+                            .setTitle(R.string.check_update)
+                            .setMessage(R.string.app_up_to_date)
+                            .setPositiveButton(R.string.confirm, null)
+                            .show()
+
                         is MainEvent.ShowError -> {
                             Toaster.show(event.message)
                         }

@@ -2,26 +2,28 @@ package com.blueskybone.arkscreen.data.license
 
 import android.content.Context
 import com.blueskybone.arkscreen.domain.model.license.OpenSourceLibrary
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.blueskybone.arkscreen.domain.model.license.OpenSourceLicense
+import org.json.JSONArray
 
-/**
- * 读取 Gradle 构建期间由 Maven POM 文件生成的依赖许可元数据。
- */
-class GeneratedLicenseCatalog(
-    private val context: Context,
-    private val objectMapper: ObjectMapper = ObjectMapper(),
-) {
+/** Reads the Maven license metadata bundled with the app. */
+class GeneratedLicenseCatalog(private val context: Context) {
     fun load(): List<OpenSourceLibrary> {
-        return context.assets.open(ASSET_NAME).use { input ->
-            objectMapper.readValue(
-                input,
-                object : TypeReference<List<OpenSourceLibrary>>() {},
+        val libraries = context.assets.open("third_party_licenses.json").bufferedReader().use {
+            JSONArray(it.readText())
+        }
+        return List(libraries.length()) { index ->
+            val library = libraries.getJSONObject(index)
+            val licenses = library.getJSONArray("licenses")
+            OpenSourceLibrary(
+                id = library.getString("id"),
+                name = library.getString("name"),
+                version = library.getString("version"),
+                projectUrl = library.getString("projectUrl"),
+                licenses = List(licenses.length()) { licenseIndex ->
+                    val license = licenses.getJSONObject(licenseIndex)
+                    OpenSourceLicense(license.getString("name"), license.getString("url"))
+                },
             )
         }
-    }
-
-    private companion object {
-        const val ASSET_NAME = "third_party_licenses.json"
     }
 }

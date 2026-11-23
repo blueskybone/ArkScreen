@@ -43,7 +43,7 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.AccountButton.setOnClickListener { chooseAccount() }
+        binding.AccountSelector.root.setOnClickListener { chooseAccount() }
         binding.RefreshButton.setOnClickListener { model.refresh() }
         binding.Starter.setOnClickListener {
             launchApp("com.hypergryph.endfield") {
@@ -60,7 +60,11 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
     private fun render(state: EndfieldRealtimeUiState) {
         currentState = state
         val selected = state.accounts.firstOrNull { it.uid == state.selectedUid }
-        binding.AccountButton.text = selected?.nickName ?: getString(R.string.endfield_choose_account)
+        binding.AccountSelector.CurrentAccount.text = selected?.nickName ?: getString(R.string.endfield_choose_account)
+        binding.AccountSelector.Server.visibility = if (selected == null) View.GONE else View.VISIBLE
+        binding.AccountSelector.Server.setText(if (selected?.official == true) R.string.official_server else R.string.bilibili_server)
+        binding.AccountSelector.Server.backgroundTintList = androidx.core.content.ContextCompat.getColorStateList(this, R.color.endfield_accent_container)
+        binding.AccountSelector.Server.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.grey_900))
         binding.RefreshButton.isEnabled = selected != null && !state.loading
         binding.Loading.visibility = if (state.loading) View.VISIBLE else View.GONE
         binding.Starter.visibility = if (state.snapshot != null && !state.loading && state.error == null) {
@@ -148,14 +152,6 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
         card.WorldLevel.visibility = if (profile.worldLevel == null) View.GONE else View.VISIBLE
         profile.worldLevel?.let {
             card.WorldLevel.text = getString(R.string.endfield_world_level, it)
-        }
-        val serverName = profile.serverName?.takeIf(String::isNotBlank)
-        card.Server.visibility = if (serverName == null) View.GONE else View.VISIBLE
-        card.Server.text = serverName.orEmpty()
-        card.Metadata.visibility = if (profile.level == null && profile.worldLevel == null && serverName == null) {
-            View.GONE
-        } else {
-            View.VISIBLE
         }
         val roleId = profile.roleId?.takeIf(String::isNotBlank)
         card.RoleIdRow.visibility = if (roleId == null) View.GONE else View.VISIBLE

@@ -5,7 +5,10 @@
         <item name="colorPrimary">@color/cyan_500</item>
         <item name="colorPrimaryDark">@color/cyan_700</item>
         <item name="colorSecondary">?attr/colorPrimary</item>
-        <item name="colorSurface">@color/grey_900</item>
+        <item name="materialAlertDialogTheme">@style/ArkAlertTheme</item>
+        <item name="bottomSheetDialogTheme">@style/ArkSheetTheme</item>
+        <item name="materialSwitchStyle">@style/Widget.ArkScreen.Switch</item>
+        <item name="colorSurface">@color/app_surface</item>
         <item name="colorOnSurface">@color/dark_on_surface</item>
 
         <item name="android:textColorPrimary">@color/dark_on_surface</item>
@@ -17,6 +20,7 @@
         <item name="textAppearanceBody2">@style/TextAppearance.Body2</item>
         <item name="textAppearanceHeadline4">@style/TextAppearance.Headline4</item>
         <item name="textAppearanceSubtitle2">@style/TextAppearance.Subtitle2</item>
+        <item name="android:colorBackground">@color/app_background</item>
     </style>
     <style name="AppTheme.Endfield" parent="AppTheme">
         <item name="colorPrimary">@color/endfield_primary</item>
@@ -30,14 +34,15 @@
         <item name="android:layout_marginTop">16dp</item>
         <item name="android:layout_marginStart">16dp</item>
         <item name="android:layout_marginEnd">16dp</item>
-        <item name="cardCornerRadius">15dp</item>
+        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
         <item name="cardElevation">0dp</item>
+        <item name="cardBackgroundColor">@color/app_surface</item>
     </style>
 
     <style name="CardViewChip" parent="Widget.MaterialComponents.CardView">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="cardCornerRadius">5dp</item>
+        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
         <item name="android:layout_margin">5dp</item>
         <item name="cardElevation">0dp</item>
     </style>

@@ -114,7 +114,50 @@ class Home : Fragment() {
         initAdapters()
         initController()
         setupBinding()
+        applyHomeVisualHierarchy()
         collectUiState()
+    }
+
+    private fun applyHomeVisualHierarchy() {
+        val primary = ContextCompat.getColor(requireContext(), R.color.home_text_primary)
+        val secondary = ContextCompat.getColor(requireContext(), R.color.home_text_secondary)
+        val neutralTint = android.content.res.ColorStateList.valueOf(secondary)
+        binding.ApCacheCard.apply {
+            Current.setTextColor(primary)
+            Current.textSize = 40f
+            Max.setTextColor(secondary)
+            Max.textSize = 16f
+            Max.setTypeface(android.graphics.Typeface.DEFAULT)
+            (Max.layoutParams as android.widget.LinearLayout.LayoutParams).gravity =
+                android.view.Gravity.CENTER_VERTICAL
+            RestTime.setTextColor(secondary)
+            RestTime.textSize = 13f
+            LastSync.setTextColor(secondary)
+            LastSync.textSize = 11f
+        }
+        listOf(binding.CoreGroup.CoreAssets, binding.CoreGroup.CoreGacha).forEach { tile ->
+            tile.Layout.strokeWidth = 0
+            (tile.Layout.getChildAt(0) as View).apply {
+                minimumHeight = (68 * resources.displayMetrics.density).toInt()
+                val pad = (10 * resources.displayMetrics.density).toInt()
+                setPadding(pad, pad, pad, pad)
+            }
+            tile.Icon.imageTintList = neutralTint
+            tile.Icon.background = null
+            tile.Icon.setPadding(0, 0, 0, 0)
+            tile.Icon.layoutParams = tile.Icon.layoutParams.apply {
+                width = (21 * resources.displayMetrics.density).toInt()
+                height = width
+            }
+            tile.Title.setTextColor(primary)
+            tile.Subtitle.setTextColor(secondary)
+        }
+        listOf(binding.RecruitCalc, binding.GameStarter, binding.Attendance, binding.AccountManager)
+            .forEach { item ->
+                item.Icon.imageTintList = neutralTint
+                item.Icon.background = null
+                item.Title.setTextColor(primary)
+            }
     }
 
     override fun onResume() {
@@ -200,7 +243,7 @@ class Home : Fragment() {
 
     private fun renderAccount(state: MainUiState) {
         val currentAccount = state.currentAccountSk
-        binding.CurrentAccount.text =
+        binding.AccountSelector.CurrentAccount.text =
             currentAccount?.nickName ?: getString(R.string.login_account)
         binding.LoginGuide.visibility =
             if (currentAccount == null) View.VISIBLE else View.GONE
@@ -229,16 +272,13 @@ class Home : Fragment() {
 
     private fun renderApCache(state: MainUiState) {
         val card = binding.ApCacheCard
-        val cacheOwner = state.cacheAccountInfo
-        card.AccountName.text = cacheOwner?.nickname.orEmpty()
-        card.AccountName.visibility = if (cacheOwner == null) View.GONE else View.VISIBLE
-        card.Server.visibility = if (cacheOwner == null) View.GONE else View.VISIBLE
-        cacheOwner?.let { owner ->
-            card.Server.setText(
+        val account = state.currentAccountSk
+        binding.AccountSelector.Server.visibility = if (account == null) View.GONE else View.VISIBLE
+        account?.let { owner ->
+            binding.AccountSelector.Server.setText(
                 if (owner.official) R.string.official_server else R.string.bilibili_server
             )
         }
-        val account = state.currentAccountSk
         updateAttendanceStatus(account)
         val value = state.apCache
         when {
@@ -267,7 +307,7 @@ class Home : Fragment() {
     }
 
     private fun updateAttendanceStatus(account: AccountSk?) {
-        val chip = binding.ApCacheCard.AttendanceStatus
+        val chip = binding.AccountSelector.AttendanceStatus
         if (account == null) {
             attendanceJob?.cancel()
             attendanceKey = null
@@ -304,7 +344,7 @@ class Home : Fragment() {
             startActivity(Intent(requireContext(), RealTimeActivity::class.java))
         }
 
-        binding.CurrentAccount.setOnClickListener { view ->
+        binding.AccountSelector.root.setOnClickListener { view ->
             if (!viewModel.hasSklandAccounts()) {
                 showSklandLoginMenu()
             } else {
@@ -325,7 +365,7 @@ class Home : Fragment() {
         binding.RecruitCalc.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), RecruitActivity::class.java))
         }
-        binding.CoreAssets.apply {
+        binding.CoreGroup.CoreAssets.apply {
             Icon.setImageResource(OpeAssets.icon)
             ImageViewCompat.setImageTintList(
                 Icon,
@@ -343,7 +383,7 @@ class Home : Fragment() {
             Title.setText(OpeAssets.title)
             Subtitle.setText(R.string.assets_entry_summary)
         }
-        binding.CoreGacha.apply {
+        binding.CoreGroup.CoreGacha.apply {
             Icon.setImageResource(GachaStat.icon)
             ImageViewCompat.setImageTintList(
                 Icon,
@@ -362,10 +402,10 @@ class Home : Fragment() {
             Subtitle.setText(R.string.gacha_entry_summary)
         }
 
-        binding.CoreAssets.Layout.setOnClickListener {
+        binding.CoreGroup.CoreAssets.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), CharAssets::class.java))
         }
-        binding.CoreGacha.Layout.setOnClickListener {
+        binding.CoreGroup.CoreGacha.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), GachaActivity::class.java))
         }
         binding.AccountManager.Layout.setOnClickListener {

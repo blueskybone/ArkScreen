@@ -1,0 +1,31 @@
+<resources>
+    <style name="ArkAlertTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="alertDialogStyle">@style/ArkAlertStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/ArkDialogButton</item>
+    </style>
+    <style name="ArkAlertStyle" parent="MaterialAlertDialog.MaterialComponents">
+        <item name="shapeAppearanceOverlay">@style/ArkDialogCorners</item>
+        <item name="backgroundTint">@color/app_surface</item>
+    </style>
+    <style name="ArkDialogCorners" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/card_corner_radius</item>
+    </style>
+    <style name="ArkDialogButton" parent="Widget.MaterialComponents.Button">
+        <item name="cornerRadius">@dimen/card_corner_radius</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+    <style name="ArkSheetTheme" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/ArkSheetStyle</item>
+    </style>
+    <style name="ArkSheetStyle" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="shapeAppearanceOverlay">@style/ArkSheetCorners</item>
+        <item name="backgroundTint">@color/app_surface</item>
+    </style>
+    <style name="ArkSheetCorners" parent="">
+        <item name="cornerSizeTopLeft">@dimen/card_corner_radius</item>
+        <item name="cornerSizeTopRight">@dimen/card_corner_radius</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+</resources>

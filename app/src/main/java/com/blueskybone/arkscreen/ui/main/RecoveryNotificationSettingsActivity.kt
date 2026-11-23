@@ -18,7 +18,7 @@ import com.blueskybone.arkscreen.platform.notification.RecoveryReminderControlle
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -35,15 +35,15 @@ class RecoveryNotificationSettingsActivity : AppCompatActivity() {
         if (!granted) Toaster.show(getString(R.string.recovery_notifications_permission))
     }
 
-    private lateinit var enabled: SwitchMaterial
-    private lateinit var apFull: SwitchMaterial
-    private lateinit var apEarly: SwitchMaterial
-    private lateinit var trainDone: SwitchMaterial
-    private lateinit var trainShift: SwitchMaterial
-    private lateinit var labor: SwitchMaterial
-    private lateinit var meeting: SwitchMaterial
-    private lateinit var recruit: SwitchMaterial
-    private lateinit var refresh: SwitchMaterial
+    private lateinit var enabled: MaterialSwitch
+    private lateinit var apFull: MaterialSwitch
+    private lateinit var apEarly: MaterialSwitch
+    private lateinit var trainDone: MaterialSwitch
+    private lateinit var trainShift: MaterialSwitch
+    private lateinit var labor: MaterialSwitch
+    private lateinit var meeting: MaterialSwitch
+    private lateinit var recruit: MaterialSwitch
+    private lateinit var refresh: MaterialSwitch
     private lateinit var apLeadButton: MaterialButton
     private lateinit var shiftLeadButton: MaterialButton
     private var apLead = 30
@@ -178,8 +178,8 @@ class RecoveryNotificationSettingsActivity : AppCompatActivity() {
         return body
     }
 
-    private fun addSwitch(parent: LinearLayout, title: Int, checked: Boolean): SwitchMaterial =
-        SwitchMaterial(this).apply {
+    private fun addSwitch(parent: LinearLayout, title: Int, checked: Boolean): MaterialSwitch =
+        MaterialSwitch(this).apply {
             setText(title)
             isChecked = checked
             minimumHeight = dp(48)

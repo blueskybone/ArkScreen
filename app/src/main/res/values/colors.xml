@@ -44,7 +44,7 @@
     <color name="dark_on_surface">#dde4e3</color>
 
     <color name="day_surface">#F0F0F2</color>
-    <color name="asset_list_card_surface">#FFFFFF</color>
+    <color name="asset_list_card_surface">@color/app_surface</color>
     <!--    <color name="day_surface">#f9f9ff</color>-->
     <color name="day_text_primary">#292c33</color>
 
@@ -113,4 +113,14 @@
     <color name="ef_item_icon_background">#696969</color>
     <color name="ef_equip_blue">#64A8D8</color>
     <color name="ef_equip_orange">#E88C55</color>
+    <color name="app_background">#EFEDF0</color>
+    <color name="app_surface">#FAF8F9</color>
+    <color name="function_divider">#10000000</color>
+    <color name="function_text_primary">#292A2D</color>
+    <color name="function_text_secondary">#65666C</color>
+    <color name="function_section_title">#45464B</color>
+    <color name="arknights_primary_light">#3478F5</color>
+    <color name="arknights_primary_dark_light">#245BC4</color>
+    <color name="home_text_primary">#292A2D</color>
+    <color name="home_text_secondary">#65666C</color>
 </resources>

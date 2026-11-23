@@ -12,19 +12,12 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/AccountName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxWidth="160dp"
-            android:maxLines="1"
-            android:textColor="?android:attr/textColorPrimary"
+            android:text="@string/realtime_sanity"
+            android:textColor="@color/home_text_primary"
+            android:textSize="16sp"
             android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/Server"
-            style="@style/Widget.ArkScreen.MetadataLabel"
-            android:layout_marginStart="6dp" />
 
         <Space
             android:layout_width="0dp"
@@ -106,10 +99,6 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <TextView
-            android:id="@+id/AttendanceStatus"
-            style="@style/Widget.ArkScreen.InfoStatusChip"
-            android:visibility="gone" />
 
         <TextView
             android:id="@+id/Freshness"

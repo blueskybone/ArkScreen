@@ -103,7 +103,7 @@ class EndfieldHome : Fragment() {
             binding.SwitchGame,
             binding.DefaultStartup,
         )
-        binding.CurrentAccount.setOnClickListener { anchor ->
+        binding.AccountSelector.root.setOnClickListener { anchor ->
             if (viewModel.uiState.value.accountEfList.isEmpty()) {
                 startActivity(Intent(requireContext(), AccountMngActivity::class.java))
             } else if (accountPopup?.isShowing != true) {
@@ -112,21 +112,21 @@ class EndfieldHome : Fragment() {
                 }
             }
         }
-        binding.CoreAssets.setup(OpeAssets)
-        binding.CoreAssets.Subtitle.setText(R.string.endfield_chars_entry)
-        binding.CoreAssets.Layout.isClickable = true
-        binding.CoreAssets.Layout.isFocusable = true
-        binding.CoreAssets.Layout.setOnClickListener {
+        binding.CoreGroup.CoreAssets.setup(OpeAssets)
+        binding.CoreGroup.CoreAssets.Subtitle.setText(R.string.endfield_chars_entry)
+        binding.CoreGroup.CoreAssets.Layout.isClickable = true
+        binding.CoreGroup.CoreAssets.Layout.isFocusable = true
+        binding.CoreGroup.CoreAssets.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), EndfieldCharsActivity::class.java))
         }
         binding.RealTimeData.setOnClickListener {
             startActivity(Intent(requireContext(), EndfieldRealtimeActivity::class.java))
         }
-        binding.CoreGacha.setup(GachaStat)
-        binding.CoreGacha.Subtitle.setText(R.string.endfield_gacha_title)
-        binding.CoreGacha.Layout.isClickable = true
-        binding.CoreGacha.Layout.isFocusable = true
-        binding.CoreGacha.Layout.setOnClickListener {
+        binding.CoreGroup.CoreGacha.setup(GachaStat)
+        binding.CoreGroup.CoreGacha.Subtitle.setText(R.string.endfield_gacha_title)
+        binding.CoreGroup.CoreGacha.Layout.isClickable = true
+        binding.CoreGroup.CoreGacha.Layout.isFocusable = true
+        binding.CoreGroup.CoreGacha.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), EndfieldGachaActivity::class.java))
         }
         binding.GameStarter.setup(GameStarter)
@@ -148,9 +148,14 @@ class EndfieldHome : Fragment() {
                     binding.BannerCard.visibility = View.VISIBLE
                     bannerController.submitList(videos)
                     binding.Announce.text = state.announce
-                    binding.CurrentAccount.text = state.currentAccountEf?.nickName
-                        ?: state.accountEfList.firstOrNull()?.account?.nickName
-                        ?: getString(R.string.login_account)
+                    val account = state.currentAccountEf ?: state.accountEfList.firstOrNull()?.account
+                    binding.AccountSelector.CurrentAccount.text = account?.nickName ?: getString(R.string.login_account)
+                    binding.AccountSelector.Server.apply {
+                        visibility = if (account == null) View.GONE else View.VISIBLE
+                        setBackgroundTintList(androidx.core.content.ContextCompat.getColorStateList(context, R.color.endfield_accent_container))
+                        setTextColor(androidx.core.content.ContextCompat.getColor(context, R.color.grey_900))
+                        setText(if (account?.official == true) R.string.official_server else R.string.bilibili_server)
+                    }
                     accountAdapter.submitList(state.accountEfList)
                     renderStaminaCache(state)
                     val showAnnounce = prefManager.showHomeAnnounce.get()
@@ -179,9 +184,6 @@ class EndfieldHome : Fragment() {
             ContextCompat.getColor(requireContext(), R.color.endfield_progress_track)
         val account = effectiveAccount(state)
         updateAttendanceStatus(account)
-        card.AccountName.text = account?.nickName ?: getString(R.string.endfield_stamina)
-        card.Server.setText(R.string.endfield_stamina)
-        card.Server.visibility = if (account == null) View.GONE else View.VISIBLE
         val cache = state.endfieldStaminaCache?.takeIf { it.isValid && it.uid == account?.uid }
         if (account == null || cache == null) {
             card.RestTime.setText(if (account == null) R.string.home_realtime_login_required
@@ -218,7 +220,7 @@ class EndfieldHome : Fragment() {
         ?: state.accountEfList.firstOrNull()?.account as? AccountEf
 
     private fun updateAttendanceStatus(account: AccountEf?) {
-        val chip = binding.EfStaminaCard.AttendanceStatus
+        val chip = binding.AccountSelector.AttendanceStatus
         if (account == null) {
             attendanceJob?.cancel()
             attendanceKey = null

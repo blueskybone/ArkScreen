@@ -185,7 +185,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 app:cardBackgroundColor="@color/rare_6_surface"
-                                app:cardCornerRadius="12dp"
+                                app:cardCornerRadius="@dimen/card_corner_radius"
                                 app:cardElevation="0dp">
                                 <LinearLayout
                                     android:layout_width="match_parent"
@@ -215,7 +215,7 @@
                                 android:layout_marginStart="8dp"
                                 android:layout_weight="1"
                                 app:cardBackgroundColor="@color/rare_3_surface"
-                                app:cardCornerRadius="12dp"
+                                app:cardCornerRadius="@dimen/card_corner_radius"
                                 app:cardElevation="0dp">
                                 <LinearLayout
                                     android:layout_width="match_parent"
@@ -245,7 +245,7 @@
                                 android:layout_marginStart="8dp"
                                 android:layout_weight="1"
                                 app:cardBackgroundColor="@color/rare_4_surface"
-                                app:cardCornerRadius="12dp"
+                                app:cardCornerRadius="@dimen/card_corner_radius"
                                 app:cardElevation="0dp">
                                 <LinearLayout
                                     android:layout_width="match_parent"
@@ -286,7 +286,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/show_empty_gacha_pools" />
-                <com.google.android.material.switchmaterial.SwitchMaterial
+                <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/ShowEmptyPools"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
