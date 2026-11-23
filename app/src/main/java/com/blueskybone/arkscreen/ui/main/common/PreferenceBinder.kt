@@ -1,5 +1,10 @@
 package com.blueskybone.arkscreen.ui.main.common
 
+import androidx.appcompat.widget.ListPopupWindow
+import androidx.core.content.ContextCompat
+import androidx.core.view.doOnDetach
+import androidx.core.widget.TextViewCompat
+import com.blueskybone.arkscreen.ui.common.showChoicePopup
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
@@ -324,16 +329,23 @@ object PreferenceBinder {
         Icon.bindIcon(icon)
         Title.setText(listInfo.title)
 
-        bindListPreference(
-            context = context,
-            iconView = null,
-            valueView = Value,
-            root = root,
-            icon = null,
-            listInfo = listInfo,
-            pref = pref,
-            onClick = onClick
-        )
+        val entries = listInfo.getEntries(context)
+        val values = listInfo.getEntryValues()
+        fun selectedIndex() = values.indexOf(pref.get()).takeIf { it >= 0 } ?: values.indexOf(listInfo.defaultValue)
+        Value.text = entries.getOrNull(selectedIndex())
+        Value.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_function_select, 0)
+        TextViewCompat.setCompoundDrawableTintList(Value, ContextCompat.getColorStateList(context, R.color.function_text_secondary))
+        Value.compoundDrawablePadding = (4 * context.resources.displayMetrics.density).toInt()
+        var popup: ListPopupWindow? = null
+        root.doOnDetach { popup?.dismiss() }
+        root.setOnClickListener {
+            popup?.dismiss()
+            popup = showChoicePopup(Value, entries.toList(), selectedIndex()) { position ->
+                pref.set(values[position])
+                Value.text = entries[position]
+                onClick?.invoke()
+            }
+        }
     }
 
     private fun PreferenceSubSwitchBinding.setUp(

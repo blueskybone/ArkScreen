@@ -2,11 +2,16 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/arknights_primary_light</item>
-        <item name="colorPrimaryDark">@color/arknights_primary_dark_light</item>
+        <item name="homeAsUpIndicator">@drawable/ic_left_arrow</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_left_arrow</item>
+        <item name="colorPrimary">@color/rare_3</item>
+        <item name="colorPrimaryDark">@color/blue_600</item>
         <item name="colorSecondary">?attr/colorPrimary</item>
         <item name="materialAlertDialogTheme">@style/ArkAlertTheme</item>
         <item name="bottomSheetDialogTheme">@style/ArkSheetTheme</item>
+        <item name="capsuleAccentContainer">@color/tool_recruit_container</item>
+        <item name="capsuleAccentContent">@color/tool_recruit_icon</item>
+        <item name="materialCardViewStyle">@style/ArkContentCardSurface</item>
         <item name="materialSwitchStyle">@style/Widget.ArkScreen.Switch</item>
         <item name="colorSurface">@color/app_surface</item>
         <item name="colorOnSurface">@color/day_text_primary</item>
@@ -25,6 +30,8 @@
     </style>
 
     <style name="AppTheme.Endfield" parent="AppTheme">
+        <item name="capsuleAccentContainer">@color/endfield_accent_container</item>
+        <item name="capsuleAccentContent">@color/endfield_on_surface_accent</item>
         <item name="colorPrimary">@color/endfield_on_surface_accent</item>
         <item name="colorPrimaryDark">@color/endfield_primary_dark</item>
         <item name="colorSecondary">@color/endfield_primary</item>
@@ -52,6 +59,33 @@
 
     <style name="TextView.Headline3" parent="TextAppearance.MaterialComponents.Headline6">
         <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Widget.ArkScreen.CompactCapsule" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_compact_capsule</item>
+        <item name="android:minHeight">26dp</item>
+        <item name="android:backgroundTint">@color/status_neutral_container</item>
+        <item name="android:textColor">@color/status_neutral_content</item>
+        <item name="android:textSize">11.2sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">9.6dp</item>
+        <item name="android:paddingEnd">9.6dp</item>
+        <item name="android:paddingTop">4.8dp</item>
+        <item name="android:paddingBottom">4.8dp</item>
+    </style>
+
+    <style name="Widget.ArkScreen.CompactCapsule.Accent">
+        <item name="android:backgroundTint">?attr/capsuleAccentContainer</item>
+        <item name="android:textColor">?attr/capsuleAccentContent</item>
+    </style>
+
+    <style name="Widget.ArkScreen.CompactCapsule.Warning">
+        <item name="android:backgroundTint">@color/status_warning_container</item>
+        <item name="android:textColor">@color/status_warning_content</item>
     </style>
 
     <style name="Widget.ArkScreen.InlineHint" parent="TextAppearance.MaterialComponents.Caption">
@@ -95,7 +129,11 @@
         <item name="android:windowExitAnimation">@anim/popup_exit</item>
     </style>
 
-    <style name="CardViewContent" parent="Widget.MaterialComponents.CardView">
+    <style name="ArkContentCardSurface" parent="Widget.MaterialComponents.CardView">
+        <item name="strokeWidth">0dp</item>
+    </style>
+
+    <style name="CardViewContent" parent="ArkContentCardSurface">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">@dimen/card_vertical_spacing</item>
@@ -105,7 +143,6 @@
         <item name="cardElevation">0dp</item>
 <!--        <item name="cardBackgroundColor">?attr/android:colorBackground</item>-->
         <item name="cardBackgroundColor">@color/app_surface</item>
-        <item name="strokeWidth">1dp</item>
     </style>
 
 
@@ -117,6 +154,42 @@
     </style>
 
     <style name="TextAppearance.Body2" parent="TextAppearance.MaterialComponents.Body2">
+    </style>
+
+    <style name="PreferenceRow">
+        <item name="android:minHeight">56dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:paddingEnd">20dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+    </style>
+    <style name="PreferenceRow.Switch">
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+    </style>
+    <style name="PreferenceRow.Detail">
+        <item name="android:minHeight">@dimen/preference_detail_height</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+    </style>
+    <style name="PreferenceRowIcon">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="tint">@color/function_text_secondary</item>
+    </style>
+    <style name="PreferenceRowTitle" parent="PreferenceTitle">
+        <item name="android:textColor">@color/function_text_primary</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    <style name="PreferenceRowValue">
+        <item name="android:textColor">@color/function_text_secondary</item>
+        <item name="android:textSize">@dimen/preference_value_text_size</item>
+    </style>
+    <style name="PreferenceRowValue.Detail">
+        <item name="android:textSize">13sp</item>
     </style>
 
     <style name="PreferenceTitle" parent="TextAppearance.MaterialComponents.Body1">
@@ -165,7 +238,7 @@
     </style>
 
 
-    <style name="CardViewChip" parent="Widget.MaterialComponents.CardView">
+    <style name="CardViewChip" parent="ArkContentCardSurface">
         <item name="cardBackgroundColor">@color/white</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -409,13 +482,64 @@
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textStyle">normal</item>
     </style>
-    <style name="RealtimeCard" parent="CardViewContent">
+    <style name="HomeCard" parent="CardViewContent">
+        <item name="android:layout_marginTop">@dimen/card_vertical_spacing</item>
+    </style>
+
+    <style name="RealtimeCard" parent="HomeCard">
         <item name="strokeWidth">0dp</item>
+    </style>
+    <style name="HomeCardHeading">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/home_text_primary</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:drawablePadding">6dp</item>
+        <item name="drawableTint">@color/function_text_secondary</item>
     </style>
     <style name="RealtimeRefreshButton" parent="Widget.MaterialComponents.Button">
         <item name="cornerRadius">24dp</item>
+        <item name="backgroundTint">@color/app_surface</item>
+        <item name="android:textColor">@color/home_text_primary</item>
+        <item name="iconTint">@color/home_text_primary</item>
         <item name="icon">@drawable/ic_function_refresh</item>
-        <item name="iconSize">18dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:padding">0dp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">0dp</item>
+        <item name="iconSize">24dp</item>
         <item name="android:textAllCaps">false</item>
+    </style>
+    <style name="AssetActionChip" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/home_text_primary</item>
+        <item name="chipIconTint">@color/home_text_primary</item>
+        <item name="chipBackgroundColor">@color/asset_action_surface</item>
+        <item name="chipMinHeight">32dp</item>
+        <item name="chipCornerRadius">16dp</item>
+        <item name="chipIconSize">18dp</item>
+        <item name="chipStartPadding">9dp</item>
+        <item name="chipEndPadding">9dp</item>
+        <item name="textStartPadding">2dp</item>
+        <item name="textEndPadding">2dp</item>
+        <item name="iconStartPadding">0dp</item>
+        <item name="iconEndPadding">0dp</item>
+        <item name="ensureMinTouchTargetSize">true</item>
+        <item name="chipMinTouchTargetSize">48dp</item>
+        <item name="android:checkable">false</item>
+    </style>
+    <style name="ToolbarIconAction">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_gravity">end|center_vertical</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:padding">13dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:tint">@color/home_text_primary</item>
     </style>
 </resources>

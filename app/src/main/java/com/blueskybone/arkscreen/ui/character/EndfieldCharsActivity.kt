@@ -1,6 +1,8 @@
 package com.blueskybone.arkscreen.ui.character
 
 import android.content.Intent
+import androidx.appcompat.widget.ListPopupWindow
+import com.blueskybone.arkscreen.ui.account.common.showAccountChoices
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -129,16 +131,10 @@ class EndfieldCharsActivity : AppCompatActivity() {
             startActivity(Intent(this, AccountMngActivity::class.java))
             return
         }
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.endfield_choose_account)
-            .setSingleChoiceItems(
-                accounts.map { it.nickName }.toTypedArray(),
-                accounts.indexOfFirst { it.uid == currentState.selectedUid },
-            ) { dialog, index ->
-                model.select(accounts[index].uid)
-                dialog.dismiss()
-            }
-            .show()
+        accountPopup?.dismiss()
+        accountPopup = showAccountChoices(binding.AccountButton, accounts, currentState.selectedUid) { account ->
+            model.select(account.uid)
+        }
     }
 
     private fun openDetail(character: EndfieldCharacter) {
@@ -158,6 +154,8 @@ class EndfieldCharsActivity : AppCompatActivity() {
         )
     }
 
+    private var accountPopup: ListPopupWindow? = null
+
     override fun onSupportNavigateUp(): Boolean {
         if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStack()
@@ -169,6 +167,7 @@ class EndfieldCharsActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         binding.Characters.adapter = null
+        accountPopup?.dismiss()
         super.onDestroy()
     }
 

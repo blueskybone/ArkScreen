@@ -1,0 +1,5 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ic_bolt"
+        android:width="@dimen/home_heading_icon_size"
+        android:height="@dimen/home_heading_icon_size" />
+</layer-list>

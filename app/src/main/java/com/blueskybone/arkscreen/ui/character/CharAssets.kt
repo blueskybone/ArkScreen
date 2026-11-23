@@ -1,9 +1,11 @@
 package com.blueskybone.arkscreen.ui.character
 
+import com.blueskybone.arkscreen.ui.account.common.bindAccount
 import android.content.Intent
+import androidx.appcompat.widget.ListPopupWindow
+import com.blueskybone.arkscreen.ui.account.common.showAccountChoices
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
+import com.blueskybone.arkscreen.R
 import androidx.activity.OnBackPressedCallback
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,7 +25,6 @@ import com.blueskybone.arkscreen.ui.common.LogManagerActivity
 import com.blueskybone.arkscreen.ui.common.recoveryFor
 import com.blueskybone.arkscreen.ui.UiStatus
 import com.hjq.toast.Toaster
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlinx.coroutines.launch
 
@@ -38,9 +39,8 @@ class CharAssets : AppCompatActivity() {
     private val model: CharModel by viewModel()
     private var _binding: ActivityCharAssetsBinding? = null
     private val binding get() = _binding!!
-    private var exportAction: (() -> Unit)? = null
-    private var exportEnabled = true
-    private var exportMenuItem: MenuItem? = null
+    private var shareAction: (() -> Unit)? = null
+    private var shareEnabled = true
     private val reauthLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -53,12 +53,11 @@ class CharAssets : AppCompatActivity() {
     }
     private val pageChangeCallback = object : OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
+            renderActions()
             binding.Toolbar.setTitle(
                 if (position == 0) com.blueskybone.arkscreen.R.string.operator_assets
                 else com.blueskybone.arkscreen.R.string.not_own
             )
-            binding.AccountButton.visibility = if (position == 0) View.GONE else View.VISIBLE
-            invalidateOptionsMenu()
         }
     }
 
@@ -88,48 +87,20 @@ class CharAssets : AppCompatActivity() {
         vp.registerOnPageChangeCallback(pageChangeCallback)
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.AccountButton.setOnClickListener { chooseAccount() }
+        binding.RefreshButton.setOnClickListener { model.refresh() }
+        binding.ShareButton.setOnClickListener { shareAction?.invoke() }
+        binding.FallbackAccount.root.setOnClickListener { chooseAccount(it) }
     }
 
     fun openMissing() {
         binding.ViewPager.setCurrentItem(1, true)
     }
 
-    fun openAssets() {
+    private fun openAssets() {
         binding.ViewPager.setCurrentItem(0, true)
     }
 
-    fun registerExportAction(action: (() -> Unit)?) {
-        exportAction = action
-        invalidateOptionsMenu()
-    }
-
-    fun setExportEnabled(enabled: Boolean) {
-        exportEnabled = enabled
-        exportMenuItem?.isEnabled = enabled
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(com.blueskybone.arkscreen.R.menu.toolbar_char_assets, menu)
-        exportMenuItem = menu.findItem(com.blueskybone.arkscreen.R.id.menu_export_assets)
-        return true
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        menu.findItem(com.blueskybone.arkscreen.R.id.menu_export_assets)?.apply {
-            isVisible = binding.ViewPager.currentItem == 0
-            isEnabled = exportEnabled && exportAction != null
-        }
-        return super.onPrepareOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == com.blueskybone.arkscreen.R.id.menu_export_assets) {
-            exportAction?.invoke()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
+    private var accountPopup: ListPopupWindow? = null
 
     override fun onSupportNavigateUp(): Boolean {
         if (binding.ViewPager.currentItem == 1) openAssets() else finish()
@@ -146,13 +117,31 @@ class CharAssets : AppCompatActivity() {
                 is UiStatus.Success -> displayView()
                 UiStatus.Idle -> Unit
             }
+            renderActions()
         }
-        model.currentAccount.observe(this) { account ->
-            binding.AccountButton.text = account?.nickName ?: getString(com.blueskybone.arkscreen.R.string.skland_choose_account)
-        }
-        model.syncingState.observe(this) {
+        model.currentAccount.observe(this) { binding.FallbackAccount.bindAccount(it) }
+        model.syncingState.observe(this) { syncing ->
+            binding.RefreshButton.isEnabled = !syncing && model.currentAccount.value != null
             renderLoading()
         }
+    }
+
+    fun setShareAction(action: (() -> Unit)?) {
+        shareAction = action
+        renderActions()
+    }
+
+    fun setShareEnabled(enabled: Boolean) {
+        shareEnabled = enabled
+        renderActions()
+    }
+
+    private fun renderActions() {
+        val ui = _binding ?: return
+        val assetsVisible = model.uiState.value is UiStatus.Success && ui.ViewPager.currentItem == 0
+        ui.FallbackAccount.root.visibility = if (assetsVisible) View.GONE else View.VISIBLE
+        ui.ShareButton.visibility = if (assetsVisible) View.VISIBLE else View.GONE
+        ui.ShareButton.isEnabled = shareEnabled && shareAction != null
     }
 
     private fun renderLoading() {
@@ -166,22 +155,16 @@ class CharAssets : AppCompatActivity() {
         }
     }
 
-    fun chooseAccount() {
+    fun chooseAccount(anchor: View) {
         val accounts = model.accounts.value.orEmpty()
         if (accounts.isEmpty()) {
             startActivity(Intent(this, AccountMngActivity::class.java))
             return
         }
-        MaterialAlertDialogBuilder(this)
-            .setTitle(com.blueskybone.arkscreen.R.string.skland_choose_account)
-            .setSingleChoiceItems(
-                accounts.map { it.nickName }.toTypedArray(),
-                accounts.indexOfFirst { it.uid == model.currentAccount.value?.uid },
-            ) { dialog, index ->
-                model.selectAccount(accounts[index])
-                dialog.dismiss()
-            }
-            .show()
+        accountPopup?.dismiss()
+        accountPopup = showAccountChoices(anchor, accounts, model.currentAccount.value?.uid) { account ->
+            model.selectAccount(account)
+        }
     }
 
     private fun displayLoadingView(msg: String) {
@@ -274,9 +257,8 @@ class CharAssets : AppCompatActivity() {
     override fun onDestroy() {
         binding.ViewPager.unregisterOnPageChangeCallback(pageChangeCallback)
         binding.ViewPager.adapter = null
-        exportAction = null
-        exportMenuItem = null
         _binding = null
+        accountPopup?.dismiss()
         super.onDestroy()
     }
 

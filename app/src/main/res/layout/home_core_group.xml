@@ -1,14 +1,10 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/CardViewContent"
-    android:layout_marginTop="12dp"
+    style="@style/HomeCard"
     app:strokeWidth="0dp">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="vertical" android:padding="12dp">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginStart="4dp" android:layout_marginBottom="8dp"
-            android:text="@string/core_data" android:textSize="16sp" android:textStyle="bold"
-            android:textColor="@color/home_text_primary" />
+        <TextView style="@style/HomeCardHeading" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/core_data" app:drawableStartCompat="@drawable/ic_home_metrics" android:layout_marginStart="4dp" android:layout_marginBottom="8dp" />
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="horizontal" android:baselineAligned="false">
             <include android:id="@+id/CoreAssets" layout="@layout/home_core_tile"

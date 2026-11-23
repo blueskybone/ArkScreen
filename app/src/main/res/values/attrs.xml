@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="capsuleAccentContainer" format="color" />
+    <attr name="capsuleAccentContent" format="color" />
     <declare-styleable name="FlowRadioGroup">
         <attr name="horizontalSpacing" format="dimension" />
         <attr name="verticalSpacing" format="dimension" />

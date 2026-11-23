@@ -68,7 +68,7 @@ class CharOwn : Fragment() {
 
     private lateinit var adapter: CharAdapter
     private val headerAdapter = CharHeaderAdapter(
-        onAccountClick = { (activity as? CharAssets)?.chooseAccount() },
+        onAccountClick = { (activity as? CharAssets)?.chooseAccount(it) },
         onFilterClick = { showFilterDialog() },
         onViewClick = { model.toggleViewType() },
         onMissingClick = { (activity as? CharAssets)?.openMissing() },
@@ -156,13 +156,14 @@ class CharOwn : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as? CharAssets)?.setShareAction(::showExportOptions)
+        model.currentAccount.observe(viewLifecycleOwner, headerAdapter::submitAccount)
         pendingScrollState = savedInstanceState?.getParcelable(KEY_SCROLL_STATE)
         adapter = CharAdapter(requireContext(), 24, adapterListener)
         setupBinding()
         setUpObserver()
         renderFilterLabel()
         setupListener()
-        (activity as? CharAssets)?.registerExportAction(::showExportOptions)
     }
 
     private fun updateLayout(viewType: ViewType) {
@@ -270,12 +271,6 @@ class CharOwn : Fragment() {
                     val right = child.right.toFloat()
                     val bottom = child.bottom.toFloat()
                     when {
-                        position == 1 && position == lastPosition ->
-                            canvas.drawRoundRect(left, top, right, bottom, radius, radius, cardPaint)
-                        position == 1 -> {
-                            canvas.drawRoundRect(left, top, right, bottom, radius, radius, cardPaint)
-                            canvas.drawRect(left, top + radius, right, bottom, cardPaint)
-                        }
                         position == lastPosition -> {
                             canvas.drawRoundRect(left, top, right, bottom, radius, radius, cardPaint)
                             canvas.drawRect(left, top, right, bottom - radius, cardPaint)
@@ -308,7 +303,6 @@ class CharOwn : Fragment() {
             ) {
                 val position = parent.getChildAdapterPosition(view)
                 if (currentViewType == ViewType.LIST) {
-                    if (position == 1) outRect.top = (16 * resources.displayMetrics.density).toInt()
                     return
                 }
                 if (position <= 0) return
@@ -325,7 +319,7 @@ class CharOwn : Fragment() {
 
     private fun showExportOptions() {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.export)
+            .setTitle(R.string.share)
             .setItems(
                 arrayOf(
                     getString(R.string.export_text),
@@ -353,7 +347,7 @@ class CharOwn : Fragment() {
             return
         }
 
-        (activity as? CharAssets)?.setExportEnabled(false)
+        (activity as? CharAssets)?.setShareEnabled(false)
         val appContext = requireContext().applicationContext
         val progressView = layoutInflater.inflate(R.layout.dialog_operator_poster_loading, null)
         val progressText = progressView.findViewById<TextView>(R.id.PosterProgress)
@@ -403,7 +397,7 @@ class CharOwn : Fragment() {
                 posterJob = null
                 posterLoadingDialog?.dismiss()
                 posterLoadingDialog = null
-                (activity as? CharAssets)?.setExportEnabled(true)
+                (activity as? CharAssets)?.setShareEnabled(true)
             }
         }
     }
@@ -492,12 +486,6 @@ class CharOwn : Fragment() {
         }
         model.statistic.observe(viewLifecycleOwner) { statistic ->
             headerAdapter.submitStatistic(statistic)
-        }
-        model.currentAccount.observe(viewLifecycleOwner) { account ->
-            headerAdapter.submitAccount(account)
-        }
-        model.accountAvatarUrl.observe(viewLifecycleOwner) { avatarUrl ->
-            headerAdapter.submitAccountAvatar(avatarUrl)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -675,7 +663,7 @@ class CharOwn : Fragment() {
     }
 
     override fun onDestroyView() {
-        (activity as? CharAssets)?.registerExportAction(null)
+        (activity as? CharAssets)?.setShareAction(null)
         posterJob?.cancel()
         posterJob = null
         posterLoadingDialog?.dismiss()

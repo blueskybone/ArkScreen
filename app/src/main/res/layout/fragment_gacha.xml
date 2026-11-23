@@ -62,12 +62,11 @@
                         </LinearLayout>
                         <ImageView
                             android:id="@+id/Exchange"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
                             android:contentDescription="@string/switch_account"
-                            android:src="@drawable/ic_right_arrow"
-                            app:tint="?attr/colorOnSurface"
-                            android:rotation="90" />
+                            android:src="@drawable/ic_function_select"
+                            app:tint="@color/function_text_secondary" />
                     </LinearLayout>
                     <View
                         android:layout_width="match_parent"

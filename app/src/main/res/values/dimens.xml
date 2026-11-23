@@ -6,4 +6,6 @@
     <dimen name="empty_content_padding">32dp</dimen>
     <dimen name="card_corner_radius">24dp</dimen>
     <dimen name="preference_detail_height">64dp</dimen>
+    <dimen name="home_heading_icon_size">16dp</dimen>
+    <dimen name="preference_value_text_size">15sp</dimen>
 </resources>

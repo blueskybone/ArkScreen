@@ -1,5 +1,8 @@
 package com.blueskybone.arkscreen.ui.realtime
 
+import com.blueskybone.arkscreen.ui.account.common.bindAccount
+import com.blueskybone.arkscreen.ui.account.common.showAccountChoices
+import androidx.appcompat.widget.ListPopupWindow
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -91,7 +94,8 @@ class RealTimeActivity : AppCompatActivity() {
         }
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.AccountSelector.root.setOnClickListener { chooseAccount() }
+        binding.AccountSelector.root.setOnClickListener(::chooseAccount)
+        binding.FallbackAccount.root.setOnClickListener(::chooseAccount)
         binding.RefreshButton.setOnClickListener { model.refresh() }
     }
 
@@ -140,9 +144,8 @@ class RealTimeActivity : AppCompatActivity() {
             }
         }
         model.currentAccount.observe(this) { account ->
-            binding.AccountSelector.CurrentAccount.text = account?.nickName ?: getString(com.blueskybone.arkscreen.R.string.skland_choose_account)
-            binding.AccountSelector.Server.visibility = if (account == null) View.GONE else View.VISIBLE
-            binding.AccountSelector.Server.setText(if (account?.official == true) com.blueskybone.arkscreen.R.string.official_server else com.blueskybone.arkscreen.R.string.bilibili_server)
+            binding.AccountSelector.bindAccount(account)
+            binding.FallbackAccount.bindAccount(account)
         }
         model.syncingState.observe(this) { syncing ->
             binding.RefreshButton.isEnabled = !syncing
@@ -155,22 +158,17 @@ class RealTimeActivity : AppCompatActivity() {
         }
     }
 
-    private fun chooseAccount() {
+    private var accountPopup: ListPopupWindow? = null
+
+    private fun chooseAccount(anchor: View) {
         val accounts = model.accounts.value.orEmpty()
         if (accounts.isEmpty()) {
             startActivity(Intent(this, AccountMngActivity::class.java))
             return
         }
-        MaterialAlertDialogBuilder(this)
-            .setTitle(com.blueskybone.arkscreen.R.string.skland_choose_account)
-            .setSingleChoiceItems(
-                accounts.map { it.nickName }.toTypedArray(),
-                accounts.indexOfFirst { it.uid == model.currentAccount.value?.uid },
-            ) { dialog, index ->
-                model.selectAccount(accounts[index])
-                dialog.dismiss()
-            }
-            .show()
+        accountPopup = showAccountChoices(anchor, accounts, model.currentAccount.value?.uid) { account ->
+            model.selectAccount(account)
+        }
     }
 
     private fun displayLoadingView() {
@@ -273,7 +271,6 @@ class RealTimeActivity : AppCompatActivity() {
             com.blueskybone.arkscreen.R.string.realtime_module_lower,
             data.towerLower.value.resolve(this),
         )
-        binding.NickName.text = data.nickName
         binding.LastLogin.text = data.lastLogin.resolve(this)
         binding.Uid.text = getString(com.blueskybone.arkscreen.R.string.realtime_uid, data.uid)
         binding.UidRow.visibility = if (data.uid.isBlank()) View.GONE else View.VISIBLE
@@ -308,6 +305,7 @@ class RealTimeActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         _binding = null
+        accountPopup?.dismiss()
         super.onDestroy()
     }
 }

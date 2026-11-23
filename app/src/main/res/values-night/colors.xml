@@ -35,6 +35,8 @@
     <color name="status_warning_content">#E8D184</color>
     <color name="status_error_container">#472B2B</color>
     <color name="status_error_content">#F2B2AE</color>
+    <color name="asset_action_surface">@color/status_neutral_container</color>
+    <color name="asset_action_selected_text">@color/rare_3</color>
     <color name="status_neutral_container">#30333C</color>
     <color name="status_neutral_content">#C5C8D1</color>
     <color name="app_background">#131315</color>

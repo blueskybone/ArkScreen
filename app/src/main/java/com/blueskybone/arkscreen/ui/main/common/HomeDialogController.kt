@@ -6,8 +6,6 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.DialogInputBinding
 import com.blueskybone.arkscreen.domain.model.link.Link
 import com.blueskybone.arkscreen.domain.usecase.account.SyncAccountSkUseCase
-import com.blueskybone.arkscreen.ui.account.adapter.AccountAdapter
-import com.blueskybone.arkscreen.ui.account.common.AccountPickerPopup
 import com.blueskybone.arkscreen.ui.common.view.configureLinkInput
 import com.blueskybone.arkscreen.ui.common.view.configurePasswordLogin
 import com.blueskybone.arkscreen.ui.common.view.configureSingleInput
@@ -23,11 +21,9 @@ import com.hjq.toast.Toaster
 class HomeDialogController(
     private val fragment: Fragment,
     private val viewModel: MainModel,
-    private val accountAdapter: AccountAdapter,
     private val onLaunchWebLogin: () -> Unit
 ) {
 
-    private var accountPopup: AccountPickerPopup? = null
 
 
     fun launchWebLogin() {
@@ -136,22 +132,5 @@ class HomeDialogController(
                     viewModel.addLink(title = title, url = url)
                 }
             }.show()
-    }
-
-    fun showAccountPopup(anchor: View) {
-        if (accountPopup?.isShowing == true) return
-        accountPopup = AccountPickerPopup(fragment.requireActivity(), accountAdapter).also {
-            it.show(anchor)
-        }
-    }
-
-
-    fun release() {
-        accountPopup?.dismiss()
-        accountPopup = null
-    }
-
-    fun dismissPopup() {
-       accountPopup?.dismiss()
     }
 }

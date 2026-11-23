@@ -4,7 +4,7 @@
         <TextView style="@style/TextView.Headline" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/function" />
         <LinearLayout android:id="@+id/RecruitHeader" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="44dp" android:background="@android:color/transparent" android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:orientation="horizontal" android:paddingHorizontal="0dp" android:layout_marginStart="32dp" android:layout_marginEnd="32dp" android:layout_marginTop="16dp">
             <TextView style="@style/PreferenceHeader" android:paddingStart="0dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingEnd="8dp" android:text="@string/quick_recruit" android:textColor="@color/function_section_title" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:textStyle="normal" />
-            <TextView android:id="@+id/RecruitStatus" style="@style/Widget.ArkScreen.InfoStatusChip" />
+            <TextView android:id="@+id/RecruitStatus" style="@style/Widget.ArkScreen.CompactCapsule" />
             <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
             <ImageView android:id="@+id/RecruitExpand" android:layout_width="18dp" android:layout_height="18dp" android:contentDescription="@null" android:rotation="90" app:tint="@color/function_text_secondary" android:src="@drawable/ic_function_chevron" />
         </LinearLayout>
@@ -18,21 +18,21 @@
                     <include android:id="@+id/OverlayPermission" layout="@layout/preference" android:visibility="gone" />
                     <include android:id="@+id/NotifyPermission" layout="@layout/preference" android:visibility="gone" />
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                    <LinearLayout android:id="@+id/OverlayPermissionChip" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="56dp" android:orientation="horizontal" android:gravity="center_vertical" android:paddingStart="20dp" android:paddingEnd="20dp" android:paddingTop="12dp" android:paddingBottom="12dp" android:clickable="true" android:focusable="true">
-                        <ImageView android:layout_width="20dp" android:layout_height="20dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_function_permission" android:contentDescription="@null" app:tint="@color/function_text_secondary" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/permission_requirements" android:textSize="16sp" android:fontFamily="sans-serif" android:textStyle="normal" android:textColor="@color/function_text_primary" />
+                    <LinearLayout style="@style/PreferenceRow" android:id="@+id/OverlayPermissionChip" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:clickable="true" android:focusable="true">
+                        <ImageView style="@style/PreferenceRowIcon" android:src="@drawable/ic_function_permission" android:contentDescription="@null" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/permission_requirements" style="@style/PreferenceRowTitle" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                    <LinearLayout android:id="@+id/RecruitVideo" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="56dp" android:orientation="horizontal" android:gravity="center_vertical" android:paddingStart="20dp" android:paddingEnd="20dp" android:paddingTop="12dp" android:paddingBottom="12dp" android:clickable="true" android:focusable="true">
-                        <ImageView android:layout_width="20dp" android:layout_height="20dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_function_play" android:contentDescription="@null" app:tint="@color/function_text_secondary" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/recruit_video" android:textSize="16sp" android:fontFamily="sans-serif" android:textStyle="normal" android:textColor="@color/function_text_primary" />
+                    <LinearLayout style="@style/PreferenceRow" android:id="@+id/RecruitVideo" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:clickable="true" android:focusable="true">
+                        <ImageView style="@style/PreferenceRowIcon" android:src="@drawable/ic_function_play" android:contentDescription="@null" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/recruit_video" style="@style/PreferenceRowTitle" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
         <LinearLayout android:id="@+id/WidgetHeader" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="44dp" android:background="@android:color/transparent" android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:orientation="horizontal" android:paddingHorizontal="0dp" android:layout_marginStart="32dp" android:layout_marginEnd="32dp" android:layout_marginTop="16dp">
             <TextView style="@style/PreferenceHeader" android:paddingStart="0dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingEnd="8dp" android:text="@string/widget" android:textColor="@color/function_section_title" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:textStyle="normal" />
-            <TextView android:id="@+id/WidgetStatus" style="@style/Widget.ArkScreen.InfoStatusChip" />
+            <TextView android:id="@+id/WidgetStatus" style="@style/Widget.ArkScreen.CompactCapsule" />
             <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
             <ImageView android:id="@+id/WidgetExpand" android:layout_width="18dp" android:layout_height="18dp" android:contentDescription="@null" android:rotation="90" app:tint="@color/function_text_secondary" android:src="@drawable/ic_function_chevron" />
         </LinearLayout>
@@ -46,9 +46,9 @@
                     <include android:id="@+id/WidgetAppearance" layout="@layout/preference_icon" />
                     <include android:id="@+id/TurnOffBatteryOptimization" layout="@layout/preference" android:visibility="gone" />
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                    <LinearLayout android:id="@+id/WidgetPermission" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="56dp" android:orientation="horizontal" android:gravity="center_vertical" android:paddingStart="20dp" android:paddingEnd="20dp" android:paddingTop="12dp" android:paddingBottom="12dp" android:clickable="true" android:focusable="true">
-                        <ImageView android:layout_width="20dp" android:layout_height="20dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_function_permission" android:contentDescription="@null" app:tint="@color/function_text_secondary" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/permission_requirements" android:textSize="16sp" android:fontFamily="sans-serif" android:textStyle="normal" android:textColor="@color/function_text_primary" />
+                    <LinearLayout style="@style/PreferenceRow" android:id="@+id/WidgetPermission" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:clickable="true" android:focusable="true">
+                        <ImageView style="@style/PreferenceRowIcon" android:src="@drawable/ic_function_permission" android:contentDescription="@null" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/permission_requirements" style="@style/PreferenceRowTitle" />
                     </LinearLayout>
                     <ImageView android:id="@+id/WidgetInfo" android:layout_width="20dp" android:layout_height="20dp" android:contentDescription="@null" android:src="@drawable/ic_info" android:visibility="gone" />
                 </LinearLayout>
@@ -56,7 +56,7 @@
         </LinearLayout>
         <LinearLayout android:id="@+id/AttendanceHeader" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="44dp" android:background="@android:color/transparent" android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:orientation="horizontal" android:paddingHorizontal="0dp" android:layout_marginStart="32dp" android:layout_marginEnd="32dp" android:layout_marginTop="16dp">
             <TextView style="@style/PreferenceHeader" android:paddingStart="0dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingEnd="8dp" android:text="@string/auto_attendance" android:textColor="@color/function_section_title" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:textStyle="normal" />
-            <TextView android:id="@+id/AttendanceStatus" style="@style/Widget.ArkScreen.InfoStatusChip" />
+            <TextView android:id="@+id/AttendanceStatus" style="@style/Widget.ArkScreen.CompactCapsule" />
             <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
             <ImageView android:id="@+id/AttendanceExpand" android:layout_width="18dp" android:layout_height="18dp" android:contentDescription="@null" android:rotation="90" app:tint="@color/function_text_secondary" android:src="@drawable/ic_function_chevron" />
         </LinearLayout>
@@ -68,21 +68,26 @@
                     <include android:id="@+id/SetAtdTime" layout="@layout/preference_sub_value" />
                     <include android:id="@+id/OpenAutoStartSettings" layout="@layout/preference" android:visibility="gone" />
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                    <LinearLayout android:id="@+id/AttdPermission" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="56dp" android:orientation="horizontal" android:gravity="center_vertical" android:paddingStart="20dp" android:paddingEnd="20dp" android:paddingTop="12dp" android:paddingBottom="12dp" android:clickable="true" android:focusable="true">
-                        <ImageView android:layout_width="20dp" android:layout_height="20dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_function_permission" android:contentDescription="@null" app:tint="@color/function_text_secondary" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/permission_requirements" android:textSize="16sp" android:fontFamily="sans-serif" android:textStyle="normal" android:textColor="@color/function_text_primary" />
+                    <LinearLayout style="@style/PreferenceRow" android:id="@+id/AttdPermission" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:clickable="true" android:focusable="true">
+                        <ImageView style="@style/PreferenceRowIcon" android:src="@drawable/ic_function_permission" android:contentDescription="@null" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/permission_requirements" style="@style/PreferenceRowTitle" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="44dp" android:layout_marginStart="32dp" android:layout_marginEnd="32dp" android:layout_marginTop="16dp" android:orientation="horizontal" android:gravity="center_vertical">
+        <LinearLayout android:id="@+id/RecoveryHeader" android:clickable="true" android:focusable="true" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="44dp" android:layout_marginStart="32dp" android:layout_marginEnd="32dp" android:layout_marginTop="16dp" android:orientation="horizontal" android:gravity="center_vertical">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/recovery_notifications" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:textColor="@color/function_section_title" />
-            <TextView style="@style/Widget.ArkScreen.InfoStatusChip" android:layout_marginStart="8dp" android:text="@string/experimental_feature_short" />
+            <TextView style="@style/Widget.ArkScreen.CompactCapsule" android:layout_marginStart="8dp" android:text="@string/experimental_feature_short" />
+            <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
+            <ImageView android:id="@+id/RecoveryExpand" android:layout_width="18dp" android:layout_height="18dp" android:contentDescription="@null" app:tint="@color/function_text_secondary" android:src="@drawable/ic_function_chevron" />
         </LinearLayout>
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" app:cardCornerRadius="@dimen/card_corner_radius" app:strokeWidth="0dp" android:layout_marginTop="0dp">
-            <LinearLayout android:id="@+id/RecoveryNotificationEntry" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@android:color/transparent" android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:orientation="horizontal" android:padding="20dp" android:minHeight="56dp" android:paddingTop="4dp" android:paddingBottom="4dp">
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/recovery_settings_entry" android:textSize="16sp" android:textColor="@color/function_text_primary" />
-                <ImageView android:layout_width="18dp" android:layout_height="18dp" android:contentDescription="@null" app:tint="@color/function_text_secondary" android:src="@drawable/ic_function_chevron" />
+        <com.google.android.material.card.MaterialCardView android:id="@+id/RecoveryContent" style="@style/CardViewContent" android:layout_marginTop="0dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+                <include android:id="@+id/RecoveryEnabled" layout="@layout/preference_switch" />
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
+                <include android:id="@+id/RecoverySettings" layout="@layout/preference_icon" />
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
+                <include android:id="@+id/RecoveryPermissions" layout="@layout/preference_icon" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>

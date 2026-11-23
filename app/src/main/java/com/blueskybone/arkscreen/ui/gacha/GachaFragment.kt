@@ -1,5 +1,8 @@
 package com.blueskybone.arkscreen.ui.gacha
 
+import androidx.appcompat.widget.ListPopupWindow
+import com.blueskybone.arkscreen.ui.account.common.showAccountChoices
+import com.blueskybone.arkscreen.ui.account.AccountMngActivity
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -15,11 +18,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.databinding.FragmentGachaBinding
-import com.blueskybone.arkscreen.domain.model.account.Account
-import com.blueskybone.arkscreen.ui.account.adapter.AccountAdapter
-import com.blueskybone.arkscreen.ui.account.common.AccountPickerPopup
-import com.blueskybone.arkscreen.ui.account.model.AccountItemAction
-import com.blueskybone.arkscreen.ui.account.model.AccountItemUiModel
 import com.blueskybone.arkscreen.ui.gacha.adapter.GachaAdapter
 import com.blueskybone.arkscreen.ui.gacha.model.GachaPool
 import com.blueskybone.arkscreen.ui.gacha.model.GachaUiSnapshot
@@ -30,8 +28,7 @@ class GachaFragment : Fragment() {
     private val model: GachaModel by activityViewModel()
     private val settingPrefManager: SettingPrefManager by inject()
     private var adapter: GachaAdapter? = null
-    private var accountPopup: AccountPickerPopup? = null
-    private var adapterAccount: AccountAdapter? = null
+    private var accountPopup: ListPopupWindow? = null
     private var gachaPools: List<GachaPool> = emptyList()
     private var _binding: FragmentGachaBinding? = null
     private val binding get() = _binding!!
@@ -42,7 +39,6 @@ class GachaFragment : Fragment() {
     ): View {
         _binding = FragmentGachaBinding.inflate(inflater)
         pendingScrollState = savedInstanceState?.getParcelable(KEY_SCROLL_STATE)
-        adapterAccount = AccountAdapter(createItemAction())
         setupBinding()
         return binding.root
     }
@@ -73,20 +69,12 @@ class GachaFragment : Fragment() {
         if (current != null) {
             binding.Icon.setImageResource(
                 if (current.official) R.drawable.hg_icon_80x80
-                else R.drawable.bili_icon_75x71
+                else R.drawable.ic_account_bilibili
             )
         } else {
             binding.Icon.setImageDrawable(null)
         }
 
-        adapterAccount?.submitList(
-            state.accList.map { account ->
-                AccountItemUiModel(
-                    account = account,
-                    isDefault = account.uid == current?.uid,
-                )
-            }
-        )
     }
 
 
@@ -126,18 +114,6 @@ class GachaFragment : Fragment() {
         adapter?.submitList(visiblePools)
     }
 
-    private fun createItemAction(): AccountItemAction {
-        return object : AccountItemAction {
-            override fun onClick(account: Account) {
-                model.checkoutAccount(account)
-                accountPopup?.dismiss()
-            }
-            override fun onLongClick(account: Account) {
-            }
-        }
-    }
-
-
     private fun setupBinding() {
         adapter = GachaAdapter(requireContext(), model::setPoolExpanded)
         binding.RecyclerView.adapter = adapter
@@ -149,12 +125,7 @@ class GachaFragment : Fragment() {
             // 禁用滚动
             overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
-        binding.Exchange.setOnClickListener { view ->
-            showAccountPopup(view)
-        }
-        binding.PlayerInfo.setOnClickListener { view ->
-            showAccountPopup(view)
-        }
+        binding.PlayerInfo.setOnClickListener { showAccountPopup(it) }
         binding.ShowEmptyPools.setOnCheckedChangeListener { _, isChecked ->
             settingPrefManager.showEmptyGachaPools.set(isChecked)
             submitVisiblePools()
@@ -162,11 +133,13 @@ class GachaFragment : Fragment() {
     }
 
     private fun showAccountPopup(anchor: View) {
-        if (accountPopup?.isShowing == true) return
-        val accountAdapter = adapterAccount ?: return
-        accountPopup = AccountPickerPopup(requireActivity(), accountAdapter).also {
-            it.show(anchor)
+        val state = model.uiState.value
+        if (state.accList.isEmpty()) {
+            startActivity(android.content.Intent(requireContext(), AccountMngActivity::class.java))
+            return
         }
+        accountPopup?.dismiss()
+        accountPopup = showAccountChoices(anchor, state.accList, state.currAccount?.uid, model::checkoutAccount)
     }
 
     override fun onDestroyView() {
@@ -174,7 +147,6 @@ class GachaFragment : Fragment() {
         accountPopup = null
         binding.RecyclerView.adapter = null
         adapter = null
-        adapterAccount = null
         gachaPools = emptyList()
         _binding = null
         super.onDestroyView()

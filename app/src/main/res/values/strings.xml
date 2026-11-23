@@ -195,7 +195,7 @@
     <string name="account_manager">账号管理</string>
     <string name="account_manager_summary">森空岛账号用于明日方舟和终末地的游戏数据与签到，也用于终末地寻访记录；明日方舟寻访记录需单独添加账号。</string>
     <string name="skland_account_manage">森空岛账号</string>
-    <string name="skland_account_summary">用于同步游戏数据、签到及终末地寻访记录</string>
+    <string name="skland_account_summary">用于同步游戏数据及签到</string>
     <string name="arknights_accounts">明日方舟</string>
     <string name="endfield_accounts">明日方舟：终末地</string>
     <string name="gacha_account_manage">寻访记录账号</string>
@@ -275,7 +275,7 @@
 
     <string name="export">导出</string>
     <string name="assets_filter_count">筛选 %1$d</string>
-    <string name="assets_missing_count">暂未获取 %1$d ›</string>
+    <string name="assets_missing_count">未持有 %1$d</string>
     <string name="back_to_assets">返回干员资产</string>
     <string name="export_text">文字（TXT）</string>
     <string name="export_operator_poster">六星精二资产图片</string>
@@ -589,7 +589,7 @@
     <string name="about_release_notes">更新记录</string>
     <string name="about_community">QQ交流群</string>
     <string name="about_diagnostics">复制诊断信息</string>
-    <string name="about_data_info">数据与权限说明</string>
+    <string name="about_data_info">数据权限与说明</string>
     <string name="about_source">项目地址</string>
     <string name="about_support">赞助开发者</string>
     <string name="about_unofficial">公招助手是独立开发的第三方工具，与游戏官方无隶属关系。</string>
@@ -598,4 +598,6 @@
     <string name="about_diagnostics_copied">诊断信息已复制</string>
     <string name="about_data_description">账号登录信息与游戏数据缓存在本机保存，用于登录、展示数据及桌面组件。同步数据、加载官方动态和检查更新需要联网。\n\n通知权限用于恢复提醒和下载通知；悬浮窗及屏幕截图相关权限用于快速公招。相关功能需要时再授予权限。\n\n反馈诊断信息仅复制版本和设备型号。日志请在“更多 → 日志”中查看，分享前确认其中内容。</string>
     <string name="app_up_to_date">当前已是最新版本。</string>
+    <string name="home_updated_at">更新于 %1$s</string>
+    <string name="recovery_push_notifications">推送提醒通知</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.blueskybone.arkscreen.ui.main
 
+import com.blueskybone.arkscreen.ui.account.common.showAccountChoices
+import androidx.appcompat.widget.ListPopupWindow
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -18,7 +19,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
-import com.blueskybone.arkscreen.domain.model.account.Account
 import com.blueskybone.arkscreen.domain.model.account.AccountEf
 import com.blueskybone.arkscreen.domain.model.account.AccountType
 import com.blueskybone.arkscreen.domain.repository.AttendanceStateRepository
@@ -31,9 +31,6 @@ import com.blueskybone.arkscreen.databinding.FragmentEndfieldHomeBinding
 import com.blueskybone.arkscreen.databinding.HomeCoreTileBinding
 import com.blueskybone.arkscreen.platform.schedule.AttendanceWorkScheduler
 import com.blueskybone.arkscreen.ui.account.AccountMngActivity
-import com.blueskybone.arkscreen.ui.account.adapter.AccountAdapter
-import com.blueskybone.arkscreen.ui.account.common.AccountPickerPopup
-import com.blueskybone.arkscreen.ui.account.model.AccountItemAction
 import com.blueskybone.arkscreen.ui.character.EndfieldCharsActivity
 import com.blueskybone.arkscreen.ui.gacha.EndfieldGachaActivity
 import com.blueskybone.arkscreen.ui.common.bindinginfo.AccountManager
@@ -64,9 +61,8 @@ class EndfieldHome : Fragment() {
     private val viewModel: MainModel by activityViewModel()
     private var _binding: FragmentEndfieldHomeBinding? = null
     private val binding get() = requireNotNull(_binding)
+    private var accountPopup: ListPopupWindow? = null
     private lateinit var bannerController: HomeBannerController
-    private lateinit var accountAdapter: AccountAdapter
-    private var accountPopup: AccountPickerPopup? = null
     private var attendanceKey: String? = null
     private var attendanceJob: Job? = null
     private val notificationPermissionLauncher = registerForActivityResult(
@@ -89,31 +85,29 @@ class EndfieldHome : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         bannerController = HomeBannerController(this, binding.TitleBanner, binding.BannerIdc)
-        accountAdapter = AccountAdapter(object : AccountItemAction {
-            override fun onClick(account: Account) {
-                viewModel.setDefaultAccountEf(account as AccountEf)
-                accountPopup?.dismiss()
-                Toaster.show(getString(R.string.set_default_account, account.nickName))
-            }
-
-            override fun onLongClick(account: Account) = Unit
-        })
         (requireActivity() as MainActivity).bindHomeGameControls(
-            binding.GameSelector,
-            binding.SwitchGame,
-            binding.DefaultStartup,
+            binding.GameHeader.GameSelector,
+            binding.GameHeader.SwitchGame,
+            binding.GameHeader.DefaultStartup,
         )
         binding.AccountSelector.root.setOnClickListener { anchor ->
-            if (viewModel.uiState.value.accountEfList.isEmpty()) {
+            val state = viewModel.uiState.value
+            val accounts = state.accountEfList.map { it.account as AccountEf }
+            if (accounts.isEmpty()) {
                 startActivity(Intent(requireContext(), AccountMngActivity::class.java))
-            } else if (accountPopup?.isShowing != true) {
-                accountPopup = AccountPickerPopup(requireActivity(), accountAdapter).also {
-                    it.show(anchor)
+            } else {
+                accountPopup = showAccountChoices(anchor, accounts, effectiveAccount(state)?.uid) { account ->
+                    viewModel.setDefaultAccountEf(account)
+                    Toaster.show(getString(R.string.set_default_account, account.nickName))
                 }
             }
         }
+        binding.EfStaminaCard.apply {
+            Current.setTextColor(ContextCompat.getColor(requireContext(), R.color.endfield_on_surface_accent))
+            SanityProgress.setIndicatorColor(ContextCompat.getColor(requireContext(), R.color.endfield_primary))
+            SanityProgress.trackColor = ContextCompat.getColor(requireContext(), R.color.endfield_progress_track)
+        }
         binding.CoreGroup.CoreAssets.setup(OpeAssets)
-        binding.CoreGroup.CoreAssets.Subtitle.setText(R.string.endfield_chars_entry)
         binding.CoreGroup.CoreAssets.Layout.isClickable = true
         binding.CoreGroup.CoreAssets.Layout.isFocusable = true
         binding.CoreGroup.CoreAssets.Layout.setOnClickListener {
@@ -123,7 +117,6 @@ class EndfieldHome : Fragment() {
             startActivity(Intent(requireContext(), EndfieldRealtimeActivity::class.java))
         }
         binding.CoreGroup.CoreGacha.setup(GachaStat)
-        binding.CoreGroup.CoreGacha.Subtitle.setText(R.string.endfield_gacha_title)
         binding.CoreGroup.CoreGacha.Layout.isClickable = true
         binding.CoreGroup.CoreGacha.Layout.isFocusable = true
         binding.CoreGroup.CoreGacha.Layout.setOnClickListener {
@@ -150,13 +143,6 @@ class EndfieldHome : Fragment() {
                     binding.Announce.text = state.announce
                     val account = state.currentAccountEf ?: state.accountEfList.firstOrNull()?.account
                     binding.AccountSelector.CurrentAccount.text = account?.nickName ?: getString(R.string.login_account)
-                    binding.AccountSelector.Server.apply {
-                        visibility = if (account == null) View.GONE else View.VISIBLE
-                        setBackgroundTintList(androidx.core.content.ContextCompat.getColorStateList(context, R.color.endfield_accent_container))
-                        setTextColor(androidx.core.content.ContextCompat.getColor(context, R.color.grey_900))
-                        setText(if (account?.official == true) R.string.official_server else R.string.bilibili_server)
-                    }
-                    accountAdapter.submitList(state.accountEfList)
                     renderStaminaCache(state)
                     val showAnnounce = prefManager.showHomeAnnounce.get()
                     binding.AnnounceTitle.visibility = if (showAnnounce) View.VISIBLE else View.GONE
@@ -176,12 +162,6 @@ class EndfieldHome : Fragment() {
 
     private fun renderStaminaCache(state: MainUiState) {
         val card: CardApCacheBinding = binding.EfStaminaCard
-        card.Current.setTextColor(ContextCompat.getColor(requireContext(), R.color.endfield_on_surface_accent))
-        card.SanityProgress.setIndicatorColor(
-            ContextCompat.getColor(requireContext(), R.color.endfield_primary),
-        )
-        card.SanityProgress.trackColor =
-            ContextCompat.getColor(requireContext(), R.color.endfield_progress_track)
         val account = effectiveAccount(state)
         updateAttendanceStatus(account)
         val cache = state.endfieldStaminaCache?.takeIf { it.isValid && it.uid == account?.uid }
@@ -190,7 +170,7 @@ class EndfieldHome : Fragment() {
                 else R.string.home_realtime_not_synced)
             card.LastSync.setText(if (account == null) R.string.home_realtime_login_hint
                 else R.string.home_realtime_sync_hint)
-            card.Current.visibility = View.GONE
+            card.Current.text = "—"
             card.Max.visibility = View.GONE
             card.SanityProgress.visibility = View.GONE
             card.Freshness.visibility = View.GONE
@@ -198,8 +178,9 @@ class EndfieldHome : Fragment() {
         }
         val now = System.currentTimeMillis() / 1000
         val age = (now - cache.sampledAt).coerceAtLeast(0)
-        card.LastSync.text = getLastUpdateStr(age).let { if (it.isEmpty()) "刚刚" else "${it}前" }
-        card.Current.visibility = View.VISIBLE
+        val lastSync = getLastUpdateStr(age).let { if (it.isEmpty()) "刚刚" else "${it}前" }
+        card.LastSync.text = getString(R.string.home_updated_at, lastSync)
+
         card.Max.visibility = View.VISIBLE
         val current = if (cache.fullAt > 0 && now >= cache.fullAt) cache.maximum else cache.current
         card.Current.text = current.toString()
@@ -211,7 +192,7 @@ class EndfieldHome : Fragment() {
                 getRemainTimeStr((cache.fullAt - now).coerceAtLeast(0)))
         }
         card.SanityProgress.visibility = View.VISIBLE
-        card.SanityProgress.max = cache.maximum.coerceAtLeast(1).coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
+        card.SanityProgress.max = cache.maximum.coerceIn(1L, Int.MAX_VALUE.toLong()).toInt()
         card.SanityProgress.progress = current.coerceIn(0, card.SanityProgress.max.toLong()).toInt()
         card.Freshness.visibility = if (age >= CACHE_STALE_SECONDS) View.VISIBLE else View.GONE
     }
@@ -267,14 +248,6 @@ class EndfieldHome : Fragment() {
 
     private fun ChipRoundBinding.setup(info: FuncChipInfo) {
         Icon.setImageResource(info.icon)
-        ImageViewCompat.setImageTintList(
-            Icon,
-            ContextCompat.getColorStateList(requireContext(), info.colors.icon),
-        )
-        ViewCompat.setBackgroundTintList(
-            Icon,
-            ContextCompat.getColorStateList(requireContext(), info.colors.container),
-        )
         Title.setText(info.title)
     }
 
@@ -284,12 +257,7 @@ class EndfieldHome : Fragment() {
             Icon,
             ContextCompat.getColorStateList(requireContext(), R.color.endfield_on_surface_accent),
         )
-        ViewCompat.setBackgroundTintList(
-            Icon,
-            ContextCompat.getColorStateList(requireContext(), R.color.endfield_accent_container),
-        )
         Title.setText(info.title)
-        Subtitle.setText(R.string.endfield_entry_pending)
         Layout.isClickable = false
         Layout.isFocusable = false
     }

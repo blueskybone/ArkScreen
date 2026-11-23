@@ -1,6 +1,7 @@
 package com.blueskybone.arkscreen.ui.main
 
 import android.content.Intent
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -42,51 +43,12 @@ class Setting : Fragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         _binding = FragmentSettingBinding.inflate(inflater)
         setUpBinding()
-        styleSettingRows()
         return binding.root
     }
 
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
-    }
-
-    private fun styleSettingRows() {
-        fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
-        val primary = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.function_text_primary)
-        val secondary = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.function_text_secondary)
-        val rows = listOf(
-            binding.AppTheme.root, binding.ShowHomeAnnounce.root, binding.AutoUpdateApp.root,
-            binding.UseInnerWeb.root, binding.TimeCorrect.root, binding.CheckLogs.root, binding.AboutEntry.root,
-        )
-        rows.forEach { row ->
-            val detail = row === binding.TimeCorrect.root
-            val hasSwitch = row.findViewById<View>(R.id.Switch) != null
-            if (!detail) row.minimumHeight = dp(56)
-            val verticalPadding = if (detail) 2 else if (hasSwitch) 4 else 10
-            row.setPaddingRelative(dp(20), dp(verticalPadding), dp(20), dp(verticalPadding))
-            row.background = null
-            (row as? android.widget.LinearLayout)?.gravity = android.view.Gravity.CENTER_VERTICAL
-            row.findViewById<android.widget.ImageView>(R.id.Icon)?.apply {
-                layoutParams = layoutParams.apply { width = dp(20); height = dp(20) }
-                imageTintList = android.content.res.ColorStateList.valueOf(secondary)
-            }
-            row.findViewById<android.widget.TextView>(R.id.Title)?.apply {
-                textSize = 16f
-                typeface = android.graphics.Typeface.create("sans-serif", android.graphics.Typeface.NORMAL)
-                setTextColor(primary)
-            }
-            row.findViewById<android.widget.TextView>(R.id.Value)?.apply {
-                textSize = if (detail) 13f else 14f
-                setTextColor(secondary)
-            }
-        }
-        (binding.AboutEntry.root as ViewGroup).let { row ->
-            (row.getChildAt(row.childCount - 1) as? android.widget.ImageView)?.apply {
-                setImageResource(R.drawable.ic_function_chevron)
-                imageTintList = android.content.res.ColorStateList.valueOf(secondary)
-            }
-        }
     }
 
     private fun setUpBinding() {
@@ -131,11 +93,17 @@ class Setting : Fragment() {
             onClick = appThemeController::applySavedTheme
         )
 
-        PreferenceBinder.bindPreferenceText(
-            binding = binding.CheckLogs,
-            icon = R.drawable.ic_log,
-            text = R.string.log_manager
-        )
+        binding.CheckLogs.Title.setText(R.string.log_manager)
+        binding.CheckLogs.Icon.setImageResource(R.drawable.ic_log)
+
+        binding.DataInfo.Title.setText(R.string.about_data_info)
+        binding.DataInfo.Icon.setImageResource(R.drawable.ic_function_permission)
+        binding.DataInfo.Layout.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.about_data_info)
+                .setMessage(R.string.about_data_description)
+                .setPositiveButton(R.string.confirm, null).show()
+        }
 
         binding.AboutEntry.Title.setText(R.string.about_page_title)
         binding.AboutEntry.Icon.setImageResource(R.drawable.ic_info)

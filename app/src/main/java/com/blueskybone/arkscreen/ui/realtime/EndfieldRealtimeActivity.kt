@@ -1,5 +1,7 @@
 package com.blueskybone.arkscreen.ui.realtime
 
+import com.blueskybone.arkscreen.ui.account.common.showAccountChoices
+import androidx.appcompat.widget.ListPopupWindow
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -43,7 +45,7 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.AccountSelector.root.setOnClickListener { chooseAccount() }
+        binding.FallbackAccount.root.setOnClickListener(::chooseAccount)
         binding.RefreshButton.setOnClickListener { model.refresh() }
         binding.Starter.setOnClickListener {
             launchApp("com.hypergryph.endfield") {
@@ -60,11 +62,7 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
     private fun render(state: EndfieldRealtimeUiState) {
         currentState = state
         val selected = state.accounts.firstOrNull { it.uid == state.selectedUid }
-        binding.AccountSelector.CurrentAccount.text = selected?.nickName ?: getString(R.string.endfield_choose_account)
-        binding.AccountSelector.Server.visibility = if (selected == null) View.GONE else View.VISIBLE
-        binding.AccountSelector.Server.setText(if (selected?.official == true) R.string.official_server else R.string.bilibili_server)
-        binding.AccountSelector.Server.backgroundTintList = androidx.core.content.ContextCompat.getColorStateList(this, R.color.endfield_accent_container)
-        binding.AccountSelector.Server.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.grey_900))
+        binding.FallbackAccount.CurrentAccount.text = selected?.nickName ?: getString(R.string.endfield_choose_account)
         binding.RefreshButton.isEnabled = selected != null && !state.loading
         binding.Loading.visibility = if (state.loading) View.VISIBLE else View.GONE
         binding.Starter.visibility = if (state.snapshot != null && !state.loading && state.error == null) {
@@ -72,6 +70,7 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
         } else {
             View.GONE
         }
+        binding.FallbackAccount.root.visibility = if (!state.loading && state.error == null && state.snapshot?.profile != null) View.GONE else View.VISIBLE
         binding.ProfileContainer.removeAllViews()
         binding.MetricsContainer.removeAllViews()
         binding.DomainsContainer.removeAllViews()
@@ -145,7 +144,9 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
         val card = ItemEndfieldRealtimeProfileBinding.inflate(
             layoutInflater, binding.ProfileContainer, false,
         )
-        card.Name.text = profile.name?.takeIf(String::isNotBlank)
+        card.AccountSelector.root.setOnClickListener(::chooseAccount)
+        card.AccountSelector.CurrentAccount.text = currentState.accounts.firstOrNull { it.uid == currentState.selectedUid }?.nickName
+            ?: profile.name?.takeIf(String::isNotBlank)
             ?: getString(R.string.endfield_unnamed_player)
         card.Level.visibility = if (profile.level == null) View.GONE else View.VISIBLE
         profile.level?.let { card.Level.text = getString(R.string.realtime_level, it) }
@@ -225,26 +226,25 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
     private fun format(value: EndfieldProgress): String =
         "${value.value?.toString() ?: "—"} / ${value.maximum?.toString() ?: "—"}"
 
-    private fun chooseAccount() {
+    private var accountPopup: ListPopupWindow? = null
+
+    private fun chooseAccount(anchor: View) {
         val accounts = currentState.accounts
         if (accounts.isEmpty()) {
             startActivity(Intent(this, AccountMngActivity::class.java))
             return
         }
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.endfield_choose_account)
-            .setSingleChoiceItems(
-                accounts.map { it.nickName }.toTypedArray(),
-                accounts.indexOfFirst { it.uid == currentState.selectedUid },
-            ) { dialog, index ->
-                model.select(accounts[index].uid)
-                dialog.dismiss()
-            }
-            .show()
+        accountPopup = showAccountChoices(anchor, accounts, currentState.selectedUid) { account ->
+            model.select(account.uid)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
+    }
+    override fun onDestroy() {
+        accountPopup?.dismiss()
+        super.onDestroy()
     }
 }

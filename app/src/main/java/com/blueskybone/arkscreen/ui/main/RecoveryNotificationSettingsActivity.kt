@@ -1,12 +1,9 @@
 package com.blueskybone.arkscreen.ui.main
 
-import android.Manifest
-import android.os.Build
 import android.os.Bundle
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -29,13 +26,6 @@ class RecoveryNotificationSettingsActivity : AppCompatActivity() {
     private val reminders: RecoveryReminderController by inject()
     private val accounts: AccountRepository by inject()
     private val getRealTime: GetRealTimeUseCase by inject()
-    private val permissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        if (!granted) Toaster.show(getString(R.string.recovery_notifications_permission))
-    }
-
-    private lateinit var enabled: MaterialSwitch
     private lateinit var apFull: MaterialSwitch
     private lateinit var apEarly: MaterialSwitch
     private lateinit var trainDone: MaterialSwitch
@@ -54,7 +44,7 @@ class RecoveryNotificationSettingsActivity : AppCompatActivity() {
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         val toolbar = MaterialToolbar(this).apply {
             title = getString(R.string.recovery_notifications)
-            setNavigationIcon(androidx.appcompat.R.drawable.abc_ic_ab_back_material)
+            setNavigationIcon(R.drawable.ic_left_arrow)
             setNavigationOnClickListener { finish() }
         }
         root.addView(toolbar)
@@ -80,9 +70,6 @@ class RecoveryNotificationSettingsActivity : AppCompatActivity() {
             textSize = 13f
             setPadding(dp(8), dp(6), dp(8), dp(6))
         })
-        val general = addCard(content, R.string.recovery_notifications)
-        enabled = addSwitch(general, R.string.recovery_notifications_enable,
-            settings.recoveryNotificationsEnabled.get())
         val sanity = addCard(content, R.string.realtime_sanity)
         apFull = addSwitch(sanity, R.string.recovery_notifications_ap_full,
             settings.notifyApFull.get())
@@ -118,12 +105,9 @@ class RecoveryNotificationSettingsActivity : AppCompatActivity() {
             settings.notifyRecruitRefresh.get())
 
         fun updateControls() {
-            listOf(apFull, apEarly, trainDone, trainShift, labor, meeting, recruit, refresh)
-                .forEach { it.isEnabled = enabled.isChecked }
-            apLeadButton.isEnabled = enabled.isChecked && apEarly.isChecked
-            shiftLeadButton.isEnabled = enabled.isChecked && trainShift.isChecked
+            apLeadButton.isEnabled = apEarly.isChecked
+            shiftLeadButton.isEnabled = trainShift.isChecked
         }
-        enabled.setOnCheckedChangeListener { _, _ -> updateControls() }
         apEarly.setOnCheckedChangeListener { _, _ -> updateControls() }
         trainShift.setOnCheckedChangeListener { _, _ -> updateControls() }
         updateControls()
@@ -136,7 +120,6 @@ class RecoveryNotificationSettingsActivity : AppCompatActivity() {
     }
 
     private fun saveSettings() {
-        settings.recoveryNotificationsEnabled.set(enabled.isChecked)
         settings.notifyApFull.set(apFull.isChecked)
         settings.notifyApEarly.set(apEarly.isChecked)
         settings.notifyApEarlyMinutes.set(apLead)
@@ -149,12 +132,7 @@ class RecoveryNotificationSettingsActivity : AppCompatActivity() {
         settings.notifyRecruitRefresh.set(refresh.isChecked)
         reminders.cancelAll()
         Toaster.show(getString(R.string.recovery_notifications_saved))
-        if (enabled.isChecked) {
-            if (Build.VERSION.SDK_INT >= 33 && ContextCompat.checkSelfPermission(
-                    this, Manifest.permission.POST_NOTIFICATIONS
-                ) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            }
+        if (settings.recoveryNotificationsEnabled.get()) {
             lifecycleScope.launch {
                 accounts.observeCurrentSkAcc().first()?.let { account ->
                     getRealTime(account).onFailure {

@@ -10,19 +10,13 @@
         android:orientation="horizontal"
         android:padding="16dp">
 
-        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center_horizontal">
-                        <com.google.android.material.imageview.ShapeableImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/Avatar"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:contentDescription="@null"
             android:src="@drawable/ic_user"
             app:shapeAppearanceOverlay="@style/RoundedImageView" />
-                        <TextView
-                    android:id="@+id/Level"
-                    android:layout_marginTop="4dp" style="@style/Widget.ArkScreen.MetadataLabel"
-                    android:visibility="gone" />
-                    </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -31,21 +25,20 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
+            <include android:id="@+id/AccountSelector" layout="@layout/card_account_selector" />
+
             <TextView
-                android:id="@+id/Name" android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textSize="16sp" android:textStyle="bold" />
+                    android:id="@+id/Level"
+                    android:layout_marginTop="4dp" style="@style/Widget.ArkScreen.CompactCapsule"
+                    android:visibility="gone" />
 
             <TextView
                     android:id="@+id/WorldLevel"
-                    style="@style/Widget.ArkScreen.MetadataLabel"
+                    style="@style/Widget.ArkScreen.CompactCapsule"
                     android:layout_marginTop="4dp"
                     android:visibility="gone" />
 
-            <TextView android:id="@+id/LastLogin" style="@style/Widget.ArkScreen.InlineHint"
+            <TextView android:id="@+id/LastLogin" style="@style/Widget.ArkScreen.CompactCapsule"
                             android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="5dp" />
 
             <LinearLayout

@@ -1,5 +1,12 @@
 package com.blueskybone.arkscreen.ui.main
 
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
+import com.blueskybone.arkscreen.domain.repository.AccountRepository
+import com.blueskybone.arkscreen.domain.usecase.realtime.GetRealTimeUseCase
+import com.blueskybone.arkscreen.platform.notification.RecoveryReminderController
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import android.Manifest
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
@@ -60,6 +67,12 @@ class Function : Fragment() {
     private val prefManager: SettingPrefManager by getKoin().inject()
     private val innerPrefManager: InnerPrefManager by getKoin().inject()
     private val alarmController: AttendanceAlarmController by getKoin().inject()
+    private val reminders: RecoveryReminderController by getKoin().inject()
+    private val accounts: AccountRepository by getKoin().inject()
+    private val getRealTime: GetRealTimeUseCase by getKoin().inject()
+    private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (!granted) Toaster.show(getString(R.string.recovery_notifications_permission))
+    }
     private val model: MainModel by activityViewModel()
 
     private val binding get() = _binding!!
@@ -77,12 +90,6 @@ class Function : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpBinding()
-        stylePreferenceRows()
-        bindChoicePopup(binding.RecruitMode.root, binding.RecruitMode.Value, RecruitMode, prefManager.recruitMode)
-        bindChoicePopup(binding.ScreenShotDelay.root, binding.ScreenShotDelay.Value, ScDelay, prefManager.screenShotDelay)
-        bindChoicePopup(binding.WidgetRefresh.root, binding.WidgetRefresh.Value, WidgetUpdateFreq, prefManager.widgetUpdateFreq) {
-            WidgetWorkScheduler.ensureScheduled(requireContext())
-        }
         renderGroupStatus()
         setUpAccordion()
     }
@@ -92,119 +99,7 @@ class Function : Fragment() {
         if (_binding != null) renderGroupStatus()
     }
 
-    /** Scope the roomier setting rows to this page; shared preference layouts stay unchanged. */
-    private fun stylePreferenceRows() {
-        fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
-        val color = ContextCompat.getColorStateList(requireContext(), R.color.function_text_secondary)
-        (binding.WidgetAppearance.root as ViewGroup).let { row ->
-            (row.getChildAt(row.childCount - 1) as? android.widget.ImageView)?.apply {
-                setImageResource(R.drawable.ic_function_chevron)
-                imageTintList = color
-            }
-        }
-        val rows = listOf(
-            binding.RecruitMode.root, binding.ScreenShotDelay.root,
-            binding.PowerSavingMode.root, binding.WidgetRefresh.root,
-            binding.WidgetAppearance.root, binding.BackAutoAtd.root, binding.SetAtdTime.root,
-        )
-        rows.forEach { row ->
-            val detail = row === binding.SetAtdTime.root
-            if (!detail) row.minimumHeight = dp(56)
-            // MaterialSwitch already reserves a 48dp touch target: 48 + 4 + 4 = 56.
-            val verticalPadding = if (detail) 2 else if (row === binding.PowerSavingMode.root ||
-                row === binding.BackAutoAtd.root) 4 else 10
-            row.setPaddingRelative(dp(20), dp(verticalPadding), dp(20), dp(verticalPadding))
-            (row as? android.widget.LinearLayout)?.gravity = android.view.Gravity.CENTER_VERTICAL
-            row.findViewById<android.widget.ImageView>(R.id.Icon)?.apply {
-                layoutParams = layoutParams.apply { width = dp(20); height = dp(20) }
-                imageTintList = color
-            }
-            row.findViewById<android.widget.TextView>(R.id.Title)?.apply {
-                setTextColor(ContextCompat.getColor(requireContext(), R.color.function_text_primary))
-                setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 16f)
-                setTypeface(android.graphics.Typeface.create("sans-serif", android.graphics.Typeface.NORMAL))
-            }
-            row.findViewById<android.widget.TextView>(R.id.Value)?.apply {
-                setTextColor(color)
-                if (row !== binding.SetAtdTime.root) setPaddingRelative(dp(8), 0, 0, 0)
-            }
-        }
-    }
-
-    private var choicePopup: androidx.appcompat.widget.ListPopupWindow? = null
-
-    private fun bindChoicePopup(
-        row: View,
-        value: android.widget.TextView,
-        info: com.blueskybone.arkscreen.ui.common.bindinginfo.ListInfo,
-        pref: com.blueskybone.arkscreen.data.local.pref.preference.Preference<String>,
-        onChanged: () -> Unit = {},
-    ) {
-        fun dp(n: Int) = (n * resources.displayMetrics.density).toInt()
-        value.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_function_select, 0)
-        androidx.core.widget.TextViewCompat.setCompoundDrawableTintList(value,
-            ContextCompat.getColorStateList(requireContext(), R.color.function_text_secondary))
-        value.compoundDrawablePadding = dp(4)
-        row.setOnClickListener {
-            choicePopup?.dismiss()
-            val entries = info.getEntries(requireContext())
-            val values = info.getEntryValues()
-            val selected = values.indexOf(pref.get()).takeIf { it >= 0 }
-                ?: values.indexOf(info.defaultValue)
-            val popup = androidx.appcompat.widget.ListPopupWindow(requireContext())
-            popup.anchorView = value
-            popup.setDropDownGravity(android.view.Gravity.END)
-            val labelPaint = android.widget.TextView(requireContext()).apply { textSize = 16f }.paint
-            val markPaint = android.widget.TextView(requireContext()).apply { textSize = 18f }.paint
-            val labelWidth = entries.maxOfOrNull { labelPaint.measureText(it) } ?: 0f
-            val contentWidth = kotlin.math.ceil(labelWidth + markPaint.measureText("✓")).toInt() + dp(44)
-            popup.width = minOf(contentWidth, resources.displayMetrics.widthPixels - dp(32))
-            popup.isModal = true
-            popup.setBackgroundDrawable(android.graphics.drawable.GradientDrawable().apply {
-                cornerRadius = dp(20).toFloat()
-                setColor(ContextCompat.getColor(requireContext(), R.color.app_surface))
-            })
-            popup.setAdapter(object : android.widget.ArrayAdapter<String>(requireContext(), 0, entries) {
-                override fun getView(position: Int, convertView: View?, parent: ViewGroup): View =
-                    android.widget.LinearLayout(context).apply {
-                        orientation = android.widget.LinearLayout.HORIZONTAL
-                        gravity = android.view.Gravity.CENTER_VERTICAL
-                        minimumHeight = dp(48)
-                        setPadding(dp(16), dp(8), dp(16), dp(8))
-                        addView(android.widget.TextView(context).apply {
-                            text = entries[position]
-                            textSize = 16f
-                            setTextColor(ContextCompat.getColor(context, R.color.function_text_primary))
-                        }, android.widget.LinearLayout.LayoutParams(0, -2, 1f))
-                        addView(android.widget.TextView(context).apply {
-                            text = if (position == selected) "✓" else ""
-                            textSize = 18f
-                            setPadding(dp(12), 0, 0, 0)
-                            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
-                            setTextColor(ContextCompat.getColor(context, R.color.function_text_primary))
-                        })
-                        isSelected = position == selected
-                    }
-            })
-            popup.setOnItemClickListener { _, _, position, _ ->
-                pref.set(values[position])
-                value.text = entries[position]
-                popup.dismiss()
-                onChanged()
-            }
-            choicePopup = popup
-            popup.show()
-            popup.listView?.apply {
-                choiceMode = android.widget.ListView.CHOICE_MODE_SINGLE
-                setItemChecked(selected, true)
-                setSelection(selected)
-            }
-        }
-    }
-
     override fun onDestroyView() {
-        choicePopup?.dismiss()
-        choicePopup = null
         super.onDestroyView()
         _binding = null
     }
@@ -247,7 +142,32 @@ class Function : Fragment() {
         binding.WidgetAppearance.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), WidgetTemplateLabActivity::class.java))
         }
-        binding.RecoveryNotificationEntry.setOnClickListener {
+        PreferenceBinder.bindSwitch(binding.RecoveryEnabled, R.drawable.ic_recovery_bell,
+            R.string.recovery_push_notifications, prefManager.recoveryNotificationsEnabled,
+            onCall = {
+                if (Build.VERSION.SDK_INT >= 33 && ContextCompat.checkSelfPermission(requireContext(),
+                        Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+                lifecycleScope.launch {
+                    accounts.observeCurrentSkAcc().first()?.let { account ->
+                        getRealTime(account).onFailure { Toaster.show(getString(R.string.recovery_notifications_sync_failed)) }
+                    }
+                }
+            },
+            offCall = { reminders.cancelAll() },
+        )
+        binding.RecoveryEnabled.root.setOnClickListener { binding.RecoveryEnabled.Switch.toggle() }
+        binding.RecoverySettings.Title.setText(R.string.recovery_settings_entry)
+        binding.RecoverySettings.Icon.setImageResource(R.drawable.ic_recovery_settings)
+        binding.RecoveryPermissions.Title.setText(R.string.permission_requirements)
+        binding.RecoveryPermissions.Icon.setImageResource(R.drawable.ic_function_permission)
+        binding.RecoveryPermissions.root.setOnClickListener {
+            PreferenceDialog(requireContext()).add(R.string.notify_permission, R.string.notify_permission_detail) {
+                (activity as? MainActivity)?.openNotificationSettings(requireContext())
+            }.show()
+        }
+        binding.RecoverySettings.root.setOnClickListener {
             startActivity(Intent(requireContext(), RecoveryNotificationSettingsActivity::class.java))
         }
 
@@ -421,12 +341,15 @@ class Function : Fragment() {
         RECRUIT(1),
         WIDGET(2),
         ATTENDANCE(4),
+        RECOVERY(8),
     }
 
     private fun setUpAccordion() {
         binding.RecruitHeader.setOnClickListener { toggleGroup(FunctionGroup.RECRUIT) }
         binding.WidgetHeader.setOnClickListener { toggleGroup(FunctionGroup.WIDGET) }
         binding.AttendanceHeader.setOnClickListener { toggleGroup(FunctionGroup.ATTENDANCE) }
+
+        binding.RecoveryHeader.setOnClickListener { toggleGroup(FunctionGroup.RECOVERY) }
 
         val stored = innerPrefManager.functionExpandedGroup.get()
         val initial = if (stored == -1) {
@@ -462,6 +385,9 @@ class Function : Fragment() {
             if (isExpanded(FunctionGroup.WIDGET)) View.VISIBLE else View.GONE
         binding.AttendanceContent.visibility =
             if (isExpanded(FunctionGroup.ATTENDANCE)) View.VISIBLE else View.GONE
+
+        binding.RecoveryContent.visibility = if (isExpanded(FunctionGroup.RECOVERY)) View.VISIBLE else View.GONE
+        binding.RecoveryExpand.animateToGroupState(isExpanded(FunctionGroup.RECOVERY), animate)
 
         binding.RecruitExpand.animateToGroupState(isExpanded(FunctionGroup.RECRUIT), animate)
         binding.WidgetExpand.animateToGroupState(isExpanded(FunctionGroup.WIDGET), animate)

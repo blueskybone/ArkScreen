@@ -2,11 +2,16 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/cyan_500</item>
-        <item name="colorPrimaryDark">@color/cyan_700</item>
+        <item name="homeAsUpIndicator">@drawable/ic_left_arrow</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_left_arrow</item>
+        <item name="colorPrimary">@color/rare_3</item>
+        <item name="colorPrimaryDark">@color/blue_600</item>
         <item name="colorSecondary">?attr/colorPrimary</item>
         <item name="materialAlertDialogTheme">@style/ArkAlertTheme</item>
         <item name="bottomSheetDialogTheme">@style/ArkSheetTheme</item>
+        <item name="capsuleAccentContainer">@color/tool_recruit_container</item>
+        <item name="capsuleAccentContent">@color/tool_recruit_icon</item>
+        <item name="materialCardViewStyle">@style/ArkContentCardSurface</item>
         <item name="materialSwitchStyle">@style/Widget.ArkScreen.Switch</item>
         <item name="colorSurface">@color/app_surface</item>
         <item name="colorOnSurface">@color/dark_on_surface</item>
@@ -23,12 +28,14 @@
         <item name="android:colorBackground">@color/app_background</item>
     </style>
     <style name="AppTheme.Endfield" parent="AppTheme">
+        <item name="capsuleAccentContainer">@color/endfield_accent_container</item>
+        <item name="capsuleAccentContent">@color/endfield_on_surface_accent</item>
         <item name="colorPrimary">@color/endfield_primary</item>
         <item name="colorPrimaryDark">@color/endfield_primary_dark</item>
         <item name="colorSecondary">@color/endfield_primary</item>
         <item name="colorOnPrimary">@color/grey_900</item>
     </style>
-    <style name="CardViewContent" parent="Widget.MaterialComponents.CardView">
+    <style name="CardViewContent" parent="ArkContentCardSurface">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">16dp</item>
@@ -39,7 +46,7 @@
         <item name="cardBackgroundColor">@color/app_surface</item>
     </style>
 
-    <style name="CardViewChip" parent="Widget.MaterialComponents.CardView">
+    <style name="CardViewChip" parent="ArkContentCardSurface">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="cardCornerRadius">@dimen/card_corner_radius</item>

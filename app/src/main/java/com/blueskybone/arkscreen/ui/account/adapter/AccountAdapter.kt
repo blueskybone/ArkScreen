@@ -86,7 +86,7 @@ class AccountAdapter(
 
             binding.Icon.setImageResource(
                 if (account.official) R.drawable.hg_icon_80x80
-                else R.drawable.bili_icon_75x71
+                else R.drawable.ic_account_bilibili
             )
 
             binding.Checked.visibility =

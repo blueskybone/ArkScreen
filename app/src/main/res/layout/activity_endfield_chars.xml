@@ -29,6 +29,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/AccountButton"
+            app:icon="@drawable/ic_function_select" app:iconGravity="textEnd" app:iconSize="16dp"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

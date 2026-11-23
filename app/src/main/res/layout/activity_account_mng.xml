@@ -26,7 +26,8 @@
             android:orientation="vertical">
 
             <com.google.android.material.card.MaterialCardView
-                style="@style/CardViewContent"
+                style="@style/HomeCard"
+                app:strokeWidth="0dp"
                 android:layout_marginTop="10dp">
 
                 <LinearLayout
@@ -49,6 +50,7 @@
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:contentDescription="@null"
+                            app:tint="@color/home_text_primary"
                             android:src="@drawable/ic_skland" />
 
                         <LinearLayout
@@ -83,30 +85,27 @@
                             android:src="@drawable/ic_info"
                             android:visibility="gone"
                             app:tint="?attr/colorOnSurface" />
+
+                        <ImageButton
+                            android:id="@+id/AddAccountSk"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/add_skland_account"
+                            android:padding="12dp"
+                            android:src="@drawable/ic_add"
+                            app:tint="@color/home_text_primary" />
                     </LinearLayout>
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/AddAccountSk"
-                        style="@style/Widget.ArkScreen.SectionAction.Tonal"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="16dp"
-                        android:text="@string/add_skland_account"
-                        app:icon="@drawable/ic_add" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="?android:attr/listDivider" />
 
                     <TextView
                         android:id="@+id/ArknightsHeader"
-                        style="@style/PreferenceHeader"
+                        style="@style/HomeCardHeading"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingTop="14dp"
+                        android:paddingTop="12dp"
                         android:text="@string/arknights_accounts" />
 
                     <FrameLayout
@@ -131,19 +130,22 @@
                             android:textAppearance="?attr/textAppearanceBody2" />
                     </FrameLayout>
 
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
-                        android:background="?android:attr/listDivider" />
+                        android:background="@color/function_divider" />
 
                     <TextView
                         android:id="@+id/EndfieldHeader"
-                        style="@style/PreferenceHeader"
+                        style="@style/HomeCardHeading"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingTop="14dp"
+                        android:paddingTop="12dp"
                         android:text="@string/endfield_accounts" />
 
                     <FrameLayout
@@ -172,7 +174,8 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/GachaCard"
-                style="@style/CardViewContent">
+                style="@style/HomeCard"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -229,18 +232,17 @@
                             android:src="@drawable/ic_info"
                             android:visibility="gone"
                             app:tint="?attr/colorOnSurface" />
-                    </LinearLayout>
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/AddAccountGc"
-                        style="@style/Widget.ArkScreen.SectionAction.Tonal"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="16dp"
-                        android:text="@string/add_gacha_account"
-                        app:icon="@drawable/ic_add" />
+                        <ImageButton
+                            android:id="@+id/AddAccountGc"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/add_gacha_account"
+                            android:padding="12dp"
+                            android:src="@drawable/ic_add"
+                            app:tint="@color/home_text_primary" />
+                    </LinearLayout>
 
                     <FrameLayout
                         android:layout_width="match_parent"

@@ -1,6 +1,8 @@
 package com.blueskybone.arkscreen.ui.main
 
 
+import com.blueskybone.arkscreen.ui.account.common.showAccountChoices
+import androidx.appcompat.widget.ListPopupWindow
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
@@ -14,8 +16,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -25,7 +25,6 @@ import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.databinding.CardApCacheBinding
 import com.blueskybone.arkscreen.databinding.ChipRoundBinding
 import com.blueskybone.arkscreen.databinding.FragmentHomeBinding
-import com.blueskybone.arkscreen.domain.model.account.Account
 import com.blueskybone.arkscreen.domain.model.account.AccountSk
 import com.blueskybone.arkscreen.domain.model.account.AccountType
 import com.blueskybone.arkscreen.domain.repository.AttendanceStateRepository
@@ -34,8 +33,6 @@ import com.blueskybone.arkscreen.domain.service.AppClock
 import com.blueskybone.arkscreen.domain.usecase.account.SyncAccountSkUseCase
 import com.blueskybone.arkscreen.ui.account.AccountMngActivity
 import com.blueskybone.arkscreen.ui.account.LoginWeb
-import com.blueskybone.arkscreen.ui.account.adapter.AccountAdapter
-import com.blueskybone.arkscreen.ui.account.model.AccountItemAction
 import com.blueskybone.arkscreen.ui.character.CharAssets
 import com.blueskybone.arkscreen.ui.common.adapter.ItemListener
 import com.blueskybone.arkscreen.ui.common.bindinginfo.AccountManager
@@ -83,9 +80,9 @@ class Home : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var linkAdapter: LinkGridAdapter
-    private lateinit var accountAdapter: AccountAdapter
     private lateinit var dialogController: HomeDialogController
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+    private var accountPopup: ListPopupWindow? = null
     private lateinit var bannerController: HomeBannerController
     private var attendanceKey: String? = null
     private var attendanceJob: Job? = null
@@ -114,50 +111,7 @@ class Home : Fragment() {
         initAdapters()
         initController()
         setupBinding()
-        applyHomeVisualHierarchy()
         collectUiState()
-    }
-
-    private fun applyHomeVisualHierarchy() {
-        val primary = ContextCompat.getColor(requireContext(), R.color.home_text_primary)
-        val secondary = ContextCompat.getColor(requireContext(), R.color.home_text_secondary)
-        val neutralTint = android.content.res.ColorStateList.valueOf(secondary)
-        binding.ApCacheCard.apply {
-            Current.setTextColor(primary)
-            Current.textSize = 40f
-            Max.setTextColor(secondary)
-            Max.textSize = 16f
-            Max.setTypeface(android.graphics.Typeface.DEFAULT)
-            (Max.layoutParams as android.widget.LinearLayout.LayoutParams).gravity =
-                android.view.Gravity.CENTER_VERTICAL
-            RestTime.setTextColor(secondary)
-            RestTime.textSize = 13f
-            LastSync.setTextColor(secondary)
-            LastSync.textSize = 11f
-        }
-        listOf(binding.CoreGroup.CoreAssets, binding.CoreGroup.CoreGacha).forEach { tile ->
-            tile.Layout.strokeWidth = 0
-            (tile.Layout.getChildAt(0) as View).apply {
-                minimumHeight = (68 * resources.displayMetrics.density).toInt()
-                val pad = (10 * resources.displayMetrics.density).toInt()
-                setPadding(pad, pad, pad, pad)
-            }
-            tile.Icon.imageTintList = neutralTint
-            tile.Icon.background = null
-            tile.Icon.setPadding(0, 0, 0, 0)
-            tile.Icon.layoutParams = tile.Icon.layoutParams.apply {
-                width = (21 * resources.displayMetrics.density).toInt()
-                height = width
-            }
-            tile.Title.setTextColor(primary)
-            tile.Subtitle.setTextColor(secondary)
-        }
-        listOf(binding.RecruitCalc, binding.GameStarter, binding.Attendance, binding.AccountManager)
-            .forEach { item ->
-                item.Icon.imageTintList = neutralTint
-                item.Icon.background = null
-                item.Title.setTextColor(primary)
-            }
     }
 
     override fun onResume() {
@@ -177,7 +131,6 @@ class Home : Fragment() {
         dialogController = HomeDialogController(
             fragment = this,
             viewModel = viewModel,
-            accountAdapter = accountAdapter,
             onLaunchWebLogin = {
                 val intent = LoginWeb.startIntent(
                     requireContext(),
@@ -210,22 +163,8 @@ class Home : Fragment() {
 
     private fun initAdapters() {
         linkAdapter = LinkGridAdapter(linkListener)
-        accountAdapter = AccountAdapter(createItemAction())
     }
 
-
-    private fun createItemAction(): AccountItemAction {
-        return object : AccountItemAction {
-            override fun onClick(account: Account) {
-                viewModel.setDefaultAccountSk(account as AccountSk)
-                dialogController.dismissPopup()
-                Toaster.show(getString(R.string.set_default_account, account.nickName))
-            }
-
-            override fun onLongClick(account: Account) {
-            }
-        }
-    }
 
     private fun collectUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
@@ -247,7 +186,6 @@ class Home : Fragment() {
             currentAccount?.nickName ?: getString(R.string.login_account)
         binding.LoginGuide.visibility =
             if (currentAccount == null) View.VISIBLE else View.GONE
-        accountAdapter.submitList(state.accountSkList)
     }
 
     private fun renderAnnounce(state: MainUiState) {
@@ -259,7 +197,7 @@ class Home : Fragment() {
 
     private fun renderLinks(state: MainUiState) {
         linkAdapter.submitList(state.links)
-        binding.LinkCard.visibility =
+        binding.ExLinks.visibility =
             if (state.links.isEmpty()) View.GONE else View.VISIBLE
     }
 
@@ -285,7 +223,7 @@ class Home : Fragment() {
             account == null -> {
                 card.RestTime.setText(R.string.home_realtime_login_required)
                 card.LastSync.setText(R.string.home_realtime_login_hint)
-                card.Current.visibility = View.GONE
+                card.Current.text = "—"
                 card.Max.visibility = View.GONE
                 card.SanityProgress.visibility = View.GONE
                 card.Freshness.visibility = View.GONE
@@ -293,13 +231,13 @@ class Home : Fragment() {
             value == null || value.isnull -> {
                 card.RestTime.setText(R.string.home_realtime_not_synced)
                 card.LastSync.setText(R.string.home_realtime_sync_hint)
-                card.Current.visibility = View.GONE
+                card.Current.text = "—"
                 card.Max.visibility = View.GONE
                 card.SanityProgress.visibility = View.GONE
                 card.Freshness.visibility = View.GONE
             }
             else -> {
-                card.Current.visibility = View.VISIBLE
+
                 card.Max.visibility = View.VISIBLE
                 card.bind(value)
             }
@@ -336,20 +274,24 @@ class Home : Fragment() {
 
     private fun setupBinding() {
         (requireActivity() as MainActivity).bindHomeGameControls(
-            binding.GameSelector,
-            binding.SwitchGame,
-            binding.DefaultStartup,
+            binding.GameHeader.GameSelector,
+            binding.GameHeader.SwitchGame,
+            binding.GameHeader.DefaultStartup,
         )
         binding.RealTimeData.setOnClickListener {
             startActivity(Intent(requireContext(), RealTimeActivity::class.java))
         }
 
-        binding.AccountSelector.root.setOnClickListener { view ->
-            if (!viewModel.hasSklandAccounts()) {
+        binding.AccountSelector.root.setOnClickListener { anchor ->
+            val state = viewModel.uiState.value
+            val accounts = state.accountSkList.map { it.account as AccountSk }
+            if (accounts.isEmpty()) {
                 showSklandLoginMenu()
             } else {
-                dialogController.showAccountPopup(view)
-
+                accountPopup = showAccountChoices(anchor, accounts, state.currentAccountSk?.uid) { account ->
+                    viewModel.setDefaultAccountSk(account)
+                    Toaster.show(getString(R.string.set_default_account, account.nickName))
+                }
             }
         }
 
@@ -367,39 +309,11 @@ class Home : Fragment() {
         }
         binding.CoreGroup.CoreAssets.apply {
             Icon.setImageResource(OpeAssets.icon)
-            ImageViewCompat.setImageTintList(
-                Icon,
-                android.content.res.ColorStateList.valueOf(
-                    com.google.android.material.color.MaterialColors.getColor(
-                        Icon,
-                        com.google.android.material.R.attr.colorPrimary,
-                    )
-                ),
-            )
-            ViewCompat.setBackgroundTintList(
-                Icon,
-                ContextCompat.getColorStateList(requireContext(), R.color.sec_con),
-            )
             Title.setText(OpeAssets.title)
-            Subtitle.setText(R.string.assets_entry_summary)
         }
         binding.CoreGroup.CoreGacha.apply {
             Icon.setImageResource(GachaStat.icon)
-            ImageViewCompat.setImageTintList(
-                Icon,
-                android.content.res.ColorStateList.valueOf(
-                    com.google.android.material.color.MaterialColors.getColor(
-                        Icon,
-                        com.google.android.material.R.attr.colorPrimary,
-                    )
-                ),
-            )
-            ViewCompat.setBackgroundTintList(
-                Icon,
-                ContextCompat.getColorStateList(requireContext(), R.color.sec_con),
-            )
             Title.setText(GachaStat.title)
-            Subtitle.setText(R.string.gacha_entry_summary)
         }
 
         binding.CoreGroup.CoreAssets.Layout.setOnClickListener {
@@ -495,7 +409,7 @@ class Home : Fragment() {
             if (it.isEmpty()) "刚刚" else "${it}前"
         }
 
-        LastSync.text = lastSyncStr
+        LastSync.text = getString(R.string.home_updated_at, lastSyncStr)
 
         val current = when {
             value.current >= value.max -> value.current
@@ -532,21 +446,14 @@ class Home : Fragment() {
 
     private fun ChipRoundBinding.setup(funcChipInfo: FuncChipInfo) {
         Icon.setImageResource(funcChipInfo.icon)
-        ImageViewCompat.setImageTintList(
-            Icon,
-            ContextCompat.getColorStateList(requireContext(), funcChipInfo.colors.icon),
-        )
-        ViewCompat.setBackgroundTintList(
-            Icon,
-            ContextCompat.getColorStateList(requireContext(), funcChipInfo.colors.container),
-        )
         Title.setText(funcChipInfo.title)
     }
 
 
     override fun onDestroyView() {
         bannerController.release()
-        dialogController.release()
+        accountPopup?.dismiss()
+        accountPopup = null
         binding.ExLinks.adapter = null
         _binding = null
         super.onDestroyView()

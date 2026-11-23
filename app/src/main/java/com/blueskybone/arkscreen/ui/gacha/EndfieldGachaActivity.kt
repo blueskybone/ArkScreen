@@ -1,6 +1,8 @@
 package com.blueskybone.arkscreen.ui.gacha
 
 import android.content.Intent
+import androidx.appcompat.widget.ListPopupWindow
+import com.blueskybone.arkscreen.ui.account.common.showAccountChoices
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +21,6 @@ import com.blueskybone.arkscreen.databinding.ItemEndfieldGachaBinding
 import com.blueskybone.arkscreen.databinding.ItemEndfieldGachaPoolBinding
 import com.blueskybone.arkscreen.databinding.ItemEndfieldGachaHitBinding
 import com.blueskybone.arkscreen.ui.account.AccountMngActivity
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
@@ -119,15 +120,17 @@ class EndfieldGachaActivity : AppCompatActivity() {
             startActivity(Intent(this, AccountMngActivity::class.java))
             return
         }
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.endfield_choose_account)
-            .setSingleChoiceItems(
-                current.accounts.map { it.nickName }.toTypedArray(),
-                current.accounts.indexOfFirst { it.uid == current.selectedUid },
-            ) { dialog, index ->
-                model.select(current.accounts[index].uid)
-                dialog.dismiss()
-            }.show()
+        accountPopup?.dismiss()
+        accountPopup = showAccountChoices(binding.AccountRow, current.accounts, current.selectedUid) { account ->
+            model.select(account.uid)
+        }
+    }
+
+    private var accountPopup: ListPopupWindow? = null
+
+    override fun onDestroy() {
+        accountPopup?.dismiss()
+        super.onDestroy()
     }
 
     override fun onSupportNavigateUp(): Boolean {

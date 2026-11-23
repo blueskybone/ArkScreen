@@ -16,8 +16,8 @@
         android:contentDescription="@null"
         android:padding="8dp"
         android:src="@drawable/ic_tags"
-        android:background="@drawable/text_chip"
-        app:tint="?attr/colorPrimary" />
+        android:background="@drawable/bg_home_tool_icon"
+        app:tint="@color/home_text_secondary" />
 
     <TextView
         android:id="@+id/Title"
@@ -25,5 +25,6 @@
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:textSize="12sp"
+        android:textColor="@color/home_text_primary"
         android:text="公招计算" />
 </LinearLayout>

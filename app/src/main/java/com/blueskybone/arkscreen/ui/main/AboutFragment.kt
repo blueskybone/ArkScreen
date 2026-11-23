@@ -81,7 +81,6 @@ class AboutFragment : DialogFragment() {
             Triple(binding.FeedBack, R.string.send_feedback, R.drawable.ic_feedback),
             Triple(binding.GroupChat, R.string.about_community, R.drawable.ic_group),
             Triple(binding.Diagnostics, R.string.about_diagnostics, R.drawable.ic_function_result),
-            Triple(binding.DataInfo, R.string.about_data_info, R.drawable.ic_function_permission),
             Triple(binding.Source, R.string.about_source, R.drawable.ic_link),
             Triple(binding.OpenSourceLicense, R.string.open_license, R.drawable.ic_license),
             Triple(binding.Donate, R.string.about_support, R.drawable.ic_favorite),
@@ -122,12 +121,6 @@ class AboutFragment : DialogFragment() {
                     copyToClipboard(requireContext(), info)
                     Toaster.show(getString(R.string.about_diagnostics_copied))
                 }.show()
-        }
-        binding.DataInfo.Layout.setOnClickListener {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.about_data_info)
-                .setMessage(R.string.about_data_description)
-                .setPositiveButton(R.string.confirm, null).show()
         }
         binding.OpenSourceLicense.Layout.setOnClickListener {
             startActivity(Intent(requireContext(), OpenSourceLicensesActivity::class.java))
