@@ -375,7 +375,10 @@ class Function : Fragment() {
             TransitionManager.endTransitions(binding.root)
             TransitionManager.beginDelayedTransition(
                 binding.root,
-                AutoTransition().setDuration(220L),
+                AutoTransition().apply {
+                    ordering = android.transition.TransitionSet.ORDERING_TOGETHER
+                    duration = 140L
+                },
             )
         }
 
@@ -399,7 +402,7 @@ class Function : Fragment() {
     private fun View.animateToGroupState(expanded: Boolean, animated: Boolean) {
         animate().cancel()
         if (animated) {
-            animate().rotation(if (expanded) 90f else 0f).setDuration(220L).start()
+            animate().rotation(if (expanded) 90f else 0f).setDuration(140L).start()
         } else {
             rotation = if (expanded) 90f else 0f
         }

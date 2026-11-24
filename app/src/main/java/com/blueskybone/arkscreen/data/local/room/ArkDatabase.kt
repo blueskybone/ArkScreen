@@ -31,7 +31,7 @@ import com.blueskybone.arkscreen.data.local.room.dao.LinkDao
         EndfieldGachaRecord::class,
         EndfieldGachaPool::class,
     ],
-    version = 11,
+    version = 12,
 )
 abstract class ArkDatabase : RoomDatabase() {
     abstract fun getRealtimeCacheDao(): com.blueskybone.arkscreen.data.local.room.dao.RealtimeCacheDao
@@ -59,10 +59,20 @@ abstract class ArkDatabase : RoomDatabase() {
                     DatabaseName
                 ).addMigrations(Migration2).addMigrations(Migration3).addMigrations(Migration4)
                     .addMigrations(Migration5).addMigrations(Migration6).addMigrations(Migration7)
-                    .addMigrations(Migration8).addMigrations(Migration9).addMigrations(Migration10).addMigrations(Migration11)
+                    .addMigrations(Migration8).addMigrations(Migration9).addMigrations(Migration10).addMigrations(Migration11).addMigrations(Migration12)
                     .build()
                 INSTANCE = instance
                 instance
+            }
+        }
+
+        object Migration12 : Migration(11, 12) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                listOf("theme", "layout1x2", "layout2x3", "slot1x1", "slot1x2", "slots2x2", "slots2x3").forEach {
+                    db.execSQL("ALTER TABLE WidgetConfig ADD COLUMN $it TEXT")
+                }
+                db.execSQL("ALTER TABLE WidgetConfig ADD COLUMN fontScale REAL NOT NULL DEFAULT 1.0")
+                db.execSQL("ALTER TABLE WidgetConfig ADD COLUMN transparency INTEGER NOT NULL DEFAULT 0")
             }
         }
 

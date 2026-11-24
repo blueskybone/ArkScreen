@@ -14,6 +14,13 @@ import timber.log.Timber
 class WidgetUpdateDispatcher(context: Context) {
     private val appContext = context.applicationContext
 
+    fun render(id: Int) {
+        val info = AppWidgetManager.getInstance(appContext).getAppWidgetInfo(id) ?: return
+        if (info.provider.packageName != appContext.packageName) return
+        appContext.sendBroadcast(Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
+            .setComponent(info.provider).putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, intArrayOf(id)))
+    }
+
     fun renderAll() {
         val manager = AppWidgetManager.getInstance(appContext)
         var widgetCount = 0

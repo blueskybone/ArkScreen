@@ -6,17 +6,12 @@ import androidx.appcompat.widget.ListPopupWindow
 import com.blueskybone.arkscreen.ui.account.common.showAccountChoices
 import android.os.Bundle
 import com.blueskybone.arkscreen.R
-import androidx.activity.OnBackPressedCallback
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.blueskybone.arkscreen.databinding.ActivityCharAssetsBinding
 import com.blueskybone.arkscreen.ui.account.AccountMngActivity
 import com.blueskybone.arkscreen.ui.account.LoginWeb
@@ -51,27 +46,11 @@ class CharAssets : AppCompatActivity() {
             model.reauthenticate(token, dId)
         }
     }
-    private val pageChangeCallback = object : OnPageChangeCallback() {
-        override fun onPageSelected(position: Int) {
-            renderActions()
-            binding.Toolbar.setTitle(
-                if (position == 0) com.blueskybone.arkscreen.R.string.operator_assets
-                else com.blueskybone.arkscreen.R.string.not_own
-            )
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityCharAssetsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupBinding()
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (binding.ViewPager.currentItem == 1) openAssets() else finish()
-            }
-        })
-        binding.ViewPager.setCurrentItem(savedInstanceState?.getInt(KEY_TAB) ?: 0, false)
         setupObserver()
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -81,10 +60,6 @@ class CharAssets : AppCompatActivity() {
     }
 
     private fun setupBinding() {
-        val vp = binding.ViewPager
-        vp.adapter = ViewPagerFragmentAdapter(this)
-        vp.isUserInputEnabled = false
-        vp.registerOnPageChangeCallback(pageChangeCallback)
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.RefreshButton.setOnClickListener { model.refresh() }
@@ -92,18 +67,10 @@ class CharAssets : AppCompatActivity() {
         binding.FallbackAccount.root.setOnClickListener { chooseAccount(it) }
     }
 
-    fun openMissing() {
-        binding.ViewPager.setCurrentItem(1, true)
-    }
-
-    private fun openAssets() {
-        binding.ViewPager.setCurrentItem(0, true)
-    }
-
     private var accountPopup: ListPopupWindow? = null
 
     override fun onSupportNavigateUp(): Boolean {
-        if (binding.ViewPager.currentItem == 1) openAssets() else finish()
+        finish()
         return true
     }
 
@@ -123,6 +90,7 @@ class CharAssets : AppCompatActivity() {
         model.syncingState.observe(this) { syncing ->
             binding.RefreshButton.isEnabled = !syncing && model.currentAccount.value != null
             renderLoading()
+            renderActions()
         }
     }
 
@@ -138,8 +106,8 @@ class CharAssets : AppCompatActivity() {
 
     private fun renderActions() {
         val ui = _binding ?: return
-        val assetsVisible = model.uiState.value is UiStatus.Success && ui.ViewPager.currentItem == 0
-        ui.FallbackAccount.root.visibility = if (assetsVisible) View.GONE else View.VISIBLE
+        val assetsVisible = model.uiState.value is UiStatus.Success
+        ui.FallbackAccount.root.visibility = if (assetsVisible || model.uiState.value is UiStatus.Loading || model.uiState.value == UiStatus.Idle || model.syncingState.value == true) View.GONE else View.VISIBLE
         ui.ShareButton.visibility = if (assetsVisible) View.VISIBLE else View.GONE
         ui.ShareButton.isEnabled = shareEnabled && shareAction != null
     }
@@ -149,7 +117,7 @@ class CharAssets : AppCompatActivity() {
         if (binding.Page.visibility != View.VISIBLE || binding.Loading.visibility == View.VISIBLE) {
             binding.Loading.visibility = if (syncing) View.VISIBLE else View.GONE
             binding.LoadingMessage.visibility = if (syncing) View.VISIBLE else View.GONE
-            if (syncing && binding.ViewPager.visibility == View.VISIBLE) {
+            if (syncing && binding.AssetsContent.visibility == View.VISIBLE) {
                 binding.LoadingMessage.setText(com.blueskybone.arkscreen.R.string.syncing)
             }
         }
@@ -173,7 +141,7 @@ class CharAssets : AppCompatActivity() {
         binding.LoadingMessage.text = msg
         binding.StatusIllustration.visibility = View.GONE
         binding.Page.visibility = View.GONE
-        binding.ViewPager.visibility = View.GONE
+        binding.AssetsContent.visibility = View.GONE
         binding.EmptySummary.visibility = View.GONE
         binding.EmptyAction.visibility = View.GONE
         binding.Message.text = msg
@@ -184,7 +152,7 @@ class CharAssets : AppCompatActivity() {
         binding.LoadingMessage.visibility = View.GONE
         binding.StatusIllustration.visibility = View.VISIBLE
         binding.Page.visibility = View.VISIBLE
-        binding.ViewPager.visibility = View.GONE
+        binding.AssetsContent.visibility = View.GONE
         binding.EmptySummary.visibility = View.GONE
         configureRecoveryAction(msg)
         binding.Message.text = msg
@@ -195,7 +163,7 @@ class CharAssets : AppCompatActivity() {
         binding.LoadingMessage.visibility = View.GONE
         binding.StatusIllustration.visibility = View.VISIBLE
         binding.Page.visibility = View.VISIBLE
-        binding.ViewPager.visibility = View.GONE
+        binding.AssetsContent.visibility = View.GONE
         binding.EmptySummary.visibility = View.VISIBLE
         binding.EmptyAction.visibility = View.VISIBLE
         binding.EmptyAction.setText(com.blueskybone.arkscreen.R.string.add_skland_account)
@@ -237,37 +205,13 @@ class CharAssets : AppCompatActivity() {
         binding.LoadingMessage.visibility = if (syncing) View.VISIBLE else View.GONE
         if (syncing) binding.LoadingMessage.setText(com.blueskybone.arkscreen.R.string.syncing)
         binding.Page.visibility = View.GONE
-        binding.ViewPager.visibility = View.VISIBLE
-    }
-
-    class ViewPagerFragmentAdapter(fragmentActivity: FragmentActivity) :
-        FragmentStateAdapter(fragmentActivity) {
-        override fun getItemCount(): Int {
-            return 2
-        }
-
-        override fun createFragment(position: Int): Fragment {
-            return when (position) {
-                0 -> CharOwn()
-                else -> CharNotOwn()
-            }
-        }
+        binding.AssetsContent.visibility = View.VISIBLE
     }
 
     override fun onDestroy() {
-        binding.ViewPager.unregisterOnPageChangeCallback(pageChangeCallback)
-        binding.ViewPager.adapter = null
         _binding = null
         accountPopup?.dismiss()
         super.onDestroy()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt(KEY_TAB, binding.ViewPager.currentItem)
-        super.onSaveInstanceState(outState)
-    }
-
-    private companion object {
-        const val KEY_TAB = "char_assets_tab"
-    }
 }

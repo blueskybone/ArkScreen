@@ -8,7 +8,11 @@
         <LinearLayout android:layout_width="match_parent"
         android:layout_height="wrap_content"
             android:orientation="vertical" android:padding="16dp">
-            <include android:id="@+id/AccountSelector" layout="@layout/card_account_selector" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical">
+                <com.google.android.material.imageview.ShapeableImageView android:id="@+id/Avatar" android:layout_width="44dp" android:layout_height="44dp" android:layout_marginEnd="12dp" android:scaleType="centerCrop" android:contentDescription="@null" app:shapeAppearanceOverlay="@style/RoundedImageView" />
+                <include android:id="@+id/AccountSelector" layout="@layout/card_account_selector" />
+            </LinearLayout>
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginVertical="8dp" android:background="@color/function_divider" />
             <LinearLayout android:layout_width="match_parent"
         android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -42,12 +46,8 @@
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
-    <LinearLayout android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp" android:paddingHorizontal="10dp" android:paddingTop="4dp"
-        android:background="@drawable/bg_asset_list_header"
-        android:layout_marginTop="@dimen/card_vertical_spacing"
-        android:gravity="center_vertical" android:orientation="horizontal">
+    <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" app:strokeWidth="0dp" android:layout_marginTop="@dimen/card_vertical_spacing" android:layout_marginBottom="@dimen/card_vertical_spacing">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingHorizontal="10dp" android:paddingVertical="4dp" android:gravity="center_vertical">
         <com.google.android.material.chip.Chip
             android:id="@+id/Filter" style="@style/AssetActionChip"
             android:text="@string/filter"
@@ -63,5 +63,7 @@
             app:textStartPadding="0dp" app:textEndPadding="0dp"
             android:contentDescription="@string/change_view"
             app:chipIcon="@drawable/ic_grid" app:chipIconVisible="true" />
-    </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+    <include android:id="@+id/MissingPanel" layout="@layout/fragment_char_not_own" android:visibility="gone" />
 </LinearLayout>

@@ -1,6 +1,7 @@
 package com.blueskybone.arkscreen.ui.widget
 
 import android.content.Context
+import com.blueskybone.arkscreen.data.local.room.WidgetConfig
 import android.view.View
 import android.widget.RemoteViews
 import com.blueskybone.arkscreen.R
@@ -11,10 +12,10 @@ import com.blueskybone.arkscreen.ui.widget.model.WidgetBackgroundSize
 /** 由两行标准信息组成的 2x2 桌面组件。 */
 class WidgetNext3 : BaseNextWidgetProvider() {
     override val pendingIntentOffset = 30_000
-    override val defaultTypes = listOf(WidgetInfoType.SANITY, WidgetInfoType.TRAINING)
+    override fun defaultTypes(config: WidgetConfig) = listOf(WidgetInfoType.SANITY, WidgetInfoType.TRAINING)
 
-    override fun selectedTypeNames(): List<String> =
-        templatePrefs.slots2x2.get().split(",")
+    override fun selectedTypeNames(config: WidgetConfig): List<String> =
+        config.slots2x2.orEmpty().split(",")
 
     override fun createRemoteViews(
         context: Context,

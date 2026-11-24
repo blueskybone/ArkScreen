@@ -62,11 +62,14 @@ class EndfieldGachaActivity : AppCompatActivity() {
 
     private fun render(state: EndfieldGachaState) {
         current = state
-        binding.AccountButton.text = state.accounts.firstOrNull { it.uid == state.selectedUid }
+        val account = state.accounts.firstOrNull { it.uid == state.selectedUid }
+        binding.AccountButton.text = account
             ?.nickName ?: getString(R.string.endfield_choose_account)
         invalidateOptionsMenu()
         binding.Content.visibility = if (state.loading) View.GONE else View.VISIBLE
-        binding.AccountIcon.setImageResource(R.drawable.hg_icon_80x80)
+        binding.Server.visibility = if (account == null) View.GONE else View.VISIBLE
+        binding.Server.setText(if (account?.official == true) R.string.official_server else R.string.bilibili_server)
+        binding.AccountIcon.setImageResource(when (account?.official) { true -> R.drawable.hg_icon_80x80; false -> R.drawable.ic_account_bilibili; null -> R.drawable.ic_user })
         binding.Loading.visibility = if (state.loading) View.VISIBLE else View.GONE
         binding.CharButton.isChecked = type == "char"
         binding.WeaponButton.isChecked = type == "weapon"

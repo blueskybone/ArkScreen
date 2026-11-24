@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
+import com.blueskybone.arkscreen.data.local.room.WidgetConfig
 import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
@@ -26,14 +27,13 @@ import org.koin.java.KoinJavaComponent
 class WidgetNext4 : BaseNextWidgetProvider() {
     private val accountRepository: AccountRepository by KoinJavaComponent.getKoin().inject()
     override val pendingIntentOffset = 40_000
-    override val defaultTypes: List<WidgetInfoType>
-        get() = if (usesFullLayout()) FULL_DEFAULTS else FOUR_DEFAULTS
+    override fun defaultTypes(config: WidgetConfig): List<WidgetInfoType> = if (usesFullLayout(config)) FULL_DEFAULTS else FOUR_DEFAULTS
 
-    override fun selectedTypeNames(): List<String> =
-        if (usesFullLayout()) {
+    override fun selectedTypeNames(config: WidgetConfig): List<String> =
+        if (usesFullLayout(config)) {
             FULL_DEFAULTS.map(WidgetInfoType::name)
         } else {
-            templatePrefs.slots2x3Four.get().split(",")
+            config.slots2x3.orEmpty().split(",")
         }
 
     override fun createRemoteViews(
@@ -193,8 +193,8 @@ class WidgetNext4 : BaseNextWidgetProvider() {
         )
     }
 
-    private fun usesFullLayout(): Boolean =
-        templatePrefs.layout2x3.get() == WidgetTemplatePrefManager.LAYOUT_FULL
+    private fun usesFullLayout(config: WidgetConfig): Boolean =
+        config.layout2x3.orEmpty() == WidgetTemplatePrefManager.LAYOUT_FULL
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)

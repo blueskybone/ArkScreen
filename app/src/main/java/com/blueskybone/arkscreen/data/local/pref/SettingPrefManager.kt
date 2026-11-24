@@ -20,6 +20,7 @@ class SettingPrefManager() {
 
         autoUpdateApp = preferenceStore.getBoolean("auto_app_update", true)
         timeCorrect = preferenceStore.getBoolean("time_correct", false)
+        showExternalTools = preferenceStore.getBoolean("show_external_tools", true)
         showHomeAnnounce = preferenceStore.getBoolean("show_home_announce", true)
 
 
@@ -74,6 +75,7 @@ class SettingPrefManager() {
     lateinit var useInnerWeb: Preference<Boolean>       //使用内置浏览器
     lateinit var appTheme: Preference<String>           //主题
     lateinit var defaultHomeGame: Preference<String>    //启动时显示的游戏
+    lateinit var showExternalTools: Preference<Boolean>
     lateinit var showHomeAnnounce: Preference<Boolean>  //显示首页公告
     lateinit var assetsViewType: Preference<Int>        //干员资产列表展示模式
     lateinit var showEmptyGachaPools: Preference<Boolean>

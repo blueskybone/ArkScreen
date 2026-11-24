@@ -102,8 +102,8 @@
     <string name="min_15">15分钟</string>
     <string name="min_30">30分钟</string>
     <string name="hour_1">1小时</string>
-    <string name="widget_appearance">桌面组件外观</string>
-    <string name="widget_template_lab">新版组件</string>
+    <string name="widget_appearance">组件外观</string>
+    <string name="widget_template_lab">组件外观</string>
     <string name="widget_next_1_description">新版组件 · 1×1 单信息</string>
     <string name="widget_next_2_description">新版组件 · 1×2 单信息</string>
     <string name="widget_next_3_description">新版组件 · 2×2 双信息</string>
@@ -600,4 +600,12 @@
     <string name="app_up_to_date">当前已是最新版本。</string>
     <string name="home_updated_at">更新于 %1$s</string>
     <string name="recovery_push_notifications">推送提醒通知</string>
+    <string name="show_external_tools">显示外部工具</string>
+    <string name="assets_held">已持有</string>
+    <string name="recruit_group_primary">稀有度</string>
+    <string name="recruit_group_profession">职业</string>
+    <string name="recruit_group_position">位置</string>
+    <string name="recruit_group_ability">标签</string>
+    <string name="recruit_maintenance">最后更新：%1$s 新增：%2$s</string>
+    <string name="recruit_selected_count">已选 %1$d/5</string>
 </resources>

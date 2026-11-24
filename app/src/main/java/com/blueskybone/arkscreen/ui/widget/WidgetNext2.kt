@@ -1,6 +1,7 @@
 package com.blueskybone.arkscreen.ui.widget
 
 import android.content.Context
+import com.blueskybone.arkscreen.data.local.room.WidgetConfig
 import android.view.View
 import android.widget.RemoteViews
 import com.blueskybone.arkscreen.R
@@ -10,14 +11,13 @@ import com.blueskybone.arkscreen.ui.widget.model.WidgetBackgroundSize
 /** 支持单信息布局和固定紧凑布局切换的 1x2 桌面组件。 */
 class WidgetNext2 : BaseNextWidgetProvider() {
     override val pendingIntentOffset = 20_000
-    override val defaultTypes: List<WidgetInfoType>
-        get() = if (usesDenseLayout()) DENSE_DEFAULTS else SINGLE_DEFAULTS
+    override fun defaultTypes(config: WidgetConfig): List<WidgetInfoType> = if (usesDenseLayout(config)) DENSE_DEFAULTS else SINGLE_DEFAULTS
 
-    override fun selectedTypeNames(): List<String> =
-        if (usesDenseLayout()) {
+    override fun selectedTypeNames(config: WidgetConfig): List<String> =
+        if (usesDenseLayout(config)) {
             DENSE_DEFAULTS.map(WidgetInfoType::name)
         } else {
-            listOf(templatePrefs.slot1x2.get())
+            listOf(config.slot1x2.orEmpty())
         }
 
     override fun createRemoteViews(
@@ -25,7 +25,7 @@ class WidgetNext2 : BaseNextWidgetProvider() {
         appWidgetId: Int,
         data: NextWidgetRenderData,
     ): RemoteViews =
-        if (usesDenseLayout()) {
+        if (usesDenseLayout(data.config)) {
             renderDense(context, appWidgetId, data)
         } else {
             renderSingle(context, appWidgetId, data)
@@ -208,8 +208,8 @@ class WidgetNext2 : BaseNextWidgetProvider() {
         setInt(R.id.widget_footer_refresh, "setTextColor", footerColor)
     }
 
-    private fun usesDenseLayout(): Boolean =
-        templatePrefs.layout1x2.get() == com.blueskybone.arkscreen.data.local.pref.WidgetTemplatePrefManager.LAYOUT_DENSE
+    private fun usesDenseLayout(config: WidgetConfig): Boolean =
+        config.layout1x2.orEmpty() == com.blueskybone.arkscreen.data.local.pref.WidgetTemplatePrefManager.LAYOUT_DENSE
 
     private companion object {
         val SINGLE_DEFAULTS = listOf(WidgetInfoType.SANITY)

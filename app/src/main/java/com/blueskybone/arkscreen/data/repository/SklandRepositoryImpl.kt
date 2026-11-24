@@ -224,8 +224,8 @@ class SklandRepositoryImpl(
                     snapshot.stamina?.let { stamina ->
                         val current = stamina.baseValue
                         val maximum = stamina.maxValue
-                        val sampledAt = stamina.sampledAt
-                        if (current != null && maximum != null && sampledAt != null) {
+                        val sampledAt = stamina.sampledAt?.takeIf { it > 0 } ?: System.currentTimeMillis() / 1000
+                        if (current != null && maximum != null) {
                             cacheStore.writeEndfield(account, EndfieldStaminaCache(
                                 uid = account.uid,
                                 sampledAt = sampledAt,

@@ -1,7 +1,6 @@
 package com.blueskybone.arkscreen.ui.recruit
 
 import android.os.Bundle
-import org.koin.android.ext.android.inject
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.isVisible
@@ -17,7 +16,6 @@ import com.blueskybone.arkscreen.ui.UiStatus
 import com.blueskybone.arkscreen.ui.recruit.adapter.ResultAdapter
 import com.blueskybone.arkscreen.ui.recruit.adapter.TagAdapter
 import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexboxLayout
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hjq.toast.Toaster
@@ -27,7 +25,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class RecruitFragment : Fragment(R.layout.fragment_recruit) {
 
     private val viewModel: RecruitModel by viewModel()
-    private val databaseProvider: com.blueskybone.arkscreen.domain.service.RecruitDatabaseProvider by inject()
 
     private val tagAdapters = mutableListOf<TagAdapter>()
     private lateinit var resultAdapter: ResultAdapter
@@ -88,8 +85,6 @@ class RecruitFragment : Fragment(R.layout.fragment_recruit) {
         val loadingView = view.findViewById<View>(R.id.loadingContainer)
         val contentView = view.findViewById<View>(R.id.contentContainer)
         val updateText = view.findViewById<TextView>(R.id.tvUpdate)
-        val metadataChips = view.findViewById<FlexboxLayout>(R.id.recruitMetadataChips)
-        var displayedNewOperators = emptyList<String>()
         var displayedResults = emptyList<RecruitResult>()
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -99,14 +94,11 @@ class RecruitFragment : Fragment(R.layout.fragment_recruit) {
                         val loading = state.status is UiStatus.Loading
                         loadingView.isVisible = loading
                         contentView.isVisible = !loading
-                        updateText.text = getString(
-                            R.string.last_update,
+                        updateText.text = getString(R.string.recruit_maintenance,
                             state.update.ifBlank { "—" },
-                        )
-                        if (state.newOpe != displayedNewOperators) {
-                            displayedNewOperators = state.newOpe
-                            renderNewOperatorChips(metadataChips, state.newOpe)
-                        }
+                            state.newOpe.joinToString(" ").ifBlank { "—" })
+                        view.findViewById<TextView>(R.id.selectedCount).text =
+                            getString(R.string.recruit_selected_count, state.selectedTags.size)
                         view.findViewById<View>(R.id.btnReset).isEnabled = state.selectedTags.isNotEmpty()
                         view.findViewById<TextView>(R.id.resultEmpty).apply {
                             isVisible = state.result.isEmpty()
@@ -120,7 +112,16 @@ class RecruitFragment : Fragment(R.layout.fragment_recruit) {
                         if (state.result != displayedResults) {
                             displayedResults = state.result
 
-                            resultAdapter.submitList(state.result)
+                            resultAdapter.submitList(state.result) {
+                                if (state.result.isNotEmpty()) {
+                                    val scroll = contentView as androidx.core.widget.NestedScrollView
+                                    scroll.post {
+                                        if (viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                                            scroll.smoothScrollTo(0, view.findViewById<View>(R.id.resultCard).top)
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -132,34 +133,6 @@ class RecruitFragment : Fragment(R.layout.fragment_recruit) {
                     }
                 }
             }
-        }
-    }
-
-    private fun renderNewOperatorChips(group: FlexboxLayout, operators: List<String>) {
-        if (group.childCount > 1) {
-            group.removeViews(1, group.childCount - 1)
-        }
-        operators.forEach { operator ->
-            val chip = layoutInflater.inflate(
-                R.layout.item_recruit_info,
-                group,
-                false,
-            ) as TextView
-            chip.text = operator
-            chip.isClickable = true
-            chip.isFocusable = true
-            chip.setOnClickListener {
-                viewLifecycleOwner.lifecycleScope.launch {
-                    databaseProvider.getDatabase().getOrNull()?.let { db ->
-                        val operators = db.operatorList.map { com.blueskybone.arkscreen.domain.model.recruit.RecruitOpe(it.name, it.star, it.tag, it.skin) } +
-                            db.operatorHighList.map { com.blueskybone.arkscreen.domain.model.recruit.RecruitOpe(it.name, it.star, it.tag, it.skin) } +
-                            db.operatorLowList.map { com.blueskybone.arkscreen.domain.model.recruit.RecruitOpe(it.name, it.star, it.tag, it.skin) } +
-                            db.operatorRobotList.map { com.blueskybone.arkscreen.domain.model.recruit.RecruitOpe(it.name, it.star, it.tag, it.skin) }
-                        operators.firstOrNull { it.name == operator }?.let { OperatorDialog(requireContext()).show(it) }
-                    }
-                }
-            }
-            group.addView(chip)
         }
     }
 

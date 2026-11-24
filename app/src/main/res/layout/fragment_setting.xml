@@ -9,6 +9,8 @@
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
                 <include android:id="@+id/ShowHomeAnnounce" layout="@layout/preference_switch" />
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
+                <include android:id="@+id/ShowExternalTools" layout="@layout/preference_switch" />
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
                 <include android:id="@+id/AutoUpdateApp" layout="@layout/preference_switch" />
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
                 <include android:id="@+id/UseInnerWeb" layout="@layout/preference_switch" />

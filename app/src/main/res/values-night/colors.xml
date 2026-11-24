@@ -47,4 +47,5 @@
     <color name="function_section_title">@color/function_text_secondary</color>
     <color name="home_text_primary">#ECECEE</color>
     <color name="home_text_secondary">#B5B5BD</color>
+    <color name="home_inner_surface">#323234</color>
 </resources>

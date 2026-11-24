@@ -1,0 +1,9 @@
+<resources>
+    <color name="recruit_rare_1_text">#55565B</color>
+    <color name="recruit_rare_2_text">#287138</color>
+    <color name="recruit_rare_3_text">#286795</color>
+    <color name="recruit_rare_4_text">#69429C</color>
+    <color name="recruit_rare_5_text">#885B16</color>
+    <color name="recruit_rare_6_text">#AD3D2C</color>
+    <color name="recruit_tag_surface">#FFFFFF</color>
+</resources>

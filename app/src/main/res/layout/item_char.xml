@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:paddingStart="5dp" android:paddingEnd="5dp" android:paddingBottom="10dp">
 
-    <com.google.android.material.card.MaterialCardView style="@style/CardViewChip" android:layout_margin="0dp">
+    <com.google.android.material.card.MaterialCardView style="@style/CardViewChip" app:cardCornerRadius="5dp" android:layout_margin="0dp">
 
         <LinearLayout
             android:layout_width="wrap_content"

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.domain.model.recruit.RecruitOpe
-import com.google.android.material.chip.Chip
+import android.widget.TextView
 
 class OperatorChipAdapter(
     private val onClick: (RecruitOpe) -> Unit
@@ -19,7 +19,7 @@ class OperatorChipAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OperatorChipViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_recruit_ope_chip, parent, false)
-        return OperatorChipViewHolder(view as Chip, onClick)
+        return OperatorChipViewHolder(view as TextView, onClick)
     }
 
     override fun onBindViewHolder(holder: OperatorChipViewHolder, position: Int) {
@@ -27,16 +27,12 @@ class OperatorChipAdapter(
     }
 
     class OperatorChipViewHolder(
-        private val chip: Chip,
+        private val chip: TextView,
         private val onClick: (RecruitOpe) -> Unit
     ) : RecyclerView.ViewHolder(chip) {
 
         fun bind(operator: RecruitOpe) {
             chip.text = operator.name
-            chip.isCheckable = false
-            chip.isChecked = false
-            chip.isCheckedIconVisible = false
-            chip.isCloseIconVisible = false
             applyRarityColors(operator.rare)
             chip.setOnClickListener { onClick(operator) }
         }
@@ -46,21 +42,18 @@ class OperatorChipAdapter(
             val context = chip.context
 
             chip.setTextColor(ContextCompat.getColor(context, lineColor))
-            chip.chipStrokeColor = ColorStateList.valueOf(
-                ContextCompat.getColor(context, lineColor)
-            )
-            chip.chipBackgroundColor = ColorStateList.valueOf(
+            chip.backgroundTintList = ColorStateList.valueOf(
                 ContextCompat.getColor(context, surfaceColor)
             )
         }
 
         private fun rarityColors(rarity: Int): RarityColors = when (rarity) {
-            6 -> RarityColors(R.color.rare_6_line, R.color.rare_6_surface)
-            5 -> RarityColors(R.color.rare_5_line, R.color.rare_5_surface)
-            4 -> RarityColors(R.color.rare_4_line, R.color.rare_4_surface)
-            3 -> RarityColors(R.color.rare_3_line, R.color.rare_3_surface)
-            2 -> RarityColors(R.color.rare_2_line, R.color.rare_2_surface)
-            else -> RarityColors(R.color.rare_1_line, R.color.rare_1_surface)
+            6 -> RarityColors(R.color.recruit_rare_6_text, R.color.rare_6_surface)
+            5 -> RarityColors(R.color.recruit_rare_5_text, R.color.rare_5_surface)
+            4 -> RarityColors(R.color.recruit_rare_4_text, R.color.rare_4_surface)
+            3 -> RarityColors(R.color.recruit_rare_3_text, R.color.rare_3_surface)
+            2 -> RarityColors(R.color.recruit_rare_2_text, R.color.rare_2_surface)
+            else -> RarityColors(R.color.recruit_rare_1_text, R.color.rare_1_surface)
         }
     }
 

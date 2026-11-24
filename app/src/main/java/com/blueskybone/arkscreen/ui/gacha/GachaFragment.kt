@@ -65,6 +65,8 @@ class GachaFragment : Fragment() {
 
     private fun renderAccount(state: GachaUiState) {
         val current = state.currAccount
+        binding.Server.visibility = if (current == null) View.GONE else View.VISIBLE
+        binding.Server.setText(if (current?.official == true) R.string.official_server else R.string.bilibili_server)
         binding.NickName.text = current?.nickName.orEmpty()
         if (current != null) {
             binding.Icon.setImageResource(

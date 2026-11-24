@@ -67,11 +67,12 @@ class CharOwn : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: CharAdapter
+    private var showingMissing = false
     private val headerAdapter = CharHeaderAdapter(
         onAccountClick = { (activity as? CharAssets)?.chooseAccount(it) },
         onFilterClick = { showFilterDialog() },
         onViewClick = { model.toggleViewType() },
-        onMissingClick = { (activity as? CharAssets)?.openMissing() },
+        onMissingClick = { showMissing(!showingMissing) },
     )
     private val launcherForTxt =
         registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
@@ -157,13 +158,31 @@ class CharOwn : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as? CharAssets)?.setShareAction(::showExportOptions)
+        model.accountAvatarUrl.observe(viewLifecycleOwner, headerAdapter::submitAvatar)
         model.currentAccount.observe(viewLifecycleOwner, headerAdapter::submitAccount)
         pendingScrollState = savedInstanceState?.getParcelable(KEY_SCROLL_STATE)
         adapter = CharAdapter(requireContext(), 24, adapterListener)
         setupBinding()
+        model.charsNotOwnList.observe(viewLifecycleOwner) {
+            headerAdapter.missing = it
+            if (showingMissing) headerAdapter.notifyItemChanged(0)
+        }
+        model.update.observe(viewLifecycleOwner) {
+            headerAdapter.updated = getString(R.string.last_update, it)
+            if (showingMissing) headerAdapter.notifyItemChanged(0)
+        }
+        setupListener()
+        showMissing(savedInstanceState?.getBoolean("show_missing") ?: showingMissing)
         setUpObserver()
         renderFilterLabel()
-        setupListener()
+    }
+
+    private fun showMissing(show: Boolean) {
+        showingMissing = show
+        val list = binding.RecyclerView.adapter as ConcatAdapter
+        if (show) list.removeAdapter(adapter) else if (adapter !in list.adapters) list.addAdapter(adapter)
+        headerAdapter.showMissing = show
+        headerAdapter.notifyItemChanged(0)
     }
 
     private fun updateLayout(viewType: ViewType) {
@@ -271,6 +290,10 @@ class CharOwn : Fragment() {
                     val right = child.right.toFloat()
                     val bottom = child.bottom.toFloat()
                     when {
+                        position == 1 -> {
+                            canvas.drawRoundRect(left, top, right, bottom, radius, radius, cardPaint)
+                            if (position != lastPosition) canvas.drawRect(left, top + radius, right, bottom, cardPaint)
+                        }
                         position == lastPosition -> {
                             canvas.drawRoundRect(left, top, right, bottom, radius, radius, cardPaint)
                             canvas.drawRect(left, top, right, bottom - radius, cardPaint)
@@ -538,6 +561,7 @@ class CharOwn : Fragment() {
             KEY_SCROLL_STATE,
             binding.RecyclerView.layoutManager?.onSaveInstanceState(),
         )
+        outState.putBoolean("show_missing", showingMissing)
         super.onSaveInstanceState(outState)
     }
 

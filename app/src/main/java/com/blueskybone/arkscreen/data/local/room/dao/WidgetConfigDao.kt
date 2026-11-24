@@ -16,6 +16,13 @@ interface WidgetConfigDao {
         insertDefault(WidgetConfig(id))
         return checkNotNull(get(id))
     }
+    @Transaction
+    suspend fun getWithAppearance(id: Int, prefs: com.blueskybone.arkscreen.data.local.pref.WidgetTemplatePrefManager): WidgetConfig {
+        val current = getOrCreate(id)
+        val resolved = current.withAppearance(prefs)
+        if (resolved != current) put(resolved)
+        return resolved
+    }
     @Query("DELETE FROM WidgetConfig WHERE appWidgetId IN (:ids)")
     suspend fun delete(ids: List<Int>)
     @Transaction

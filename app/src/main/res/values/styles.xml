@@ -519,7 +519,7 @@
         <item name="android:textSize">13sp</item>
         <item name="android:textColor">@color/home_text_primary</item>
         <item name="chipIconTint">@color/home_text_primary</item>
-        <item name="chipBackgroundColor">@color/asset_action_surface</item>
+        <item name="chipBackgroundColor">@color/status_neutral_container</item>
         <item name="chipMinHeight">32dp</item>
         <item name="chipCornerRadius">16dp</item>
         <item name="chipIconSize">18dp</item>
@@ -541,5 +541,19 @@
         <item name="android:padding">13dp</item>
         <item name="android:scaleType">fitCenter</item>
         <item name="android:tint">@color/home_text_primary</item>
+    </style>
+    <style name="HomePageCard" parent="HomeCard"><item name="android:layout_marginTop">@dimen/home_page_spacing</item></style>
+    <style name="Widget.ArkScreen.RecruitTag" parent="Widget.ArkScreen.CompactCapsule">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:minHeight">36dp</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:backgroundTint">@color/recruit_tag_surface</item>
+        <item name="android:textColor">@color/home_text_primary</item>
+    </style>
+    <style name="ShapeAppearance.ArkScreen.SaveCircle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
     </style>
 </resources>

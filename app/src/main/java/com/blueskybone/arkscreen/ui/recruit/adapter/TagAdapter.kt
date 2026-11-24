@@ -1,14 +1,13 @@
 package com.blueskybone.arkscreen.ui.recruit.adapter
 
 import android.view.ViewGroup
-import android.widget.Button
+import android.content.res.ColorStateList
+import androidx.core.content.ContextCompat
+import com.blueskybone.arkscreen.R
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.blueskybone.arkscreen.ui.common.view.tagButton
 import com.blueskybone.arkscreen.ui.recruit.TagItem
-import com.blueskybone.arkscreen.util.dpToPx
-import com.google.android.flexbox.FlexboxLayoutManager
 
 class TagAdapter(
     private val onClick: (String) -> Unit
@@ -31,17 +30,9 @@ class TagAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagViewHolder {
-        val context = parent.context
-        val button = tagButton(context, "").apply {
-            layoutParams = FlexboxLayoutManager.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-            ).apply {
-                val margin = dpToPx(context, 5F).toInt()
-                setMargins(0, 0, margin, margin)
-            }
-        }
-        return TagViewHolder(button)
+        val container = android.view.LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_recruit_select_tag, parent, false)
+        return TagViewHolder(container)
     }
 
     override fun onBindViewHolder(holder: TagViewHolder, position: Int) {
@@ -49,13 +40,26 @@ class TagAdapter(
     }
 
     inner class TagViewHolder(
-        private val button: Button
-    ) : RecyclerView.ViewHolder(button) {
+        private val container: android.view.View
+    ) : RecyclerView.ViewHolder(container) {
+        private val button = container.findViewById<android.widget.TextView>(R.id.tagLabel)
 
         fun bind(item: TagItem) {
             button.text = item.name
-            button.isSelected = item.name in selectedSet
-            button.setOnClickListener { onClick(item.name) }
+            val selected = item.name in selectedSet
+            button.isSelected = selected
+            val context = button.context
+            val background = if (selected) com.google.android.material.color.MaterialColors.getColor(
+                button, R.attr.capsuleAccentContainer
+            ) else ContextCompat.getColor(context, R.color.recruit_tag_surface)
+            val foreground = if (selected) com.google.android.material.color.MaterialColors.getColor(
+                button, R.attr.capsuleAccentContent
+            ) else ContextCompat.getColor(context, R.color.home_text_primary)
+            button.backgroundTintList = ColorStateList.valueOf(background)
+            button.setTextColor(foreground)
+            container.isSelected = selected
+            container.contentDescription = item.name
+            container.setOnClickListener { onClick(item.name) }
         }
     }
 

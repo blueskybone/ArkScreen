@@ -145,7 +145,10 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
             layoutInflater, binding.ProfileContainer, false,
         )
         card.AccountSelector.root.setOnClickListener(::chooseAccount)
-        card.AccountSelector.CurrentAccount.text = currentState.accounts.firstOrNull { it.uid == currentState.selectedUid }?.nickName
+        val account = currentState.accounts.firstOrNull { it.uid == currentState.selectedUid }
+        card.AccountSelector.Server.visibility = if (account == null) View.GONE else View.VISIBLE
+        card.AccountSelector.Server.setText(if (account?.official == true) R.string.official_server else R.string.bilibili_server)
+        card.AccountSelector.CurrentAccount.text = account?.nickName
             ?: profile.name?.takeIf(String::isNotBlank)
             ?: getString(R.string.endfield_unnamed_player)
         card.Level.visibility = if (profile.level == null) View.GONE else View.VISIBLE

@@ -298,9 +298,10 @@ class MainModel(
 
     fun loadEndfieldStaminaCache() {
         viewModelScope.launch {
-            val account = _uiState.value.currentAccountEf
+            fun selected() = _uiState.value.run { currentAccountEf ?: accountEfList.firstOrNull()?.account as? AccountEf }
+            val account = selected()
             val cache = account?.let { repoSkland.getEndfieldStaminaCache(it) }?.takeIf { it.isValid }
-            if (_uiState.value.currentAccountEf != account) return@launch
+            if (selected() != account) return@launch
             _uiState.update { it.copy(endfieldStaminaCache = cache) }
         }
     }

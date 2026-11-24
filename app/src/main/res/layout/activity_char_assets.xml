@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/ViewPager"
+    <androidx.fragment.app.FragmentContainerView android:name="com.blueskybone.arkscreen.ui.character.CharOwn"
+        android:id="@+id/AssetsContent"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

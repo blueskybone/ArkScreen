@@ -3,6 +3,7 @@ package com.blueskybone.arkscreen.ui.character.adapter
 import com.blueskybone.arkscreen.ui.account.common.bindAccount
 import com.blueskybone.arkscreen.domain.model.account.AccountSk
 import android.view.View
+import coil.load
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -19,8 +20,17 @@ class CharHeaderAdapter(
     private val onMissingClick: () -> Unit,
 ) : RecyclerView.Adapter<CharHeaderAdapter.HeaderViewHolder>() {
 
+    var showMissing = false
+    var missing = emptyList<com.blueskybone.arkscreen.domain.model.operator.Operator>()
+    var updated = ""
     private var statistic = CharStatistic()
     private var account: AccountSk? = null
+    private var avatarUrl: String? = null
+    fun submitAvatar(value: String?) {
+        avatarUrl = value
+        notifyItemChanged(0)
+    }
+
     private var filterCount = -1
     private var viewType = ViewType.GRID
 
@@ -54,18 +64,19 @@ class CharHeaderAdapter(
         )
 
     override fun onBindViewHolder(holder: HeaderViewHolder, position: Int) {
-        holder.bind(account, statistic, filterCount, viewType,
+        holder.bind(account, avatarUrl, statistic, filterCount, viewType,
             onAccountClick, onFilterClick, onViewClick, onMissingClick)
     }
 
     override fun getItemCount(): Int = 1
 
-    class HeaderViewHolder(
+    inner class HeaderViewHolder(
         private val binding: ItemCharHeaderBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(
             account: AccountSk?,
+            avatarUrl: String?,
             statistic: CharStatistic,
             filterCount: Int,
             viewType: ViewType,
@@ -75,6 +86,8 @@ class CharHeaderAdapter(
             onMissingClick: () -> Unit,
         ) {
             val context = binding.root.context
+            binding.Avatar.load(avatarUrl) { placeholder(R.drawable.ic_user); error(R.drawable.ic_user) }
+            binding.Avatar.setOnClickListener(onAccountClick)
             binding.AccountSelector.bindAccount(account)
             binding.AccountSelector.root.setOnClickListener(onAccountClick)
             binding.Filter.setOnClickListener { onFilterClick() }
@@ -93,6 +106,14 @@ class CharHeaderAdapter(
                 if (viewType == ViewType.LIST) R.drawable.ic_list else R.drawable.ic_grid
             )
             binding.MissingButton.text = context.getString(R.string.assets_missing_count, statistic.totalMiss)
+            binding.MissingPanel.root.visibility = if (showMissing) View.VISIBLE else View.GONE
+            binding.Filter.visibility = if (showMissing) View.INVISIBLE else View.VISIBLE
+            binding.ViewChanger.visibility = if (showMissing) View.INVISIBLE else View.VISIBLE
+            if (showMissing) {
+                binding.MissingButton.setText(R.string.assets_held)
+                binding.MissingPanel.Update.text = updated
+                CharMissFlowAdapter(context, binding.MissingPanel.FlowLayout).submitList(missing)
+            }
             binding.E2Stat.Title.setText(R.string.assets_e2)
             binding.M3Stat.Title.setText(R.string.assets_m3)
             binding.Module3Stat.Title.setText(R.string.assets_module3_short)

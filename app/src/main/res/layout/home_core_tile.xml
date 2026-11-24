@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardBackgroundColor="@color/app_background"
+    app:cardBackgroundColor="@color/home_inner_surface"
     app:strokeWidth="0dp"
     android:id="@+id/Layout"
     style="@style/CardViewContent"

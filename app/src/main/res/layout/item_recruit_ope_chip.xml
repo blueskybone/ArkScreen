@@ -1,18 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.chip.Chip xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/Widget.MaterialComponents.Chip.Action"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Widget.ArkScreen.RecruitTag"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="4dp"
-    android:layout_marginBottom="4dp"
-    android:minHeight="28dp"
-    android:textSize="11sp"
-    android:clickable="true"
-    android:focusable="true"
-    android:checkable="false"
-    app:chipCornerRadius="7dp"
-    app:chipMinHeight="28dp"
-    app:checkedIconVisible="false"
-    app:closeIconVisible="false"
-    app:ensureMinTouchTargetSize="false" />
+    android:layout_marginEnd="6dp"
+    android:layout_marginBottom="6dp" />

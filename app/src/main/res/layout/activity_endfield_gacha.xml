@@ -75,16 +75,19 @@
                                 android:layout_marginStart="14dp"
                                 android:layout_weight="1"
                                 android:orientation="vertical">
+                                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical">
+                                <TextView android:id="@+id/Server" style="@style/Widget.ArkScreen.CompactCapsule" android:layout_marginEnd="6dp" />
                                 <TextView
                                     android:id="@+id/AccountButton"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="2dp"
+                                    android:textSize="15sp"
                                     android:maxLines="1"
                                     android:textAppearance="?attr/textAppearanceSubtitle1"
                                     android:textColor="?android:attr/textColorPrimary"
                                     android:textStyle="bold"
                                     android:ellipsize="end" />
+                            </LinearLayout>
                             <TextView
                                 android:id="@+id/DateRange"
                                 android:layout_width="wrap_content"
@@ -100,6 +103,7 @@
                                 android:src="@drawable/ic_function_select"
                                 app:tint="@color/function_text_secondary" />
                         </LinearLayout>
+                        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginVertical="8dp" android:background="@color/function_divider" />
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

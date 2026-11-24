@@ -49,16 +49,19 @@
                             android:layout_marginStart="14dp"
                             android:layout_weight="1"
                             android:orientation="vertical">
-                            <TextView
+                            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical">
+                                <TextView android:id="@+id/Server" style="@style/Widget.ArkScreen.CompactCapsule" android:layout_marginEnd="6dp" />
+                                <TextView
                                 android:id="@+id/NickName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
+                                android:textSize="15sp"
                                 android:maxLines="1"
                                 android:textAppearance="?attr/textAppearanceSubtitle1"
                                 android:textColor="?android:attr/textColorPrimary"
                                 android:textStyle="bold"
                                 android:ellipsize="end" />
+                            </LinearLayout>
                         </LinearLayout>
                         <ImageView
                             android:id="@+id/Exchange"

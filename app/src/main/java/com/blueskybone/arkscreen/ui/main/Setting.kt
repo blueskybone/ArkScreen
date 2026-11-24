@@ -67,6 +67,13 @@ class Setting : Fragment() {
         )
 
         PreferenceBinder.bindSwitch(
+            binding = binding.ShowExternalTools,
+            icon = R.drawable.ic_home_link,
+            text = R.string.show_external_tools,
+            pref = prefManager.showExternalTools
+        )
+
+        PreferenceBinder.bindSwitch(
             binding = binding.UseInnerWeb,
             icon = R.drawable.ic_link,
             text = R.string.use_inner_web,

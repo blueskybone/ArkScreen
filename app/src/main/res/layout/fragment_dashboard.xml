@@ -2,15 +2,15 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:paddingBottom="?attr/actionBarSize">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
         <TextView style="@style/TextView.Headline" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/function" />
-        <LinearLayout android:id="@+id/RecruitHeader" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="44dp" android:background="@android:color/transparent" android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:orientation="horizontal" android:paddingHorizontal="0dp" android:layout_marginStart="32dp" android:layout_marginEnd="32dp" android:layout_marginTop="16dp">
-            <TextView style="@style/PreferenceHeader" android:paddingStart="0dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingEnd="8dp" android:text="@string/quick_recruit" android:textColor="@color/function_section_title" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:textStyle="normal" />
-            <TextView android:id="@+id/RecruitStatus" style="@style/Widget.ArkScreen.CompactCapsule" />
-            <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
-            <ImageView android:id="@+id/RecruitExpand" android:layout_width="18dp" android:layout_height="18dp" android:contentDescription="@null" android:rotation="90" app:tint="@color/function_text_secondary" android:src="@drawable/ic_function_chevron" />
-        </LinearLayout>
-        <LinearLayout android:id="@+id/RecruitContent" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-            <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" app:cardCornerRadius="@dimen/card_corner_radius" android:layout_marginTop="0dp" app:strokeWidth="0dp">
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" android:layout_marginTop="16dp" app:strokeWidth="0dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+                <LinearLayout android:id="@+id/RecruitHeader" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="52dp" android:background="@android:color/transparent" android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:orientation="horizontal" android:paddingStart="20dp" android:paddingEnd="20dp">
+                    <TextView style="@style/PreferenceHeader" android:paddingStart="0dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingEnd="8dp" android:text="@string/quick_recruit" android:textColor="@color/function_section_title" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:textStyle="normal" />
+                    <TextView android:id="@+id/RecruitStatus" style="@style/Widget.ArkScreen.CompactCapsule" />
+                    <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
+                    <ImageView android:id="@+id/RecruitExpand" android:layout_width="18dp" android:layout_height="18dp" android:contentDescription="@null" android:rotation="90" app:tint="@color/function_text_secondary" android:src="@drawable/ic_function_chevron" />
+                </LinearLayout>
+                <LinearLayout android:id="@+id/RecruitContent" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
                     <include android:id="@+id/RecruitMode" layout="@layout/preference_value" />
                     <include android:id="@+id/FloatWindowAppearance" layout="@layout/preference" android:visibility="gone" />
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
@@ -28,17 +28,17 @@
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/recruit_video" style="@style/PreferenceRowTitle" />
                     </LinearLayout>
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
-        <LinearLayout android:id="@+id/WidgetHeader" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="44dp" android:background="@android:color/transparent" android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:orientation="horizontal" android:paddingHorizontal="0dp" android:layout_marginStart="32dp" android:layout_marginEnd="32dp" android:layout_marginTop="16dp">
-            <TextView style="@style/PreferenceHeader" android:paddingStart="0dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingEnd="8dp" android:text="@string/widget" android:textColor="@color/function_section_title" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:textStyle="normal" />
-            <TextView android:id="@+id/WidgetStatus" style="@style/Widget.ArkScreen.CompactCapsule" />
-            <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
-            <ImageView android:id="@+id/WidgetExpand" android:layout_width="18dp" android:layout_height="18dp" android:contentDescription="@null" android:rotation="90" app:tint="@color/function_text_secondary" android:src="@drawable/ic_function_chevron" />
-        </LinearLayout>
-        <LinearLayout android:id="@+id/WidgetContent" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-            <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" app:cardCornerRadius="@dimen/card_corner_radius" android:layout_marginTop="0dp" app:strokeWidth="0dp">
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" android:layout_marginTop="16dp" app:strokeWidth="0dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+                <LinearLayout android:id="@+id/WidgetHeader" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="52dp" android:background="@android:color/transparent" android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:orientation="horizontal" android:paddingStart="20dp" android:paddingEnd="20dp">
+                    <TextView style="@style/PreferenceHeader" android:paddingStart="0dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingEnd="8dp" android:text="@string/widget" android:textColor="@color/function_section_title" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:textStyle="normal" />
+                    <TextView android:id="@+id/WidgetStatus" style="@style/Widget.ArkScreen.CompactCapsule" />
+                    <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
+                    <ImageView android:id="@+id/WidgetExpand" android:layout_width="18dp" android:layout_height="18dp" android:contentDescription="@null" android:rotation="90" app:tint="@color/function_text_secondary" android:src="@drawable/ic_function_chevron" />
+                </LinearLayout>
+                <LinearLayout android:id="@+id/WidgetContent" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
                     <include android:id="@+id/PowerSavingMode" layout="@layout/preference_switch" />
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
                     <include android:id="@+id/WidgetRefresh" layout="@layout/preference_value" />
@@ -52,17 +52,17 @@
                     </LinearLayout>
                     <ImageView android:id="@+id/WidgetInfo" android:layout_width="20dp" android:layout_height="20dp" android:contentDescription="@null" android:src="@drawable/ic_info" android:visibility="gone" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
-        <LinearLayout android:id="@+id/AttendanceHeader" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="44dp" android:background="@android:color/transparent" android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:orientation="horizontal" android:paddingHorizontal="0dp" android:layout_marginStart="32dp" android:layout_marginEnd="32dp" android:layout_marginTop="16dp">
-            <TextView style="@style/PreferenceHeader" android:paddingStart="0dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingEnd="8dp" android:text="@string/auto_attendance" android:textColor="@color/function_section_title" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:textStyle="normal" />
-            <TextView android:id="@+id/AttendanceStatus" style="@style/Widget.ArkScreen.CompactCapsule" />
-            <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
-            <ImageView android:id="@+id/AttendanceExpand" android:layout_width="18dp" android:layout_height="18dp" android:contentDescription="@null" android:rotation="90" app:tint="@color/function_text_secondary" android:src="@drawable/ic_function_chevron" />
-        </LinearLayout>
-        <LinearLayout android:id="@+id/AttendanceContent" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-            <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" app:cardCornerRadius="@dimen/card_corner_radius" android:layout_marginTop="0dp" app:strokeWidth="0dp">
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" android:layout_marginTop="16dp" app:strokeWidth="0dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+                <LinearLayout android:id="@+id/AttendanceHeader" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="52dp" android:background="@android:color/transparent" android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:orientation="horizontal" android:paddingStart="20dp" android:paddingEnd="20dp">
+                    <TextView style="@style/PreferenceHeader" android:paddingStart="0dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingEnd="8dp" android:text="@string/auto_attendance" android:textColor="@color/function_section_title" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:textStyle="normal" />
+                    <TextView android:id="@+id/AttendanceStatus" style="@style/Widget.ArkScreen.CompactCapsule" />
+                    <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
+                    <ImageView android:id="@+id/AttendanceExpand" android:layout_width="18dp" android:layout_height="18dp" android:contentDescription="@null" android:rotation="90" app:tint="@color/function_text_secondary" android:src="@drawable/ic_function_chevron" />
+                </LinearLayout>
+                <LinearLayout android:id="@+id/AttendanceContent" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
                     <include android:id="@+id/BackAutoAtd" layout="@layout/preference_switch" />
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
                     <include android:id="@+id/SetAtdTime" layout="@layout/preference_sub_value" />
@@ -73,21 +73,23 @@
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/permission_requirements" style="@style/PreferenceRowTitle" />
                     </LinearLayout>
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
-        <LinearLayout android:id="@+id/RecoveryHeader" android:clickable="true" android:focusable="true" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="44dp" android:layout_marginStart="32dp" android:layout_marginEnd="32dp" android:layout_marginTop="16dp" android:orientation="horizontal" android:gravity="center_vertical">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/recovery_notifications" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:textColor="@color/function_section_title" />
-            <TextView style="@style/Widget.ArkScreen.CompactCapsule" android:layout_marginStart="8dp" android:text="@string/experimental_feature_short" />
-            <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
-            <ImageView android:id="@+id/RecoveryExpand" android:layout_width="18dp" android:layout_height="18dp" android:contentDescription="@null" app:tint="@color/function_text_secondary" android:src="@drawable/ic_function_chevron" />
-        </LinearLayout>
-        <com.google.android.material.card.MaterialCardView android:id="@+id/RecoveryContent" style="@style/CardViewContent" android:layout_marginTop="0dp">
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" android:layout_marginTop="16dp" app:strokeWidth="0dp">
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+                <LinearLayout android:id="@+id/RecoveryHeader" android:clickable="true" android:focusable="true" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="52dp" android:paddingStart="20dp" android:paddingEnd="20dp" android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/recovery_notifications" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:textColor="@color/function_section_title" />
+                    <TextView style="@style/Widget.ArkScreen.CompactCapsule" android:layout_marginStart="8dp" android:text="@string/experimental_feature_short" />
+                    <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
+                    <ImageView android:id="@+id/RecoveryExpand" android:layout_width="18dp" android:layout_height="18dp" android:contentDescription="@null" app:tint="@color/function_text_secondary" android:src="@drawable/ic_function_chevron" />
+                </LinearLayout>
+                <LinearLayout android:id="@+id/RecoveryContent" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
                 <include android:id="@+id/RecoveryEnabled" layout="@layout/preference_switch" />
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
                 <include android:id="@+id/RecoverySettings" layout="@layout/preference_icon" />
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
                 <include android:id="@+id/RecoveryPermissions" layout="@layout/preference_icon" />
+            </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>

@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
+import com.blueskybone.arkscreen.data.local.room.WidgetConfig
 import android.content.Intent
 import android.widget.RemoteViews
 import com.blueskybone.arkscreen.R
@@ -40,6 +41,7 @@ data class NextWidgetRenderData(
     val lastRefreshTs: Long,
     val cacheAccountInfo: CacheAccountInfo?,
     val visualStyle: WidgetVisualStyle,
+    val config: WidgetConfig,
 )
 
 /**
@@ -56,8 +58,8 @@ abstract class BaseNextWidgetProvider : AppWidgetProvider() {
     protected val templatePrefs: WidgetTemplatePrefManager by getKoin().inject()
 
     protected abstract val pendingIntentOffset: Int
-    protected abstract val defaultTypes: List<WidgetInfoType>
-    protected abstract fun selectedTypeNames(): List<String>
+    protected abstract fun defaultTypes(config: WidgetConfig): List<WidgetInfoType>
+    protected abstract fun selectedTypeNames(config: WidgetConfig): List<String>
     protected abstract fun createRemoteViews(
         context: Context,
         appWidgetId: Int,
@@ -82,7 +84,8 @@ abstract class BaseNextWidgetProvider : AppWidgetProvider() {
                 val accountList = accounts.observeSkAcc().first()
                 val current = accounts.observeCurrentSkAcc().first()
                 appWidgetIds.forEach { appWidgetId ->
-                    val config = configs.getOrCreate(appWidgetId)
+                    if (appWidgetManager.getAppWidgetInfo(appWidgetId) == null) return@forEach
+                    val config = configs.getWithAppearance(appWidgetId, templatePrefs)
                     val account = com.blueskybone.arkscreen.platform.widget.WidgetAccountResolver.resolve(config, accountList, current)
                     if (account == null) {
                         val views = RemoteViews(context.packageName, R.layout.widget_account_missing)
@@ -90,10 +93,10 @@ abstract class BaseNextWidgetProvider : AppWidgetProvider() {
                         appWidgetManager.updateAppWidget(appWidgetId, views)
                         return@forEach
                     }
-                    val data = loadRenderData(context, account)
+                    val data = loadRenderData(context, account, config)
                     appWidgetManager.updateAppWidget(
                         appWidgetId,
-                        createRemoteViews(context, appWidgetId, data),
+                        styledViews(context, appWidgetId, data),
                     )
                 }
                 Timber.tag("Widget").i(
@@ -113,6 +116,10 @@ abstract class BaseNextWidgetProvider : AppWidgetProvider() {
                 pendingResult.finish()
             }
         }
+    }
+
+    final override fun onAppWidgetOptionsChanged(context: Context, manager: AppWidgetManager, id: Int, options: android.os.Bundle) {
+        com.blueskybone.arkscreen.platform.widget.WidgetUpdateDispatcher(context).render(id)
     }
 
     final override fun onEnabled(context: Context) {
@@ -142,18 +149,19 @@ abstract class BaseNextWidgetProvider : AppWidgetProvider() {
         }
     }
 
-    private suspend fun loadRenderData(context: Context, account: com.blueskybone.arkscreen.domain.model.account.AccountSk): NextWidgetRenderData {
+    private suspend fun loadRenderData(context: Context, account: com.blueskybone.arkscreen.domain.model.account.AccountSk, config: WidgetConfig): NextWidgetRenderData {
         val cache = snapshots.read(account)
         val cacheAccountInfo = CacheAccountInfo(account.uid, account.nickName, account.official)
         val attendanceState = cacheAccountInfo
             .uid
             .takeIf(String::isNotBlank)
             ?.let { attendanceStates.get(AccountType.SK, it) }
-        val parsedTypes = selectedTypeNames()
+        val parsedTypes = selectedTypeNames(config)
             .mapNotNull { name -> runCatching { WidgetInfoType.valueOf(name) }.getOrNull() }
             .filterNot { it == WidgetInfoType.ATTENDANCE }
             .distinct()
-        val selectedTypes = parsedTypes.takeIf { it.size == defaultTypes.size } ?: defaultTypes
+        val defaults = defaultTypes(config)
+        val selectedTypes = parsedTypes.takeIf { it.size == defaults.size } ?: defaults
         val appClock: AppClock = getKoin().get()
         val items = WidgetInfoMapper(context, cache, settings, appClock)
             .mapAll(attendanceState = attendanceState)
@@ -168,8 +176,33 @@ abstract class BaseNextWidgetProvider : AppWidgetProvider() {
                 .takeIf { settings.backAutoAtd.get() },
             lastRefreshTs = cache.apCache.lastSyncTs,
             cacheAccountInfo = cacheAccountInfo,
-            visualStyle = WidgetVisualStyle.fromKey(templatePrefs.style.get()),
+            visualStyle = WidgetVisualStyle.fromKey(config.theme.orEmpty()),
+            config = config,
         )
+    }
+
+    private fun styledViews(context: Context, id: Int, data: NextWidgetRenderData): RemoteViews {
+        val remote = createRemoteViews(context, id, data)
+        remote.setInt(R.id.widget_background, "setImageAlpha", ((100 - data.config.transparency.coerceIn(0, 100)) * 255 / 100))
+        // Styled attribute IDs must be sorted (textSize before id).
+        // Preserve each layout's typography hierarchy when scaling.
+        val xml = context.resources.getLayout(remote.layoutId)
+        try {
+            var event = xml.eventType
+            while (event != org.xmlpull.v1.XmlPullParser.END_DOCUMENT) {
+                if (event == org.xmlpull.v1.XmlPullParser.START_TAG && xml.name == "TextView") {
+                    val attrs = context.obtainStyledAttributes(android.util.Xml.asAttributeSet(xml),
+                        intArrayOf(android.R.attr.textSize, android.R.attr.id))
+                    val viewId = attrs.getResourceId(1, 0)
+                    val px = attrs.getDimension(0, 0f)
+                    attrs.recycle()
+                    if (viewId != 0 && px > 0) remote.setTextViewTextSize(viewId, android.util.TypedValue.COMPLEX_UNIT_PX,
+                        px * data.config.fontScale.coerceIn(0.85f, 1.15f))
+                }
+                event = xml.next()
+            }
+        } finally { xml.close() }
+        return remote
     }
 
     protected fun palette(data: NextWidgetRenderData): WidgetPalette =

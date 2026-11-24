@@ -123,4 +123,5 @@
     <color name="function_section_title">#45464B</color>
     <color name="home_text_primary">#292A2D</color>
     <color name="home_text_secondary">#65666C</color>
+    <color name="home_inner_surface">#EFEDF0</color>
 </resources>

@@ -116,6 +116,7 @@ class Home : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        binding.LinkCard.visibility = if (prefManager.showExternalTools.get()) View.VISIBLE else View.GONE
         // 实时数据页会更新持久化快照；首页每次重新可见时都应读取一次，
         // 这样卡片能展示最近一次成功请求的数据。
         viewModel.loadApCache()
