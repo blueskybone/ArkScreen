@@ -2,6 +2,7 @@ package com.blueskybone.arkscreen.ui.recruit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.domain.model.ConfigType
 import com.blueskybone.arkscreen.domain.repository.GameResourceRepository
 import com.blueskybone.arkscreen.domain.service.RecruitDatabaseProvider
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -27,11 +29,15 @@ import timber.log.Timber
 class RecruitModel(
     private val repo: GameResourceRepository,
     private val databaseProvider: RecruitDatabaseProvider,
-    private val calcResultUseCase: CalcResultUseCase
+    private val calcResultUseCase: CalcResultUseCase,
+    private val settings: SettingPrefManager,
 ) : ViewModel() {
 
     //UI 状态
-    private val _uiState = MutableStateFlow(RecruitUiState())
+    private val initialHideLowRarity = settings.recruitHideLowRarity.get()
+    private val _uiState = MutableStateFlow(
+        RecruitUiState(hideLowRarity = initialHideLowRarity)
+    )
     val uiState: StateFlow<RecruitUiState> = _uiState
 
     private val _event = Channel<RecruitEvent>(Channel.BUFFERED)
@@ -39,6 +45,7 @@ class RecruitModel(
 
     //标签选中状态
     private val selectedTagsFlow = MutableStateFlow<List<String>>(emptyList())
+    private val hideLowRarityFlow = MutableStateFlow(initialHideLowRarity)
 
     //允许最大选择tag数目
     private val maxSelectTagNum = 6
@@ -52,11 +59,13 @@ class RecruitModel(
     @OptIn(FlowPreview::class)
     private fun observeTags() {
         execute {
-            selectedTagsFlow
+            combine(selectedTagsFlow, hideLowRarityFlow) { tags, hideLowRarity ->
+                tags to hideLowRarity
+            }
                 .debounce(500L)
                 .distinctUntilChanged()
-                .collect { tags ->
-                    calculate(tags)
+                .collect { (tags, hideLowRarity) ->
+                    calculate(tags, hideLowRarity)
                 }
         }
     }
@@ -68,7 +77,10 @@ class RecruitModel(
         val newTags = if (tag in state.selectedTags) {
             state.selectedTags - tag
         } else {
-            if (state.selectedTags.size >= maxSelectTagNum) return
+            if (state.selectedTags.size >= maxSelectTagNum) {
+                _event.trySend(RecruitEvent.SelectionLimitReached)
+                return
+            }
             state.selectedTags + tag
         }
 
@@ -78,6 +90,13 @@ class RecruitModel(
 
         // 不直接算，而是发给 Flow
         selectedTagsFlow.value = newTags
+    }
+
+    fun setHideLowRarity(hidden: Boolean) {
+        if (_uiState.value.hideLowRarity == hidden) return
+        settings.recruitHideLowRarity.set(hidden)
+        _uiState.update { it.copy(hideLowRarity = hidden) }
+        hideLowRarityFlow.value = hidden
     }
 
     private fun loadData() {
@@ -111,9 +130,9 @@ class RecruitModel(
         }
     }
 
-    private fun calculate(tags: List<String>) {
+    private fun calculate(tags: List<String>, hideLowRarity: Boolean) {
         execute {
-            calcResultUseCase(tags)
+            calcResultUseCase(tags, filter = hideLowRarity)
                 .onSuccess { result ->
                     _uiState.value = _uiState.value.copy(result = result)
                 }

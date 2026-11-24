@@ -1,6 +1,5 @@
 package com.blueskybone.arkscreen.ui.recruit.adapter
 
-import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.ColorRes
@@ -10,7 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.domain.model.recruit.RecruitOpe
-import android.widget.TextView
+import com.google.android.material.chip.Chip
 
 class OperatorChipAdapter(
     private val onClick: (RecruitOpe) -> Unit
@@ -18,8 +17,8 @@ class OperatorChipAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OperatorChipViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_recruit_ope_chip, parent, false)
-        return OperatorChipViewHolder(view as TextView, onClick)
+            .inflate(R.layout.item_result_tag, parent, false)
+        return OperatorChipViewHolder(view as Chip, onClick)
     }
 
     override fun onBindViewHolder(holder: OperatorChipViewHolder, position: Int) {
@@ -27,7 +26,7 @@ class OperatorChipAdapter(
     }
 
     class OperatorChipViewHolder(
-        private val chip: TextView,
+        private val chip: Chip,
         private val onClick: (RecruitOpe) -> Unit
     ) : RecyclerView.ViewHolder(chip) {
 
@@ -38,27 +37,25 @@ class OperatorChipAdapter(
         }
 
         private fun applyRarityColors(rarity: Int) {
-            val (lineColor, surfaceColor) = rarityColors(rarity)
+            val (textColor, surfaceColor) = rarityColors(rarity)
             val context = chip.context
 
-            chip.setTextColor(ContextCompat.getColor(context, lineColor))
-            chip.backgroundTintList = ColorStateList.valueOf(
-                ContextCompat.getColor(context, surfaceColor)
-            )
+            chip.setTextColor(ContextCompat.getColor(context, textColor))
+            chip.setChipBackgroundColorResource(surfaceColor)
         }
 
         private fun rarityColors(rarity: Int): RarityColors = when (rarity) {
-            6 -> RarityColors(R.color.recruit_rare_6_text, R.color.rare_6_surface)
-            5 -> RarityColors(R.color.recruit_rare_5_text, R.color.rare_5_surface)
-            4 -> RarityColors(R.color.recruit_rare_4_text, R.color.rare_4_surface)
-            3 -> RarityColors(R.color.recruit_rare_3_text, R.color.rare_3_surface)
-            2 -> RarityColors(R.color.recruit_rare_2_text, R.color.rare_2_surface)
-            else -> RarityColors(R.color.recruit_rare_1_text, R.color.rare_1_surface)
+            6 -> RarityColors(R.color.recruit_rare_6_text, R.color.recruit_rare_6_surface)
+            5 -> RarityColors(R.color.recruit_rare_5_text, R.color.recruit_rare_5_surface)
+            4 -> RarityColors(R.color.recruit_rare_4_text, R.color.recruit_rare_4_surface)
+            3 -> RarityColors(R.color.recruit_rare_3_text, R.color.recruit_rare_3_surface)
+            2 -> RarityColors(R.color.recruit_rare_2_text, R.color.recruit_rare_2_surface)
+            else -> RarityColors(R.color.recruit_rare_1_text, R.color.recruit_rare_1_surface)
         }
     }
 
     private data class RarityColors(
-        @ColorRes val line: Int,
+        @ColorRes val text: Int,
         @ColorRes val surface: Int,
     )
 

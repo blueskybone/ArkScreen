@@ -2,7 +2,7 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/settingScrollView" android:layout_width="match_parent" android:layout_height="match_parent" android:paddingBottom="?attr/actionBarSize">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingBottom="16dp">
         <TextView style="@style/TextView.Headline" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/more" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="44dp" android:gravity="center_vertical" android:layout_marginStart="32dp" android:layout_marginEnd="32dp" android:layout_marginTop="16dp" android:text="@string/more_general_settings" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:textColor="@color/function_section_title" />
+        <TextView style="@style/PageSectionTitle" android:text="@string/appearance" />
         <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" android:layout_marginTop="0dp" app:strokeWidth="0dp">
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
                 <include android:id="@+id/AppTheme" layout="@layout/preference_value" />
@@ -11,6 +11,12 @@
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
                 <include android:id="@+id/ShowExternalTools" layout="@layout/preference_switch" />
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
+                <include android:id="@+id/ShowHomeBanner" layout="@layout/preference_switch" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <TextView style="@style/PageSectionTitle" android:text="@string/more_general_settings" />
+        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" android:layout_marginTop="0dp" app:strokeWidth="0dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
                 <include android:id="@+id/AutoUpdateApp" layout="@layout/preference_switch" />
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
                 <include android:id="@+id/UseInnerWeb" layout="@layout/preference_switch" />
@@ -18,13 +24,13 @@
                 <include android:id="@+id/TimeCorrect" layout="@layout/preference_sub_switch" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="44dp" android:gravity="center_vertical" android:layout_marginStart="32dp" android:layout_marginEnd="32dp" android:layout_marginTop="16dp" android:text="@string/logs_option" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:textColor="@color/function_section_title" />
+        <TextView style="@style/PageSectionTitle" android:text="@string/logs_option" />
         <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" android:layout_marginTop="0dp" app:strokeWidth="0dp">
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
                 <include android:id="@+id/CheckLogs" layout="@layout/preference_icon" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="44dp" android:layout_marginTop="16dp" android:layout_marginStart="32dp" android:gravity="center_vertical" android:text="@string/others" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:textColor="@color/function_section_title" />
+        <TextView style="@style/PageSectionTitle" android:text="@string/others" />
         <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" android:layout_marginTop="0dp" app:strokeWidth="0dp">
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
                 <include android:id="@+id/DataInfo" layout="@layout/preference_icon" />

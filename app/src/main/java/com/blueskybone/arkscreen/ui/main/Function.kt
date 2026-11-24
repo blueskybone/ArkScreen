@@ -31,10 +31,6 @@ import com.blueskybone.arkscreen.data.local.pref.InnerPrefManager
 import com.blueskybone.arkscreen.platform.schedule.AttendanceAlarmController
 import com.blueskybone.arkscreen.databinding.DialogTimepickerBinding
 import com.blueskybone.arkscreen.databinding.FragmentDashboardBinding
-import com.blueskybone.arkscreen.ui.common.bindinginfo.FloatWindowAppearance
-import com.blueskybone.arkscreen.ui.common.bindinginfo.NotifyPermission
-import com.blueskybone.arkscreen.ui.common.bindinginfo.OpenAutoStartSettings
-import com.blueskybone.arkscreen.ui.common.bindinginfo.OverlayPermission
 import com.blueskybone.arkscreen.ui.common.bindinginfo.RecruitMode
 import com.blueskybone.arkscreen.ui.common.bindinginfo.ScDelay
 import com.blueskybone.arkscreen.ui.common.bindinginfo.SetAtdTime
@@ -115,16 +111,6 @@ class Function : Fragment() {
             onClick = null
         )
 
-        PreferenceBinder.bindPreference(
-            binding = binding.FloatWindowAppearance,
-            context = requireContext(),
-            icon = null,
-            listInfo = FloatWindowAppearance,
-            pref = prefManager.floatWindowAppearance,
-            onClick = null
-        )
-
-
         PreferenceBinder.bindPreferenceValue(
             binding = binding.ScreenShotDelay,
             context = requireContext(),
@@ -162,6 +148,8 @@ class Function : Fragment() {
         binding.RecoverySettings.Icon.setImageResource(R.drawable.ic_recovery_settings)
         binding.RecoveryPermissions.Title.setText(R.string.permission_requirements)
         binding.RecoveryPermissions.Icon.setImageResource(R.drawable.ic_function_permission)
+        (binding.RecoveryPermissions.root as? android.view.ViewGroup)
+            ?.getChildAt(1)?.visibility = View.GONE
         binding.RecoveryPermissions.root.setOnClickListener {
             PreferenceDialog(requireContext()).add(R.string.notify_permission, R.string.notify_permission_detail) {
                 (activity as? MainActivity)?.openNotificationSettings(requireContext())
@@ -181,18 +169,6 @@ class Function : Fragment() {
         )
 
 
-        PreferenceBinder.bindPreferenceText(
-            binding = binding.OverlayPermission,
-            icon = null,
-            textInfo = OverlayPermission
-        )
-
-        PreferenceBinder.bindPreferenceText(
-            binding = binding.NotifyPermission,
-            icon = null,
-            textInfo = NotifyPermission
-        )
-
         PreferenceBinder.bindSwitch(
             binding = binding.PowerSavingMode,
             icon = R.drawable.ic_function_saver,
@@ -200,12 +176,6 @@ class Function : Fragment() {
             pref = prefManager.powerSavingMode,
             onCall = null,
             offCall = null
-        )
-
-        PreferenceBinder.bindPreferenceText(
-            binding = binding.OpenAutoStartSettings,
-            icon = null,
-            textInfo = OpenAutoStartSettings
         )
 
         binding.RecruitVideo.setOnClickListener {
@@ -267,13 +237,6 @@ class Function : Fragment() {
             }.show()
         }
 
-        binding.WidgetInfo.setOnClickListener {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.account_info)
-                .setMessage(R.string.widget_info)
-                .setNegativeButton(R.string.confirm, null)
-                .show()
-        }
         timePickerBinding()
     }
 

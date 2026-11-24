@@ -3,17 +3,14 @@ package com.blueskybone.arkscreen.ui.widget
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Intent
-import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.widget.TextViewCompat
 import com.blueskybone.arkscreen.ui.common.showChoicePopup
 import androidx.lifecycle.lifecycleScope
 import com.blueskybone.arkscreen.R
@@ -24,7 +21,6 @@ import com.blueskybone.arkscreen.databinding.ActivityWidgetTemplateLabBinding
 import com.blueskybone.arkscreen.domain.repository.AccountRepository
 import com.blueskybone.arkscreen.platform.widget.WidgetUpdateDispatcher
 import com.blueskybone.arkscreen.ui.widget.model.WidgetVisualStyle
-import com.blueskybone.arkscreen.ui.widget.model.WidgetBackgroundSize
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -191,10 +187,6 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
     }.coerceAtLeast(0)
 
     private fun sizeName(id: Int) = listOf("1×1", "1×2", "2×2", "2×3")[kind(id)]
-    private fun provider(id: Int): BaseNextWidgetProvider = when (kind(id)) {
-        0 -> WidgetNext1(); 1 -> WidgetNext2(); 2 -> WidgetNext3(); else -> WidgetNext4()
-    }
-    private fun backgroundSize(id: Int) = WidgetBackgroundSize.entries[kind(id)]
     private suspend fun accountName(c: WidgetConfig): String =
         if (c.accountMode == WidgetConfig.FOLLOW_CURRENT) "跟随当前账号" else
             accounts.observeSkAcc().first().firstOrNull { it.uid == c.roleUid && it.channelMasterId == c.serverKey }
@@ -216,13 +208,24 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
         val accountRow = row(identity, "账号", "…") { chooseAccount(it) }
         lifecycleScope.launch { accountRow.text = accountName(config) }
 
-        header("预览", "点击保存后应用到桌面组件")
+        header("预览")
         val previewCard = card()
         (previewCard.parent as MaterialCardView).setCardBackgroundColor(color(R.color.grey_700))
         previewHost = FrameLayout(this).apply {
             layoutParams = LinearLayout.LayoutParams(-1, -2)
         }
         previewCard.addView(previewHost)
+        val previewCaption = TextView(
+            this,
+            null,
+            0,
+            R.style.CardSupportingText,
+        ).apply {
+            setText(R.string.widget_preview_save_hint)
+            gravity = android.view.Gravity.END
+            setPadding(dp(32), dp(6), dp(32), 0)
+        }
+        binding.EditorContent.addView(previewCaption)
 
         header("主题")
         val themes = card()
@@ -350,23 +353,16 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
 
     private fun sliderCard(label: String, hint: String, from: Float, to: Float, value: Float, step: Float, changed: (Float) -> Unit) {
         val box = card()
-        val content = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL; setPadding(dp(20), dp(16), dp(20), dp(12))
-        }
+        val content = layoutInflater.inflate(R.layout.widget_editor_slider, box, false)
         box.addView(content)
-        val top = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL }
-        top.addView(text(label, 20f), LinearLayout.LayoutParams(0, -2, 1f))
-        val percent = TextView(this, null, 0, R.style.Widget_ArkScreen_CompactCapsule).apply {
+        content.findViewById<TextView>(R.id.SliderTitle).text = label
+        content.findViewById<TextView>(R.id.SliderHint).text = hint
+        val percent = content.findViewById<TextView>(R.id.SliderValue).apply {
             text = value.toInt().toString() + "%"
         }
-        top.addView(percent)
-        content.addView(top)
-        content.addView(text(hint, 13f).apply { setTextColor(color(R.color.home_text_secondary)); setPadding(0, dp(8), 0, dp(10)) })
-        content.addView(Slider(this).apply {
+        content.findViewById<Slider>(R.id.Slider).apply {
             valueFrom = from; valueTo = to; stepSize = step
             this.value = (kotlin.math.round(value / step) * step).coerceIn(from, to)
-            trackHeight = dp(12)
-            thumbRadius = dp(16)
             setCustomThumbDrawable(GradientDrawable().apply {
                 shape = GradientDrawable.RECTANGLE
                 cornerRadius = dp(3).toFloat()
@@ -377,7 +373,7 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
             addOnChangeListener { _, v, user ->
                 if (user) { percent.text = v.toInt().toString() + "%"; changed(v) }
             }
-        }, LinearLayout.LayoutParams(-1, dp(48)))
+        }
     }
 
     private fun popup(anchor: View, entries: List<String>, selected: Int, onSelect: (Int) -> Unit) {
@@ -390,45 +386,31 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun header(title: String, hint: String? = null) {
-        val line = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL }
-        line.addView(text(title, 16f).apply {
-            setTypeface(typeface, Typeface.BOLD)
-            setTextColor(color(R.color.function_section_title))
-        })
-        if (hint != null) line.addView(text(hint, 11f).apply {
-            setTextColor(color(R.color.home_text_secondary))
-        }, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(10) })
+    private fun header(title: String) {
+        val line = TextView(this, null, 0, R.style.SectionTitleText).apply {
+            text = title
+            gravity = android.view.Gravity.CENTER_VERTICAL
+        }
         binding.EditorContent.addView(line, LinearLayout.LayoutParams(-1, dp(44)).apply {
             topMargin = dp(16); marginStart = dp(32); marginEnd = dp(32)
         })
     }
     private fun card(): LinearLayout {
-        val outer = MaterialCardView(this).apply {
-            radius = dp(24).toFloat(); cardElevation = 0f; strokeWidth = 0; clipToOutline = true
-            setCardBackgroundColor(color(R.color.app_surface))
-        }
-        val inner = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        outer.addView(inner)
+        val outer = layoutInflater.inflate(
+            R.layout.widget_editor_card,
+            binding.EditorContent,
+            false,
+        ) as MaterialCardView
+        val inner = outer.findViewById<LinearLayout>(R.id.CardContent)
         binding.EditorContent.addView(outer, LinearLayout.LayoutParams(-1, -2).apply {
             marginStart = dp(16); marginEnd = dp(16)
         })
         return inner
     }
     private fun row(box: LinearLayout, title: String, value: String, click: (View) -> Unit): TextView {
-        val line = LinearLayout(this).apply {
-            gravity = Gravity.CENTER_VERTICAL; minimumHeight = dp(56)
-            setPadding(dp(20), dp(8), dp(20), dp(8))
-        }
-        line.addView(text(title, 16f), LinearLayout.LayoutParams(0, -2, 1f))
-        val trailing = text(value, 14f).apply {
-            gravity = Gravity.END; maxWidth = dp(210); maxLines = 2
-            setTextColor(color(R.color.home_text_secondary))
-        }
-        trailing.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_function_select, 0)
-        trailing.compoundDrawablePadding = dp(4)
-        TextViewCompat.setCompoundDrawableTintList(trailing, ContextCompat.getColorStateList(this, R.color.function_text_secondary))
-        line.addView(trailing)
+        val line = layoutInflater.inflate(R.layout.widget_editor_row, box, false)
+        line.findViewById<TextView>(R.id.RowTitle).text = title
+        val trailing = line.findViewById<TextView>(R.id.RowValue).apply { text = value }
         line.setOnClickListener { click(trailing) }
         box.addView(line)
         return trailing

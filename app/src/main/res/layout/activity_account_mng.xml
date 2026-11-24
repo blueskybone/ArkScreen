@@ -76,17 +76,6 @@
                         </LinearLayout>
 
                         <ImageButton
-                            android:id="@+id/SkInfo"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/account_info"
-                            android:padding="10dp"
-                            android:src="@drawable/ic_info"
-                            android:visibility="gone"
-                            app:tint="?attr/colorOnSurface" />
-
-                        <ImageButton
                             android:id="@+id/AddAccountSk"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
@@ -106,6 +95,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingTop="12dp"
+                        android:textColor="?attr/colorPrimary"
                         android:text="@string/arknights_accounts" />
 
                     <FrameLayout
@@ -146,6 +136,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingTop="12dp"
+                        android:textColor="?attr/colorPrimary"
                         android:text="@string/endfield_accounts" />
 
                     <FrameLayout
@@ -221,17 +212,6 @@
                                 android:text="@string/gacha_account_summary"
                                 android:textAppearance="?attr/textAppearanceCaption" />
                         </LinearLayout>
-
-                        <ImageButton
-                            android:id="@+id/GcInfo"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/account_info"
-                            android:padding="10dp"
-                            android:src="@drawable/ic_info"
-                            android:visibility="gone"
-                            app:tint="?attr/colorOnSurface" />
 
                         <ImageButton
                             android:id="@+id/AddAccountGc"

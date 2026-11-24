@@ -30,14 +30,14 @@
 
                 <TextView
                     android:id="@+id/FullTime"
-                    style="@style/Widget.ArkScreen.CompactCapsule.Accent"
+                    style="@style/Widget.ArkScreen.StatusCapsule.Accent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp" />
 
                 <TextView
                     android:id="@+id/RemainingTime"
-                    style="@style/Widget.ArkScreen.CompactCapsule"
+                    style="@style/Widget.ArkScreen.MetadataCapsule"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp" />

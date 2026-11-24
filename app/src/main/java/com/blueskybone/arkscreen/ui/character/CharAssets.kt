@@ -116,9 +116,8 @@ class CharAssets : AppCompatActivity() {
         val syncing = model.syncingState.value == true
         if (binding.Page.visibility != View.VISIBLE || binding.Loading.visibility == View.VISIBLE) {
             binding.Loading.visibility = if (syncing) View.VISIBLE else View.GONE
-            binding.LoadingMessage.visibility = if (syncing) View.VISIBLE else View.GONE
             if (syncing && binding.AssetsContent.visibility == View.VISIBLE) {
-                binding.LoadingMessage.setText(com.blueskybone.arkscreen.R.string.syncing)
+                binding.Loading.setMessage(com.blueskybone.arkscreen.R.string.syncing)
             }
         }
     }
@@ -137,8 +136,7 @@ class CharAssets : AppCompatActivity() {
 
     private fun displayLoadingView(msg: String) {
         binding.Loading.visibility = View.VISIBLE
-        binding.LoadingMessage.visibility = View.VISIBLE
-        binding.LoadingMessage.text = msg
+        binding.Loading.setMessage(msg)
         binding.StatusIllustration.visibility = View.GONE
         binding.Page.visibility = View.GONE
         binding.AssetsContent.visibility = View.GONE
@@ -149,7 +147,6 @@ class CharAssets : AppCompatActivity() {
 
     private fun displayErrorView(msg: String) {
         binding.Loading.visibility = View.GONE
-        binding.LoadingMessage.visibility = View.GONE
         binding.StatusIllustration.visibility = View.VISIBLE
         binding.Page.visibility = View.VISIBLE
         binding.AssetsContent.visibility = View.GONE
@@ -160,7 +157,6 @@ class CharAssets : AppCompatActivity() {
 
     private fun displayEmptyView(msg: String) {
         binding.Loading.visibility = View.GONE
-        binding.LoadingMessage.visibility = View.GONE
         binding.StatusIllustration.visibility = View.VISIBLE
         binding.Page.visibility = View.VISIBLE
         binding.AssetsContent.visibility = View.GONE
@@ -202,8 +198,7 @@ class CharAssets : AppCompatActivity() {
     private fun displayView() {
         val syncing = model.syncingState.value == true
         binding.Loading.visibility = if (syncing) View.VISIBLE else View.GONE
-        binding.LoadingMessage.visibility = if (syncing) View.VISIBLE else View.GONE
-        if (syncing) binding.LoadingMessage.setText(com.blueskybone.arkscreen.R.string.syncing)
+        if (syncing) binding.Loading.setMessage(com.blueskybone.arkscreen.R.string.syncing)
         binding.Page.visibility = View.GONE
         binding.AssetsContent.visibility = View.VISIBLE
     }

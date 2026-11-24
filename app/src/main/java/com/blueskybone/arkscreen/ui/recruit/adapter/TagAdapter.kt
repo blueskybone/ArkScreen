@@ -1,8 +1,6 @@
 package com.blueskybone.arkscreen.ui.recruit.adapter
 
 import android.view.ViewGroup
-import android.content.res.ColorStateList
-import androidx.core.content.ContextCompat
 import com.blueskybone.arkscreen.R
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -42,24 +40,20 @@ class TagAdapter(
     inner class TagViewHolder(
         private val container: android.view.View
     ) : RecyclerView.ViewHolder(container) {
-        private val button = container.findViewById<android.widget.TextView>(R.id.tagLabel)
+        private val button =
+            container.findViewById<com.google.android.material.chip.Chip>(R.id.tagLabel)
 
         fun bind(item: TagItem) {
             button.text = item.name
             val selected = item.name in selectedSet
-            button.isSelected = selected
-            val context = button.context
-            val background = if (selected) com.google.android.material.color.MaterialColors.getColor(
-                button, R.attr.capsuleAccentContainer
-            ) else ContextCompat.getColor(context, R.color.recruit_tag_surface)
-            val foreground = if (selected) com.google.android.material.color.MaterialColors.getColor(
-                button, R.attr.capsuleAccentContent
-            ) else ContextCompat.getColor(context, R.color.home_text_primary)
-            button.backgroundTintList = ColorStateList.valueOf(background)
-            button.setTextColor(foreground)
+            button.isChecked = selected
             container.isSelected = selected
             container.contentDescription = item.name
-            container.setOnClickListener { onClick(item.name) }
+            button.setOnClickListener {
+                // State is owned by the view model; also restores the old state when the limit rejects a tag.
+                button.isChecked = selected
+                onClick(item.name)
+            }
         }
     }
 

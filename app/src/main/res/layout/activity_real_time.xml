@@ -4,14 +4,13 @@
         <ImageButton android:id="@+id/RefreshButton" style="@style/ToolbarIconAction"
             android:src="@drawable/ic_function_refresh" android:contentDescription="@string/refresh" />
     </com.google.android.material.appbar.MaterialToolbar>
-    <com.google.android.material.progressindicator.LinearProgressIndicator android:id="@+id/Loading" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_below="@id/Toolbar" android:indeterminate="true" android:visibility="gone" />
-    <TextView android:id="@+id/LoadingMessage" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_below="@id/Loading" android:paddingStart="20dp" android:paddingTop="8dp" android:paddingEnd="20dp" android:text="@string/loading" android:textAppearance="?attr/textAppearanceBody2" android:visibility="gone" />
-    <androidx.core.widget.NestedScrollView android:id="@+id/ScrollView" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_below="@id/LoadingMessage" android:clipToPadding="false" android:fillViewport="true" android:paddingBottom="16dp" android:visibility="gone">
+    <com.blueskybone.arkscreen.ui.common.view.StarterLoadingView android:id="@+id/Loading" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_below="@id/Toolbar" android:visibility="gone" />
+    <androidx.core.widget.NestedScrollView android:id="@+id/ScrollView" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_below="@id/Toolbar" android:clipToPadding="false" android:fillViewport="true" android:paddingBottom="16dp" android:visibility="gone">
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
             <com.google.android.material.card.MaterialCardView style="@style/RealtimeCard">
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical">
-                <com.google.android.material.imageview.ShapeableImageView android:id="@+id/Avatar" android:layout_width="56dp" android:layout_height="56dp" android:scaleType="centerCrop" app:shapeAppearanceOverlay="@style/RoundedImageView" />
+                <com.google.android.material.imageview.ShapeableImageView android:id="@+id/Avatar" android:layout_width="72dp" android:layout_height="72dp" android:scaleType="centerCrop" app:shapeAppearanceOverlay="@style/RoundedImageView" />
                 <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="14dp" android:orientation="vertical">
                     <include android:id="@+id/AccountSelector" layout="@layout/card_account_selector" />
                     <LinearLayout android:id="@+id/UidRow" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:gravity="center_vertical" android:orientation="horizontal">
@@ -21,8 +20,8 @@
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:gravity="center_vertical">
-                <TextView android:id="@+id/Level"  style="@style/Widget.ArkScreen.CompactCapsule" />
-                <TextView android:id="@+id/LastLogin" style="@style/Widget.ArkScreen.CompactCapsule"
+                <TextView android:id="@+id/Level"  style="@style/Widget.ArkScreen.MetadataCapsule" />
+                <TextView android:id="@+id/LastLogin" style="@style/Widget.ArkScreen.MetadataCapsule"
                             android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="6dp" />
             </LinearLayout>
         </LinearLayout>
@@ -32,8 +31,8 @@
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:orientation="horizontal">
                         <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
                             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/realtime_sanity" android:textAppearance="?attr/textAppearanceSubtitle1" android:textStyle="bold" />
-                            <TextView android:id="@+id/ApFullTime" style="@style/Widget.ArkScreen.CompactCapsule.Accent" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="5dp" />
-                            <TextView android:id="@+id/ApResTime" style="@style/Widget.ArkScreen.CompactCapsule" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="5dp" />
+                            <TextView android:id="@+id/ApFullTime" style="@style/Widget.ArkScreen.StatusCapsule.Accent" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="5dp" />
+                            <TextView android:id="@+id/ApResTime" style="@style/Widget.ArkScreen.MetadataCapsule" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="5dp" />
                         </LinearLayout>
                         <FrameLayout android:layout_width="96dp" android:layout_height="96dp">
                             <com.mikhaellopez.circularprogressbar.CircularProgressBar android:id="@+id/CircularProgressBar" android:layout_width="match_parent" android:layout_height="match_parent" app:cpb_background_progressbar_color="@color/sec_con" app:cpb_background_progressbar_width="6dp" app:cpb_progress_direction="to_right" app:cpb_progressbar_color="?attr/colorPrimary" app:cpb_progressbar_width="6dp" app:cpb_round_border="true" />
@@ -96,7 +95,7 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-    <FrameLayout android:id="@+id/Page" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_below="@id/LoadingMessage" android:visibility="gone">
+    <FrameLayout android:id="@+id/Page" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_below="@id/Toolbar" android:visibility="gone">
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="center" android:gravity="center" android:orientation="vertical" android:padding="@dimen/empty_content_padding">
             <include android:id="@+id/FallbackAccount" layout="@layout/card_account_selector" />
             <ImageView android:id="@+id/StatusIllustration" style="@style/Widget.ArkScreen.EmptyIllustration" android:src="@mipmap/ic_rosm" />

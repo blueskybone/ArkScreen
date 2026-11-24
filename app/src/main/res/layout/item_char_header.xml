@@ -49,16 +49,16 @@
     <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" app:strokeWidth="0dp" android:layout_marginTop="@dimen/card_vertical_spacing" android:layout_marginBottom="@dimen/card_vertical_spacing">
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingHorizontal="10dp" android:paddingVertical="4dp" android:gravity="center_vertical">
         <com.google.android.material.chip.Chip
-            android:id="@+id/Filter" style="@style/AssetActionChip"
+            android:id="@+id/Filter" style="@style/Widget.ArkScreen.ActionChip"
             android:text="@string/filter"
             app:chipIcon="@drawable/ic_filter" app:chipIconVisible="true" />
         <com.google.android.material.chip.Chip
-            android:id="@+id/MissingButton" style="@style/AssetActionChip"
+            android:id="@+id/MissingButton" style="@style/Widget.ArkScreen.ActionChip"
             android:layout_marginStart="4dp"
             android:text="@string/not_own" />
         <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
         <com.google.android.material.chip.Chip
-            android:id="@+id/ViewChanger" style="@style/AssetActionChip"
+            android:id="@+id/ViewChanger" style="@style/Widget.ArkScreen.ActionChip"
             android:layout_marginStart="4dp"
             app:textStartPadding="0dp" app:textEndPadding="0dp"
             android:contentDescription="@string/change_view"

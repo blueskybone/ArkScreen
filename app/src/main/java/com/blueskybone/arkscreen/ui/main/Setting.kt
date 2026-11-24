@@ -74,6 +74,13 @@ class Setting : Fragment() {
         )
 
         PreferenceBinder.bindSwitch(
+            binding = binding.ShowHomeBanner,
+            icon = R.drawable.ic_home_banner,
+            text = R.string.show_home_banner,
+            pref = prefManager.showHomeBanner
+        )
+
+        PreferenceBinder.bindSwitch(
             binding = binding.UseInnerWeb,
             icon = R.drawable.ic_link,
             text = R.string.use_inner_web,

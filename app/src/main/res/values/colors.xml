@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="cyan_500">#1FD5E6</color>
-    <color name="cyan_700">#0E9EA3</color>
     <color name="cyan_trans">#4685BDBD</color>
     <!--    <color name="light_cyan">#0E9EA3</color>-->
     <color name="blue_400">#3B538E</color>
@@ -25,7 +23,6 @@
 
     <color name="sec_con">#DEE6EF</color>
     <color name="on_sec_con">#575e71</color>
-    <color name="widget_content_slot_ripple">#24575E71</color>
 
     <color name="status_success_container">#DDF3E3</color>
     <color name="status_success_content">#27633A</color>
@@ -33,14 +30,12 @@
     <color name="status_warning_content">#735B00</color>
     <color name="status_error_container">#FFE1DE</color>
     <color name="status_error_content">#9B3D3D</color>
-    <color name="asset_action_surface">#D0D6DF</color>
     <color name="asset_action_selected_text">#145A91</color>
     <color name="status_neutral_container">#E8EAF0</color>
     <color name="status_neutral_content">#555B68</color>
     <!--    <color name="grey_900">#202020</color>-->
     <color name="grey_900">#1E1F25</color>
     <color name="red">#FF0000</color>
-    <color name="purple">#8959C8</color>
 
     <!-- cyan theme color-->
     <color name="dark_on_surface">#dde4e3</color>
@@ -72,9 +67,6 @@
     <color name="rare_6_line">#F3644C</color>
     <color name="rare_5_line">#F6AF44</color>
     <color name="rare_4_line">#915EEA</color>
-    <color name="rare_3_line">#2196F3</color>
-    <color name="rare_2_line">#58CD5C</color>
-    <color name="rare_1_line">#636363</color>
 
     <color name="rare_6_surface">#17D8968B</color>
     <color name="rare_5_surface">#17D8B38B</color>
@@ -118,10 +110,12 @@
     <color name="app_background">#EFEDF0</color>
     <color name="app_surface">#FAF8F9</color>
     <color name="function_divider">#10000000</color>
-    <color name="function_text_primary">#292A2D</color>
-    <color name="function_text_secondary">#65666C</color>
-    <color name="function_section_title">#45464B</color>
-    <color name="home_text_primary">#292A2D</color>
-    <color name="home_text_secondary">#65666C</color>
+    <color name="app_text_primary">#292A2D</color>
+    <color name="app_text_secondary">#65666C</color>
+    <color name="app_text_section">#45464B</color>
+    <color name="function_text_primary">@color/app_text_primary</color>
+    <color name="function_text_secondary">@color/app_text_secondary</color>
+    <color name="home_text_primary">@color/app_text_primary</color>
+    <color name="home_text_secondary">@color/app_text_secondary</color>
     <color name="home_inner_surface">#EFEDF0</color>
 </resources>

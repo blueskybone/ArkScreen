@@ -6,4 +6,9 @@
         <attr name="horizontalSpacing" format="dimension" />
         <attr name="verticalSpacing" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="WidgetScaledText">
+        <attr name="android:id" />
+        <attr name="android:textSize" />
+    </declare-styleable>
 </resources>

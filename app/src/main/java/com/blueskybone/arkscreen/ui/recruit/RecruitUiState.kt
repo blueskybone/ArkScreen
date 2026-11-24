@@ -8,6 +8,8 @@ data class RecruitUiState(
 
     val selectedTags: List<String> = emptyList(),
 
+    val hideLowRarity: Boolean = false,
+
     val result: List<RecruitResult> = emptyList(),
     val update: String = "",
     val newOpe: List<String> = emptyList()
@@ -15,4 +17,5 @@ data class RecruitUiState(
 
 sealed interface RecruitEvent {
     data class ShowError(val message: String) : RecruitEvent
+    data object SelectionLimitReached : RecruitEvent
 }

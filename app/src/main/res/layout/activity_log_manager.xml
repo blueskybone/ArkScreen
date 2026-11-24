@@ -81,7 +81,7 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/FilterAll"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
+            style="@style/Widget.ArkScreen.FilterChip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
@@ -89,14 +89,14 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/FilterApp"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
+            style="@style/Widget.ArkScreen.FilterChip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/log_type_app" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/FilterNetwork"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
+            style="@style/Widget.ArkScreen.FilterChip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/log_type_network" />

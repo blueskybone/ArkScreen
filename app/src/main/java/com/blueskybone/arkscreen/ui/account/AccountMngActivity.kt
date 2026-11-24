@@ -248,14 +248,6 @@ class AccountMngActivity : AppCompatActivity() {
         binding.AddAccountGc.setDebouncedClickListener {
             showAddAccountMenu(AccountType.GC)
         }
-
-        binding.SkInfo.setOnClickListener {
-            dialogHelper.showInfoDialog(R.string.account_info, R.string.sk_account_info)
-        }
-
-        binding.GcInfo.setOnClickListener {
-            dialogHelper.showInfoDialog(R.string.account_info, R.string.gc_account_info)
-        }
     }
 
 

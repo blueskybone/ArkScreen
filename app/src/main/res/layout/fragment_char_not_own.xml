@@ -5,7 +5,7 @@
 
         <TextView
             android:id="@+id/Update"
-            style="@style/Widget.ArkScreen.CompactCapsule"
+            style="@style/Widget.ArkScreen.MetadataCapsule"
             android:layout_gravity="start"
             android:layout_marginStart="@dimen/page_horizontal_spacing"
             android:layout_marginBottom="@dimen/card_vertical_spacing" />

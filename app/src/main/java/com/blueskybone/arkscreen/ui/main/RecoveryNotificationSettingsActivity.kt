@@ -1,20 +1,19 @@
 package com.blueskybone.arkscreen.ui.main
 
 import android.os.Bundle
-import android.widget.LinearLayout
-import android.widget.ScrollView
+import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.appcompat.widget.ListPopupWindow
 import androidx.lifecycle.lifecycleScope
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.domain.repository.AccountRepository
 import com.blueskybone.arkscreen.domain.usecase.realtime.GetRealTimeUseCase
 import com.blueskybone.arkscreen.platform.notification.RecoveryReminderController
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.blueskybone.arkscreen.ui.common.showChoicePopup
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.flow.first
@@ -34,89 +33,66 @@ class RecoveryNotificationSettingsActivity : AppCompatActivity() {
     private lateinit var meeting: MaterialSwitch
     private lateinit var recruit: MaterialSwitch
     private lateinit var refresh: MaterialSwitch
-    private lateinit var apLeadButton: MaterialButton
-    private lateinit var shiftLeadButton: MaterialButton
+    private lateinit var apLeadRow: View
+    private lateinit var shiftLeadRow: View
+    private var choicePopup: ListPopupWindow? = null
     private var apLead = 30
     private var shiftLead = 30
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        val toolbar = MaterialToolbar(this).apply {
-            title = getString(R.string.recovery_notifications)
-            setNavigationIcon(R.drawable.ic_left_arrow)
-            setNavigationOnClickListener { finish() }
-        }
-        root.addView(toolbar)
-        val scroll = ScrollView(this).apply { isFillViewport = true }
-        val content = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            val horizontal = dp(20)
-            setPadding(horizontal, dp(12), horizontal, dp(24))
-        }
-        scroll.addView(content)
-        root.addView(scroll, LinearLayout.LayoutParams(-1, 0, 1f))
-        setContentView(root)
+        setContentView(R.layout.activity_recovery_notification_settings)
+        findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.Toolbar)
+            .setNavigationOnClickListener { finish() }
 
-        content.addView(TextView(this).apply {
-            setText(R.string.recovery_notifications_experimental)
-            setTextColor(ContextCompat.getColor(this@RecoveryNotificationSettingsActivity,
-                R.color.inline_chip_text))
-            background = ContextCompat.getDrawable(this@RecoveryNotificationSettingsActivity,
-                R.drawable.bg_inline_chip)
-            backgroundTintList = android.content.res.ColorStateList.valueOf(
-                ContextCompat.getColor(this@RecoveryNotificationSettingsActivity,
-                    R.color.inline_chip_background))
-            textSize = 13f
-            setPadding(dp(8), dp(6), dp(8), dp(6))
-        })
-        val sanity = addCard(content, R.string.realtime_sanity)
-        apFull = addSwitch(sanity, R.string.recovery_notifications_ap_full,
-            settings.notifyApFull.get())
-        apEarly = addSwitch(sanity, R.string.recovery_notifications_ap_early,
-            settings.notifyApEarly.get())
+        apFull = findViewById(R.id.ApFull)
+        apEarly = findViewById(R.id.ApEarly)
+        trainDone = findViewById(R.id.TrainDone)
+        trainShift = findViewById(R.id.TrainShift)
+        labor = findViewById(R.id.Labor)
+        meeting = findViewById(R.id.Meeting)
+        recruit = findViewById(R.id.Recruit)
+        refresh = findViewById(R.id.Refresh)
+        apLeadRow = findViewById(R.id.ApLead)
+        shiftLeadRow = findViewById(R.id.ShiftLead)
+        setupLeadRow(apLeadRow)
+        setupLeadRow(shiftLeadRow)
+
+        apFull.isChecked = settings.notifyApFull.get()
+        apEarly.isChecked = settings.notifyApEarly.get()
+        trainDone.isChecked = settings.notifyTrainingComplete.get()
+        trainShift.isChecked = settings.notifyTrainingShift.get()
+        labor.isChecked = settings.notifyLaborFull.get()
+        meeting.isChecked = settings.notifyMeetingComplete.get()
+        recruit.isChecked = settings.notifyRecruitComplete.get()
+        refresh.isChecked = settings.notifyRecruitRefresh.get()
+
         apLead = settings.notifyApEarlyMinutes.get()
-        apLeadButton = addLeadButton(sanity, apLead) {
-            chooseLead(intArrayOf(5, 10, 15, 30, 60, 120), apLead) {
+        renderLeadValue(apLeadRow, apLead)
+        apLeadRow.setOnClickListener {
+            chooseLead(apLeadRow, intArrayOf(5, 10, 15, 30, 60, 120), apLead) {
                 apLead = it
-                apLeadButton.text = getString(R.string.recovery_notifications_advance, it)
+                renderLeadValue(apLeadRow, it)
             }
         }
-        val training = addCard(content, R.string.train)
-        trainDone = addSwitch(training, R.string.recovery_notifications_training_done,
-            settings.notifyTrainingComplete.get())
-        trainShift = addSwitch(training, R.string.recovery_notifications_training_shift,
-            settings.notifyTrainingShift.get())
         shiftLead = settings.notifyTrainingShiftMinutes.get()
-        shiftLeadButton = addLeadButton(training, shiftLead) {
-            chooseLead(intArrayOf(0, 5, 10, 15, 30, 60), shiftLead) {
+        renderLeadValue(shiftLeadRow, shiftLead)
+        shiftLeadRow.setOnClickListener {
+            chooseLead(shiftLeadRow, intArrayOf(0, 5, 10, 15, 30, 60), shiftLead) {
                 shiftLead = it
-                shiftLeadButton.text = getString(R.string.recovery_notifications_advance, it)
+                renderLeadValue(shiftLeadRow, it)
             }
         }
-        val other = addCard(content, R.string.recovery_other_events)
-        labor = addSwitch(other, R.string.recovery_notifications_labor,
-            settings.notifyLaborFull.get())
-        meeting = addSwitch(other, R.string.recovery_notifications_meeting,
-            settings.notifyMeetingComplete.get())
-        recruit = addSwitch(other, R.string.recovery_notifications_recruit,
-            settings.notifyRecruitComplete.get())
-        refresh = addSwitch(other, R.string.recovery_notifications_refresh,
-            settings.notifyRecruitRefresh.get())
 
         fun updateControls() {
-            apLeadButton.isEnabled = apEarly.isChecked
-            shiftLeadButton.isEnabled = trainShift.isChecked
+            setLeadEnabled(apLeadRow, apEarly.isChecked)
+            setLeadEnabled(shiftLeadRow, trainShift.isChecked)
         }
         apEarly.setOnCheckedChangeListener { _, _ -> updateControls() }
         trainShift.setOnCheckedChangeListener { _, _ -> updateControls() }
         updateControls()
 
-        val save = (layoutInflater.inflate(R.layout.item_recovery_action, content, false) as MaterialButton).apply {
-            setText(R.string.save)
-            setOnClickListener { saveSettings() }
-        }
-        content.addView(save, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(16); gravity = android.view.Gravity.END })
+        findViewById<FloatingActionButton>(R.id.Save).setOnClickListener { saveSettings() }
     }
 
     private fun saveSettings() {
@@ -143,46 +119,36 @@ class RecoveryNotificationSettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun addCard(parent: LinearLayout, title: Int): LinearLayout {
-        val card = layoutInflater.inflate(R.layout.item_recovery_settings_card, parent, false) as com.google.android.material.card.MaterialCardView
-        parent.addView(card)
-        val body = card.getChildAt(0) as LinearLayout
-        body.addView(TextView(this).apply {
-            setText(title)
-            setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Subtitle1)
-            setTypeface(typeface, android.graphics.Typeface.BOLD)
-            setPadding(0, 0, 0, dp(4))
-        })
-        return body
+    private fun setupLeadRow(row: View) {
+        row.findViewById<TextView>(R.id.Title).setText(R.string.recovery_notifications_lead_time)
+        row.findViewById<ImageView>(R.id.Icon).setImageResource(R.drawable.ic_function_clock)
     }
 
-    private fun addSwitch(parent: LinearLayout, title: Int, checked: Boolean): MaterialSwitch =
-        MaterialSwitch(this).apply {
-            setText(title)
-            isChecked = checked
-            minimumHeight = dp(48)
-            textSize = 14f
-            setPadding(0, dp(4), 0, dp(4))
-            parent.addView(this, LinearLayout.LayoutParams(-1, -2))
-        }
-
-    private fun addLeadButton(parent: LinearLayout, minutes: Int, onClick: () -> Unit): MaterialButton =
-        (layoutInflater.inflate(R.layout.item_recovery_action, parent, false) as MaterialButton).apply {
-            text = getString(R.string.recovery_notifications_advance, minutes)
-            setOnClickListener { onClick() }
-            parent.addView(this, LinearLayout.LayoutParams(-2, -2).apply { gravity = android.view.Gravity.END })
-        }
-
-    private fun chooseLead(options: IntArray, selected: Int, onChosen: (Int) -> Unit) {
-        MaterialAlertDialogBuilder(this)
-            .setSingleChoiceItems(options.map {
-                getString(R.string.recovery_notifications_advance, it)
-            }.toTypedArray(), options.indexOf(selected)) { dialog, index ->
-                onChosen(options[index])
-                dialog.dismiss()
-            }
-            .show()
+    private fun renderLeadValue(row: View, minutes: Int) {
+        row.findViewById<TextView>(R.id.Value).text =
+            if (minutes == 0) getString(R.string.recovery_notifications_on_completion)
+            else getString(R.string.recovery_notifications_minutes, minutes)
     }
 
-    private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
+    private fun setLeadEnabled(row: View, enabled: Boolean) {
+        row.isEnabled = enabled
+        row.alpha = if (enabled) 1f else 0.5f
+    }
+
+    private fun chooseLead(anchor: View, options: IntArray, selected: Int, onChosen: (Int) -> Unit) {
+        choicePopup?.dismiss()
+        choicePopup = showChoicePopup(
+            anchor = anchor,
+            entries = options.map { minutes ->
+                if (minutes == 0) getString(R.string.recovery_notifications_on_completion)
+                else getString(R.string.recovery_notifications_minutes, minutes)
+            },
+            selected = options.indexOf(selected),
+        ) { index -> onChosen(options[index]) }
+    }
+
+    override fun onDestroy() {
+        choicePopup?.dismiss()
+        super.onDestroy()
+    }
 }

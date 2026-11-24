@@ -1,4 +1,0 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/asset_list_card_surface" />
-    <corners android:topLeftRadius="@dimen/card_corner_radius" android:topRightRadius="@dimen/card_corner_radius" />
-</shape>

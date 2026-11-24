@@ -45,6 +45,7 @@ val viewModelModule = module {
             repo = get(),
             databaseProvider = get(),
             calcResultUseCase = get(),
+            settings = get(),
         )
     }
     viewModel {

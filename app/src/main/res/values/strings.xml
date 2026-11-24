@@ -3,14 +3,10 @@
     <string name="app_name">公招助手</string>
     <string name="game_arknights">明日方舟</string>
     <string name="game_endfield">终末地</string>
-    <string name="game_selector_label">%1$s ▾</string>
     <string name="switch_game">切换游戏</string>
     <string name="set_default_startup_page">设置默认启动页</string>
     <string name="current_default_startup_page">当前默认</string>
-    <string name="startup_game_suffix"> · 启动页</string>
-    <string name="set_current_game_as_startup">将当前游戏设为启动页</string>
     <string name="startup_game_set">已将%s设为启动页</string>
-    <string name="endfield_home_pending">数据接入后将在这里显示</string>
 
     <!-- Dialogs Action-->
     <string name="cancel">取消</string>
@@ -22,9 +18,6 @@
     <string name="clear">清空</string>
     <string name="copy">复制</string>
     <string name="download">下载</string>
-
-    <!-- Game Name-->
-
 
     <!-- Dialogs Message-->
     <string name="gacha_correct_detail">修复当前账号历史记录中未正确识别的卡池分类。</string>
@@ -42,7 +35,6 @@
     <string name="no_login">未登录</string>
     <string name="login_account">添加森空岛账号</string>
     <string name="home_login_guide_title">添加森空岛账号</string>
-    <string name="home_login_guide_summary">用于实时数据、干员资产和自动签到</string>
     <string name="login_now">立即登录</string>
     <string name="loading">加载中</string>
 
@@ -56,9 +48,7 @@
     <string name="relogin">重新登录</string>
     <string name="view_logs">查看日志</string>
     <string name="syncing">正在同步…</string>
-    <string name="sync_now">同步</string>
     <string name="operation_in_progress">正在处理，请稍候…</string>
-    <string name="last_synced_at">最后同步：%1$s</string>
 
     <!-- Home Page -->
     <string name="announcement">公告</string>
@@ -76,16 +66,12 @@
     <string name="simple">简洁</string>
 
     <string name="screenshot_delay">截图延迟</string>
-    <string name="screenshot_delay_detail">提示“未获取有效信息”时尝试调整</string>
     <string name="sec_1">1s</string>
     <string name="sec_2">2s</string>
     <string name="sec_3">3s</string>
 
-    <string name="check_permission">检查权限</string>
-    <string name="runtime_settings">运行保障</string>
     <string name="status_ready">可用</string>
     <string name="status_permission_required">缺少权限</string>
-    <string name="status_enabled">已开启</string>
     <string name="status_disabled">未开启</string>
     <string name="status_restricted">可能受限</string>
     <string name="overlay_permission">悬浮窗权限</string>
@@ -95,21 +81,15 @@
     <string name="notify_permission_detail">部分机型截图需要通知权限</string>
 
     <string name="widget">桌面组件</string>
-    <string name="widget_info">  - 刷新频率可设置为15分钟、30分钟或1小时。\n
-        - 由于手机进程管理策略，不一定准点刷新。通常在手机活跃使用的阶段正常刷新。\n
-        - 建议使用2×3组件，也可以点击组件手动更新。\n
-        - 桌面组件只负责实时数据展示，自动签到由独立的后台签到设置管理。</string>
     <string name="min_15">15分钟</string>
     <string name="min_30">30分钟</string>
     <string name="hour_1">1小时</string>
     <string name="widget_appearance">组件外观</string>
-    <string name="widget_template_lab">组件外观</string>
+    <string name="widget_preview_save_hint">点击保存后应用到桌面组件</string>
     <string name="widget_next_1_description">新版组件 · 1×1 单信息</string>
     <string name="widget_next_2_description">新版组件 · 1×2 单信息</string>
     <string name="widget_next_3_description">新版组件 · 2×2 双信息</string>
     <string name="widget_next_4_description">新版组件 · 2×3</string>
-    <string name="widget_template_lab_summary">这里的修改会立即应用到所有新版组件。不同尺寸可以分别选择显示内容，2×3 组件还可以切换布局。</string>
-    <string name="widget_style">整体风格</string>
     <string name="widget_style_transparent">轻透</string>
     <string name="widget_style_dark_card">石墨</string>
     <string name="widget_style_mist">浅雾</string>
@@ -118,18 +98,6 @@
     <string name="widget_style_rhine">莱茵生命</string>
     <string name="widget_style_sui">岁</string>
     <string name="widget_style_lonetrail">孤星</string>
-    <string name="widget_preview_size">预览尺寸</string>
-    <string name="widget_2x3_layout">2×3 布局</string>
-    <string name="widget_1x2_layout">1×2 布局</string>
-    <string name="widget_layout_single">单信息</string>
-    <string name="widget_layout_dense">多信息</string>
-    <string name="widget_layout_full">全信息</string>
-    <string name="widget_layout_four">四信息</string>
-    <string name="widget_content_slots">显示内容</string>
-    <string name="widget_slot_index">信息 %1$d</string>
-    <string name="widget_choose_content">选择显示内容</string>
-    <string name="widget_full_layout_fixed">全信息布局内容固定，无需选择槽位。</string>
-    <string name="widget_dense_layout_fixed">多信息布局内容固定，无需选择槽位。</string>
     <string name="widget_dense_recruitment">公招 %1$s</string>
     <string name="widget_dense_refresh">刷新 %1$s</string>
     <string name="widget_dense_meeting">会客 %1$s</string>
@@ -157,7 +125,6 @@
 
     <string name="auto_attendance">自动签到</string>
     <string name="back_auto_attendance">后台自动签到</string>
-    <string name="back_auto_attendance_detail">定时执行，错过后会在联网时自动补签</string>
     <string name="open_auto_start_settings">允许应用自启动</string>
     <string name="open_auto_start_settings_detail">后台签到需要自启动权限</string>
     <string name="attendance_time">签到时间</string>
@@ -167,11 +134,9 @@
     <string name="turn_off_battery_optimization">关闭电池优化</string>
     <string name="turn_off_battery_optimization_detail">自动刷新需关闭电池优化</string>
     <string name="power_saving_mode">省流模式</string>
-    <string name="power_saving_mode_detail">桌面组件仅使用缓存，进入实时数据页面时再同步</string>
 
     <string name="show_home_announce">显示首页公告</string>
     <string name="use_inner_web">使用内置浏览器</string>
-    <string name="use_inner_web_detail">外部工具链接使用内置浏览器打开</string>
     <string name="auto_check_update">自动检查应用更新</string>
     <string name="manual">使用手册</string>
     <string name="about">关于</string>
@@ -193,7 +158,6 @@
 
     <!-- Account Page-->
     <string name="account_manager">账号管理</string>
-    <string name="account_manager_summary">森空岛账号用于明日方舟和终末地的游戏数据与签到，也用于终末地寻访记录；明日方舟寻访记录需单独添加账号。</string>
     <string name="skland_account_manage">森空岛账号</string>
     <string name="skland_account_summary">用于同步游戏数据及签到</string>
     <string name="arknights_accounts">明日方舟</string>
@@ -208,9 +172,6 @@
     <string name="text_web_skland">滑动到最右端，点击“发图文”，登录后将自动跳转。如未跳转，请手动点击此处。</string>
     <string name="text_web_ark">登录后将自动跳转。如未跳转，请手动点击此处。</string>
     <string name="getting_info">获取信息中</string>
-    <string name="sk_account_info">森空岛账号用于同步关联的明日方舟和终末地角色。明日方舟角色可用于查询游戏数据与签到；终末地角色还可用于同步寻访记录，三项功能共用同一角色账号。\n\n登录可能会使森空岛 App 的登录状态失效。</string>
-    <string name="gc_account_info">明日方舟寻访记录账号独立于森空岛账号，仅用于同步和统计明日方舟寻访记录。终末地寻访记录使用森空岛终末地角色账号。</string>
-    <string name="account_info">说明</string>
     <string name="add_site">添加网址</string>
     <string name="edit_site">编辑网址</string>
     <string name="prefix">https://</string>
@@ -261,8 +222,6 @@
     <string name="logs_cleared_count">已清除 %1$d 个日志文件</string>
     <string name="check_logs">查看日志</string>
     <string name="clean_logs">清除日志</string>
-    <string name="qq_group">QQ群聊</string>
-    <string name="qq_group_content">意见反馈，聊天吹水</string>
     <string name="donate">赞助开发者</string>
     <string name="donate_msg">如果软件有帮助到你的话，请开发者喝杯冰阔落吧:D</string>
 
@@ -273,10 +232,8 @@
     <string name="copied_qq_group_num">已复制群号</string>
     <string name="qq_not_install">未安装QQ</string>
 
-    <string name="export">导出</string>
     <string name="assets_filter_count">筛选 %1$d</string>
     <string name="assets_missing_count">未持有 %1$d</string>
-    <string name="back_to_assets">返回干员资产</string>
     <string name="export_text">文字（TXT）</string>
     <string name="export_operator_poster">六星精二资产图片</string>
     <string name="operator_poster_preview">干员资产图片预览</string>
@@ -289,8 +246,6 @@
     <string name="operator_poster_share">分享干员资产图片</string>
     <string name="filter">筛选</string>
     <string name="change_view">切换列表显示方式</string>
-    <string name="assets_overview">资产概览</string>
-    <string name="current_operator_account">当前账号角色</string>
     <string name="realtime_last_login_today">上次登录 今天 %1$s</string>
     <string name="realtime_last_login_yesterday">上次登录 昨天</string>
     <string name="realtime_last_login_date">上次登录 %1$s</string>
@@ -303,13 +258,7 @@
     <string name="realtime_empty_summary">添加森空岛账号后，可同步理智与基建状态</string>
     <string name="assets_empty_summary">添加森空岛账号后，可同步干员持有信息</string>
     <string name="gacha_empty_summary">寻访统计使用独立账号，与森空岛账号不同</string>
-    <string name="account_source_skland">数据来自森空岛</string>
-    <string name="account_source_gacha">数据来自明日方舟通行证</string>
     <string name="core_data">核心数据</string>
-    <string name="assets_entry_summary">持有与培养</string>
-    <string name="gacha_entry_summary">记录与统计</string>
-    <string name="endfield_entry_pending">即将开放</string>
-    <string name="endfield_chars_entry">角色列表</string>
     <string name="endfield_choose_account">选择终末地账号</string>
     <string name="skland_choose_account">选择森空岛账号</string>
     <string name="endfield_chars_no_account">还没有终末地账号，点击上方按钮添加</string>
@@ -331,21 +280,14 @@
     <string name="endfield_char_unequipped">未装备</string>
     <string name="endfield_char_equipment_level">Lv.%1$s</string>
     <string name="endfield_char_equipment_refine_progress">精炼 %1$d%%</string>
-    <string name="endfield_char_body_equip">护甲</string>
-    <string name="endfield_char_arm_equip">护手</string>
-    <string name="endfield_char_first_accessory">配件一</string>
-    <string name="endfield_char_second_accessory">配件二</string>
-    <string name="endfield_char_equipment_slot">%1$s · %2$s</string>
     <string name="endfield_char_tactical_item">战术道具</string>
     <string name="endfield_char_unknown_item">未识别的道具</string>
     <string name="endfield_char_skills">技能</string>
     <string name="endfield_char_unknown_skill">未识别的技能</string>
-    <string name="endfield_char_skill_level">Lv.%1$d/%2$d</string>
     <string name="endfield_char_talents">天赋阵列</string>
     <string name="endfield_char_ability_talent">能力</string>
     <string name="endfield_char_combat_talent">战斗</string>
     <string name="endfield_char_cultivation_talent">培养</string>
-    <string name="endfield_realtime_entry">查看体力、任务、通行证和地区调度券</string>
     <string name="endfield_realtime_loading">正在加载实时数据…</string>
     <string name="endfield_stamina">理智</string>
     <string name="endfield_daily_mission">每日任务</string>
@@ -385,9 +327,6 @@
     <string name="realtime_load_failed">加载失败，请查看日志</string>
     <string name="official_game_not_found">未检测到官服游戏安装</string>
     <string name="bilibili_game_not_found">未检测到B服游戏安装</string>
-    <string name="realtime_immediate_status">即时状态</string>
-    <string name="realtime_recovery_overview">招募与恢复</string>
-    <string name="realtime_base_overview">基建概览</string>
     <string name="realtime_daily_mission">本日任务</string>
     <string name="realtime_module_block">保全派驻</string>
     <string name="realtime_module_higher">%1$s</string>
@@ -405,17 +344,18 @@
     <string name="recovery_notification_channel">恢复提醒</string>
     <string name="recovery_notification_title">恢复提醒</string>
     <string name="recovery_notifications">恢复提醒</string>
-    <string name="recovery_notifications_experimental">实验性功能 · 通知可能因系统省电策略延迟</string>
-    <string name="recovery_notifications_enable">开启恢复提醒</string>
+    <string name="recovery_notifications_experimental">实验功能 · 通知可能因系统省电策略延迟</string>
     <string name="recovery_notifications_ap_full">理智已满</string>
     <string name="recovery_notifications_ap_early">理智即将溢出</string>
-    <string name="recovery_notifications_training_done">训练室专精完成</string>
-    <string name="recovery_notifications_training_shift">训练室换班提醒</string>
+    <string name="recovery_notifications_training_done">专精完成</string>
+    <string name="recovery_notifications_training_shift">换班提醒</string>
     <string name="recovery_notifications_labor">无人机已满</string>
     <string name="recovery_notifications_meeting">会客室交流结束</string>
     <string name="recovery_notifications_recruit">公开招募完成</string>
     <string name="recovery_notifications_refresh">公开招募可刷新</string>
-    <string name="recovery_notifications_advance">提前 %1$d 分钟</string>
+    <string name="recovery_notifications_lead_time">提前提醒</string>
+    <string name="recovery_notifications_minutes">%1$d 分钟</string>
+    <string name="recovery_notifications_on_completion">完成时提醒</string>
     <string name="recovery_notifications_saved">恢复提醒设置已保存</string>
     <string name="recovery_notifications_sync_failed">设置已保存，实时数据同步失败，稍后刷新再试</string>
     <string name="recovery_notifications_permission">请先允许通知权限，才能收到恢复提醒</string>
@@ -460,7 +400,6 @@
     <string name="gacha_unit">抽</string>
     <string name="limited">[限定]</string>
     <string name="date_range">数据统计自 %1$s</string>
-    <string name="current_gacha_account">当前寻访记录账号</string>
     <string name="switch_account">切换账号</string>
     <string name="total_gacha_count">累计寻访</string>
     <string name="six_star_count">六星干员</string>
@@ -577,35 +516,35 @@
     <string name="recruit_select_hint">选择招聘标签，自动计算可招募干员</string>
     <string name="recruit_no_match">当前标签组合没有匹配结果</string>
     <string name="permission_requirements">权限需求</string>
-    <string name="experimental_feature_short">实验性功能</string>
+    <string name="experimental_feature_short">lab</string>
     <string name="recovery_settings_entry">设置</string>
     <string name="more_general_settings">常规</string>
     <string name="about_page_title">关于</string>
     <string name="about_tagline">明日方舟与终末地的日常数据助手</string>
-    <string name="about_development">开发版</string>
-    <string name="about_versions">版本更新</string>
     <string name="about_help">反馈</string>
     <string name="about_project">更多</string>
-    <string name="about_release_notes">更新记录</string>
     <string name="about_community">QQ交流群</string>
-    <string name="about_diagnostics">复制诊断信息</string>
+    <string name="about_diagnostics">复制设备信息</string>
     <string name="about_data_info">数据权限与说明</string>
     <string name="about_source">项目地址</string>
     <string name="about_support">赞助开发者</string>
     <string name="about_unofficial">公招助手是独立开发的第三方工具，与游戏官方无隶属关系。</string>
     <string name="about_open_failed">无法打开链接，请检查是否已安装浏览器</string>
     <string name="about_diagnostics_note">仅包含以下版本和设备信息，不包含账号、登录凭据或日志。复制后可粘贴到问题反馈中。</string>
-    <string name="about_diagnostics_copied">诊断信息已复制</string>
+    <string name="about_diagnostics_copied">设备信息已复制</string>
     <string name="about_data_description">账号登录信息与游戏数据缓存在本机保存，用于登录、展示数据及桌面组件。同步数据、加载官方动态和检查更新需要联网。\n\n通知权限用于恢复提醒和下载通知；悬浮窗及屏幕截图相关权限用于快速公招。相关功能需要时再授予权限。\n\n反馈诊断信息仅复制版本和设备型号。日志请在“更多 → 日志”中查看，分享前确认其中内容。</string>
     <string name="app_up_to_date">当前已是最新版本。</string>
     <string name="home_updated_at">更新于 %1$s</string>
     <string name="recovery_push_notifications">推送提醒通知</string>
     <string name="show_external_tools">显示外部工具</string>
+    <string name="appearance">外观</string>
+    <string name="show_home_banner">显示滚动图</string>
     <string name="assets_held">已持有</string>
     <string name="recruit_group_primary">稀有度</string>
     <string name="recruit_group_profession">职业</string>
     <string name="recruit_group_position">位置</string>
     <string name="recruit_group_ability">标签</string>
-    <string name="recruit_maintenance">最后更新：%1$s 新增：%2$s</string>
-    <string name="recruit_selected_count">已选 %1$d/5</string>
+    <string name="recruit_hide_low_rarity">隐藏低稀有度</string>
+    <string name="recruit_maintenance">最后更新：%1$s  新增：%2$s</string>
+    <string name="recruit_selection_limit">最多选择 6 个标签</string>
 </resources>

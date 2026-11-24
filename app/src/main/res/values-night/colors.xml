@@ -28,24 +28,24 @@
     <!-- Secondary containers must not fall back to the bright day palette. -->
     <color name="sec_con">#292D38</color>
     <color name="on_sec_con">#C5CAD8</color>
-    <color name="widget_content_slot_ripple">#30C5CAD8</color>
     <color name="status_success_container">#263D2D</color>
     <color name="status_success_content">#A7DDB4</color>
     <color name="status_warning_container">#42391F</color>
     <color name="status_warning_content">#E8D184</color>
     <color name="status_error_container">#472B2B</color>
     <color name="status_error_content">#F2B2AE</color>
-    <color name="asset_action_surface">@color/status_neutral_container</color>
     <color name="asset_action_selected_text">@color/rare_3</color>
     <color name="status_neutral_container">#30333C</color>
     <color name="status_neutral_content">#C5C8D1</color>
     <color name="app_background">#131315</color>
     <color name="app_surface">#252628</color>
     <color name="function_divider">#18FFFFFF</color>
-    <color name="function_text_primary">#ECECEE</color>
-    <color name="function_text_secondary">#B5B5BD</color>
-    <color name="function_section_title">@color/function_text_secondary</color>
-    <color name="home_text_primary">#ECECEE</color>
-    <color name="home_text_secondary">#B5B5BD</color>
+    <color name="app_text_primary">#ECECEE</color>
+    <color name="app_text_secondary">#B5B5BD</color>
+    <color name="app_text_section">@color/app_text_secondary</color>
+    <color name="function_text_primary">@color/app_text_primary</color>
+    <color name="function_text_secondary">@color/app_text_secondary</color>
+    <color name="home_text_primary">@color/app_text_primary</color>
+    <color name="home_text_secondary">@color/app_text_secondary</color>
     <color name="home_inner_surface">#323234</color>
 </resources>

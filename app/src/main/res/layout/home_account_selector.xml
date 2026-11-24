@@ -1,27 +1,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/AccountSelectorBase"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
     android:background="@drawable/bg_home_account_selector"
     android:paddingStart="12dp" android:paddingEnd="12dp"
-    android:minHeight="48dp"
-    android:gravity="center_vertical"
-    android:clickable="true"
-    android:focusable="true">
-    <TextView android:id="@+id/AttendanceStatus" style="@style/Widget.ArkScreen.CompactCapsule"
+    >
+    <TextView android:id="@+id/AttendanceStatus" style="@style/Widget.ArkScreen.StatusCapsule"
         android:layout_marginEnd="6dp" android:visibility="gone" />
-    <FrameLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1">
-        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_gravity="end" android:gravity="center_vertical">
-            <TextView android:id="@+id/Server" android:visibility="gone" style="@style/Widget.ArkScreen.CompactCapsule"
-                android:layout_marginEnd="6dp" />
-            <TextView android:id="@+id/CurrentAccount"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:layout_weight="1" android:maxLines="1" android:ellipsize="end"
-                android:textSize="15sp" android:textStyle="bold" android:textColor="@color/home_text_primary" />
-            <ImageView android:layout_width="12dp" android:layout_height="16dp"
-                android:layout_marginStart="6dp" android:contentDescription="@null"
-                android:src="@drawable/ic_function_select" app:tint="@color/home_text_secondary" />
-        </LinearLayout>
-    </FrameLayout>
+    <TextView android:id="@+id/Server" android:visibility="gone" style="@style/Widget.ArkScreen.MetadataCapsule"
+        android:layout_marginEnd="6dp" />
+    <TextView android:id="@+id/CurrentAccount" style="@style/AccountSelectorName" />
+    <ImageView
+        style="@style/AccountSelectorIndicator"
+        android:importantForAccessibility="no" />
 </LinearLayout>

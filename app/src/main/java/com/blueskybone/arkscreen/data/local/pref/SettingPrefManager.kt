@@ -22,6 +22,7 @@ class SettingPrefManager() {
         timeCorrect = preferenceStore.getBoolean("time_correct", false)
         showExternalTools = preferenceStore.getBoolean("show_external_tools", true)
         showHomeAnnounce = preferenceStore.getBoolean("show_home_announce", true)
+        showHomeBanner = preferenceStore.getBoolean("show_home_banner", true)
 
 
         backAutoAtd = preferenceStore.getBoolean("back_auto_attendance", false)
@@ -32,6 +33,7 @@ class SettingPrefManager() {
         defaultHomeGame = preferenceStore.getString("default_home_game", "ARKNIGHTS")
         assetsViewType = preferenceStore.getInt("assets_view_type", 0)
         showEmptyGachaPools = preferenceStore.getBoolean("show_empty_gacha_pools", true)
+        recruitHideLowRarity = preferenceStore.getBoolean("recruit_hide_low_rarity", false)
         recoveryNotificationsEnabled = preferenceStore.getBoolean("recovery_notifications_enabled", false)
         notifyApFull = preferenceStore.getBoolean("notify_ap_full", true)
         notifyApEarly = preferenceStore.getBoolean("notify_ap_early", false)
@@ -77,8 +79,10 @@ class SettingPrefManager() {
     lateinit var defaultHomeGame: Preference<String>    //启动时显示的游戏
     lateinit var showExternalTools: Preference<Boolean>
     lateinit var showHomeAnnounce: Preference<Boolean>  //显示首页公告
+    lateinit var showHomeBanner: Preference<Boolean>    //显示首页滚动图
     lateinit var assetsViewType: Preference<Int>        //干员资产列表展示模式
     lateinit var showEmptyGachaPools: Preference<Boolean>
+    lateinit var recruitHideLowRarity: Preference<Boolean>
     lateinit var recoveryNotificationsEnabled: Preference<Boolean>
     lateinit var notifyApFull: Preference<Boolean>
     lateinit var notifyApEarly: Preference<Boolean>

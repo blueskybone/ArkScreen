@@ -114,8 +114,7 @@ class GachaActivity : AppCompatActivity() {
         loading: Boolean = false,
     ) {
         binding.Loading.visibility = if (loading) View.VISIBLE else View.GONE
-        binding.LoadingMessage.visibility = if (loading) View.VISIBLE else View.GONE
-        binding.LoadingMessage.text = message
+        binding.Loading.setMessage(message)
         binding.StatusIllustration.visibility = if (loading) View.GONE else View.VISIBLE
         binding.Message.text = message
         binding.EmptySummary.visibility = if (showAction) View.VISIBLE else View.GONE
@@ -134,7 +133,6 @@ class GachaActivity : AppCompatActivity() {
 
     private fun showContent() {
         binding.Loading.visibility = View.GONE
-        binding.LoadingMessage.visibility = View.GONE
         binding.Page.visibility = View.GONE
         binding.TabLayout.visibility = View.VISIBLE
         binding.ViewPager.visibility = View.VISIBLE

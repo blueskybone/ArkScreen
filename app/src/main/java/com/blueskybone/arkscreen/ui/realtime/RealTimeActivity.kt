@@ -150,7 +150,6 @@ class RealTimeActivity : AppCompatActivity() {
         model.syncingState.observe(this) { syncing ->
             binding.RefreshButton.isEnabled = !syncing
             binding.Loading.visibility = if (syncing) View.VISIBLE else View.GONE
-            binding.LoadingMessage.visibility = if (syncing) View.VISIBLE else View.GONE
             val showContent = !syncing && model.state.value is RealTimeScreenState.Content
             binding.ScrollView.visibility = if (showContent) View.VISIBLE else View.GONE
             binding.Starter.visibility = if (showContent) View.VISIBLE else View.GONE
@@ -173,7 +172,6 @@ class RealTimeActivity : AppCompatActivity() {
 
     private fun displayLoadingView() {
         binding.Loading.visibility = View.VISIBLE
-        binding.LoadingMessage.visibility = View.VISIBLE
         binding.StatusIllustration.visibility = View.GONE
         binding.Page.visibility = View.GONE
         binding.ScrollView.visibility = View.GONE
@@ -185,7 +183,6 @@ class RealTimeActivity : AppCompatActivity() {
 
     private fun displayErrorView(kind: RealTimeFailureKind) {
         binding.Loading.visibility = View.GONE
-        binding.LoadingMessage.visibility = View.GONE
         binding.StatusIllustration.visibility = View.VISIBLE
         binding.Page.visibility = View.VISIBLE
         binding.ScrollView.visibility = View.GONE
@@ -204,7 +201,6 @@ class RealTimeActivity : AppCompatActivity() {
 
     private fun displayWarningView(msg: String) {
         binding.Loading.visibility = View.GONE
-        binding.LoadingMessage.visibility = View.GONE
         binding.StatusIllustration.visibility = View.VISIBLE
         binding.Page.visibility = View.VISIBLE
         binding.ScrollView.visibility = View.GONE
@@ -248,7 +244,6 @@ class RealTimeActivity : AppCompatActivity() {
     private fun displayView(data: RealTimeUi) {
         if (model.syncingState.value != true) {
             binding.Loading.visibility = View.GONE
-            binding.LoadingMessage.visibility = View.GONE
         }
         binding.Ap.text = data.apNow.toString()
         binding.ApMax.text =

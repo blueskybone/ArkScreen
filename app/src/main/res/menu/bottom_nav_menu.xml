@@ -12,7 +12,7 @@
 
     <item
         android:id="@+id/navigation_setting"
-        android:icon="@drawable/ic_menu_dots"
+        android:icon="@drawable/ic_navigation_more"
         android:title="@string/more" />
 
 </menu>

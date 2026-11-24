@@ -268,13 +268,13 @@ class EndfieldCharDetailFragment : Fragment() {
         binding.Sections.addView(section.root)
     }
 
-    private fun createTag(label: String): TextView = TextView(requireContext()).apply {
+    private fun createTag(label: String): TextView = TextView(
+        requireContext(),
+        null,
+        0,
+        R.style.Widget_ArkScreen_MetadataCapsule_Tag,
+    ).apply {
         text = label
-        setBackgroundResource(R.drawable.bg_asset_stat_chip)
-        setTextAppearance(com.google.android.material.R.style.TextAppearance_MaterialComponents_Caption)
-        setTextColor(ContextCompat.getColor(requireContext(), R.color.on_sec_con))
-        setTypeface(typeface, android.graphics.Typeface.BOLD)
-        setPadding(dp(9), dp(4), dp(9), dp(4))
     }
 
     private fun dp(value: Int): Int = (resources.displayMetrics.density * value).toInt()

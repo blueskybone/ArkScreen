@@ -42,14 +42,14 @@
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:gravity="center_vertical">
                 <TextView
                     android:id="@+id/Level"
-                     style="@style/Widget.ArkScreen.CompactCapsule"
+                     style="@style/Widget.ArkScreen.MetadataCapsule"
                     android:visibility="gone" />
                 <TextView
                     android:id="@+id/WorldLevel"
-                    style="@style/Widget.ArkScreen.CompactCapsule"
+                    style="@style/Widget.ArkScreen.MetadataCapsule"
                     android:layout_marginStart="6dp"
                     android:visibility="gone" />
-                <TextView android:id="@+id/LastLogin" style="@style/Widget.ArkScreen.CompactCapsule"
+                <TextView android:id="@+id/LastLogin" style="@style/Widget.ArkScreen.MetadataCapsule"
                             android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="6dp" />
             </LinearLayout>
         </LinearLayout>

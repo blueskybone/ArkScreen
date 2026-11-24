@@ -41,7 +41,7 @@
 
         <TextView
             android:id="@+id/RestTime"
-            style="@style/Widget.ArkScreen.CompactCapsule.Accent"
+            style="@style/Widget.ArkScreen.StatusCapsule.Accent"
             android:text="@string/home_realtime_not_synced" />
 
         <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
@@ -86,7 +86,7 @@
 
         <TextView
             android:id="@+id/Freshness"
-            style="@style/Widget.ArkScreen.CompactCapsule.Warning"
+            style="@style/Widget.ArkScreen.StatusCapsule.Warning"
             android:layout_marginStart="6dp"
             android:text="@string/data_may_be_stale"
             android:visibility="gone" />

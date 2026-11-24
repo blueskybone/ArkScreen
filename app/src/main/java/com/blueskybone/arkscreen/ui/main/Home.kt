@@ -117,6 +117,7 @@ class Home : Fragment() {
     override fun onResume() {
         super.onResume()
         binding.LinkCard.visibility = if (prefManager.showExternalTools.get()) View.VISIBLE else View.GONE
+        binding.BannerCard.visibility = if (prefManager.showHomeBanner.get()) View.VISIBLE else View.GONE
         // 实时数据页会更新持久化快照；首页每次重新可见时都应读取一次，
         // 这样卡片能展示最近一次成功请求的数据。
         viewModel.loadApCache()
@@ -204,7 +205,8 @@ class Home : Fragment() {
 
     private fun renderBanner(state: MainUiState) {
         val videos = state.biliVideos
-        binding.BannerCard.visibility = View.VISIBLE
+        binding.BannerCard.visibility = if (prefManager.showHomeBanner.get()) View.VISIBLE else View.GONE
+        if (!prefManager.showHomeBanner.get()) return
         if (videos.isEmpty()) return
         bannerController.submitList(videos)
     }

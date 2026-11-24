@@ -138,8 +138,9 @@ class EndfieldHome : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     val videos = state.endfieldBiliVideos
-                    binding.BannerCard.visibility = View.VISIBLE
-                    bannerController.submitList(videos)
+                    val showBanner = prefManager.showHomeBanner.get()
+                    binding.BannerCard.visibility = if (showBanner) View.VISIBLE else View.GONE
+                    if (showBanner) bannerController.submitList(videos)
                     binding.Announce.text = state.announce
                     val account = state.currentAccountEf ?: state.accountEfList.firstOrNull()?.account
                     binding.AccountSelector.CurrentAccount.text = account?.nickName ?: getString(R.string.login_account)
@@ -155,6 +156,7 @@ class EndfieldHome : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        binding.BannerCard.visibility = if (prefManager.showHomeBanner.get()) View.VISIBLE else View.GONE
         viewModel.loadEndfieldStaminaCache()
         val state = viewModel.uiState.value
         updateAttendanceStatus(effectiveAccount(state))

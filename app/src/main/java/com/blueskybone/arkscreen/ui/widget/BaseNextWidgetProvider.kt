@@ -184,17 +184,18 @@ abstract class BaseNextWidgetProvider : AppWidgetProvider() {
     private fun styledViews(context: Context, id: Int, data: NextWidgetRenderData): RemoteViews {
         val remote = createRemoteViews(context, id, data)
         remote.setInt(R.id.widget_background, "setImageAlpha", ((100 - data.config.transparency.coerceIn(0, 100)) * 255 / 100))
-        // Styled attribute IDs must be sorted (textSize before id).
         // Preserve each layout's typography hierarchy when scaling.
         val xml = context.resources.getLayout(remote.layoutId)
         try {
             var event = xml.eventType
             while (event != org.xmlpull.v1.XmlPullParser.END_DOCUMENT) {
                 if (event == org.xmlpull.v1.XmlPullParser.START_TAG && xml.name == "TextView") {
-                    val attrs = context.obtainStyledAttributes(android.util.Xml.asAttributeSet(xml),
-                        intArrayOf(android.R.attr.textSize, android.R.attr.id))
-                    val viewId = attrs.getResourceId(1, 0)
-                    val px = attrs.getDimension(0, 0f)
+                    val attrs = context.obtainStyledAttributes(
+                        android.util.Xml.asAttributeSet(xml),
+                        R.styleable.WidgetScaledText,
+                    )
+                    val viewId = attrs.getResourceId(R.styleable.WidgetScaledText_android_id, 0)
+                    val px = attrs.getDimension(R.styleable.WidgetScaledText_android_textSize, 0f)
                     attrs.recycle()
                     if (viewId != 0 && px > 0) remote.setTextViewTextSize(viewId, android.util.TypedValue.COMPLEX_UNIT_PX,
                         px * data.config.fontScale.coerceIn(0.85f, 1.15f))

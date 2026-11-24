@@ -19,7 +19,6 @@ import com.blueskybone.arkscreen.domain.service.ServerTimeCalibrator
 import com.blueskybone.arkscreen.ui.common.LogManagerActivity
 import com.blueskybone.arkscreen.ui.license.OpenSourceLicensesActivity
 import com.blueskybone.arkscreen.ui.common.bindinginfo.AppTheme
-import com.blueskybone.arkscreen.ui.common.bindinginfo.GroupChat
 import com.blueskybone.arkscreen.ui.common.bindinginfo.TimeCorrection
 import com.blueskybone.arkscreen.ui.common.view.MenuDialog
 import com.blueskybone.arkscreen.ui.main.common.PreferenceBinder

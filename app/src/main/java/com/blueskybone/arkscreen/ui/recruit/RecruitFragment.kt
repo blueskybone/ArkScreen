@@ -18,6 +18,7 @@ import com.blueskybone.arkscreen.ui.recruit.adapter.TagAdapter
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.material.chip.Chip
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -38,6 +39,9 @@ class RecruitFragment : Fragment(R.layout.fragment_recruit) {
 
         view.findViewById<View>(R.id.btnReset).setOnClickListener {
             viewModel.reset()
+        }
+        view.findViewById<Chip>(R.id.hideLowRarity).setOnCheckedChangeListener { _, checked ->
+            viewModel.setHideLowRarity(checked)
         }
     }
 
@@ -97,13 +101,14 @@ class RecruitFragment : Fragment(R.layout.fragment_recruit) {
                         updateText.text = getString(R.string.recruit_maintenance,
                             state.update.ifBlank { "—" },
                             state.newOpe.joinToString(" ").ifBlank { "—" })
-                        view.findViewById<TextView>(R.id.selectedCount).text =
-                            getString(R.string.recruit_selected_count, state.selectedTags.size)
                         view.findViewById<View>(R.id.btnReset).isEnabled = state.selectedTags.isNotEmpty()
+                        view.findViewById<Chip>(R.id.hideLowRarity).apply {
+                            if (isChecked != state.hideLowRarity) isChecked = state.hideLowRarity
+                        }
                         view.findViewById<TextView>(R.id.resultEmpty).apply {
                             isVisible = state.result.isEmpty()
                             text = when {
-                                state.status is UiStatus.Error -> (state.status as UiStatus.Error).message
+                                state.status is UiStatus.Error -> state.status.message
                                 state.selectedTags.isEmpty() -> getString(R.string.recruit_select_hint)
                                 else -> getString(R.string.recruit_no_match)
                             }
@@ -111,17 +116,7 @@ class RecruitFragment : Fragment(R.layout.fragment_recruit) {
                         tagAdapters.forEach { it.updateSelected(state.selectedTags) }
                         if (state.result != displayedResults) {
                             displayedResults = state.result
-
-                            resultAdapter.submitList(state.result) {
-                                if (state.result.isNotEmpty()) {
-                                    val scroll = contentView as androidx.core.widget.NestedScrollView
-                                    scroll.post {
-                                        if (viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-                                            scroll.smoothScrollTo(0, view.findViewById<View>(R.id.resultCard).top)
-                                        }
-                                    }
-                                }
-                            }
+                            resultAdapter.submitList(state.result)
                         }
                     }
                 }
@@ -129,6 +124,8 @@ class RecruitFragment : Fragment(R.layout.fragment_recruit) {
                     viewModel.event.collect { event ->
                         when (event) {
                             is RecruitEvent.ShowError -> Toaster.show(event.message)
+                            RecruitEvent.SelectionLimitReached ->
+                                Toaster.show(getString(R.string.recruit_selection_limit))
                         }
                     }
                 }
