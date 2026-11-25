@@ -49,10 +49,10 @@ class FloatingSettingsActivity : AppCompatActivity() {
             modeHint.visibility = if (mode == RecruitMode.AUTO) View.VISIBLE else View.GONE
             if (mode == RecruitMode.TOAST) com.hjq.toast.Toaster.show("示例：召唤 · 4★\n梅尔、豆苗")
         }
-        slider(binding.WidthSlider.root, style.width, "dp") { style=style.copy(width=it); render() }
-        slider(binding.HeightSlider.root, style.height, "dp") { style=style.copy(height=it); render() }
-        slider(binding.FontSlider.root, style.font, "%") { style=style.copy(font=it); render() }
-        slider(binding.BallSlider.root, style.ballSize, "dp") { style=style.copy(ballSize=it); render() }
+        slider(binding.WidthSlider.root, "悬浮窗宽度", "预览实时更新，点击保存后应用", 140f, 260f, 10f, style.width, "dp") { style=style.copy(width=it); render() }
+        slider(binding.HeightSlider.root, "悬浮窗高度", "预览实时更新，点击保存后应用", 160f, 360f, 20f, style.height, "dp") { style=style.copy(height=it); render() }
+        slider(binding.FontSlider.root, "字体大小", "按比例调整标题、标签与干员文字", 60f, 100f, 5f, style.font, "%") { style=style.copy(font=it); render() }
+        slider(binding.BallSlider.root, "悬浮球大小", "预览实时更新，点击保存后应用", 48f, 72f, 2f, style.ballSize, "dp") { style=style.copy(ballSize=it); render() }
         colorPalette()
         binding.Save.setOnClickListener {
             style.save(prefs); prefs.recruitMode.set(mode)
@@ -78,6 +78,7 @@ class FloatingSettingsActivity : AppCompatActivity() {
     }
     private fun colorPalette() {
         val flow = binding.Palette
+        flow.itemGap = 0
         FloatingAppearance.colors.forEachIndexed { index,key ->
             val swatch=(layoutInflater.inflate(R.layout.item_floating_color, flow, false) as ImageView).apply {
                 contentDescription=FloatingAppearance.colorNames[index]
@@ -109,9 +110,12 @@ class FloatingSettingsActivity : AppCompatActivity() {
             popup?.dismiss(); popup=showChoicePopup(value,values,index) { index=it; value.text=values[it]; changed(it) }
         }
     }
-    private fun slider(row: View, initial:Int, unit:String, changed:(Int)->Unit) {
+    private fun slider(row: View, title: String, hint: String, from: Float, to: Float, step: Float, initial:Int, unit:String, changed:(Int)->Unit) {
+        row.findViewById<TextView>(R.id.SliderTitle).text = title
+        row.findViewById<TextView>(R.id.SliderHint).text = hint
         val value=row.findViewById<TextView>(R.id.SliderValue);value.text="$initial$unit"
         row.findViewById<Slider>(R.id.Slider).apply {
+            valueFrom = from; valueTo = to; stepSize = step
             this.value=initial.toFloat()
             setLabelFormatter { "${it.toInt()}$unit" }
             setCustomThumbDrawable(android.graphics.drawable.GradientDrawable().apply {

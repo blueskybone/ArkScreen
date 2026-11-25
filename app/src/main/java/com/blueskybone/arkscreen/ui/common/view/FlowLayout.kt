@@ -16,6 +16,12 @@ class FlowLayout(context: Context, attrs: AttributeSet?) : ViewGroup(context, at
         const val gap = 15
     }
 
+    var itemGap: Int = gap
+        set(value) {
+            field = value
+            requestLayout()
+        }
+
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         val width = width
         var childLeft = paddingLeft
@@ -28,10 +34,10 @@ class FlowLayout(context: Context, attrs: AttributeSet?) : ViewGroup(context, at
                 val childHeight = child.measuredHeight
                 if (childLeft + childWidth + paddingRight > width) {
                     childLeft = paddingLeft
-                    childTop += childHeight + gap
+                    childTop += childHeight + itemGap
                 }
                 child.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight)
-                childLeft += childWidth + gap
+                childLeft += childWidth + itemGap
             }
         }
     }
@@ -45,14 +51,15 @@ class FlowLayout(context: Context, attrs: AttributeSet?) : ViewGroup(context, at
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             if (child.visibility != View.GONE) {
-                measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0)
+                // This layout uses itemGap for spacing and ordinary LayoutParams.
+                measureChild(child, widthMeasureSpec, heightMeasureSpec)
                 val childWidth = child.measuredWidth
                 val childHeight = child.measuredHeight
                 if (childLeft + childWidth + paddingRight > width) {
                     childLeft = paddingLeft
-                    childTop += childHeight + gap
+                    childTop += childHeight + itemGap
                 }
-                childLeft += childWidth + gap
+                childLeft += childWidth + itemGap
                 height = height.coerceAtLeast(childTop + childHeight + paddingBottom)
             }
         }

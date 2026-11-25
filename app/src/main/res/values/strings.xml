@@ -56,6 +56,8 @@
     <string name="tools_3rd">外部工具</string>
 
     <!-- Settings Page -->
+    <string name="preview">预览</string>
+    <string name="float_ball">悬浮球</string>
     <string name="recruit_show_mode">识别结果展示</string>
     <string name="float_win">悬浮窗</string>
     <string name="toast">Toast</string>

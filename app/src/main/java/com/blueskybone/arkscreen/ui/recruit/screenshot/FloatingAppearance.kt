@@ -15,8 +15,8 @@ data class FloatingAppearance(
     val colorful: Boolean = true, val ballSize: Int = 56, val ballColor: String = "blue",
 ) {
     companion object {
-        val colors = listOf("blue", "cyan", "violet", "pink", "red", "orange", "yellow", "green", "teal", "gray")
-        val colorNames = listOf("蓝色", "蓝青", "紫色", "玫红", "红色", "橙色", "黄色", "绿色", "青色", "灰色")
+        val colors = listOf("blue", "violet", "pink", "red", "orange", "yellow", "green", "teal", "gray")
+        val colorNames = listOf("蓝色", "紫色", "玫红", "红色", "橙色", "黄色", "绿色", "青色", "灰色")
         fun read(p: SettingPrefManager) = FloatingAppearance(
             p.floatingWidth.get().coerceIn(140, 260), p.floatingHeight.get().coerceIn(160, 360),
             p.floatingFont.get().coerceIn(60, 100), true,
@@ -28,9 +28,9 @@ data class FloatingAppearance(
         p.floatingBallSize.set(ballSize); p.floatingBallColor.set(ballColor)
     }
     fun fillColor(): Int = Color.parseColor(when (ballColor) {
-        "cyan" -> "#009FC4"; "violet" -> "#913DE0"; "pink" -> "#E63278"
+        "violet" -> "#913DE0"; "pink" -> "#E63278"
         "red" -> "#E94242"; "orange" -> "#F58220"; "yellow" -> "#F5CE32"
-        "teal" -> "#00B8A5"; "gray" -> "#898B91"
+        "teal" -> "#8AEAE3"; "gray" -> "#898B91"
         "green" -> "#38B54A"; else -> "#2877F0"
     })
     fun iconColor(context: Context): Int = if (ballColor == "yellow") Color.rgb(48, 42, 12) else Color.WHITE

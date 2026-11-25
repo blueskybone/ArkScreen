@@ -32,11 +32,11 @@
                         <com.google.android.material.materialswitch.MaterialSwitch
                             android:id="@+id/ApFull" style="@style/RecoverySettingsSwitch"
                             android:text="@string/recovery_notifications_ap_full" />
-                        <View style="@style/RecoverySettingsDivider" />
+                        <View style="@style/ListDivider" />
                         <com.google.android.material.materialswitch.MaterialSwitch
                             android:id="@+id/ApEarly" style="@style/RecoverySettingsSwitch"
                             android:text="@string/recovery_notifications_ap_early" />
-                        <View style="@style/RecoverySettingsDivider" />
+                        <View style="@style/ListDivider" />
                         <include android:id="@+id/ApLead" layout="@layout/preference_value" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -49,11 +49,11 @@
                         <com.google.android.material.materialswitch.MaterialSwitch
                             android:id="@+id/TrainDone" style="@style/RecoverySettingsSwitch"
                             android:text="@string/recovery_notifications_training_done" />
-                        <View style="@style/RecoverySettingsDivider" />
+                        <View style="@style/ListDivider" />
                         <com.google.android.material.materialswitch.MaterialSwitch
                             android:id="@+id/TrainShift" style="@style/RecoverySettingsSwitch"
                             android:text="@string/recovery_notifications_training_shift" />
-                        <View style="@style/RecoverySettingsDivider" />
+                        <View style="@style/ListDivider" />
                         <include android:id="@+id/ShiftLead" layout="@layout/preference_value" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -66,13 +66,13 @@
                         android:orientation="vertical" android:paddingVertical="6dp">
                         <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/Labor"
                             style="@style/RecoverySettingsSwitch" android:text="@string/recovery_notifications_labor" />
-                        <View style="@style/RecoverySettingsDivider" />
+                        <View style="@style/ListDivider" />
                         <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/Meeting"
                             style="@style/RecoverySettingsSwitch" android:text="@string/recovery_notifications_meeting" />
-                        <View style="@style/RecoverySettingsDivider" />
+                        <View style="@style/ListDivider" />
                         <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/Recruit"
                             style="@style/RecoverySettingsSwitch" android:text="@string/recovery_notifications_recruit" />
-                        <View style="@style/RecoverySettingsDivider" />
+                        <View style="@style/ListDivider" />
                         <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/Refresh"
                             style="@style/RecoverySettingsSwitch" android:text="@string/recovery_notifications_refresh" />
                     </LinearLayout>

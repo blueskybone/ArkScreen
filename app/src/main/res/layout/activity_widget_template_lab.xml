@@ -12,11 +12,8 @@
             <LinearLayout android:id="@+id/EditorContent" android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:orientation="vertical" android:paddingBottom="96dp" />
         </androidx.core.widget.NestedScrollView>
-        <com.google.android.material.floatingactionbutton.FloatingActionButton android:id="@+id/SaveAppearance"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end" android:layout_margin="20dp"
-            android:contentDescription="保存" app:srcCompat="@drawable/ic_widget_save"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.ArkScreen.SaveCircle"
-            app:tint="?attr/colorOnPrimary" app:backgroundTint="?attr/colorPrimary" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/SaveAppearance"
+            style="@style/SaveFloatingActionButton" />
     </FrameLayout>
 </LinearLayout>

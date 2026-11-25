@@ -44,6 +44,7 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
     private var widgetIds = emptyList<Int>()
     private var previewJob: Job? = null
     private var previewHost: FrameLayout? = null
+    private var editorView: View? = null
     private var requestedId = AppWidgetManager.INVALID_APPWIDGET_ID
     private var restored: Bundle? = null
     private var loadingConfig = false
@@ -167,11 +168,18 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
     }
 
     private fun showEmpty() {
+        previewJob?.cancel()
+        previewHost = null
+        editorView = null
         binding.EditorContent.removeAllViews()
         binding.SaveAppearance.visibility = View.GONE
-        header("桌面组件")
-        val box = card()
-        box.addView(text("先在桌面添加一个组件，再为它设置账号和外观。", 15f).apply { setPadding(dp(20), dp(24), dp(20), dp(24)) })
+        val editor = layoutInflater.inflate(R.layout.widget_appearance_editor, binding.EditorContent, false) as LinearLayout
+        binding.EditorContent.addView(editor)
+        for (index in 0 until editor.childCount) {
+            val child = editor.getChildAt(index)
+            child.visibility = if (child.id == R.id.EmptyState) View.VISIBLE else View.GONE
+        }
+        val box = editor.findViewById<LinearLayout>(R.id.EmptyContent)
         row(box, "添加桌面组件", "选择规格") { anchor ->
             val choices = arrayOf("1×1", "1×2", "2×2", "2×3")
             popup(anchor, choices.toList(), -1) { which ->
@@ -194,42 +202,29 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
 
     private fun buildEditor() {
         val config = draft ?: return
-        binding.EditorContent.removeAllViews()
         binding.SaveAppearance.visibility = View.VISIBLE
-        header("当前组件")
-        val identity = card()
+        // Keep the preview attached while its replacement is loaded asynchronously.
+        val editor = editorView ?: layoutInflater.inflate(
+            R.layout.widget_appearance_editor, binding.EditorContent, false,
+        ).also {
+            binding.EditorContent.removeAllViews()
+            binding.EditorContent.addView(it)
+            editorView = it
+        }
+        val identity = editor.findViewById<LinearLayout>(R.id.Identity)
+        identity.removeAllViews()
+        editor.findViewById<LinearLayout>(R.id.Layouts).removeAllViews()
         row(identity, "组件", sizeName(config.appWidgetId) + " · #" + config.appWidgetId) { anchor ->
             if (requestedId != AppWidgetManager.INVALID_APPWIDGET_ID || widgetIds.size <= 1) return@row
             popup(anchor, widgetIds.map { sizeName(it) + " · #" + it }, widgetIds.indexOf(config.appWidgetId)) { index ->
                 if (widgetIds[index] != config.appWidgetId) confirmDiscard { load(widgetIds[index]) }
             }
         }
-        divider(identity)
-        val accountRow = row(identity, "账号", "…") { chooseAccount(it) }
+        val accountRow = row(identity, "账号", "…", separated = true) { chooseAccount(it) }
         lifecycleScope.launch { accountRow.text = accountName(config) }
 
-        header("预览")
-        val previewCard = card()
-        (previewCard.parent as MaterialCardView).setCardBackgroundColor(color(R.color.grey_700))
-        previewHost = FrameLayout(this).apply {
-            layoutParams = LinearLayout.LayoutParams(-1, -2)
-        }
-        previewCard.addView(previewHost)
-        val previewCaption = TextView(
-            this,
-            null,
-            0,
-            R.style.CardSupportingText,
-        ).apply {
-            setText(R.string.widget_preview_save_hint)
-            gravity = android.view.Gravity.END
-            setPadding(dp(32), dp(6), dp(32), 0)
-        }
-        binding.EditorContent.addView(previewCaption)
-
-        header("主题")
-        val themes = card()
-        val group = layoutInflater.inflate(R.layout.widget_theme_choices, themes, false) as com.google.android.material.chip.ChipGroup
+        previewHost = editor.findViewById(R.id.PreviewHost)
+        val group = editor.findViewById<com.google.android.material.chip.ChipGroup>(R.id.ThemeChoices)
         WidgetVisualStyle.entries.forEachIndexed { index, style ->
             val chip = group.getChildAt(index) as com.google.android.material.chip.Chip
             chip.isChecked = config.theme == style.key
@@ -238,12 +233,10 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
                 renderPreview()
             }
         }
-        themes.addView(group)
 
         val k = kind(config.appWidgetId)
         if (k == 1 || k == 3) {
-            header("布局")
-            val layouts = card()
+            val layouts = editor.findViewById<LinearLayout>(R.id.Layouts)
             val keys = if (k == 1) listOf("single", "dense") else listOf("four", "full")
             val labels = if (k == 1) listOf("单信息", "紧凑布局") else listOf("四项信息", "完整信息")
             val selected = keys.indexOf(if (k == 1) config.layout1x2 else config.layout2x3).coerceAtLeast(0)
@@ -255,24 +248,26 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
             }
         }
 
-        header("字体大小")
-        sliderCard("Aa", "按比例调整组件内的文字", 85f, 115f, config.fontScale * 100, 5f) {
+        editor.findViewById<View>(R.id.LayoutsHeader).visibility = if (k == 1 || k == 3) View.VISIBLE else View.GONE
+        editor.findViewById<View>(R.id.LayoutsCard).visibility = if (k == 1 || k == 3) View.VISIBLE else View.GONE
+        sliderCard(editor.findViewById(R.id.FontControl), "Aa", "按比例调整组件内的文字", 85f, 115f, config.fontScale * 100, 5f) {
             draft = draft?.copy(fontScale = it / 100); renderPreview()
         }
-        header("背景透明度")
-        sliderCard("背景", "仅调整背景，文字和图标保持清晰", 0f, 100f, config.transparency.toFloat(), 5f) {
+        sliderCard(editor.findViewById(R.id.TransparencyControl), "背景", "仅调整背景，文字和图标保持清晰", 0f, 100f, config.transparency.toFloat(), 5f) {
             draft = draft?.copy(transparency = it.toInt()); renderPreview()
         }
-        header("显示内容")
-        val contents = card()
+        val contents = editor.findViewById<LinearLayout>(R.id.Contents)
+        for (index in contents.childCount - 1 downTo 0) {
+            if (contents.getChildAt(index).id != R.id.FixedContentHint) contents.removeViewAt(index)
+        }
+        editor.findViewById<View>(R.id.FixedContentHint).visibility = View.GONE
         val fixed = k == 1 && config.layout1x2 == "dense" || k == 3 && config.layout2x3 == "full"
         if (fixed) {
-            contents.addView(text("当前布局使用固定的数据项", 14f).apply { setPadding(dp(20), dp(20), dp(20), dp(20)) })
+            editor.findViewById<View>(R.id.FixedContentHint).visibility = View.VISIBLE
         } else {
             val slots = slotNames(config)
             slots.forEachIndexed { i, type ->
-                if (i > 0) divider(contents)
-                row(contents, "位置 " + (i + 1), typeLabel(type)) { chooseContent(it, i) }
+                row(contents, "位置 " + (i + 1), typeLabel(type), separated = i > 0) { chooseContent(it, i) }
             }
         }
         renderPreview()
@@ -324,6 +319,8 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
         val config = draft ?: return
         val host = previewHost ?: return
         previewJob?.cancel()
+        val error = binding.EditorContent.findViewById<TextView>(R.id.PreviewError)
+        error.visibility = View.GONE
         previewJob = lifecycleScope.launch {
             try {
                 val snapshots: com.blueskybone.arkscreen.data.local.cache.RealtimeCacheStore = getKoin().get()
@@ -345,22 +342,20 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
                 timber.log.Timber.e(e, "Widget appearance preview failed")
                 host.removeAllViews()
                 val cause = generateSequence(e as Throwable) { it.cause }.last()
-                host.addView(text("预览加载失败：" + cause.javaClass.simpleName + "\n" +
-                    cause.message.orEmpty().take(180), 12f))
+                error.text = "预览加载失败：" + cause.javaClass.simpleName + "\n" + cause.message.orEmpty().take(180)
+                error.visibility = View.VISIBLE
             }
         }
     }
 
-    private fun sliderCard(label: String, hint: String, from: Float, to: Float, value: Float, step: Float, changed: (Float) -> Unit) {
-        val box = card()
-        val content = layoutInflater.inflate(R.layout.widget_editor_slider, box, false)
-        box.addView(content)
+    private fun sliderCard(content: View, label: String, hint: String, from: Float, to: Float, value: Float, step: Float, changed: (Float) -> Unit) {
         content.findViewById<TextView>(R.id.SliderTitle).text = label
         content.findViewById<TextView>(R.id.SliderHint).text = hint
         val percent = content.findViewById<TextView>(R.id.SliderValue).apply {
             text = value.toInt().toString() + "%"
         }
         content.findViewById<Slider>(R.id.Slider).apply {
+            clearOnChangeListeners()
             valueFrom = from; valueTo = to; stepSize = step
             this.value = (kotlin.math.round(value / step) * step).coerceIn(from, to)
             setCustomThumbDrawable(GradientDrawable().apply {
@@ -386,41 +381,14 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun header(title: String) {
-        val line = TextView(this, null, 0, R.style.SectionTitleText).apply {
-            text = title
-            gravity = android.view.Gravity.CENTER_VERTICAL
-        }
-        binding.EditorContent.addView(line, LinearLayout.LayoutParams(-1, dp(44)).apply {
-            topMargin = dp(16); marginStart = dp(32); marginEnd = dp(32)
-        })
-    }
-    private fun card(): LinearLayout {
-        val outer = layoutInflater.inflate(
-            R.layout.widget_editor_card,
-            binding.EditorContent,
-            false,
-        ) as MaterialCardView
-        val inner = outer.findViewById<LinearLayout>(R.id.CardContent)
-        binding.EditorContent.addView(outer, LinearLayout.LayoutParams(-1, -2).apply {
-            marginStart = dp(16); marginEnd = dp(16)
-        })
-        return inner
-    }
-    private fun row(box: LinearLayout, title: String, value: String, click: (View) -> Unit): TextView {
-        val line = layoutInflater.inflate(R.layout.widget_editor_row, box, false)
+    private fun row(box: LinearLayout, title: String, value: String, separated: Boolean = false, click: (View) -> Unit): TextView {
+        val line = layoutInflater.inflate(R.layout.preference_choice, box, false)
+        line.findViewById<View>(R.id.RowDivider).visibility = if (separated) View.VISIBLE else View.GONE
         line.findViewById<TextView>(R.id.RowTitle).text = title
         val trailing = line.findViewById<TextView>(R.id.RowValue).apply { text = value }
         line.setOnClickListener { click(trailing) }
         box.addView(line)
         return trailing
-    }
-    private fun divider(box: LinearLayout, inset: Int = 20) {
-        box.addView(View(this).apply { setBackgroundColor(color(R.color.function_divider)) },
-            LinearLayout.LayoutParams(-1, dp(1)).apply { marginStart = dp(inset); marginEnd = dp(20) })
-    }
-    private fun text(value: String, size: Float) = TextView(this).apply {
-        text = value; textSize = size; setTextColor(color(R.color.home_text_primary))
     }
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
     private fun color(id: Int) = ContextCompat.getColor(this, id)
