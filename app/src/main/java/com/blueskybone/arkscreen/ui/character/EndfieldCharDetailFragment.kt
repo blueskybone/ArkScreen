@@ -20,7 +20,7 @@ import com.blueskybone.arkscreen.data.network.model.EndfieldCharacter
 import com.blueskybone.arkscreen.data.network.model.EndfieldWeapon
 import com.blueskybone.arkscreen.data.network.model.EndfieldTalent
 import com.blueskybone.arkscreen.databinding.FragmentEndfieldCharDetailBinding
-import com.blueskybone.arkscreen.databinding.ItemEndfieldCharDetailSectionBinding
+import com.blueskybone.arkscreen.databinding.CardContentSectionBinding
 import com.blueskybone.arkscreen.databinding.ItemEndfieldCharEquipmentBinding
 import com.blueskybone.arkscreen.databinding.ItemEndfieldCharTacticalBinding
 import com.blueskybone.arkscreen.databinding.ItemEndfieldCharDetailWeaponBinding
@@ -134,7 +134,7 @@ class EndfieldCharDetailFragment : Fragment() {
         val skills = character.charData?.skills.orEmpty()
             .sortedBy { EndfieldCharacterVisuals.skillOrder(it.type?.key) }
         if (skills.isEmpty()) return
-        val section = ItemEndfieldCharDetailSectionBinding.inflate(layoutInflater, binding.Sections, false)
+        val section = CardContentSectionBinding.inflate(layoutInflater, binding.Sections, false)
         section.Title.setText(R.string.endfield_char_skills)
         val row = LinearLayout(requireContext()).apply { orientation = LinearLayout.HORIZONTAL }
         skills.forEach { skill ->
@@ -174,7 +174,7 @@ class EndfieldCharDetailFragment : Fragment() {
             Triple(R.string.endfield_char_cultivation_talent, data.cultivationTalents.orEmpty(), "cultivation"),
         )
         if (categories.all { it.second.isEmpty() }) return
-        val section = ItemEndfieldCharDetailSectionBinding.inflate(layoutInflater, binding.Sections, false)
+        val section = CardContentSectionBinding.inflate(layoutInflater, binding.Sections, false)
         section.Title.setText(R.string.endfield_char_talents)
         categories.forEach { (titleRes, talents, category) ->
             if (talents.isEmpty()) return@forEach
@@ -268,14 +268,8 @@ class EndfieldCharDetailFragment : Fragment() {
         binding.Sections.addView(section.root)
     }
 
-    private fun createTag(label: String): TextView = TextView(
-        requireContext(),
-        null,
-        0,
-        R.style.Widget_ArkScreen_MetadataCapsule_Tag,
-    ).apply {
-        text = label
-    }
+    private fun createTag(label: String): TextView =
+        (layoutInflater.inflate(R.layout.chip_metadata, null, false) as TextView).apply { text = label }
 
     private fun dp(value: Int): Int = (resources.displayMetrics.density * value).toInt()
 
@@ -296,7 +290,7 @@ class EndfieldCharDetailFragment : Fragment() {
             character.firstAccessory,
             character.secondAccessory,
         )
-        val section = ItemEndfieldCharDetailSectionBinding.inflate(
+        val section = CardContentSectionBinding.inflate(
             layoutInflater, binding.Sections, false,
         )
         section.Title.setText(R.string.endfield_char_equipment)

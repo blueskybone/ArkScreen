@@ -27,10 +27,13 @@ import java.util.concurrent.atomic.AtomicInteger
 
 @SuppressLint("ClickableViewAccessibility", "InternalInsetResource")
 class FloatWindowController(
-    private val application: Application,
+    private val application: android.content.Context,
 ) {
 
-    private val context = application.applicationContext
+    // Overlay entry points receive an Application, whose default theme cannot resolve
+    // AppCompat attributes (for example the close button ripple). Preview and overlay
+    // must inflate with the same explicit app theme.
+    private val context = androidx.appcompat.view.ContextThemeWrapper(application, R.style.AppTheme)
 
     private val windowManager =
         context.getSystemService(WindowManager::class.java)
@@ -50,10 +53,24 @@ class FloatWindowController(
         WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
         PixelFormat.TRANSLUCENT
     ).apply {
-        gravity = Gravity.START
+        gravity = Gravity.TOP or Gravity.START
     }
 
+    private val settings: com.blueskybone.arkscreen.data.local.pref.SettingPrefManager = org.koin.mp.KoinPlatform.getKoin().get()
+    private var appearance = FloatingAppearance.read(settings)
+    private var lastTags: List<String> = emptyList()
+    private var lastResults: List<RecruitResult> = emptyList()
     private var isAdded = false
+    fun refreshAppearance() { if (isAdded) showResult(lastTags, lastResults) }
+
+
+    fun preview(tags: List<String>, results: List<RecruitResult>, style: FloatingAppearance): View {
+        appearance = style
+        render(tags, results)
+        contentView.findViewById<View>(R.id.text_button_close).isEnabled = false
+        return contentView
+    }
+
     private var statusBarHeight = 0
 
     private val tagViewGroup: FlowLayout =
@@ -77,15 +94,22 @@ class FloatWindowController(
     init {
         setupCloseButton()
         setupStatusBarHeight()
-        setupDrag()
+        // Preview uses the same content without overlay drag behavior.
     }
 
     fun showResult(
         tags: List<String>,
         results: List<RecruitResult>,
     ) {
+        setupDrag()
+        lastTags = tags; lastResults = results
+        appearance = FloatingAppearance.read(settings)
         render(tags, results)
-
+        val screen = getRealScreenSize(context)
+        params.width = dpToPx(appearance.width).coerceAtMost(screen.x)
+        params.height = dpToPx(appearance.height).coerceAtMost(screen.y)
+        params.x = params.x.coerceIn(0, (screen.x - params.width).coerceAtLeast(0))
+        params.y = params.y.coerceIn(0, (screen.y - params.height).coerceAtLeast(0))
         if (!isAdded) {
             windowManager.addView(contentView, params)
             isAdded = true
@@ -107,6 +131,7 @@ class FloatWindowController(
         tags: List<String>,
         results: List<RecruitResult>,
     ) {
+        rareText.textSize = 14f * appearance.font / 100f
         renderTags(tags)
         renderResults(results)
     }
@@ -158,7 +183,7 @@ class FloatWindowController(
 
     private fun setupCloseButton() {
         contentView
-            .findViewById<TextView>(R.id.text_button_close)
+            .findViewById<View>(R.id.text_button_close)
             .setOnClickListener {
                 close()
             }
@@ -266,12 +291,12 @@ class FloatWindowController(
     }
 
     private fun TextView.setTagLayout(textValue: String) {
-        setPadding(4, 2, 4, 2)
-        background = createRoundedBackground(R.color.blue_500)
+        setPadding(dpToPx(8), dpToPx(5), dpToPx(8), dpToPx(5))
+        background = createRoundedBackground(R.color.recruit_tag_surface)
         gravity = Gravity.CENTER
         text = textValue
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-        setTextColor(ContextCompat.getColor(context, R.color.white))
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f * appearance.font / 100f)
+        setTextColor(ContextCompat.getColor(context, R.color.home_text_primary))
         layoutParams = DrawerLayout.LayoutParams(
             DrawerLayout.LayoutParams.WRAP_CONTENT,
             DrawerLayout.LayoutParams.WRAP_CONTENT
@@ -282,12 +307,12 @@ class FloatWindowController(
         textValue: String,
         rarity: Int,
     ) {
-        setPadding(4, 2, 4, 2)
-        background = createRoundedBackground(getRarityColorId(rarity))
+        setPadding(dpToPx(8), dpToPx(5), dpToPx(8), dpToPx(5))
+        background = createRoundedBackground(if (appearance.colorful) raritySurface(rarity) else R.color.recruit_tag_surface)
         gravity = Gravity.CENTER
         text = textValue
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-        setTextColor(ContextCompat.getColor(context, R.color.white))
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f * appearance.font / 100f)
+        setTextColor(ContextCompat.getColor(context, if (appearance.colorful) rarityText(rarity) else R.color.home_text_primary))
         layoutParams = DrawerLayout.LayoutParams(
             DrawerLayout.LayoutParams.WRAP_CONTENT,
             DrawerLayout.LayoutParams.WRAP_CONTENT
@@ -297,11 +322,21 @@ class FloatWindowController(
     private fun createRoundedBackground(colorResId: Int): GradientDrawable {
         return GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
-            cornerRadius = 2f
+            cornerRadius = dpToPx(14).toFloat()
             setColor(ContextCompat.getColor(context, colorResId))
         }
     }
 
+    private fun raritySurface(r: Int) = when (r) {
+        6 -> R.color.recruit_rare_6_surface; 5 -> R.color.recruit_rare_5_surface
+        4 -> R.color.recruit_rare_4_surface; 3 -> R.color.recruit_rare_3_surface
+        else -> R.color.recruit_rare_1_surface
+    }
+    private fun rarityText(r: Int) = when (r) {
+        6 -> R.color.recruit_rare_6_text; 5 -> R.color.recruit_rare_5_text
+        4 -> R.color.recruit_rare_4_text; 3 -> R.color.recruit_rare_3_text
+        else -> R.color.recruit_rare_1_text
+    }
     private fun getRarityColorId(rarity: Int): Int {
         return rarityColorIds.getOrElse(rarity - 1) { R.color.grey_500 }
     }

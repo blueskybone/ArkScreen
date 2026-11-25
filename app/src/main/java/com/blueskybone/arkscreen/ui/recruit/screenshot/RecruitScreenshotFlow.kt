@@ -21,7 +21,7 @@ class RecruitScreenshotFlow(
     suspend fun run(
         bitmap: Bitmap,
         source: ScreenshotStartSource
-    ) {
+    ): Boolean {
         val startedAt = SystemClock.elapsedRealtime()
         Timber.tag("RecruitFlow").i(
             "Recognition started: source=%s bitmap=%dx%d",
@@ -32,7 +32,7 @@ class RecruitScreenshotFlow(
         val tags = tagRecognizer.recognize(bitmap).getOrElse { throwable ->
             Timber.tag("RecruitFlow").e(throwable, "Recognition stage failed")
             resultDisplayer.showError(R.string.recruit_recognition_failed)
-            return
+            return false
         }
 
         if (tags.isEmpty()) {
@@ -42,7 +42,7 @@ class RecruitScreenshotFlow(
                 SystemClock.elapsedRealtime() - startedAt,
             )
             resultDisplayer.showError(R.string.recruit_no_tags)
-            return
+            return false
         }
 
         Timber.tag("RecruitFlow").i("Calculate combinations: tagCount=%d", tags.size)
@@ -53,7 +53,7 @@ class RecruitScreenshotFlow(
         val results = calculation.getOrElse { throwable ->
             Timber.tag("RecruitFlow").e(throwable, "Recruit calculation failed: tags=%s", tags)
             resultDisplayer.showError(R.string.recruit_calculation_failed)
-            return
+            return false
         }
         Timber.tag("RecruitFlow").i(
             "Recognition completed: source=%s tagCount=%d resultCount=%d durationMs=%d",
@@ -72,6 +72,7 @@ class RecruitScreenshotFlow(
             tags = tags,
             results = results,
         )
+        return true
     }
 
     suspend fun onScreenshotFailed(error: ScreenshotError) {

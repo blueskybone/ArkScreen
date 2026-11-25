@@ -32,9 +32,7 @@
 
             <ImageView
                 android:id="@+id/Icon"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="@null"
+            style="@style/DetailItemIcon"
                 android:padding="3dp" />
         </FrameLayout>
 

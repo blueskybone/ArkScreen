@@ -121,6 +121,9 @@
 
     <style name="ArkContentCardSurface" parent="Widget.MaterialComponents.CardView">
         <item name="strokeWidth">0dp</item>
+        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
+        <item name="cardElevation">0dp</item>
+        <item name="cardBackgroundColor">@color/app_surface</item>
     </style>
 
     <style name="CardViewContent" parent="ArkContentCardSurface">
@@ -129,10 +132,6 @@
         <item name="android:layout_marginTop">@dimen/card_vertical_spacing</item>
         <item name="android:layout_marginStart">@dimen/page_horizontal_spacing</item>
         <item name="android:layout_marginEnd">@dimen/page_horizontal_spacing</item>
-        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
-        <item name="cardElevation">0dp</item>
-<!--        <item name="cardBackgroundColor">?attr/android:colorBackground</item>-->
-        <item name="cardBackgroundColor">@color/app_surface</item>
     </style>
 
 
@@ -405,13 +404,7 @@
         <item name="trackDecorationTint">@color/switch_outline</item>
         <item name="thumbIconTint">?attr/colorOnSurface</item>
     </style>
-    <style name="HomeCard" parent="CardViewContent">
-        <item name="android:layout_marginTop">@dimen/card_vertical_spacing</item>
-    </style>
 
-    <style name="RealtimeCard" parent="HomeCard">
-        <item name="strokeWidth">0dp</item>
-    </style>
     <style name="HomeCardHeading">
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
@@ -452,7 +445,7 @@
         <item name="android:scaleType">fitCenter</item>
         <item name="android:tint">@color/home_text_primary</item>
     </style>
-    <style name="HomePageCard" parent="HomeCard"><item name="android:layout_marginTop">@dimen/home_page_spacing</item></style>
+    <style name="HomePageCard" parent="CardViewContent"><item name="android:layout_marginTop">@dimen/home_page_spacing</item></style>
     <style name="Widget.ArkScreen.RecruitFilterChip" parent="Widget.ArkScreen.FilterChip">
         <item name="android:textSize">13sp</item>
         <item name="android:textStyle">bold</item>
@@ -545,5 +538,12 @@
         <item name="android:importantForAccessibility">no</item>
         <item name="android:src">@drawable/ic_function_select</item>
         <item name="tint">@color/home_text_secondary</item>
+    </style>
+    <!-- Shared image behavior; each business item controls its own frame size/padding. -->
+    <style name="DetailItemIcon">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:contentDescription">@null</item>
+        <item name="android:scaleType">fitCenter</item>
     </style>
 </resources>

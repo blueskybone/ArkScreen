@@ -11,6 +11,12 @@ import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetUpdateFreq
 /** 用户可见的设置；运行状态和接口缓存不应存放在这里。 */
 class SettingPrefManager() {
     constructor(preferenceStore: PreferenceStore) : this() {
+        floatingWidth = preferenceStore.getInt("floating_width", 200)
+        floatingHeight = preferenceStore.getInt("floating_height", 240)
+        floatingFont = preferenceStore.getInt("floating_font", 85)
+        floatingBallSize = preferenceStore.getInt("floating_ball_size", 56)
+        floatingBallColor = preferenceStore.getString("floating_ball_color", "")
+        floatingBallBlue = preferenceStore.getBoolean("floating_ball_blue", true)
         recruitMode = preferenceStore.getString(RecruitMode.key, RecruitMode.FLOATWINDOW)
         floatWindowAppearance =
             preferenceStore.getString(FloatWindowAppearance.key, FloatWindowAppearance.COLORFUL)
@@ -54,8 +60,14 @@ class SettingPrefManager() {
     }
 
 
+    lateinit var floatingWidth: Preference<Int>
+    lateinit var floatingHeight: Preference<Int>
+    lateinit var floatingFont: Preference<Int>
+    lateinit var floatingBallSize: Preference<Int>
+    lateinit var floatingBallColor: Preference<String>
+    lateinit var floatingBallBlue: Preference<Boolean>
     lateinit var recruitMode: Preference<String>        //快速公招模式
-    lateinit var floatWindowAppearance: Preference<String>  //快速公招结果显示风格（未实装）
+    lateinit var floatWindowAppearance: Preference<String>  //快速公招结果显示风格
     lateinit var screenShotDelay: Preference<String>       //快速公招截图延迟选项
     lateinit var powerSavingMode: Preference<Boolean>   //桌面组件省流模式
     /*

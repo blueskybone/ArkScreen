@@ -1,0 +1,2 @@
+<?xml version="1.0" ?>
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="52dp" android:layout_height="52dp" android:padding="17dp" android:clickable="true" android:focusable="true"/>

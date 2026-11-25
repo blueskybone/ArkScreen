@@ -7,11 +7,11 @@
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
                 <include android:id="@+id/AppTheme" layout="@layout/preference_value" />
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
+                <include android:id="@+id/ShowHomeBanner" layout="@layout/preference_switch" />
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
                 <include android:id="@+id/ShowHomeAnnounce" layout="@layout/preference_switch" />
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
                 <include android:id="@+id/ShowExternalTools" layout="@layout/preference_switch" />
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                <include android:id="@+id/ShowHomeBanner" layout="@layout/preference_switch" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
         <TextView style="@style/PageSectionTitle" android:text="@string/more_general_settings" />

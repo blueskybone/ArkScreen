@@ -372,8 +372,9 @@ class CharOwn : Fragment() {
 
         (activity as? CharAssets)?.setShareEnabled(false)
         val appContext = requireContext().applicationContext
-        val progressView = layoutInflater.inflate(R.layout.dialog_operator_poster_loading, null)
-        val progressText = progressView.findViewById<TextView>(R.id.PosterProgress)
+        val progressView = layoutInflater.inflate(R.layout.dialog_loading, null) as
+            com.blueskybone.arkscreen.ui.common.view.StarterLoadingView
+        progressView.setMessage(R.string.operator_poster_preparing)
         val loadingDialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.operator_poster_loading_title)
             .setView(progressView)
@@ -394,7 +395,7 @@ class CharOwn : Fragment() {
                     OperatorPosterRenderer(appContext).render(poster) { progress ->
                         withContext(Dispatchers.Main.immediate) {
                             if (_binding != null) {
-                                progressText.text = when (progress) {
+                                progressView.setMessage(when (progress) {
                                     is OperatorPosterProgress.LoadingResources -> getString(
                                         R.string.operator_poster_loading_progress,
                                         progress.completed,
@@ -402,7 +403,7 @@ class CharOwn : Fragment() {
                                     )
                                     OperatorPosterProgress.Drawing ->
                                         getString(R.string.operator_poster_drawing)
-                                }
+                                })
                             }
                         }
                     }

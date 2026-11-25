@@ -32,6 +32,7 @@
                 android:id="@+id/Name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/ic_right_arrow"
                 android:textAppearance="?attr/textAppearanceSubtitle1"
                 android:textStyle="bold" />
 
@@ -41,12 +42,6 @@
                 android:layout_marginTop="3dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/RarityText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?attr/textAppearanceBody2" />
 
                 <ImageView
                     android:id="@+id/ProfessionIcon"
@@ -63,6 +58,12 @@
                     android:layout_marginStart="6dp"
                     android:contentDescription="@null"
                     android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/RarityText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceBody2" />
 
             </LinearLayout>
 

@@ -102,14 +102,11 @@ class Function : Fragment() {
 
     private fun setUpBinding() {
 
-        PreferenceBinder.bindPreferenceValue(
-            binding = binding.RecruitMode,
-            context = requireContext(),
-            icon = R.drawable.ic_function_result,
-            listInfo = RecruitMode,
-            pref = prefManager.recruitMode,
-            onClick = null
-        )
+        binding.RecruitMode.Icon.setImageResource(R.drawable.ic_function_result)
+        binding.RecruitMode.Title.setText(R.string.recruit_show_mode)
+        binding.RecruitMode.root.setOnClickListener {
+            startActivity(android.content.Intent(requireContext(), com.blueskybone.arkscreen.ui.recruit.FloatingSettingsActivity::class.java))
+        }
 
         PreferenceBinder.bindPreferenceValue(
             binding = binding.ScreenShotDelay,

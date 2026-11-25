@@ -18,8 +18,8 @@ android {
         applicationId = "com.blueskybone.arkscreen"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 76
-        versionName = "2.4.0-dev.59"
+        versionCode = 85
+        versionName = "2.4.0-dev.68"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {

@@ -35,16 +35,7 @@
         <item name="colorSecondary">@color/endfield_primary</item>
         <item name="colorOnPrimary">@color/grey_900</item>
     </style>
-    <style name="CardViewContent" parent="ArkContentCardSurface">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">16dp</item>
-        <item name="android:layout_marginStart">16dp</item>
-        <item name="android:layout_marginEnd">16dp</item>
-        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
-        <item name="cardElevation">0dp</item>
-        <item name="cardBackgroundColor">@color/app_surface</item>
-    </style>
+
 
     <style name="CardViewChip" parent="ArkContentCardSurface">
         <item name="android:layout_width">match_parent</item>

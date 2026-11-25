@@ -44,7 +44,7 @@
             android:paddingBottom="16dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-        <com.google.android.material.progressindicator.CircularProgressIndicator
+        <com.blueskybone.arkscreen.ui.common.view.StarterLoadingView
             android:id="@+id/Loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

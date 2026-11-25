@@ -2,11 +2,11 @@
     <style name="AppTheme.About" parent="AppTheme">
         <item name="android:windowBackground">@color/app_background</item>
         <item name="android:backgroundDimEnabled">false</item>
-        <item name="android:windowAnimationStyle">@style/AboutWindowFade</item>
+        <item name="android:windowAnimationStyle">@style/AboutWindowSlide</item>
     </style>
 
-    <style name="AboutWindowFade" parent="@android:style/Animation">
-        <item name="android:windowEnterAnimation">@anim/about_fade_in</item>
-        <item name="android:windowExitAnimation">@anim/about_fade_out</item>
+    <style name="AboutWindowSlide" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/about_slide_in</item>
+        <item name="android:windowExitAnimation">@anim/about_slide_out</item>
     </style>
 </resources>

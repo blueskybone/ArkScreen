@@ -28,7 +28,7 @@ interface SklandRepository {
 
     suspend fun fetchCharAssets(account: AccountSk): Result<OperatorAssets>    //解析干员资产
 
-    suspend fun fetchEndfieldCharacters(account: AccountEf): Result<List<EndfieldCharacter>>
+    suspend fun fetchEndfieldCharacters(account: AccountEf): Result<Pair<List<EndfieldCharacter>, String?>>
 
     suspend fun fetchEndfieldRealtime(account: AccountEf): Result<EndfieldRealtimeSnapshot>
 

@@ -38,7 +38,7 @@ class OperatorDialog(
 
         operator.tags.forEach { tag ->
             val chip = LayoutInflater.from(context).inflate(
-                R.layout.chip_recruit_metadata,
+                R.layout.item_result_tag,
                 binding.Tags,
                 false,
             ) as Chip

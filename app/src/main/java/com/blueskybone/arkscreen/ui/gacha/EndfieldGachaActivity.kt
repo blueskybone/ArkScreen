@@ -70,6 +70,7 @@ class EndfieldGachaActivity : AppCompatActivity() {
         binding.Server.visibility = if (account == null) View.GONE else View.VISIBLE
         binding.Server.setText(if (account?.official == true) R.string.official_server else R.string.bilibili_server)
         binding.AccountIcon.setImageResource(when (account?.official) { true -> R.drawable.hg_icon_80x80; false -> R.drawable.ic_account_bilibili; null -> R.drawable.ic_user })
+        binding.Loading.setMessage(R.string.syncing)
         binding.Loading.visibility = if (state.loading) View.VISIBLE else View.GONE
         binding.CharButton.isChecked = type == "char"
         binding.WeaponButton.isChecked = type == "weapon"
@@ -94,7 +95,7 @@ class EndfieldGachaActivity : AppCompatActivity() {
         binding.TotalCount.text = "${records.size} 次"
         binding.SixCount.text = "$six"
         binding.AverageCount.text = if (six == 0) "-" else "${records.size / six} 次"
-        binding.Status.visibility = if (state.loading || state.error != null || records.isEmpty()) View.VISIBLE else View.GONE
+        binding.Status.visibility = if (!state.loading && (state.error != null || records.isEmpty())) View.VISIBLE else View.GONE
         binding.DateRange.text = if (records.isEmpty()) getString(R.string.endfield_gacha_empty) else
             getString(R.string.date_range, "${formatGachaTime(records.last().gachaTs, "yyyy-MM-dd")} ~ ${formatGachaTime(records.first().gachaTs, "yyyy-MM-dd")}")
         poolAdapter.setAccount(state.selectedUid)
@@ -103,7 +104,7 @@ class EndfieldGachaActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: android.view.Menu): Boolean {
-        menu.add(0, 1, 0, R.string.refresh).setIcon(R.drawable.ic_refresh)
+        menu.add(0, 1, 0, R.string.refresh).setIcon(androidx.core.content.ContextCompat.getDrawable(this, R.drawable.ic_refresh)?.mutate()?.apply { setTint(androidx.core.content.ContextCompat.getColor(this@EndfieldGachaActivity, R.color.home_text_primary)) })
             .setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_ALWAYS)
         return true
     }

@@ -1,0 +1,3 @@
+<com.blueskybone.arkscreen.ui.common.view.StarterLoadingView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:paddingHorizontal="24dp" android:paddingVertical="20dp" />

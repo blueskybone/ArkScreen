@@ -21,7 +21,8 @@ class RecruitScreenshotStarter(
 
     fun start(
         context: Context,
-        source: ScreenshotStartSource
+        source: ScreenshotStartSource,
+        onComplete: ((Boolean) -> Unit)? = null,
     ) {
         Timber.tag("RecruitCapture").i(
             "Recruit capture requested: source=%s sessionAvailable=%s",
@@ -31,12 +32,14 @@ class RecruitScreenshotStarter(
         if (!Settings.canDrawOverlays(context)) {
             Timber.tag("RecruitCapture").w("Recruit capture rejected: overlay permission missing")
             Toaster.show(context.getString(R.string.floating_permission_denied))
+            onComplete?.invoke(false)
             return
         }
 
         taskFlowStore.set(
             RecruitScreenshotTaskFlow(
                 source = source,
+                onComplete = onComplete,
                 recruitScreenshotFlow = recruitScreenshotFlow,
                 captureDelayMillis = captureDelayMillis(source),
             )

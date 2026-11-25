@@ -31,6 +31,7 @@ class EndfieldCharsActivity : AppCompatActivity() {
     private val adapter = CharacterAdapter(::openDetail)
     private var currentState = EndfieldCharUiState()
 
+    private var grid = false
     private var rarityFilter: String? = null
     private var professionFilter: String? = null
     private var propertyFilter: String? = null
@@ -45,13 +46,22 @@ class EndfieldCharsActivity : AppCompatActivity() {
         rarityFilter = savedInstanceState?.getString("rarityFilter")
         professionFilter = savedInstanceState?.getString("professionFilter")
         propertyFilter = savedInstanceState?.getString("propertyFilter")
+        grid = savedInstanceState?.getBoolean("grid") ?: false
         binding.Characters.adapter = adapter
+        fun applyView() {
+            adapter.grid = grid
+            binding.Characters.layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, if (grid) 2 else 1)
+            binding.ViewMode.text = if (grid) "列表" else "网格"
+            adapter.notifyDataSetChanged()
+        }
+        binding.ViewMode.setOnClickListener { grid = !grid; applyView() }
+        applyView()
         binding.RarityFilter.setOnClickListener { chooseFilter(0) }
         binding.ProfessionFilter.setOnClickListener { chooseFilter(1) }
         binding.PropertyFilter.setOnClickListener { chooseFilter(2) }
         supportFragmentManager.addOnBackStackChangedListener { updatePage() }
         updatePage()
-        binding.AccountButton.setOnClickListener { chooseAccount() }
+        binding.AccountRow.AccountSelector.root.setOnClickListener { chooseAccount() }
         binding.RefreshButton.setOnClickListener { model.refresh() }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -62,8 +72,15 @@ class EndfieldCharsActivity : AppCompatActivity() {
 
     private fun render(state: EndfieldCharUiState) {
         currentState = state
+        binding.ProfileCard.visibility = if (state.loading) View.GONE else View.VISIBLE
+        binding.Characters.visibility = if (state.loading) View.GONE else View.VISIBLE
+        binding.Loading.setMessage(R.string.syncing)
         val selected = state.accounts.firstOrNull { it.uid == state.selectedUid }
-        binding.AccountButton.text = selected?.nickName ?: getString(R.string.endfield_choose_account)
+        binding.AccountRow.AccountSelector.CurrentAccount.text = selected?.nickName ?: getString(R.string.endfield_choose_account)
+        binding.AccountRow.AccountSelector.Server.setText(if (selected?.official == true) R.string.official_server else R.string.bilibili_server)
+        binding.AccountRow.AccountSelector.Server.visibility = View.GONE
+        binding.AccountRow.Avatar.load(state.avatarUrl) { placeholder(R.drawable.ic_user); error(R.drawable.ic_user) }
+        binding.AccountRow.Avatar.setOnClickListener { chooseAccount() }
         binding.Loading.visibility = if (state.loading) View.VISIBLE else View.GONE
         binding.RefreshButton.isEnabled = selected != null && !state.loading
         val filtered = state.characters.filter { character ->
@@ -119,6 +136,7 @@ class EndfieldCharsActivity : AppCompatActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean("grid", grid)
         outState.putString("rarityFilter", rarityFilter)
         outState.putString("professionFilter", professionFilter)
         outState.putString("propertyFilter", propertyFilter)
@@ -132,7 +150,7 @@ class EndfieldCharsActivity : AppCompatActivity() {
             return
         }
         accountPopup?.dismiss()
-        accountPopup = showAccountChoices(binding.AccountButton, accounts, currentState.selectedUid) { account ->
+        accountPopup = showAccountChoices(binding.AccountRow.AccountSelector.root, accounts, currentState.selectedUid) { account ->
             model.select(account.uid)
         }
     }
@@ -182,21 +200,25 @@ class EndfieldCharsActivity : AppCompatActivity() {
                 old == new
         }
     ) {
+        var grid = false
+        override fun getItemViewType(position: Int) = if (grid) 1 else 0
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder = Holder(
-            ItemEndfieldCharBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            LayoutInflater.from(parent.context).inflate(
+                if (viewType == 1) R.layout.item_endfield_char_grid else R.layout.item_endfield_char,
+                parent, false
+            )
         )
-
         override fun onBindViewHolder(holder: Holder, position: Int) {
             holder.bind(getItem(position), onClick)
         }
-
-        class Holder(private val binding: ItemEndfieldCharBinding) : RecyclerView.ViewHolder(binding.root) {
+        class Holder(view: View) : RecyclerView.ViewHolder(view) {
+            private val binding = ItemEndfieldCharBinding.bind(view)
             fun bind(character: EndfieldCharacter, onClick: (EndfieldCharacter) -> Unit) {
                 binding.root.setOnClickListener { onClick(character) }
                 val data = character.charData
                 binding.Name.text = data?.name?.takeIf(String::isNotBlank)
                     ?: character.id.orEmpty()
-                binding.RarityText.text = data?.rarity?.value.orEmpty()
+                binding.RarityText.text = EndfieldCharDisplay.stars(data?.rarity?.value, data?.rarity?.key)
                 binding.RarityText.visibility = if (binding.RarityText.text.isBlank()) View.GONE else View.VISIBLE
                 val professionIcon = EndfieldCharacterVisuals.professionIcon(
                     data?.profession?.key, data?.profession?.value,

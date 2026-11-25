@@ -15,10 +15,8 @@ import coil.load
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.ActivityEndfieldRealtimeBinding
 import com.blueskybone.arkscreen.databinding.ItemEndfieldRealtimeDomainBinding
-import com.blueskybone.arkscreen.databinding.ItemEndfieldRealtimeOverviewBinding
 import com.blueskybone.arkscreen.databinding.ItemEndfieldRealtimeOverviewStatBinding
-import com.blueskybone.arkscreen.databinding.ItemEndfieldRealtimeProfileBinding
-import com.blueskybone.arkscreen.databinding.ItemEndfieldRealtimeSettlementBinding
+import com.blueskybone.arkscreen.databinding.ItemKeyValueBinding
 import com.blueskybone.arkscreen.domain.model.realtime.EndfieldProgress
 import com.blueskybone.arkscreen.domain.model.realtime.EndfieldPlayerProfile
 import com.blueskybone.arkscreen.domain.model.realtime.EndfieldRealtimeSnapshot
@@ -64,15 +62,16 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
         val selected = state.accounts.firstOrNull { it.uid == state.selectedUid }
         binding.FallbackAccount.CurrentAccount.text = selected?.nickName ?: getString(R.string.endfield_choose_account)
         binding.RefreshButton.isEnabled = selected != null && !state.loading
+        binding.Page.visibility = if (state.loading) View.GONE else View.VISIBLE
         binding.Loading.visibility = if (state.loading) View.VISIBLE else View.GONE
         binding.Starter.visibility = if (state.snapshot != null && !state.loading && state.error == null) {
             View.VISIBLE
         } else {
             View.GONE
         }
-        binding.FallbackAccount.root.visibility = if (!state.loading && state.error == null && state.snapshot?.profile != null) View.GONE else View.VISIBLE
-        binding.ProfileContainer.removeAllViews()
-        binding.MetricsContainer.removeAllViews()
+        binding.FallbackAccount.root.visibility = if (state.loading || state.snapshot?.profile != null) View.GONE else View.VISIBLE
+        binding.Profile.root.visibility = View.GONE
+        binding.Overview.root.visibility = View.GONE
         binding.DomainsContainer.removeAllViews()
         binding.DomainHeader.visibility = View.GONE
         binding.StatusMessage.text = when {
@@ -82,7 +81,7 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
             state.snapshot == null -> getString(R.string.realtime_no_data)
             else -> ""
         }
-        binding.StatusMessage.visibility = if (state.snapshot != null && !state.loading && state.error == null) {
+        binding.StatusMessage.visibility = if (state.loading || (state.snapshot != null && state.error == null)) {
             View.GONE
         } else {
             View.VISIBLE
@@ -119,14 +118,14 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
             card.Progress.visibility = if (percent == null) View.GONE else View.VISIBLE
             if (percent != null) card.Progress.progress = percent
             if (domain.settlements.isEmpty()) {
-                val row = ItemEndfieldRealtimeSettlementBinding.inflate(
+                val row = ItemKeyValueBinding.inflate(
                     layoutInflater, card.Settlements, false,
                 )
                 row.Title.setText(R.string.realtime_no_data)
                 card.Settlements.addView(row.root)
             }
             domain.settlements.forEach { settlement ->
-                val row = ItemEndfieldRealtimeSettlementBinding.inflate(
+                val row = ItemKeyValueBinding.inflate(
                     layoutInflater, card.Settlements, false,
                 )
                 row.Title.text = settlement.name?.takeIf(String::isNotBlank)
@@ -141,9 +140,8 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
     }
 
     private fun renderProfile(profile: EndfieldPlayerProfile) {
-        val card = ItemEndfieldRealtimeProfileBinding.inflate(
-            layoutInflater, binding.ProfileContainer, false,
-        )
+        val card = binding.Profile
+        card.root.visibility = View.VISIBLE
         card.AccountSelector.root.setOnClickListener(::chooseAccount)
         val account = currentState.accounts.firstOrNull { it.uid == currentState.selectedUid }
         card.AccountSelector.Server.visibility = if (account == null) View.GONE else View.VISIBLE
@@ -158,9 +156,9 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
             card.WorldLevel.text = getString(R.string.endfield_world_level, it)
         }
         val roleId = profile.roleId?.takeIf(String::isNotBlank)
-        card.RoleIdRow.visibility = if (roleId == null) View.GONE else View.VISIBLE
-        card.RoleId.text = roleId?.let { getString(R.string.endfield_player_id, it) }.orEmpty()
-        card.CopyRoleId.setOnClickListener {
+        card.UidRow.visibility = if (roleId == null) View.GONE else View.VISIBLE
+        card.Uid.text = roleId?.let { getString(R.string.endfield_player_id, it) }.orEmpty()
+        card.CopyUid.setOnClickListener {
             roleId?.let { id ->
                 copyToClipboard(this, id)
                 Toaster.show(getString(R.string.uid_copied))
@@ -169,23 +167,27 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
         val lastLogin = profile.lastLoginAt?.takeIf { it > 0L }
         card.LastLogin.visibility = if (lastLogin == null) View.GONE else View.VISIBLE
         if (lastLogin != null) {
-            card.LastLogin.text = getString(
-                R.string.endfield_last_login,
-                getTimeStr(lastLogin * 1000L, "yyyy-MM-dd HH:mm"),
-            )
+            card.LastLogin.text = when (
+                com.blueskybone.arkscreen.platform.time.TimeUtils.getDayNum(System.currentTimeMillis() / 1000) -
+                    com.blueskybone.arkscreen.platform.time.TimeUtils.getDayNum(lastLogin)) {
+                0L -> getString(R.string.realtime_last_login_today, getTimeStr(lastLogin * 1000, "HH:mm"))
+                1L -> getString(R.string.realtime_last_login_yesterday)
+                else -> getString(R.string.realtime_last_login_date, getTimeStr(lastLogin * 1000, "yyyy-MM-dd"))
+            }
         }
         card.Avatar.load(profile.avatarUrl?.takeIf(String::isNotBlank)) {
             placeholder(R.drawable.ic_user)
             error(R.drawable.ic_user)
         }
-        binding.ProfileContainer.addView(card.root)
     }
 
     private fun renderOverview(snapshot: EndfieldRealtimeSnapshot) {
-        val card = ItemEndfieldRealtimeOverviewBinding.inflate(
-            layoutInflater, binding.MetricsContainer, false,
-        )
+        val card = binding.Overview
+        card.root.visibility = View.VISIBLE
+        card.ProgressItems.removeAllViews()
         card.StaminaValue.text = snapshot.stamina?.let(::format) ?: "—"
+        card.FullTime.visibility = View.VISIBLE
+        card.RemainingTime.visibility = View.VISIBLE
         val stamina = snapshot.stamina
         val fullAt = stamina?.fullAt?.takeIf { it > 0 &&
             (stamina.displayValue ?: 0) < (stamina.maxValue ?: 0) }
@@ -220,7 +222,6 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
             item.Value.text = progress?.let(::format) ?: "—"
             card.ProgressItems.addView(item.root)
         }
-        binding.MetricsContainer.addView(card.root)
     }
 
     private fun format(value: EndfieldRecoverableValue): String =

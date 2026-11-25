@@ -10,19 +10,22 @@ class RecruitScreenshotTaskFlow(
     private val source: ScreenshotStartSource,
     private val recruitScreenshotFlow: RecruitScreenshotFlow,
     override val captureDelayMillis: Long,
+    private val onComplete: ((Boolean) -> Unit)? = null,
 ) : ScreenshotTaskFlow {
 
     override val keepCaptureSessionAlive: Boolean
         get() = true
 
     override suspend fun onScreenshot(bitmap: Bitmap) {
-        recruitScreenshotFlow.run(
+        val success = recruitScreenshotFlow.run(
             bitmap = bitmap,
             source = source
         )
+        onComplete?.invoke(success)
     }
 
     override suspend fun onFailure(error: ScreenshotError) {
+        onComplete?.invoke(false)
         recruitScreenshotFlow.onScreenshotFailed(error)
     }
 

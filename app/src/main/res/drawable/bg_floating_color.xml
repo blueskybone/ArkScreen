@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/ColorRing" android:left="4dp" android:top="4dp" android:right="4dp" android:bottom="4dp">
+        <shape android:shape="oval">
+            <solid android:color="@android:color/transparent"/>
+            <stroke android:width="2dp" android:color="@android:color/transparent"/>
+        </shape>
+    </item>
+    <item android:id="@+id/ColorFill" android:left="9dp" android:top="9dp" android:right="9dp" android:bottom="9dp">
+        <shape android:shape="oval">
+            <solid android:color="@android:color/transparent"/>
+        </shape>
+    </item>
+</layer-list>

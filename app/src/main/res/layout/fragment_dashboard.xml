@@ -11,7 +11,7 @@
                     <ImageView android:id="@+id/RecruitExpand" android:layout_width="18dp" android:layout_height="18dp" android:contentDescription="@null" android:rotation="90" app:tint="@color/function_text_secondary" android:src="@drawable/ic_function_chevron" />
                 </LinearLayout>
                 <LinearLayout android:id="@+id/RecruitContent" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-                    <include android:id="@+id/RecruitMode" layout="@layout/preference_value" />
+                    <include android:id="@+id/RecruitMode" layout="@layout/preference_icon" />
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
                     <include android:id="@+id/ScreenShotDelay" layout="@layout/preference_value" />
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />

@@ -258,7 +258,8 @@
     <string name="realtime_empty_summary">添加森空岛账号后，可同步理智与基建状态</string>
     <string name="assets_empty_summary">添加森空岛账号后，可同步干员持有信息</string>
     <string name="gacha_empty_summary">寻访统计使用独立账号，与森空岛账号不同</string>
-    <string name="core_data">核心数据</string>
+    <string name="core_data">数据</string>
+    <string name="core_base">基建</string>
     <string name="endfield_choose_account">选择终末地账号</string>
     <string name="skland_choose_account">选择森空岛账号</string>
     <string name="endfield_chars_no_account">还没有终末地账号，点击上方按钮添加</string>
@@ -513,7 +514,7 @@
     <string name="recovery_other_events">基建与公招</string>
     <string name="recovery_planned_time">计划提醒时间：%1$s</string>
     <string name="recruit_results_title">计算结果</string>
-    <string name="recruit_select_hint">选择招聘标签，自动计算可招募干员</string>
+    <string name="recruit_select_hint">选择标签，自动计算可招募干员</string>
     <string name="recruit_no_match">当前标签组合没有匹配结果</string>
     <string name="permission_requirements">权限需求</string>
     <string name="experimental_feature_short">lab</string>
@@ -538,7 +539,7 @@
     <string name="recovery_push_notifications">推送提醒通知</string>
     <string name="show_external_tools">显示外部工具</string>
     <string name="appearance">外观</string>
-    <string name="show_home_banner">显示滚动图</string>
+    <string name="show_home_banner">显示轮播图</string>
     <string name="assets_held">已持有</string>
     <string name="recruit_group_primary">稀有度</string>
     <string name="recruit_group_profession">职业</string>

@@ -141,8 +141,11 @@ class AccountMngActivity : AppCompatActivity() {
         binding.AddAccountGc.isEnabled = !isOperating
         if (isOperating) {
             if (loadingDialog == null) {
+                val loading = layoutInflater.inflate(R.layout.dialog_loading, null) as
+                    com.blueskybone.arkscreen.ui.common.view.StarterLoadingView
+                loading.setMessage(R.string.operation_in_progress)
                 loadingDialog = MaterialAlertDialogBuilder(this)
-                    .setView(R.layout.dialog_operation_loading)
+                    .setView(loading)
                     .setCancelable(false)
                     .create()
             }

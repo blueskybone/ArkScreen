@@ -176,6 +176,7 @@
             android:name=".ui.gacha.EndfieldGachaActivity"
             android:exported="false"
             android:parentActivityName=".ui.main.MainActivity" />
+        <activity android:name=".ui.recruit.FloatingSettingsActivity" android:exported="false" />
         <activity
             android:name=".ui.recruit.RecruitActivity"
             android:exported="false"

@@ -17,6 +17,7 @@ data class EndfieldCharUiState(
     val accounts: List<AccountEf> = emptyList(),
     val selectedUid: String? = null,
     val characters: List<EndfieldCharacter> = emptyList(),
+    val avatarUrl: String? = null,
     val loading: Boolean = false,
     val error: String? = null,
 )
@@ -64,16 +65,17 @@ class EndfieldCharModel(
         val version = ++requestVersion
         loadJob?.cancel()
         if (account == null) {
-            _uiState.update { it.copy(characters = emptyList(), loading = false, error = null) }
+            _uiState.update { it.copy(avatarUrl = null, characters = emptyList(), loading = false, error = null) }
             return
         }
         loadJob = viewModelScope.launch {
-            _uiState.update { it.copy(characters = emptyList(), loading = true, error = null) }
+            _uiState.update { it.copy(avatarUrl = null, characters = emptyList(), loading = true, error = null) }
             skland.fetchEndfieldCharacters(account)
-                .onSuccess { characters ->
+                .onSuccess { (characters, avatarUrl) ->
                     if (version != requestVersion) return@onSuccess
                     _uiState.update {
                         it.copy(
+                            avatarUrl = avatarUrl,
                             characters = characters.sortedWith(
                                 compareByDescending<EndfieldCharacter> { character ->
                                     character.charData?.rarity?.key

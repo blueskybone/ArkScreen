@@ -208,12 +208,13 @@ class SklandRepositoryImpl(
             }
         }
 
-    override suspend fun fetchEndfieldCharacters(account: AccountEf): Result<List<EndfieldCharacter>> =
+    override suspend fun fetchEndfieldCharacters(account: AccountEf): Result<Pair<List<EndfieldCharacter>, String?>> =
         repositoryResultOf {
             withContext(Dispatchers.IO) {
-                requireNotNull(fetchEndfieldCardDetail(account).chars) {
+                val detail = fetchEndfieldCardDetail(account)
+                requireNotNull(detail.chars) {
                     "终末地角色数据缺少 chars 字段"
-                }
+                } to detail.base?.avatarUrl
             }
         }
 

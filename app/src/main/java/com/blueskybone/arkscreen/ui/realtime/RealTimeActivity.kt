@@ -94,7 +94,7 @@ class RealTimeActivity : AppCompatActivity() {
         }
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.AccountSelector.root.setOnClickListener(::chooseAccount)
+        binding.Profile.AccountSelector.root.setOnClickListener(::chooseAccount)
         binding.FallbackAccount.root.setOnClickListener(::chooseAccount)
         binding.RefreshButton.setOnClickListener { model.refresh() }
     }
@@ -144,7 +144,7 @@ class RealTimeActivity : AppCompatActivity() {
             }
         }
         model.currentAccount.observe(this) { account ->
-            binding.AccountSelector.bindAccount(account)
+            binding.Profile.AccountSelector.bindAccount(account)
             binding.FallbackAccount.bindAccount(account)
         }
         model.syncingState.observe(this) { syncing ->
@@ -252,8 +252,9 @@ class RealTimeActivity : AppCompatActivity() {
             progressMax = data.apMax.toFloat().coerceAtLeast(1F)
             progress = data.apNow.toFloat().coerceIn(0F, progressMax)
         }
-        binding.Avatar.load(data.avatarUrl)
-        binding.Level.text = getString(com.blueskybone.arkscreen.R.string.realtime_level, data.level)
+        binding.Profile.Avatar.load(data.avatarUrl)
+        binding.Profile.Level.visibility = View.VISIBLE
+        binding.Profile.Level.text = getString(com.blueskybone.arkscreen.R.string.realtime_level, data.level)
         binding.ApFullTime.text = data.apFullTime.resolve(this)
         binding.ApResTime.text = data.apResTime.resolve(this)
         binding.DailyValue.text = data.daily.value.resolve(this)
@@ -266,10 +267,10 @@ class RealTimeActivity : AppCompatActivity() {
             com.blueskybone.arkscreen.R.string.realtime_module_lower,
             data.towerLower.value.resolve(this),
         )
-        binding.LastLogin.text = data.lastLogin.resolve(this)
-        binding.Uid.text = getString(com.blueskybone.arkscreen.R.string.realtime_uid, data.uid)
-        binding.UidRow.visibility = if (data.uid.isBlank()) View.GONE else View.VISIBLE
-        binding.CopyUid.setOnClickListener {
+        binding.Profile.LastLogin.text = data.lastLogin.resolve(this)
+        binding.Profile.Uid.text = getString(com.blueskybone.arkscreen.R.string.realtime_uid, data.uid)
+        binding.Profile.UidRow.visibility = if (data.uid.isBlank()) View.GONE else View.VISIBLE
+        binding.Profile.CopyUid.setOnClickListener {
             copyToClipboard(this, data.uid)
             Toaster.show(getString(com.blueskybone.arkscreen.R.string.uid_copied))
         }

@@ -86,10 +86,10 @@ class CharHeaderAdapter(
             onMissingClick: () -> Unit,
         ) {
             val context = binding.root.context
-            binding.Avatar.load(avatarUrl) { placeholder(R.drawable.ic_user); error(R.drawable.ic_user) }
-            binding.Avatar.setOnClickListener(onAccountClick)
-            binding.AccountSelector.bindAccount(account)
-            binding.AccountSelector.root.setOnClickListener(onAccountClick)
+            binding.AccountRow.Avatar.load(avatarUrl) { placeholder(R.drawable.ic_user); error(R.drawable.ic_user) }
+            binding.AccountRow.Avatar.setOnClickListener(onAccountClick)
+            binding.AccountRow.AccountSelector.bindAccount(account)
+            binding.AccountRow.AccountSelector.root.setOnClickListener(onAccountClick)
             binding.Filter.setOnClickListener { onFilterClick() }
             binding.ViewChanger.setOnClickListener { onViewClick() }
             binding.MissingButton.setOnClickListener { onMissingClick() }

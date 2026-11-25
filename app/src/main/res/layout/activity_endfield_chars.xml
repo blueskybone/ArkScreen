@@ -10,7 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@string/operator_assets" />
+        app:title="@string/operator_assets">
+        <ImageButton android:id="@+id/RefreshButton" style="@style/ToolbarIconAction"
+            android:src="@drawable/ic_function_refresh" android:contentDescription="@string/refresh" />
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <LinearLayout
         android:id="@+id/ListContent"
@@ -19,39 +22,21 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/AccountButton"
-            app:icon="@drawable/ic_function_select" app:iconGravity="textEnd" app:iconSize="16dp"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="start|center_vertical"
-            android:maxLines="1"
-            android:text="@string/endfield_choose_account" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/RefreshButton"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/refresh" />
-        </LinearLayout>
-
-        <com.google.android.material.progressindicator.LinearProgressIndicator
+        <com.blueskybone.arkscreen.ui.common.view.StarterLoadingView
         android:id="@+id/Loading"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+
         android:visibility="gone" />
+        <com.google.android.material.card.MaterialCardView android:id="@+id/ProfileCard" style="@style/CardViewContent">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+        <include android:id="@+id/AccountRow" layout="@layout/asset_account_row" />
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="8dp" android:background="@color/function_divider" />
+        </LinearLayout>
+
+
 
         <TextView
         android:id="@+id/Summary"
@@ -63,6 +48,8 @@
         android:paddingBottom="8dp"
         android:textAppearance="?attr/textAppearanceBody2" />
 
+        </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
         <LinearLayout
             android:id="@+id/Filters"
             android:layout_width="match_parent"
@@ -100,6 +87,8 @@
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:text="属性" />
+            <TextView android:id="@+id/ViewMode" style="@style/Widget.ArkScreen.MetadataCapsule"
+                android:text="网格" android:layout_width="wrap_content" android:layout_height="wrap_content" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
