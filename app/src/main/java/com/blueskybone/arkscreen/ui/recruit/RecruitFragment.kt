@@ -86,7 +86,7 @@ class RecruitFragment : Fragment(R.layout.fragment_recruit) {
     }
 
     private fun observeState(view: View) {
-        val loadingView = view.findViewById<View>(R.id.loadingContainer)
+        val loadingView = view.findViewById<com.blueskybone.arkscreen.ui.common.view.StarterLoadingView>(R.id.loadingContainer)
         val contentView = view.findViewById<View>(R.id.contentContainer)
         val updateText = view.findViewById<TextView>(R.id.tvUpdate)
         var displayedResults = emptyList<RecruitResult>()
@@ -97,6 +97,8 @@ class RecruitFragment : Fragment(R.layout.fragment_recruit) {
                     viewModel.uiState.collect { state ->
                         val loading = state.status is UiStatus.Loading
                         loadingView.isVisible = loading
+                        if (loading) loadingView.setMessage(
+                            (state.status as? UiStatus.Loading)?.message?.takeIf { it.isNotBlank() } ?: getString(R.string.loading))
                         contentView.isVisible = !loading
                         updateText.text = getString(R.string.recruit_maintenance,
                             state.update.ifBlank { "—" },

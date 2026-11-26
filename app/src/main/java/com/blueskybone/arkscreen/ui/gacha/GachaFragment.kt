@@ -5,6 +5,7 @@ import com.blueskybone.arkscreen.ui.account.common.showAccountChoices
 import com.blueskybone.arkscreen.ui.account.AccountMngActivity
 import android.os.Bundle
 import android.os.Parcelable
+import androidx.core.os.BundleCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,7 +39,9 @@ class GachaFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentGachaBinding.inflate(inflater)
-        pendingScrollState = savedInstanceState?.getParcelable(KEY_SCROLL_STATE)
+        pendingScrollState = savedInstanceState?.let {
+            BundleCompat.getParcelable(it, KEY_SCROLL_STATE, Parcelable::class.java)
+        }
         setupBinding()
         return binding.root
     }
@@ -65,16 +68,16 @@ class GachaFragment : Fragment() {
 
     private fun renderAccount(state: GachaUiState) {
         val current = state.currAccount
-        binding.Server.visibility = if (current == null) View.GONE else View.VISIBLE
-        binding.Server.setText(if (current?.official == true) R.string.official_server else R.string.bilibili_server)
-        binding.NickName.text = current?.nickName.orEmpty()
+        binding.AccountHeader.Server.visibility = if (current == null) View.GONE else View.VISIBLE
+        binding.AccountHeader.Server.setText(if (current?.official == true) R.string.official_server else R.string.bilibili_server)
+        binding.AccountHeader.CurrentAccount.text = current?.nickName.orEmpty()
         if (current != null) {
-            binding.Icon.setImageResource(
+            binding.AccountHeader.Avatar.setImageResource(
                 if (current.official) R.drawable.hg_icon_80x80
                 else R.drawable.ic_account_bilibili
             )
         } else {
-            binding.Icon.setImageDrawable(null)
+            binding.AccountHeader.Avatar.setImageDrawable(null)
         }
 
     }
@@ -91,11 +94,11 @@ class GachaFragment : Fragment() {
                 gachaUi.gachaOverview.totalCount / rarity6cnt
             )
         binding.NormalCount.text =
-            getString(R.string.gacha_count, gachaUi.gachaOverview.poolCountNormal)
-        binding.FesCount.text = getString(R.string.gacha_count, gachaUi.gachaOverview.poolCountFes)
+            getString(R.string.gacha_pity_compact, getString(R.string.standard_pool), gachaUi.gachaOverview.poolCountNormal)
+        binding.FesCount.text = getString(R.string.gacha_pity_compact, getString(R.string.limited_pool), gachaUi.gachaOverview.poolCountFes)
         binding.CoreCount.text =
-            getString(R.string.gacha_count, gachaUi.gachaOverview.poolCountCore)
-        binding.DateRange.text = getString(R.string.date_range, gachaUi.gachaOverview.dateRange)
+            getString(R.string.gacha_pity_compact, getString(R.string.classic_pool), gachaUi.gachaOverview.poolCountCore)
+        binding.AccountHeader.Subtitle.text = getString(R.string.date_range, gachaUi.gachaOverview.dateRange)
     }
 
     private fun renderGachaPool(gachaUi: GachaUiSnapshot) {
@@ -127,7 +130,7 @@ class GachaFragment : Fragment() {
             // 禁用滚动
             overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
-        binding.PlayerInfo.setOnClickListener { showAccountPopup(it) }
+        binding.AccountHeader.root.setOnClickListener { showAccountPopup(it) }
         binding.ShowEmptyPools.setOnCheckedChangeListener { _, isChecked ->
             settingPrefManager.showEmptyGachaPools.set(isChecked)
             submitVisiblePools()

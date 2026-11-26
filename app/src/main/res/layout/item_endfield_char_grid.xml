@@ -1,23 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:layout_margin="6dp" app:cardCornerRadius="5dp" app:cardElevation="0dp"
+    android:layout_margin="@dimen/endfield_grid_item_margin" app:cardCornerRadius="5dp" app:cardElevation="0dp"
     app:strokeWidth="0dp" app:cardBackgroundColor="?attr/colorSurface"
     android:clickable="true" android:focusable="true" android:foreground="?attr/selectableItemBackground">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-        <FrameLayout android:layout_width="match_parent" android:layout_height="156dp">
-            <com.google.android.material.imageview.ShapeableImageView android:id="@+id/Avatar"
-                android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:contentDescription="@null" />
-            <ImageView android:layout_width="20dp" android:layout_height="20dp" android:layout_gravity="top|end" android:layout_margin="8dp" android:src="@drawable/ic_right_arrow" android:background="?attr/colorSurface" android:contentDescription="@null" app:tint="?android:attr/textColorPrimary" />
-        </FrameLayout>
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="10dp">
-            <TextView android:id="@+id/Name" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="15sp" android:textStyle="bold" android:textColor="?android:attr/textColorPrimary" android:maxLines="1" android:ellipsize="end" />
-            <LinearLayout android:layout_width="match_parent" android:layout_height="24dp" android:gravity="center_vertical">
-                <TextView android:id="@+id/RarityText" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:textSize="12sp" android:textColor="?android:attr/textColorSecondary" />
-                <ImageView android:id="@+id/ProfessionIcon" android:layout_width="18dp" android:layout_height="18dp" android:contentDescription="@null" />
-                <ImageView android:id="@+id/PropertyIcon" android:layout_width="18dp" android:layout_height="18dp" android:layout_marginStart="4dp" android:contentDescription="@null" />
+        <FrameLayout android:layout_width="match_parent" android:layout_height="126dp">
+            <ImageView android:id="@+id/Avatar" android:layout_width="match_parent" android:layout_height="match_parent"
+                android:scaleType="centerCrop" android:contentDescription="@null" />
+            <View android:layout_width="match_parent" android:layout_height="48dp"
+                android:layout_gravity="bottom" android:background="@drawable/bg_portrait_scrim" />
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_gravity="top|start" android:layout_margin="4dp" android:orientation="vertical">
+                <ImageView android:id="@+id/ProfessionIcon" android:layout_width="18dp" android:layout_height="18dp"
+                    android:padding="2dp" android:background="#CC333333" android:contentDescription="@null" />
+                <ImageView android:id="@+id/PropertyIcon" android:layout_width="18dp" android:layout_height="18dp"
+                    android:layout_marginTop="3dp" android:contentDescription="@null" />
             </LinearLayout>
-            <TextView android:id="@+id/Progress" android:layout_width="match_parent" android:layout_height="32dp" android:gravity="center_vertical" android:textSize="11sp" android:textColor="?android:attr/textColorSecondary" android:maxLines="2" />
-        </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_gravity="bottom" android:padding="4dp" android:gravity="bottom" android:orientation="horizontal">
+                <TextView android:id="@+id/Potential" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+                    android:textSize="9sp" android:maxLines="1" android:includeFontPadding="false" android:textColor="@android:color/white" />
+                <LinearLayout android:layout_width="0dp" android:layout_weight="1.4" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="end">
+                    <TextView android:id="@+id/Level" android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:gravity="end" android:textSize="11sp" android:maxLines="1" android:includeFontPadding="false"
+                        app:autoSizeTextType="uniform" app:autoSizeMinTextSize="8sp" app:autoSizeMaxTextSize="11sp" app:autoSizeStepGranularity="1sp"
+                        android:textStyle="bold" android:textColor="@android:color/white" />
+                    <TextView android:id="@+id/Evolve" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:textSize="9sp" android:maxLines="1" android:includeFontPadding="false" android:textColor="@android:color/white" />
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+        <TextView android:id="@+id/Name" android:layout_width="match_parent" android:layout_height="28dp"
+            android:gravity="center_vertical" android:paddingHorizontal="4dp" android:textSize="12sp"
+            android:textStyle="bold" android:textColor="?android:attr/textColorPrimary" android:maxLines="1" android:ellipsize="end" />
+        <View android:id="@+id/RarityStripe" android:layout_width="match_parent" android:layout_height="3dp" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

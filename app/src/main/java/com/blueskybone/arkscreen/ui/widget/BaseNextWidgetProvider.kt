@@ -22,7 +22,6 @@ import com.blueskybone.arkscreen.domain.service.AppClock
 import com.blueskybone.arkscreen.ui.widget.model.WidgetInfoState
 import com.blueskybone.arkscreen.ui.widget.model.WidgetInfoType
 import com.blueskybone.arkscreen.ui.widget.model.WidgetPalette
-import com.blueskybone.arkscreen.ui.widget.model.WidgetBackgroundSize
 import com.blueskybone.arkscreen.ui.widget.model.WidgetVisualStyle
 import com.blueskybone.arkscreen.platform.time.TimeUtils
 import kotlinx.coroutines.CoroutineScope
@@ -211,8 +210,7 @@ abstract class BaseNextWidgetProvider : AppWidgetProvider() {
 
     protected fun backgroundRes(
         data: NextWidgetRenderData,
-        size: WidgetBackgroundSize,
-    ): Int = data.visualStyle.backgroundRes(size)
+    ): Int = data.visualStyle.palette.backgroundRes
 
     protected fun primaryText(context: Context, item: WidgetInfoItem): String =
         item.value?.takeIf(String::isNotBlank)

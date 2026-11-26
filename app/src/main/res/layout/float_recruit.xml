@@ -15,7 +15,7 @@
 
         <ImageButton
             android:id="@+id/text_button_close"
-            android:layout_width="20dp" android:layout_height="20dp"
+            android:layout_width="16dp" android:layout_height="16dp"
             android:layout_gravity="end" android:padding="4dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_ball_close" android:tint="@color/home_text_primary"

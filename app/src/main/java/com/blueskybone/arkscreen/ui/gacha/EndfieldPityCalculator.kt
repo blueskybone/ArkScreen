@@ -58,10 +58,7 @@ object EndfieldPityCalculator {
             }
             if (record.poolName.isNotBlank()) stat.name = record.poolName
             stat.poolIds += record.poolId
-            val smallKey = when {
-                record.type == "char" && record.poolType in setOf(SPECIAL, RERUN) -> record.poolType
-                else -> key
-            }
+            val smallKey = key
             // 重构申领的 4 次保底只在当前版本生效。
             if (record.type == "weapon" && isWeaponRerun(record)) {
                 if (stat.lastVersion != null && record.poolVersion != null &&
@@ -128,12 +125,8 @@ object EndfieldPityCalculator {
         }
     }
 
-    private fun key(record: EndfieldGachaRecord): String = when {
-        record.type == "weapon" -> record.poolId.ifBlank { record.poolName }
-        record.poolType == RERUN -> record.poolName.ifBlank { record.poolId }
-        record.poolType == STANDARD || record.poolType == BEGINNER -> record.poolType
-        else -> record.poolId.ifBlank { record.poolType }
-    }
+    private fun key(record: EndfieldGachaRecord): String =
+        record.poolId.ifBlank { record.poolName.ifBlank { record.poolType } }
 
     private fun isWeaponRerun(record: EndfieldGachaRecord): Boolean =
         record.poolType == "rerun" || record.poolId.startsWith("rerun", ignoreCase = true)

@@ -20,8 +20,10 @@ class RecruitScreenshotFlow(
 
     suspend fun run(
         bitmap: Bitmap,
-        source: ScreenshotStartSource
+        source: ScreenshotStartSource,
+        autoSession: AutoRecruitSession? = null,
     ): Boolean {
+        if (autoSession?.active == false) return false
         val startedAt = SystemClock.elapsedRealtime()
         Timber.tag("RecruitFlow").i(
             "Recognition started: source=%s bitmap=%dx%d",
@@ -31,10 +33,11 @@ class RecruitScreenshotFlow(
         )
         val tags = tagRecognizer.recognize(bitmap).getOrElse { throwable ->
             Timber.tag("RecruitFlow").e(throwable, "Recognition stage failed")
-            resultDisplayer.showError(R.string.recruit_recognition_failed)
+            if (autoSession?.active != false) resultDisplayer.showError(R.string.recruit_recognition_failed)
             return false
         }
 
+        if (autoSession?.active == false) return false
         if (tags.isEmpty()) {
             Timber.tag("RecruitFlow").w(
                 "Recognition completed without tags: source=%s durationMs=%d",
@@ -45,11 +48,14 @@ class RecruitScreenshotFlow(
             return false
         }
 
+        if (autoSession?.isDuplicate(tags) == true) return true
+
         Timber.tag("RecruitFlow").i("Calculate combinations: tagCount=%d", tags.size)
         Timber.tag("RecruitFlow").d("Calculate combinations: tags=%s", tags)
         val calculation = withContext(Dispatchers.Default) {
             calcRecruitResultUseCase(tags, filter = true)
         }
+        if (autoSession?.active == false) return false
         val results = calculation.getOrElse { throwable ->
             Timber.tag("RecruitFlow").e(throwable, "Recruit calculation failed: tags=%s", tags)
             resultDisplayer.showError(R.string.recruit_calculation_failed)
@@ -68,6 +74,7 @@ class RecruitScreenshotFlow(
             results.map { result -> result.tags to result.operators.map { it.name } },
         )
 
+        autoSession?.remember(tags)
         resultDisplayer.showResult(
             tags = tags,
             results = results,

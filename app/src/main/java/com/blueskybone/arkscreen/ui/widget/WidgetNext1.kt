@@ -5,7 +5,6 @@ import com.blueskybone.arkscreen.data.local.room.WidgetConfig
 import android.widget.RemoteViews
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.ui.widget.model.WidgetInfoType
-import com.blueskybone.arkscreen.ui.widget.model.WidgetBackgroundSize
 
 /** 使用新版模板模型渲染的 1x1 桌面组件。 */
 class WidgetNext1 : BaseNextWidgetProvider() {
@@ -24,7 +23,7 @@ class WidgetNext1 : BaseNextWidgetProvider() {
 
         setImageViewResource(
             R.id.widget_background,
-            backgroundRes(data, WidgetBackgroundSize.ONE_BY_ONE),
+            backgroundRes(data),
         )
         setImageViewResource(R.id.widget_icon, item.icon.drawableRes)
         setInt(R.id.widget_icon, "setColorFilter", color)

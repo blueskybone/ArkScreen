@@ -7,7 +7,6 @@ import android.widget.RemoteViews
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.ui.widget.model.WidgetInfoItem
 import com.blueskybone.arkscreen.ui.widget.model.WidgetInfoType
-import com.blueskybone.arkscreen.ui.widget.model.WidgetBackgroundSize
 
 /** 由两行标准信息组成的 2x2 桌面组件。 */
 class WidgetNext3 : BaseNextWidgetProvider() {
@@ -25,7 +24,7 @@ class WidgetNext3 : BaseNextWidgetProvider() {
         val items = data.items
         setImageViewResource(
             R.id.widget_background,
-            backgroundRes(data, WidgetBackgroundSize.TWO_BY_TWO),
+            backgroundRes(data),
         )
         setInt(R.id.widget_divider, "setBackgroundColor", palette(data).divider)
         bindRow(

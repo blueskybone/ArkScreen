@@ -113,11 +113,11 @@ class CharAssets : AppCompatActivity() {
     }
 
     private fun renderLoading() {
-        val syncing = model.syncingState.value == true
+        val syncing = model.syncingState.value == true || model.uiState.value is UiStatus.Loading
         if (binding.Page.visibility != View.VISIBLE || binding.Loading.visibility == View.VISIBLE) {
             binding.Loading.visibility = if (syncing) View.VISIBLE else View.GONE
             if (syncing && binding.AssetsContent.visibility == View.VISIBLE) {
-                binding.Loading.setMessage(com.blueskybone.arkscreen.R.string.syncing)
+                binding.Loading.setMessage((model.uiState.value as? UiStatus.Loading)?.message?.takeIf { it.isNotBlank() } ?: getString(com.blueskybone.arkscreen.R.string.syncing))
             }
         }
     }
@@ -198,7 +198,7 @@ class CharAssets : AppCompatActivity() {
     private fun displayView() {
         val syncing = model.syncingState.value == true
         binding.Loading.visibility = if (syncing) View.VISIBLE else View.GONE
-        if (syncing) binding.Loading.setMessage(com.blueskybone.arkscreen.R.string.syncing)
+        if (syncing) binding.Loading.setMessage((model.uiState.value as? UiStatus.Loading)?.message?.takeIf { it.isNotBlank() } ?: getString(com.blueskybone.arkscreen.R.string.syncing))
         binding.Page.visibility = View.GONE
         binding.AssetsContent.visibility = View.VISIBLE
     }

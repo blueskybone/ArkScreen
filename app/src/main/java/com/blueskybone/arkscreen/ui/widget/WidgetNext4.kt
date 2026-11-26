@@ -14,7 +14,6 @@ import com.blueskybone.arkscreen.domain.repository.AccountRepository
 import com.blueskybone.arkscreen.ui.widget.model.WidgetInfoItem
 import com.blueskybone.arkscreen.ui.widget.model.WidgetInfoState
 import com.blueskybone.arkscreen.ui.widget.model.WidgetInfoType
-import com.blueskybone.arkscreen.ui.widget.model.WidgetBackgroundSize
 import com.hjq.toast.Toaster
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -54,7 +53,7 @@ class WidgetNext4 : BaseNextWidgetProvider() {
     ) = RemoteViews(context.packageName, R.layout.widget_next_2x3_four).apply {
         setImageViewResource(
             R.id.widget_background,
-            backgroundRes(data, WidgetBackgroundSize.TWO_BY_THREE),
+            backgroundRes(data),
         )
         bindBlock(context, data, data.items[0], R.id.widget_icon_1, R.id.widget_title_1, R.id.widget_value_1, R.id.widget_detail_1)
         bindBlock(context, data, data.items[1], R.id.widget_icon_2, R.id.widget_title_2, R.id.widget_value_2, R.id.widget_detail_2)
@@ -71,7 +70,7 @@ class WidgetNext4 : BaseNextWidgetProvider() {
     ) = RemoteViews(context.packageName, R.layout.widget_next_2x3_full).apply {
         setImageViewResource(
             R.id.widget_background,
-            backgroundRes(data, WidgetBackgroundSize.TWO_BY_THREE),
+            backgroundRes(data),
         )
         bindBlock(context, data, data.items[0], R.id.widget_icon_1, R.id.widget_title_1, R.id.widget_value_1, R.id.widget_detail_1)
         bindBlock(context, data, data.items[1], R.id.widget_icon_2, R.id.widget_title_2, R.id.widget_value_2, R.id.widget_detail_2)

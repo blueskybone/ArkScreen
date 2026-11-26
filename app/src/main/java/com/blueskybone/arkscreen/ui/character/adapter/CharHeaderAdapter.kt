@@ -114,14 +114,11 @@ class CharHeaderAdapter(
                 binding.MissingPanel.Update.text = updated
                 CharMissFlowAdapter(context, binding.MissingPanel.FlowLayout).submitList(missing)
             }
-            binding.E2Stat.Title.setText(R.string.assets_e2)
-            binding.M3Stat.Title.setText(R.string.assets_m3)
-            binding.Module3Stat.Title.setText(R.string.assets_module3_short)
             binding.Owned.text = statistic.totalOwn.toString()
             binding.Total.text = "/ ${statistic.totalOwn + statistic.totalMiss}"
-            binding.E2Stat.Value.text = statistic.totalE2.toString()
-            binding.M3Stat.Value.text = statistic.totalM3.toString()
-            binding.Module3Stat.Value.text = statistic.totalModule3.toString()
+            binding.E2Stat.root.text = context.getString(R.string.assets_metric_value, context.getString(R.string.assets_e2), statistic.totalE2)
+            binding.M3Stat.root.text = context.getString(R.string.assets_metric_value, context.getString(R.string.assets_m3), statistic.totalM3)
+            binding.Module3Stat.root.text = context.getString(R.string.assets_metric_value, context.getString(R.string.assets_module3_short), statistic.totalModule3)
             bindRarity(binding.R6Progress, 6, statistic.r6Own, statistic.r6Miss, R.color.rare_6)
             bindRarity(binding.R5Progress, 5, statistic.r5Own, statistic.r5Miss, R.color.rare_5)
             bindRarity(binding.R4Progress, 4, statistic.r4Own, statistic.r4Miss, R.color.rare_4)

@@ -101,7 +101,7 @@ class GachaActivity : AppCompatActivity() {
                         UiStatus.Idle -> Unit
                     }
                     if (state.isSyncing) {
-                        showStatus(getString(R.string.syncing), loading = true)
+                        showStatus((state.status as? UiStatus.Loading)?.message?.takeIf { it.isNotBlank() } ?: getString(R.string.syncing), loading = true)
                     }
                 }
             }

@@ -45,20 +45,4 @@
         <item name="cardElevation">0dp</item>
     </style>
 
-    <style name="Theme.ChipOverlay" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorOnSurface">@color/dark_on_surface</item>
-        <item name="colorOutline">@color/on_sec_con</item>
-        <item name="colorSurface">@color/grey_900</item>
-        <item name="chipIconTint">@color/dark_on_surface</item>
-    </style>
-
-    <style name="Widget.MyApp.Chip.Assist" parent="Widget.Material3.Chip.Assist">
-        <item name="android:theme">@style/Theme.ChipOverlay</item>
-        <item name="chipStartPadding">4dp</item>
-        <item name="chipEndPadding">4dp</item>
-        <item name="textStartPadding">4dp</item>
-        <item name="textEndPadding">4dp</item>
-    </style>
-
-
 </resources>

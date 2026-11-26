@@ -1,309 +1,37 @@
 <?xml version='1.0' encoding='utf-8'?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        app:elevation="0dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="4dp"
-            app:layout_scrollFlags="scroll">
-            <com.google.android.material.card.MaterialCardView
-                style="@style/CardViewContent"
-                android:layout_marginTop="12dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:minHeight="72dp"
-                        android:orientation="horizontal"
-                        android:paddingStart="16dp"
-                        android:paddingTop="12dp"
-                        android:paddingEnd="16dp"
-                        android:paddingBottom="12dp"
-                        android:id="@+id/PlayerInfo"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:background="?attr/selectableItemBackground">
-                        <com.google.android.material.imageview.ShapeableImageView
-                            android:id="@+id/Icon"
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:contentDescription="@null"
-                            android:scaleType="centerCrop"
-                            app:shapeAppearanceOverlay="@style/RoundedImageView" />
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="14dp"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-                            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical">
-                                <TextView android:id="@+id/Server" style="@style/Widget.ArkScreen.MetadataCapsule" android:layout_marginEnd="6dp" />
-                                <TextView
-                                android:id="@+id/NickName"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="15sp"
-                                android:maxLines="1"
-                                android:textAppearance="?attr/textAppearanceSubtitle1"
-                                android:textColor="?android:attr/textColorPrimary"
-                                android:textStyle="bold"
-                                android:ellipsize="end" />
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent">
+    <com.google.android.material.appbar.AppBarLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@android:color/transparent" app:elevation="0dp">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingBottom="4dp" app:layout_scrollFlags="scroll">
+            <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" android:layout_marginTop="12dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+                    <include android:id="@+id/AccountHeader" layout="@layout/account_summary_selector" />
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:id="@+id/GachaInfo" android:paddingStart="16dp" android:paddingEnd="16dp" android:paddingTop="4dp" android:paddingBottom="12dp">
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:baselineAligned="false" android:gravity="bottom" android:orientation="horizontal">
+                            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center_horizontal" android:orientation="vertical">
+                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/total_gacha_count" android:textAppearance="?attr/textAppearanceCaption" android:textColor="?android:attr/textColorSecondary" />
+                                <TextView android:id="@+id/CountSum" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:textAppearance="?attr/textAppearanceHeadline6" android:textColor="?attr/colorPrimary" android:textSize="16sp" android:textStyle="bold" />
+                            </LinearLayout>
+                            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center_horizontal" android:orientation="vertical">
+                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/six_star_count" android:textAppearance="?attr/textAppearanceCaption" android:textColor="?android:attr/textColorSecondary" />
+                                <TextView android:id="@+id/Rarity6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:textAppearance="?attr/textAppearanceHeadline6" android:textColor="@color/rare_6" android:textSize="16sp" android:textStyle="bold" />
+                            </LinearLayout>
+                            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center_horizontal" android:orientation="vertical">
+                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/average_six_star" android:textAppearance="?attr/textAppearanceCaption" android:textColor="?android:attr/textColorSecondary" />
+                                <TextView android:id="@+id/AverageCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:textAppearance="?attr/textAppearanceHeadline6" android:textColor="?android:attr/textColorPrimary" android:textSize="16sp" android:textStyle="bold" />
                             </LinearLayout>
                         </LinearLayout>
-                        <ImageView
-                            android:id="@+id/Exchange"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:contentDescription="@string/switch_account"
-                            android:src="@drawable/ic_function_select"
-                            app:tint="@color/function_text_secondary" />
-                    </LinearLayout>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:background="?android:attr/listDivider" />
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:id="@+id/GachaInfo">
-                        <TextView
-                            android:id="@+id/DateRange"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAppearance="?attr/textAppearanceCaption"
-                            android:textColor="?android:attr/textColorSecondary" />
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:baselineAligned="false"
-                            android:gravity="bottom"
-                            android:orientation="horizontal">
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center_horizontal"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/total_gacha_count"
-                                    android:textAppearance="?attr/textAppearanceCaption"
-                                    android:textColor="?android:attr/textColorSecondary" />
-                                <TextView
-                                    android:id="@+id/CountSum"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:textAppearance="?attr/textAppearanceHeadline6"
-                                    android:textColor="?attr/colorPrimary"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
-                            </LinearLayout>
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center_horizontal"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/six_star_count"
-                                    android:textAppearance="?attr/textAppearanceCaption"
-                                    android:textColor="?android:attr/textColorSecondary" />
-                                <TextView
-                                    android:id="@+id/Rarity6"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:textAppearance="?attr/textAppearanceHeadline6"
-                                    android:textColor="@color/rare_6"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
-                            </LinearLayout>
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center_horizontal"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/average_six_star"
-                                    android:textAppearance="?attr/textAppearanceCaption"
-                                    android:textColor="?android:attr/textColorSecondary" />
-                                <TextView
-                                    android:id="@+id/AverageCount"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:textAppearance="?attr/textAppearanceHeadline6"
-                                    android:textColor="?android:attr/textColorPrimary"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
-                            </LinearLayout>
-                        </LinearLayout>
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginBottom="4dp"
-                            android:background="?android:attr/listDivider" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:text="@string/gacha_current_pity"
-                            android:textAppearance="?attr/textAppearanceCaption"
-                            android:textColor="?android:attr/textColorSecondary" />
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:baselineAligned="false"
-                            android:orientation="horizontal">
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                app:cardBackgroundColor="@color/rare_6_surface"
-                                app:cardCornerRadius="@dimen/card_corner_radius"
-                                app:cardElevation="0dp">
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:orientation="vertical"
-                                    android:padding="12dp">
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="@string/limited_pool"
-                                        android:textAppearance="?attr/textAppearanceCaption" />
-                                    <TextView
-                                        android:id="@+id/FesCount"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginTop="4dp"
-                                        android:textAppearance="?attr/textAppearanceHeadline6"
-                                        android:textColor="@color/rare_6"
-                                        android:textSize="16sp"
-                                        android:textStyle="bold" />
-                                </LinearLayout>
-                            </com.google.android.material.card.MaterialCardView>
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="8dp"
-                                android:layout_weight="1"
-                                app:cardBackgroundColor="@color/rare_3_surface"
-                                app:cardCornerRadius="@dimen/card_corner_radius"
-                                app:cardElevation="0dp">
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:orientation="vertical"
-                                    android:padding="12dp">
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="@string/standard_pool"
-                                        android:textAppearance="?attr/textAppearanceCaption" />
-                                    <TextView
-                                        android:id="@+id/NormalCount"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginTop="4dp"
-                                        android:textAppearance="?attr/textAppearanceHeadline6"
-                                        android:textColor="@color/rare_3"
-                                        android:textSize="16sp"
-                                        android:textStyle="bold" />
-                                </LinearLayout>
-                            </com.google.android.material.card.MaterialCardView>
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="8dp"
-                                android:layout_weight="1"
-                                app:cardBackgroundColor="@color/rare_4_surface"
-                                app:cardCornerRadius="@dimen/card_corner_radius"
-                                app:cardElevation="0dp">
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:orientation="vertical"
-                                    android:padding="12dp">
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="@string/classic_pool"
-                                        android:textAppearance="?attr/textAppearanceCaption" />
-                                    <TextView
-                                        android:id="@+id/CoreCount"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginTop="4dp"
-                                        android:textAppearance="?attr/textAppearanceHeadline6"
-                                        android:textColor="@color/rare_4"
-                                        android:textSize="16sp"
-                                        android:textStyle="bold" />
-                                </LinearLayout>
-                            </com.google.android.material.card.MaterialCardView>
-                        </LinearLayout>
+                        <com.google.android.material.chip.ChipGroup android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" app:chipSpacingHorizontal="6dp" app:chipSpacingVertical="4dp">
+                            <TextView style="@style/Widget.ArkScreen.MetadataCapsule" android:id="@+id/FesCount" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                            <TextView style="@style/Widget.ArkScreen.MetadataCapsule" android:id="@+id/NormalCount" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                            <TextView style="@style/Widget.ArkScreen.MetadataCapsule" android:id="@+id/CoreCount" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                        </com.google.android.material.chip.ChipGroup>
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="20dp"
-                android:gravity="end|center_vertical"
-                android:minHeight="48dp"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/show_empty_gacha_pools" />
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/ShowEmptyPools"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:checked="true"
-                    android:showText="false" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginStart="20dp" android:layout_marginTop="4dp" android:layout_marginEnd="20dp" android:gravity="end|center_vertical" android:orientation="horizontal">
+                <com.google.android.material.chip.Chip style="@style/Widget.ArkScreen.FilterChip" android:id="@+id/ShowEmptyPools" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checkable="true" android:text="@string/show_empty_gacha_pools" android:textColor="@color/gacha_filter_chip_text" app:chipBackgroundColor="@color/gacha_filter_chip_background" />
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/RecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="4dp"
-        android:nestedScrollingEnabled="true"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    <androidx.recyclerview.widget.RecyclerView android:id="@+id/RecyclerView" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginTop="4dp" android:nestedScrollingEnabled="true" app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

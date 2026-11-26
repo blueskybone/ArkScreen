@@ -6,6 +6,14 @@
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <View
+            android:id="@+id/RarityStripe"
+            android:layout_width="3dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -59,11 +67,7 @@
                     android:contentDescription="@null"
                     android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/RarityText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?attr/textAppearanceBody2" />
+
 
             </LinearLayout>
 
@@ -75,4 +79,5 @@
                 android:textAppearance="?attr/textAppearanceCaption" />
         </LinearLayout>
     </LinearLayout>
+    </FrameLayout>
 </com.google.android.material.card.MaterialCardView>

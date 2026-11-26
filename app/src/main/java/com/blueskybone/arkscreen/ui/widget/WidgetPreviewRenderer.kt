@@ -65,7 +65,7 @@ internal class WidgetPreviewRenderer(
             height = dp(selectedSize.height)
         }
         previewBackground.setImageResource(
-            selectedStyle.backgroundRes(selectedSize.backgroundSize)
+            selectedStyle.palette.backgroundRes
         )
         previewWidget.removeAllViews()
         previewWidget.orientation = LinearLayout.VERTICAL
@@ -741,6 +741,5 @@ internal class WidgetPreviewRenderer(
     private enum class Layout1x2Mode { SINGLE, DENSE }
     private enum class WidgetPreviewSize(val width: Int, val height: Int) {
         ONE_BY_ONE(92, 92), ONE_BY_TWO(190, 92), TWO_BY_TWO(190, 150), TWO_BY_THREE(280, 168);
-        val backgroundSize: WidgetBackgroundSize get() = WidgetBackgroundSize.entries[ordinal]
     }
 }

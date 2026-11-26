@@ -49,6 +49,12 @@ class FloatingSettingsActivity : AppCompatActivity() {
             modeHint.visibility = if (mode == RecruitMode.AUTO) View.VISIBLE else View.GONE
             if (mode == RecruitMode.TOAST) com.hjq.toast.Toaster.show("示例：召唤 · 4★\n梅尔、豆苗")
         }
+        choice(binding.StyleRow.root, getString(R.string.floating_content_style),
+            listOf(getString(R.string.floating_style_modern), getString(R.string.simple)),
+            if (style.colorful) 0 else 1) {
+            style = style.copy(colorful = it == 0)
+            render()
+        }
         slider(binding.WidthSlider.root, "悬浮窗宽度", "预览实时更新，点击保存后应用", 140f, 260f, 10f, style.width, "dp") { style=style.copy(width=it); render() }
         slider(binding.HeightSlider.root, "悬浮窗高度", "预览实时更新，点击保存后应用", 160f, 360f, 20f, style.height, "dp") { style=style.copy(height=it); render() }
         slider(binding.FontSlider.root, "字体大小", "按比例调整标题、标签与干员文字", 60f, 100f, 5f, style.font, "%") { style=style.copy(font=it); render() }
@@ -124,10 +130,10 @@ class FloatingSettingsActivity : AppCompatActivity() {
             addOnChangeListener { _,v,user -> if(user) { value.text="${v.toInt()}$unit";changed(v.toInt()) } }
         }
     }
-    override fun onSaveInstanceState(out:Bundle) {
-        super.onSaveInstanceState(out)
-        out.putInt("w",style.width);out.putInt("h",style.height);out.putInt("f",style.font);out.putInt("b",style.ballSize)
-        out.putBoolean("c",style.colorful);out.putString("ballColor",style.ballColor);out.putString("mode",mode)
+    override fun onSaveInstanceState(outState:Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("w",style.width);outState.putInt("h",style.height);outState.putInt("f",style.font);outState.putInt("b",style.ballSize)
+        outState.putBoolean("c",style.colorful);outState.putString("ballColor",style.ballColor);outState.putString("mode",mode)
     }
     override fun onDestroy() { popup?.dismiss();super.onDestroy() }
     private fun dp(v:Int)=(v*resources.displayMetrics.density).toInt()

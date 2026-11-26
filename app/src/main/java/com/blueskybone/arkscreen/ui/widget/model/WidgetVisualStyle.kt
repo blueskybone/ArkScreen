@@ -30,13 +30,6 @@ data class WidgetPalette(
     }
 }
 
-enum class WidgetBackgroundSize {
-    ONE_BY_ONE,
-    ONE_BY_TWO,
-    TWO_BY_TWO,
-    TWO_BY_THREE,
-}
-
 enum class WidgetVisualStyle(
     val key: String,
     val palette: WidgetPalette,
@@ -170,7 +163,6 @@ enum class WidgetVisualStyle(
         ),
     );
 
-    fun backgroundRes(size: WidgetBackgroundSize): Int = palette.backgroundRes
 
     companion object {
         fun fromKey(key: String): WidgetVisualStyle =

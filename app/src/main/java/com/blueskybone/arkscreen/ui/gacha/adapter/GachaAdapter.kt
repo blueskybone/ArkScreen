@@ -1,7 +1,6 @@
 package com.blueskybone.arkscreen.ui.gacha.adapter
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.core.content.ContextCompat
 import coil.load
+import com.blueskybone.arkscreen.ui.gacha.gachaPullColor
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.data.network.avatarUrl
 import com.blueskybone.arkscreen.databinding.ItemGachaCardBinding
@@ -17,7 +17,6 @@ import com.blueskybone.arkscreen.databinding.ItemGachaRecordsBinding
 import com.blueskybone.arkscreen.ui.gacha.model.GachaPool
 import com.blueskybone.arkscreen.ui.gacha.model.Record
 import com.blueskybone.arkscreen.platform.time.TimeUtils.getTimeStr
-import com.google.android.material.color.MaterialColors
 import java.net.URLEncoder
 
 /**
@@ -104,9 +103,7 @@ class GachaAdapter(
         private fun bindRecord(binding: ItemGachaRecordsBinding, record: Record) {
             binding.GachaCount.text = context.getString(R.string.gacha_count, record.count)
             binding.ProgressBar.progress = record.count
-            binding.ProgressBar.progressTintList = ColorStateList.valueOf(
-                progressColor(record.count, binding.root)
-            )
+            binding.ProgressBar.setIndicatorColor(progressColor(record.count))
             binding.GainDate.text = getTimeStr(record.ts, "yyyy-MM-dd")
             binding.IsNew.visibility = if (record.isNew) View.VISIBLE else View.GONE
 
@@ -114,14 +111,11 @@ class GachaAdapter(
             binding.Avatar.load("$avatarUrl$skinUrl")
         }
 
-        private fun progressColor(count: Int, view: View): Int = when {
-            count > HIGH_PITY_THRESHOLD -> ContextCompat.getColor(context, R.color.rare_6)
-            count > MEDIUM_PITY_THRESHOLD -> ContextCompat.getColor(context, R.color.rare_5)
-            else -> MaterialColors.getColor(
-                view,
-                com.google.android.material.R.attr.colorPrimary,
-            )
-        }
+        private fun progressColor(count: Int): Int = ContextCompat.getColor(
+            context,
+            gachaPullColor(count),
+        )
+
     }
 
     fun restoreExpandedPools(poolIds: Set<String>) {
@@ -133,7 +127,5 @@ class GachaAdapter(
 
     private companion object {
         const val COLLAPSED_RECORD_COUNT = 3
-        const val MEDIUM_PITY_THRESHOLD = 40
-        const val HIGH_PITY_THRESHOLD = 50
     }
 }

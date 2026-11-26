@@ -13,6 +13,8 @@
                 <LinearLayout android:id="@+id/RecruitContent" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
                     <include android:id="@+id/RecruitMode" layout="@layout/preference_icon" />
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
+                    <include android:id="@+id/RecruitAutoMode" layout="@layout/preference_sub_switch" />
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
                     <include android:id="@+id/ScreenShotDelay" layout="@layout/preference_value" />
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
                     <LinearLayout style="@style/PreferenceRow" android:id="@+id/OverlayPermissionChip" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:clickable="true" android:focusable="true">

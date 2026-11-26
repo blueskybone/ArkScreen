@@ -26,7 +26,7 @@ class EndfieldPityCalculatorTest {
         assertTrue(stat.hits.single().isFree)
     }
 
-    @Test fun specialPityCarriesBetweenPoolsAndPaidSixResetsIt() {
+    @Test fun specialPityIsIndependentAndPaidSixResetsIt() {
         val records = listOf(
             record("1", special, "a", rarity = 4),
             record("2", special, "b", rarity = 4),
@@ -37,18 +37,18 @@ class EndfieldPityCalculatorTest {
         val stats = EndfieldPityCalculator.calculate(records, pools, "char")
         assertEquals(1, stats.first().smallCount)
         assertTrue(stats.first().bigSatisfied)
-        assertEquals(3, stats.first().hits.single().pity)
+        assertEquals(2, stats.first().hits.single().pity)
         assertEquals(1, stats.last().smallCount)
     }
 
-    @Test fun rerunUsesOfficialCountAndSharesSixPity() {
+    @Test fun rerunUsesOfficialCountButDoesNotShareSixPity() {
         val records = listOf(
             record("1", rerun, "a", rarity = 4, name = "重构 A"),
             record("2", rerun, "b", rarity = 4, name = "重构 B"),
         )
         val pools = listOf(EndfieldGachaPool("role", "char", "b", "重构 B", "up", 70))
         val stats = EndfieldPityCalculator.calculate(records, pools, "char")
-        assertEquals(2, stats.first().smallCount)
+        assertEquals(1, stats.first().smallCount)
         assertEquals(70, stats.first().bigCount)
         assertTrue(stats.first().bigUsesOfficialCount)
     }
@@ -62,6 +62,37 @@ class EndfieldPityCalculatorTest {
         assertEquals(1, stat.smallCount)
         assertEquals(40, stat.smallMax)
         assertFalse(stat.bigSatisfied)
+    }
+
+    @Test fun fortyUnfinishedDrawsDoNotCarryIntoNextPoolForEitherCategory() {
+        for (type in listOf("char", "weapon")) {
+            val records = (1..40).map { record(it.toString(), special, "a", type = type) } +
+                (41..47).map { record(it.toString(), special, "b", type = type, rarity = if (it == 47) 6 else 4) }
+            val stats = EndfieldPityCalculator.calculate(records, emptyList(), type)
+            assertEquals(7, stats.first { it.key == "b" }.hits.single().pity)
+            assertEquals(40, stats.first { it.key == "a" }.smallCount)
+        }
+    }
+
+    @Test fun sameNameWithDifferentPoolIdsRemainsSeparate() {
+        val records = listOf(record("1", rerun, "a"), record("2", rerun, "b", rarity = 6))
+        val stats = EndfieldPityCalculator.calculate(records, emptyList(), "char")
+        assertEquals(2, stats.size)
+        assertEquals(1, stats.first().hits.single().pity)
+    }
+
+    @Test fun rawRowsKeepIndependentPityAndUnfilteredPoolTotals() {
+        val records = listOf(
+            record("1", special, "a"),
+            record("2", special, "b"),
+            record("3", special, "b", rarity = 6, isFree = true),
+            record("4", special, "b", rarity = 6),
+            record("5", special, "b"),
+        )
+        val rows = rawRows(records.reversed())
+        assertEquals(listOf(1, 2, 0, 1, 1), rows.map { it.pity })
+        assertEquals(listOf(4, 3, 2, 1, 1), rows.map { it.total })
+        assertEquals(3, rows.first { it.record.seqId == "4" }.total)
     }
 
     private fun record(

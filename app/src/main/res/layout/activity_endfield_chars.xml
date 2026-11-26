@@ -15,11 +15,11 @@
             android:src="@drawable/ic_function_refresh" android:contentDescription="@string/refresh" />
     </com.google.android.material.appbar.MaterialToolbar>
 
+    <FrameLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
     <LinearLayout
         android:id="@+id/ListContent"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <com.blueskybone.arkscreen.ui.common.view.StarterLoadingView
@@ -30,66 +30,22 @@
 
         android:visibility="gone" />
         <com.google.android.material.card.MaterialCardView android:id="@+id/ProfileCard" style="@style/CardViewContent">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
-        <include android:id="@+id/AccountRow" layout="@layout/asset_account_row" />
-        <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="8dp" android:background="@color/function_divider" />
-        </LinearLayout>
-
-
-
-        <TextView
-        android:id="@+id/Summary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="20dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="8dp"
-        android:textAppearance="?attr/textAppearanceBody2" />
-
-        </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp">
+                <include android:id="@+id/AccountRow" layout="@layout/asset_account_row" />
+            </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-        <LinearLayout
-            android:id="@+id/Filters"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/RarityFilter"
-                style="@style/Widget.ArkScreen.InlineAction"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="4dp"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:text="稀有度" />
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/ProfessionFilter"
-                style="@style/Widget.ArkScreen.InlineAction"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="4dp"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:text="职业" />
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/PropertyFilter"
-                style="@style/Widget.ArkScreen.InlineAction"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="4dp"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:text="属性" />
-            <TextView android:id="@+id/ViewMode" style="@style/Widget.ArkScreen.MetadataCapsule"
-                android:text="网格" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-        </LinearLayout>
+        <com.google.android.material.card.MaterialCardView android:id="@+id/Filters" style="@style/CardViewContent" app:strokeWidth="0dp" android:layout_marginBottom="@dimen/card_vertical_spacing">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingHorizontal="10dp" android:paddingVertical="4dp" android:gravity="center_vertical">
+                <com.google.android.material.chip.Chip android:id="@+id/Filter" style="@style/Widget.ArkScreen.ActionChip"
+                    android:text="@string/filter" app:chipIcon="@drawable/ic_filter" app:chipIconVisible="true" />
+                <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
+                <com.google.android.material.chip.Chip android:id="@+id/ViewMode" style="@style/Widget.ArkScreen.ActionChip"
+                    android:layout_marginStart="4dp" app:textStartPadding="0dp" app:textEndPadding="0dp"
+                    android:contentDescription="@string/change_view" app:chipIcon="@drawable/ic_list" app:chipIconVisible="true" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <TextView android:id="@+id/EmptyMessage" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:padding="20dp" android:gravity="center" android:textColor="@color/home_text_secondary" android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/Characters"
@@ -104,7 +60,7 @@
     <FrameLayout
         android:id="@+id/DetailContainer"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         android:visibility="gone" />
+    </FrameLayout>
 </LinearLayout>

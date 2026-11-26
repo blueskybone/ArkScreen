@@ -2,6 +2,7 @@ package com.blueskybone.arkscreen.ui.gacha
 
 import android.os.Bundle
 import android.os.Parcelable
+import androidx.core.os.BundleCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,7 +38,9 @@ class GachaTextFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         adapter = GachaTextAdapter(requireContext(), PAGE_SIZE)
-        pendingScrollState = savedInstanceState?.getParcelable(KEY_SCROLL_STATE)
+        pendingScrollState = savedInstanceState?.let {
+            BundleCompat.getParcelable(it, KEY_SCROLL_STATE, Parcelable::class.java)
+        }
         _binding = FragmentGachaTextBinding.inflate(inflater, container, false)
         setupBinding()
         collectUiState()

@@ -550,4 +550,8 @@
     <string name="recruit_hide_low_rarity">隐藏低稀有度</string>
     <string name="recruit_maintenance">最后更新：%1$s  新增：%2$s</string>
     <string name="recruit_selection_limit">最多选择 6 个标签</string>
+    <string name="floating_content_style">内容风格</string>
+    <string name="floating_style_modern">现代</string>
+    <string name="gacha_pity_compact">%1$s %2$d 抽</string>
+    <string name="assets_metric_value">%1$s %2$d</string>
 </resources>

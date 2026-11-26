@@ -7,8 +7,8 @@
     <color name="blue_600">#2879BA</color>
     <color name="endfield_primary">#F8DE05</color>
     <color name="endfield_primary_dark">#C7AD00</color>
-    <color name="endfield_on_surface_accent">#765600</color>
-    <color name="endfield_accent_container">#F8DE05</color>
+    <color name="endfield_on_surface_accent">#C6A000</color>
+    <color name="endfield_accent_container">#F2EBCB</color>
     <color name="endfield_progress_track">#E7E4D7</color>
 
 
@@ -118,4 +118,10 @@
     <color name="home_text_primary">@color/app_text_primary</color>
     <color name="home_text_secondary">@color/app_text_secondary</color>
     <color name="home_inner_surface">#EFEDF0</color>
+    <!-- Shared day/night, muted pull-count indicator colors. -->
+    <color name="gacha_pull_green">#52966B</color>
+    <color name="gacha_pull_blue">#4D8DBD</color>
+    <color name="gacha_pull_yellow">#C5A438</color>
+    <color name="gacha_pull_red">#C2635D</color>
+    <color name="gacha_pull_track">#E8E8EC</color>
 </resources>

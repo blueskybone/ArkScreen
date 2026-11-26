@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.RemoteViews
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.ui.widget.model.WidgetInfoType
-import com.blueskybone.arkscreen.ui.widget.model.WidgetBackgroundSize
 
 /** 支持单信息布局和固定紧凑布局切换的 1x2 桌面组件。 */
 class WidgetNext2 : BaseNextWidgetProvider() {
@@ -46,7 +45,7 @@ class WidgetNext2 : BaseNextWidgetProvider() {
 
         setImageViewResource(
             R.id.widget_background,
-            backgroundRes(data, WidgetBackgroundSize.ONE_BY_TWO),
+            backgroundRes(data),
         )
         setImageViewResource(R.id.widget_icon, item.icon.drawableRes)
         setInt(R.id.widget_icon, "setColorFilter", color)
@@ -101,7 +100,7 @@ class WidgetNext2 : BaseNextWidgetProvider() {
 
         setImageViewResource(
             R.id.widget_background,
-            backgroundRes(data, WidgetBackgroundSize.ONE_BY_TWO),
+            backgroundRes(data),
         )
         bindDensePrimary(
             context,

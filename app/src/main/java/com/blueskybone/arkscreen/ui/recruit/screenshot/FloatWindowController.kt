@@ -2,7 +2,6 @@ package com.blueskybone.arkscreen.ui.recruit.screenshot
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.app.Application
 import android.graphics.PixelFormat
 import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
@@ -23,28 +22,38 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.domain.model.recruit.RecruitResult
 import com.blueskybone.arkscreen.ui.common.view.FlowLayout
 import com.blueskybone.arkscreen.util.getRealScreenSize
-import java.util.concurrent.atomic.AtomicInteger
 
 @SuppressLint("ClickableViewAccessibility", "InternalInsetResource")
 class FloatWindowController(
     private val application: android.content.Context,
 ) {
 
-    // Overlay entry points receive an Application, whose default theme cannot resolve
-    // AppCompat attributes (for example the close button ripple). Preview and overlay
-    // must inflate with the same explicit app theme.
-    private val context = androidx.appcompat.view.ContextThemeWrapper(application, R.style.AppTheme)
+    private fun themedContext(): android.content.Context {
+        val configuration = android.content.res.Configuration(application.resources.configuration)
+        val settings = org.koin.mp.KoinPlatform.getKoin().get<com.blueskybone.arkscreen.data.local.pref.SettingPrefManager>()
+        val night = when (settings.appTheme.get()) {
+            com.blueskybone.arkscreen.ui.common.bindinginfo.AppTheme.LIGHT -> android.content.res.Configuration.UI_MODE_NIGHT_NO
+            com.blueskybone.arkscreen.ui.common.bindinginfo.AppTheme.DARK -> android.content.res.Configuration.UI_MODE_NIGHT_YES
+            else -> application.resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
+        }
+        configuration.uiMode = (configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK.inv()) or night
+        return androidx.appcompat.view.ContextThemeWrapper(application.createConfigurationContext(configuration), R.style.AppTheme)
+    }
 
-    private val windowManager =
-        context.getSystemService(WindowManager::class.java)
+    private var context = themedContext()
+    private val windowManager = application.getSystemService(WindowManager::class.java)
+    private var contentView: View = LayoutInflater.from(context).inflate(R.layout.float_recruit, null)
+    private var entranceAnimator: ValueAnimator? = null
+    private var hasPosition = false
 
-    private val inflater =
-        LayoutInflater.from(context)
-
-    private val floatingRoot = LinearLayout(context)
-
-    private val contentView: View =
-        inflater.inflate(R.layout.float_recruit, floatingRoot)
+    private fun refreshTheme() {
+        val updated = themedContext()
+        if (updated.resources.configuration == context.resources.configuration) return
+        close()
+        context = updated
+        contentView = LayoutInflater.from(context).inflate(R.layout.float_recruit, null)
+        setupCloseButton()
+    }
 
     private val params = WindowManager.LayoutParams(
         WindowManager.LayoutParams.WRAP_CONTENT,
@@ -65,21 +74,21 @@ class FloatWindowController(
 
 
     fun preview(tags: List<String>, results: List<RecruitResult>, style: FloatingAppearance): View {
+        refreshTheme()
         appearance = style
         render(tags, results)
         contentView.findViewById<View>(R.id.text_button_close).isEnabled = false
         return contentView
     }
 
-    private var statusBarHeight = 0
 
-    private val tagViewGroup: FlowLayout =
+    private val tagViewGroup: FlowLayout get() =
         contentView.findViewById(R.id.tag_view_group)
 
-    private val resultContainer: LinearLayout =
+    private val resultContainer: LinearLayout get() =
         contentView.findViewById(R.id.linear_result)
 
-    private val rareText: TextView =
+    private val rareText: TextView get() =
         contentView.findViewById(R.id.result_rare)
 
     private val rarityColorIds = intArrayOf(
@@ -93,7 +102,6 @@ class FloatWindowController(
 
     init {
         setupCloseButton()
-        setupStatusBarHeight()
         // Preview uses the same content without overlay drag behavior.
     }
 
@@ -101,6 +109,8 @@ class FloatWindowController(
         tags: List<String>,
         results: List<RecruitResult>,
     ) {
+        entranceAnimator?.cancel()
+        refreshTheme()
         setupDrag()
         lastTags = tags; lastResults = results
         appearance = FloatingAppearance.read(settings)
@@ -108,6 +118,10 @@ class FloatWindowController(
         val screen = getRealScreenSize(context)
         params.width = dpToPx(appearance.width).coerceAtMost(screen.x)
         params.height = dpToPx(appearance.height).coerceAtMost(screen.y)
+        if (!hasPosition) {
+            params.y = dpToPx(48)
+            hasPosition = true
+        }
         params.x = params.x.coerceIn(0, (screen.x - params.width).coerceAtLeast(0))
         params.y = params.y.coerceIn(0, (screen.y - params.height).coerceAtLeast(0))
         if (!isAdded) {
@@ -121,6 +135,8 @@ class FloatWindowController(
     }
 
     fun close() {
+        entranceAnimator?.cancel()
+        entranceAnimator = null
         if (isAdded) {
             windowManager.removeView(contentView)
             isAdded = false
@@ -189,46 +205,31 @@ class FloatWindowController(
             }
     }
 
-    private fun setupStatusBarHeight() {
-        val resourceId =
-            context.resources.getIdentifier("status_bar_height", "dimen", "android")
-
-        if (resourceId > 0) {
-            statusBarHeight = context.resources.getDimensionPixelSize(resourceId)
-        }
-    }
-
     private fun setupDrag() {
-        val lastX = AtomicInteger()
-        val lastY = AtomicInteger()
-
+        var downX = 0f
+        var downY = 0f
+        var startX = 0
+        var startY = 0
         contentView.setOnTouchListener { _, event ->
-            val screenSize = getRealScreenSize(context)
-            val screenWidth = screenSize.x
-            val screenHeight = screenSize.y
-
-            when (event.action) {
+            when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
-                    lastX.set(event.x.toInt())
-                    lastY.set(event.y.toInt())
+                    entranceAnimator?.cancel()
+                    downX = event.rawX
+                    downY = event.rawY
+                    startX = params.x
+                    startY = params.y
+                    true
                 }
-
                 MotionEvent.ACTION_MOVE -> {
-                    if (screenWidth > screenHeight) {
-                        params.x = event.rawX.toInt() - lastX.get() - statusBarHeight
-                        params.y = event.rawY.toInt() - lastY.get() - statusBarHeight * 2
-                    } else {
-                        params.x = event.rawX.toInt() - lastX.get()
-                        params.y = event.rawY.toInt()
-                    }
-
-                    if (isAdded) {
-                        windowManager.updateViewLayout(contentView, params)
-                    }
+                    // Raw-coordinate deltas preserve the window origin, including system insets.
+                    params.x = startX + (event.rawX - downX).toInt()
+                    params.y = startY + (event.rawY - downY).toInt()
+                    if (isAdded) windowManager.updateViewLayout(contentView, params)
+                    true
                 }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> true
+                else -> false
             }
-
-            false
         }
     }
 
@@ -277,7 +278,8 @@ class FloatWindowController(
         val endY = params.y
         val startY = endY + dpToPx(10)
 
-        ValueAnimator.ofInt(startY, endY).apply {
+        entranceAnimator?.cancel()
+        entranceAnimator = ValueAnimator.ofInt(startY, endY).apply {
             duration = 200L
             interpolator = AccelerateDecelerateInterpolator()
             addUpdateListener { animation ->
@@ -291,12 +293,13 @@ class FloatWindowController(
     }
 
     private fun TextView.setTagLayout(textValue: String) {
-        setPadding(dpToPx(8), dpToPx(5), dpToPx(8), dpToPx(5))
-        background = createRoundedBackground(R.color.recruit_tag_surface)
+        if (appearance.colorful) setPadding(dpToPx(8), dpToPx(5), dpToPx(8), dpToPx(5))
+        else setPadding(4, 2, 4, 2)
+        background = createRoundedBackground(if (appearance.colorful) R.color.recruit_tag_surface else R.color.blue_500)
         gravity = Gravity.CENTER
         text = textValue
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f * appearance.font / 100f)
-        setTextColor(ContextCompat.getColor(context, R.color.home_text_primary))
+        setTextColor(ContextCompat.getColor(context, if (appearance.colorful) R.color.home_text_primary else R.color.white))
         layoutParams = DrawerLayout.LayoutParams(
             DrawerLayout.LayoutParams.WRAP_CONTENT,
             DrawerLayout.LayoutParams.WRAP_CONTENT
@@ -307,12 +310,13 @@ class FloatWindowController(
         textValue: String,
         rarity: Int,
     ) {
-        setPadding(dpToPx(8), dpToPx(5), dpToPx(8), dpToPx(5))
-        background = createRoundedBackground(if (appearance.colorful) raritySurface(rarity) else R.color.recruit_tag_surface)
+        if (appearance.colorful) setPadding(dpToPx(8), dpToPx(5), dpToPx(8), dpToPx(5))
+        else setPadding(4, 2, 4, 2)
+        background = createRoundedBackground(if (appearance.colorful) raritySurface(rarity) else getRarityColorId(rarity))
         gravity = Gravity.CENTER
         text = textValue
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f * appearance.font / 100f)
-        setTextColor(ContextCompat.getColor(context, if (appearance.colorful) rarityText(rarity) else R.color.home_text_primary))
+        setTextColor(ContextCompat.getColor(context, if (appearance.colorful) rarityText(rarity) else R.color.white))
         layoutParams = DrawerLayout.LayoutParams(
             DrawerLayout.LayoutParams.WRAP_CONTENT,
             DrawerLayout.LayoutParams.WRAP_CONTENT
@@ -322,7 +326,7 @@ class FloatWindowController(
     private fun createRoundedBackground(colorResId: Int): GradientDrawable {
         return GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
-            cornerRadius = dpToPx(14).toFloat()
+            cornerRadius = if (appearance.colorful) dpToPx(14).toFloat() else 2f
             setColor(ContextCompat.getColor(context, colorResId))
         }
     }

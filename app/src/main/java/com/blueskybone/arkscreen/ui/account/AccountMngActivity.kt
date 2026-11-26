@@ -47,6 +47,7 @@ class AccountMngActivity : AppCompatActivity() {
     private lateinit var gcLoginLauncher: ActivityResultLauncher<Intent>
 
     private var loadingDialog: AlertDialog? = null
+    private var loadingMessageView: com.blueskybone.arkscreen.ui.common.view.StarterLoadingView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -131,24 +132,25 @@ class AccountMngActivity : AppCompatActivity() {
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .collect { status ->
                     // 这里建议直接控制显隐
-                    toggleLoading(status is UiStatus.Loading)
+                    toggleLoading(status is UiStatus.Loading, (status as? UiStatus.Loading)?.message)
                 }
         }
     }
 
-    private fun toggleLoading(isOperating: Boolean) {
+    private fun toggleLoading(isOperating: Boolean, message: String?) {
         binding.AddAccountSk.isEnabled = !isOperating
         binding.AddAccountGc.isEnabled = !isOperating
         if (isOperating) {
             if (loadingDialog == null) {
                 val loading = layoutInflater.inflate(R.layout.dialog_loading, null) as
                     com.blueskybone.arkscreen.ui.common.view.StarterLoadingView
-                loading.setMessage(R.string.operation_in_progress)
+                loadingMessageView = loading
                 loadingDialog = MaterialAlertDialogBuilder(this)
                     .setView(loading)
                     .setCancelable(false)
                     .create()
             }
+            loadingMessageView?.setMessage(message?.takeIf { it.isNotBlank() } ?: getString(R.string.operation_in_progress))
             if (loadingDialog?.isShowing == false) {
                 loadingDialog?.show()
             }
@@ -374,6 +376,7 @@ class AccountMngActivity : AppCompatActivity() {
     override fun onDestroy() {
         loadingDialog?.dismiss()
         loadingDialog = null
+        loadingMessageView = null
         binding.RecyclerView.adapter = null
         binding.RecyclerViewGc.adapter = null
         binding.RecyclerViewEf.adapter = null

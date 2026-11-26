@@ -86,26 +86,12 @@
         <item name="android:textColor">@color/status_warning_content</item>
     </style>
 
+    <!-- Information variants share the homepage capsule geometry. -->
     <style name="Widget.ArkScreen.MetadataCapsule.Supporting" parent="Widget.ArkScreen.MetadataCapsule">
-        <item name="android:background">@drawable/bg_inline_chip</item>
         <item name="android:backgroundTint">@color/inline_chip_background</item>
         <item name="android:textColor">@color/inline_chip_text</item>
-        <item name="android:paddingStart">7dp</item>
-        <item name="android:paddingTop">3dp</item>
-        <item name="android:paddingEnd">7dp</item>
-        <item name="android:paddingBottom">3dp</item>
-        <item name="android:textSize">10sp</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Widget.ArkScreen.MetadataCapsule.Tag" parent="Widget.ArkScreen.MetadataCapsule">
-        <item name="android:background">@drawable/bg_asset_stat_chip</item>
-        <item name="android:textColor">@color/on_sec_con</item>
-        <item name="android:paddingStart">9dp</item>
-        <item name="android:paddingEnd">9dp</item>
-        <item name="android:paddingTop">4dp</item>
-        <item name="android:paddingBottom">4dp</item>
-    </style>
 
     <style name="Widget.ArkScreen.InlineAction" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="backgroundTint">@color/inline_chip_background</item>
@@ -186,6 +172,15 @@
     </style>
 
 
+    <style name="Widget.ArkScreen.GachaPullProgress" parent="Widget.MaterialComponents.LinearProgressIndicator">
+        <item name="android:layout_height">12dp</item>
+        <item name="android:indeterminate">false</item>
+        <item name="indicatorColor">@color/gacha_pull_green</item>
+        <item name="trackColor">@color/gacha_pull_track</item>
+        <item name="trackThickness">12dp</item>
+        <item name="trackCornerRadius">6dp</item>
+    </style>
+
     <style name="GachaProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:indeterminateOnly">false</item>
         <item name="android:minHeight">30dp</item>
@@ -263,27 +258,6 @@
         <item name="android:textSize">12sp</item> <!-- 设置文字大小 -->
     </style>
 
-    <style name="Theme.ChipOverlay" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorOnSurface">@color/on_sec_con</item>
-        <item name="colorOutline">@color/on_sec_con</item>
-        <item name="colorSurface">@color/day_surface</item>
-    </style>
-
-    <style name="Widget.MyApp.Chip.Assist" parent="Widget.Material3.Chip.Assist">
-        <item name="android:theme">@style/Theme.ChipOverlay</item>
-        <item name="chipStartPadding">4dp</item>
-        <item name="chipEndPadding">4dp</item>
-        <item name="textStartPadding">4dp</item>
-        <item name="textEndPadding">4dp</item>
-    </style>
-
-<!--    <style name="Theme.ChipOverlayError" parent="Theme.Material3.DayNight.NoActionBar">-->
-<!--    </style>-->
-
-<!--    <style name="Widget.MyApp.Chip.Error" parent="Widget.Material3.Chip.Assist">-->
-<!--        <item name="android:theme">@style/Theme.ChipOverlayError</item>-->
-<!--    </style>-->
-
     <!-- Compact actions displayed beside section headers. -->
     <style name="Widget.ArkScreen.SectionAction" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:minHeight">36dp</item>
@@ -333,25 +307,6 @@
         <item name="android:layout_height">40dp</item>
         <item name="android:layout_marginTop">16dp</item>
     </style>
-
-    <style name="Widget.ArkScreen.MetadataChip" parent="Widget.MyApp.Chip.Assist">
-        <item name="android:minHeight">28dp</item>
-        <item name="android:textSize">11sp</item>
-        <item name="chipCornerRadius">14dp</item>
-        <item name="chipMinHeight">28dp</item>
-        <item name="chipStrokeWidth">0dp</item>
-        <item name="chipStartPadding">8dp</item>
-        <item name="chipEndPadding">8dp</item>
-        <item name="ensureMinTouchTargetSize">false</item>
-        <item name="textStartPadding">0dp</item>
-        <item name="textEndPadding">0dp</item>
-    </style>
-
-    <style name="Widget.ArkScreen.MetadataChip.Neutral" parent="Widget.ArkScreen.MetadataChip">
-        <item name="android:textColor">@color/recruit_metadata_chip_text</item>
-        <item name="chipBackgroundColor">@color/recruit_metadata_chip_background</item>
-    </style>
-
 
     <style name="WidgetDenseSummaryText">
         <item name="android:layout_height">wrap_content</item>
@@ -433,8 +388,15 @@
         <item name="chipMinTouchTargetSize">48dp</item>
         <item name="android:checkable">false</item>
     </style>
-    <style name="Widget.ArkScreen.FilterChip" parent="Widget.MaterialComponents.Chip.Filter">
-        <item name="ensureMinTouchTargetSize">true</item>
+    <!-- Filtering changes state and colors, not the action capsule geometry. -->
+    <style name="Widget.ArkScreen.FilterChip" parent="Widget.ArkScreen.ActionChip">
+        <item name="android:checkable">true</item>
+        <item name="chipIconVisible">false</item>
+        <item name="checkedIconVisible">true</item>
+        <item name="checkedIcon">@drawable/ic_mtrl_chip_checked_black</item>
+        <item name="checkedIconTint">@color/capsule_filter_content</item>
+        <item name="android:textColor">@color/capsule_filter_content</item>
+        <item name="chipBackgroundColor">@color/capsule_filter_container</item>
     </style>
     <style name="ToolbarIconAction">
         <item name="android:layout_width">48dp</item>
@@ -460,8 +422,12 @@
         <item name="checkedIconVisible">false</item>
         <item name="ensureMinTouchTargetSize">false</item>
         <item name="android:checkable">true</item>
+        <item name="textStartPadding">8dp</item>
+        <item name="textEndPadding">6dp</item>
+        <item name="checkedIconTint">@color/recruit_filter_chip_text</item>
+        <item name="chipIconSize">24dp</item>
     </style>
-    <style name="Widget.ArkScreen.RecruitResultChip" parent="Widget.MyApp.Chip.Assist">
+    <style name="Widget.ArkScreen.RecruitResultChip" parent="Widget.ArkScreen.ActionChip">
         <item name="android:textSize">13sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">sans-serif-medium</item>
@@ -473,6 +439,10 @@
         <item name="ensureMinTouchTargetSize">false</item>
         <item name="chipBackgroundColor">@color/recruit_tag_surface</item>
         <item name="android:textColor">@color/home_text_primary</item>
+        <item name="textStartPadding">4dp</item>
+        <item name="textEndPadding">4dp</item>
+        <item name="chipIconVisible">true</item>
+        <item name="checkedIconVisible">false</item>
     </style>
     <style name="Widget.ArkScreen.RecruitActionChip" parent="Widget.ArkScreen.ActionChip">
         <item name="android:textStyle">bold</item>

@@ -19,7 +19,7 @@ data class FloatingAppearance(
         val colorNames = listOf("蓝色", "紫色", "玫红", "红色", "橙色", "黄色", "绿色", "青色", "灰色")
         fun read(p: SettingPrefManager) = FloatingAppearance(
             p.floatingWidth.get().coerceIn(140, 260), p.floatingHeight.get().coerceIn(160, 360),
-            p.floatingFont.get().coerceIn(60, 100), true,
+            p.floatingFont.get().coerceIn(60, 100), p.floatWindowAppearance.get() != "simple",
             p.floatingBallSize.get().coerceIn(48, 72), p.floatingBallColor.get().takeIf { it in colors } ?: "blue")
     }
     fun save(p: SettingPrefManager) {
@@ -33,7 +33,6 @@ data class FloatingAppearance(
         "teal" -> "#8AEAE3"; "gray" -> "#898B91"
         "green" -> "#38B54A"; else -> "#2877F0"
     })
-    fun iconColor(context: Context): Int = if (ballColor == "yellow") Color.rgb(48, 42, 12) else Color.WHITE
     fun ball(context: Context): FrameLayout {
         fun dp(v: Int) = (v * context.resources.displayMetrics.density).toInt()
         return FrameLayout(context).apply {
@@ -43,8 +42,8 @@ data class FloatingAppearance(
             addView(ImageView(context).apply {
                 id = android.R.id.icon
                 contentDescription = context.getString(R.string.recruit)
-                setImageResource(R.drawable.ic_ball_scan)
-                setColorFilter(iconColor(context))
+                setImageResource(R.drawable.ic_rosm_trans)
+                setColorFilter(Color.WHITE)
                 background = GradientDrawable().apply {
                     shape = GradientDrawable.OVAL
                     setColor(fillColor())

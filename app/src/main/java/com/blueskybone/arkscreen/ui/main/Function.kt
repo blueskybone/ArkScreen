@@ -102,6 +102,16 @@ class Function : Fragment() {
 
     private fun setUpBinding() {
 
+        binding.RecruitAutoMode.Title.text = "自动模式"
+        binding.RecruitAutoMode.Value.text = "循环识别，自动刷新结果"
+        binding.RecruitAutoMode.Icon.setImageResource(R.drawable.ic_function_auto_recruit)
+        binding.RecruitAutoMode.Switch.isChecked = prefManager.recruitAutoMode.get()
+        binding.RecruitAutoMode.Switch.setOnCheckedChangeListener { _, checked ->
+            prefManager.recruitAutoMode.set(checked)
+            getKoin().get<com.blueskybone.arkscreen.platform.tile.RecruitFloatingBallController>().onAutoModeChanged()
+        }
+        binding.RecruitAutoMode.root.setOnClickListener { binding.RecruitAutoMode.Switch.toggle() }
+
         binding.RecruitMode.Icon.setImageResource(R.drawable.ic_function_result)
         binding.RecruitMode.Title.setText(R.string.recruit_show_mode)
         binding.RecruitMode.root.setOnClickListener {

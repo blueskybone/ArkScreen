@@ -160,7 +160,7 @@ class CharOwn : Fragment() {
         (activity as? CharAssets)?.setShareAction(::showExportOptions)
         model.accountAvatarUrl.observe(viewLifecycleOwner, headerAdapter::submitAvatar)
         model.currentAccount.observe(viewLifecycleOwner, headerAdapter::submitAccount)
-        pendingScrollState = savedInstanceState?.getParcelable(KEY_SCROLL_STATE)
+        pendingScrollState = savedInstanceState?.let { androidx.core.os.BundleCompat.getParcelable(it, KEY_SCROLL_STATE, Parcelable::class.java) }
         adapter = CharAdapter(requireContext(), 24, adapterListener)
         setupBinding()
         model.charsNotOwnList.observe(viewLifecycleOwner) {

@@ -17,6 +17,7 @@ class SettingPrefManager() {
         floatingBallSize = preferenceStore.getInt("floating_ball_size", 56)
         floatingBallColor = preferenceStore.getString("floating_ball_color", "")
         floatingBallBlue = preferenceStore.getBoolean("floating_ball_blue", true)
+        recruitAutoMode = preferenceStore.getBoolean("recruit_auto_mode", false)
         recruitMode = preferenceStore.getString(RecruitMode.key, RecruitMode.FLOATWINDOW)
         floatWindowAppearance =
             preferenceStore.getString(FloatWindowAppearance.key, FloatWindowAppearance.COLORFUL)
@@ -37,6 +38,7 @@ class SettingPrefManager() {
         useInnerWeb = preferenceStore.getBoolean("use_inner_web", true)
         appTheme = preferenceStore.getString("app_theme", AppTheme.defaultValue)
         defaultHomeGame = preferenceStore.getString("default_home_game", "ARKNIGHTS")
+        endfieldAssetsGrid = preferenceStore.getBoolean("endfield_assets_grid", false)
         assetsViewType = preferenceStore.getInt("assets_view_type", 0)
         showEmptyGachaPools = preferenceStore.getBoolean("show_empty_gacha_pools", true)
         recruitHideLowRarity = preferenceStore.getBoolean("recruit_hide_low_rarity", false)
@@ -67,6 +69,7 @@ class SettingPrefManager() {
     lateinit var floatingBallColor: Preference<String>
     lateinit var floatingBallBlue: Preference<Boolean>
     lateinit var recruitMode: Preference<String>        //快速公招模式
+    lateinit var recruitAutoMode: Preference<Boolean>
     lateinit var floatWindowAppearance: Preference<String>  //快速公招结果显示风格
     lateinit var screenShotDelay: Preference<String>       //快速公招截图延迟选项
     lateinit var powerSavingMode: Preference<Boolean>   //桌面组件省流模式
@@ -92,6 +95,7 @@ class SettingPrefManager() {
     lateinit var showExternalTools: Preference<Boolean>
     lateinit var showHomeAnnounce: Preference<Boolean>  //显示首页公告
     lateinit var showHomeBanner: Preference<Boolean>    //显示首页滚动图
+    lateinit var endfieldAssetsGrid: Preference<Boolean>
     lateinit var assetsViewType: Preference<Int>        //干员资产列表展示模式
     lateinit var showEmptyGachaPools: Preference<Boolean>
     lateinit var recruitHideLowRarity: Preference<Boolean>

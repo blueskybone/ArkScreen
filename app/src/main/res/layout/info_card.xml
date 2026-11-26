@@ -5,5 +5,5 @@
         <ImageView android:id="@+id/Notify" android:layout_width="10dp" android:layout_height="10dp" android:layout_marginStart="2dp" android:contentDescription="@null" android:src="@drawable/ic_notf_point" android:visibility="gone" />
     </LinearLayout>
     <TextView android:id="@+id/Value" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:ellipsize="end" android:gravity="center" android:maxLines="1" android:textColor="?android:attr/textColorPrimary" android:textSize="14sp" android:textStyle="bold" />
-    <TextView style="@style/Widget.ArkScreen.MetadataCapsule.Supporting" android:id="@+id/Time" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:gravity="center" android:maxLines="2" android:textSize="10sp" android:paddingStart="4dp" android:paddingEnd="4dp" />
+    <TextView style="@style/Widget.ArkScreen.MetadataCapsule.Supporting" android:id="@+id/Time" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:gravity="center" android:maxLines="2" />
 </LinearLayout>

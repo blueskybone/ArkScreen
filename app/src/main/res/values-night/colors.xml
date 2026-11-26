@@ -48,4 +48,6 @@
     <color name="home_text_primary">@color/app_text_primary</color>
     <color name="home_text_secondary">@color/app_text_secondary</color>
     <color name="home_inner_surface">#323234</color>
+    <!-- Neutral track follows the surrounding surface. -->
+    <color name="gacha_pull_track">#383A40</color>
 </resources>

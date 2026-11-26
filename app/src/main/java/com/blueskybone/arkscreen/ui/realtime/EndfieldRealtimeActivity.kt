@@ -63,6 +63,7 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
         binding.FallbackAccount.CurrentAccount.text = selected?.nickName ?: getString(R.string.endfield_choose_account)
         binding.RefreshButton.isEnabled = selected != null && !state.loading
         binding.Page.visibility = if (state.loading) View.GONE else View.VISIBLE
+        binding.Loading.setMessage(R.string.endfield_realtime_loading)
         binding.Loading.visibility = if (state.loading) View.VISIBLE else View.GONE
         binding.Starter.visibility = if (state.snapshot != null && !state.loading && state.error == null) {
             View.VISIBLE

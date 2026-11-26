@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="wrap_content">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+        <TextView style="@style/SectionTitleText" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="稀有度"/>
+        <LinearLayout android:id="@+id/Rarity" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"/>
+        <TextView style="@style/SectionTitleText" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="职业"/>
+        <LinearLayout android:id="@+id/Profession" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"/>
+        <TextView style="@style/SectionTitleText" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="属性"/>
+        <LinearLayout android:id="@+id/Property" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"/>
+    </LinearLayout>
+</ScrollView>

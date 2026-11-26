@@ -52,31 +52,30 @@
     </LinearLayout>
 
 
-    <FrameLayout
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingEnd="15dp">
-
-        <ProgressBar
-            android:id="@+id/ProgressBar"
-            style="@style/GachaProgressBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:max="100"
-            android:progress="20" />
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="6dp"
+        android:paddingEnd="15dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/GachaCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|start"
-            android:padding="5dp"
-            android:text="56抽"
-            android:textAppearance="?attr/textAppearanceBody1"
-            android:textColor="?attr/colorPrimary" />
-    </FrameLayout>
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:textSize="14sp"
+            android:textColor="@color/home_text_primary" />
 
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/ProgressBar"
+            style="@style/Widget.ArkScreen.GachaPullProgress"
+            android:layout_width="match_parent"
+            android:layout_marginTop="6dp"
+            android:max="100"
+            />
+    </LinearLayout>
 
 </LinearLayout>

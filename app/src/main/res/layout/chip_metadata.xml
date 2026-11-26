@@ -1,2 +1,2 @@
-<com.google.android.material.chip.Chip xmlns:android="http://schemas.android.com/apk/res/android"
- style="@style/Widget.ArkScreen.MetadataChip.Neutral" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Widget.ArkScreen.MetadataCapsule" />
