@@ -1,4 +1,4 @@
-package com.blueskybone.arkscreen.data.remote.network.auth
+package com.blueskybone.arkscreen.data.network.auth
 
 import com.blueskybone.arkscreen.data.network.auth.hmacSha256
 import com.blueskybone.arkscreen.data.network.auth.toMD5

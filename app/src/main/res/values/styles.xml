@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="BaseAppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="homeAsUpIndicator">@drawable/ic_left_arrow</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_left_arrow</item>
         <item name="colorPrimary">@color/rare_3</item>
@@ -14,28 +14,31 @@
         <item name="materialCardViewStyle">@style/ArkContentCardSurface</item>
         <item name="materialSwitchStyle">@style/Widget.ArkScreen.Switch</item>
         <item name="colorSurface">@color/app_surface</item>
-        <item name="colorOnSurface">@color/day_text_primary</item>
-
         <item name="android:colorBackground">@color/app_background</item>
-        <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/transparent</item>
         <item name="textAppearanceBody1">@style/TextAppearance.Body1</item>
         <item name="textAppearanceBody2">@style/TextAppearance.Body2</item>
         <item name="textAppearanceHeadline4">@style/TextAppearance.Headline4</item>
         <item name="textAppearanceSubtitle2">@style/TextAppearance.Subtitle2</item>
+    </style>
 
+    <style name="AppTheme" parent="BaseAppTheme">
+        <item name="colorOnSurface">@color/day_text_primary</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="android:textColorPrimary">@color/day_text_primary</item>
-
         <item name="chipBackgroundColor">@color/cyan_trans</item>
     </style>
 
-    <style name="AppTheme.Endfield" parent="AppTheme">
+    <style name="BaseEndfieldAppTheme" parent="AppTheme">
         <item name="capsuleAccentContainer">@color/endfield_accent_container</item>
         <item name="capsuleAccentContent">@color/endfield_on_surface_accent</item>
-        <item name="colorPrimary">@color/endfield_on_surface_accent</item>
         <item name="colorPrimaryDark">@color/endfield_primary_dark</item>
         <item name="colorSecondary">@color/endfield_primary</item>
         <item name="colorOnPrimary">@color/grey_900</item>
+    </style>
+
+    <style name="AppTheme.Endfield" parent="BaseEndfieldAppTheme">
+        <item name="colorPrimary">@color/endfield_on_surface_accent</item>
     </style>
     
     <style name="TextAppearance.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
@@ -181,12 +184,6 @@
         <item name="trackCornerRadius">6dp</item>
     </style>
 
-    <style name="GachaProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:indeterminateOnly">false</item>
-        <item name="android:minHeight">30dp</item>
-        <item name="android:progressDrawable">@drawable/progress_indeterminate_horizontal</item>
-        <item name="android:maxHeight">30dp</item>
-    </style>
 
     <style name="PreferenceHeader" parent="Widget.AppCompat.TextView">
         <item name="android:paddingEnd">@dimen/page_horizontal_spacing</item>
@@ -240,12 +237,10 @@
 
 
     <style name="CardViewChip" parent="ArkContentCardSurface">
-        <item name="cardBackgroundColor">@color/white</item>
+        <item name="cardBackgroundColor">@color/operator_card_surface</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
         <item name="android:layout_margin">5dp</item>
-        <item name="cardElevation">0dp</item>
     </style>
 
     <style name="BottomNavigationViewStyle" parent="Widget.MaterialComponents.BottomNavigationView">
@@ -308,47 +303,38 @@
         <item name="android:layout_marginTop">16dp</item>
     </style>
 
-    <style name="WidgetDenseSummaryText">
+    <style name="WidgetDenseText" parent="">
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:gravity">center</item>
         <item name="android:includeFontPadding">false</item>
         <item name="android:lineSpacingExtra">-1dp</item>
         <item name="android:maxLines">1</item>
-        <item name="android:textColor">#FFC8CBD2</item>
+    </style>
+
+    <style name="WidgetDenseSupportingText" parent="WidgetDenseText">
+        <item name="android:textColor">#FFB8BBC3</item>
         <item name="android:textSize">9sp</item>
     </style>
 
-    <style name="WidgetDensePrimaryText">
+    <style name="WidgetDenseSummaryText" parent="WidgetDenseSupportingText">
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">#FFC8CBD2</item>
+    </style>
+
+    <style name="WidgetDensePrimaryText" parent="WidgetDenseText">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:includeFontPadding">false</item>
-        <item name="android:lineSpacingExtra">-1dp</item>
-        <item name="android:maxLines">1</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">17sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="WidgetDenseDetailText">
+    <style name="WidgetDenseDetailText" parent="WidgetDenseSupportingText">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:includeFontPadding">false</item>
-        <item name="android:lineSpacingExtra">-1dp</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:textColor">#FFB8BBC3</item>
-        <item name="android:textSize">9sp</item>
     </style>
 
-    <style name="WidgetDenseFooterText">
+    <style name="WidgetDenseFooterText" parent="WidgetDenseSupportingText">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:includeFontPadding">false</item>
-        <item name="android:lineSpacingExtra">-1dp</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:textColor">#FFB8BBC3</item>
-        <item name="android:textSize">9sp</item>
     </style>
 
     <style name="Widget.ArkScreen.Switch" parent="Widget.Material3.CompoundButton.MaterialSwitch">

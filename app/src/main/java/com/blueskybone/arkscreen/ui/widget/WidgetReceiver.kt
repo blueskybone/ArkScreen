@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.ui.widget
 
+import com.blueskybone.arkscreen.platform.widget.WidgetWorkScheduler
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -20,17 +21,10 @@ class WidgetReceiver : BroadcastReceiver() {
 
     companion object {
         const val MANUAL_UPDATE = "com.blueskybone.arkscreen.MANUAL_UPDATE"
-        const val WORKER_NAME = "WidgetRefreshWorker"
-        const val ONE_TIME_WORKER_NAME = "WidgetRefreshWorkerOneTime"
+        const val WORKER_NAME = WidgetWorkScheduler.WORKER_NAME
+        const val ONE_TIME_WORKER_NAME = WidgetWorkScheduler.ONE_TIME_WORKER_NAME
 
-        fun enqueueUpdate(context: Context) {
-            val request = OneTimeWorkRequestBuilder<WidgetRefreshWorker>().build()
-            WorkManager.getInstance(context).enqueueUniqueWork(
-                ONE_TIME_WORKER_NAME,
-                ExistingWorkPolicy.KEEP,
-                request
-            )
-        }
+        fun enqueueUpdate(context: Context) = WidgetWorkScheduler.enqueueUpdate(context)
 
         fun renderCached(context: Context) {
             WidgetUpdateDispatcher(context).renderAll()

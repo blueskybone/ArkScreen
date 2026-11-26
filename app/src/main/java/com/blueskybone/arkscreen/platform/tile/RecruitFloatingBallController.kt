@@ -1,12 +1,14 @@
 package com.blueskybone.arkscreen.platform.tile
 
+import com.blueskybone.arkscreen.domain.model.recruit.AutoRecruitSession
+import com.blueskybone.arkscreen.ui.recruit.floating.FloatingAppearance
 import android.app.Application
 import android.widget.ImageView
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.platform.screenshot.ScreenshotStartSource
 import com.blueskybone.arkscreen.platform.screenshot.ScreenshotCaptureService
-import com.blueskybone.arkscreen.ui.recruit.screenshot.RecruitScreenshotStarter
-import com.blueskybone.arkscreen.ui.recruit.screenshot.FloatWindowController
+import com.blueskybone.arkscreen.platform.recruit.screenshot.RecruitScreenshotStarter
+import com.blueskybone.arkscreen.ui.recruit.floating.FloatWindowController
 import com.hjq.window.EasyWindow
 import timber.log.Timber
 
@@ -21,7 +23,7 @@ class RecruitFloatingBallController(
     private var ballRoot: android.widget.FrameLayout? = null
     fun refreshAppearance() {
         val root = ballRoot ?: return
-        val style = com.blueskybone.arkscreen.ui.recruit.screenshot.FloatingAppearance.read(settings)
+        val style = com.blueskybone.arkscreen.ui.recruit.floating.FloatingAppearance.read(settings)
         val sample = style.ball(application).getChildAt(0) as ImageView
         ballIcon?.apply {
             background = sample.background; elevation = sample.elevation
@@ -39,7 +41,7 @@ class RecruitFloatingBallController(
 
     private var autoRunning = false
     private var autoStarted = false
-    private var autoSession: com.blueskybone.arkscreen.ui.recruit.screenshot.AutoRecruitSession? = null
+    private var autoSession: com.blueskybone.arkscreen.domain.model.recruit.AutoRecruitSession? = null
     private val nextCapture = Runnable {
         if (isShowing && autoRunning && settings.recruitAutoMode.get()) ballIcon?.let(::capture)
     }
@@ -65,7 +67,7 @@ class RecruitFloatingBallController(
         autoStarted = true
         handler.removeCallbacks(nextCapture)
         if (autoRunning) {
-            autoSession = com.blueskybone.arkscreen.ui.recruit.screenshot.AutoRecruitSession()
+            autoSession = com.blueskybone.arkscreen.domain.model.recruit.AutoRecruitSession()
             if (!busy) capture(icon)
         } else {
             autoSession?.active = false
@@ -151,7 +153,7 @@ class RecruitFloatingBallController(
         handler.removeCallbacksAndMessages(null)
         EasyWindow.cancelAll()
 
-        val root = com.blueskybone.arkscreen.ui.recruit.screenshot.FloatingAppearance.read(settings).ball(application)
+        val root = com.blueskybone.arkscreen.ui.recruit.floating.FloatingAppearance.read(settings).ball(application)
         ballRoot = root
         ballIcon = root.findViewById(android.R.id.icon)
         ballIcon?.setImageResource(idleIcon())

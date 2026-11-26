@@ -22,7 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class GachaTextFragment : Fragment() {
 
-    private val model: GachaModel by activityViewModel()
+    private val model: GachaViewModel by activityViewModel()
     private lateinit var adapter: GachaTextAdapter
     private var _binding: FragmentGachaTextBinding? = null
     private val binding get() = _binding!!

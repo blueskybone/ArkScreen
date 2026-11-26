@@ -23,3 +23,9 @@ data object TimeCorrection : TextInfo {
     override val subTitle = R.string.time_correction_detail
     override val icon = R.drawable.ic_delay
 }
+
+data object RecruitAutoMode : TextInfo {
+    override val title = R.string.recruit_auto_mode
+    override val subTitle = R.string.recruit_auto_mode_summary
+    override val icon = R.drawable.ic_function_auto_recruit
+}

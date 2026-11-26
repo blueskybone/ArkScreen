@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         const val EXTRA_APK_PATH = "downloaded_update_apk_path"
     }
 
-    private val model: MainModel by viewModel()
+    private val model: MainViewModel by viewModel()
     private lateinit var binding: ActivityMainBinding
 
     private val settingPrefManager: SettingPrefManager by getKoin().inject()

@@ -9,10 +9,11 @@ import com.blueskybone.arkscreen.ui.widget.WidgetContentFormatter
  * 不从 [WidgetInfoItem.value] 反向解析，避免展示格式变化影响业务数据。
  */
 class WidgetCompactInfoMapper(
+    context: android.content.Context,
     cache: RealtimeCacheSnapshot,
     appClock: AppClock,
 ) {
-    private val formatter = WidgetContentFormatter(cache, appClock)
+    private val formatter = WidgetContentFormatter(context, cache, appClock)
 
     fun map(item: WidgetInfoItem): WidgetCompactItem {
         val content = formatter.format(item.type.contentKey, compact = true)

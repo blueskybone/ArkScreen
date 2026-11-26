@@ -1,7 +1,7 @@
 package com.blueskybone.arkscreen.ui.character
 
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.data.network.model.EndfieldTalentState
+import com.blueskybone.arkscreen.domain.model.operator.endfield.EndfieldTalentState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

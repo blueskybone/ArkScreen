@@ -177,7 +177,10 @@ class FlowRadioGroup @JvmOverloads constructor(
     }
 
     private fun setCheckedStateForView(viewId: Int, checked: Boolean) {
-        findViewById<View>(viewId)?.isSelected = checked
+        findViewById<View>(viewId)?.let { child ->
+            child.isSelected = checked
+            if (child is android.widget.Checkable) child.isChecked = checked
+        }
     }
 
     private fun clearCheck() {

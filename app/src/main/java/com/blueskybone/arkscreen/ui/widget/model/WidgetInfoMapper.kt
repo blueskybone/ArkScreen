@@ -42,7 +42,7 @@ class WidgetInfoMapper(
             type = WidgetInfoType.SANITY,
             titleRes = R.string.ap,
             value = "$current / ${source.max}",
-            restTime = if (full) completed() else "${remaining(source.recoverTime - now)}后回满",
+            restTime = if (full) completed() else context.getString(R.string.widget_full_after, remaining(source.recoverTime - now)),
             state = if (full) WidgetInfoState.ATTENTION else WidgetInfoState.NORMAL,
         )
     }
@@ -63,7 +63,7 @@ class WidgetInfoMapper(
             type = WidgetInfoType.DRONE,
             titleRes = R.string.labor,
             value = "$current / ${source.max}",
-            restTime = if (full) completed() else "${remaining(remainingSeconds)}后回满",
+            restTime = if (full) completed() else context.getString(R.string.widget_full_after, remaining(remainingSeconds)),
             state = if (full) WidgetInfoState.ATTENTION else WidgetInfoState.NORMAL,
         )
     }
@@ -83,7 +83,7 @@ class WidgetInfoMapper(
             value = "$completedCount / ${source.max}",
             restTime = when {
                 completedCount >= source.max -> completed()
-                hasPendingCompletion -> "${remaining(source.completeTime - now)}后完成"
+                hasPendingCompletion -> context.getString(R.string.widget_complete_after, remaining(source.completeTime - now))
                 else -> null
             },
             state = if (completedCount > 0) WidgetInfoState.COMPLETED else WidgetInfoState.NORMAL,
@@ -106,7 +106,7 @@ class WidgetInfoMapper(
             value = "$count / ${source.max}",
             restTime = when {
                 count >= source.max -> completed()
-                source.completeTime > now -> "${remaining(source.completeTime - now)}后恢复"
+                source.completeTime > now -> context.getString(R.string.widget_recover_after, remaining(source.completeTime - now))
                 else -> null
             },
             state = if (count >= source.max) WidgetInfoState.COMPLETED else WidgetInfoState.NORMAL,
@@ -135,7 +135,7 @@ class WidgetInfoMapper(
                 WidgetInfoType.TRAINING,
                 R.string.train,
                 value = source.trainee,
-                restTime = "${remaining(source.completeTime - now)}后完成",
+                restTime = context.getString(R.string.widget_complete_after, remaining(source.completeTime - now)),
                 state = WidgetInfoState.NORMAL,
             )
             else -> error(WidgetInfoType.TRAINING, R.string.train)

@@ -3,7 +3,7 @@ package com.blueskybone.arkscreen.platform.tile
 import android.app.Dialog
 import android.service.quicksettings.TileService
 import com.blueskybone.arkscreen.platform.screenshot.ScreenshotStartSource
-import com.blueskybone.arkscreen.ui.recruit.screenshot.RecruitScreenshotStarter
+import com.blueskybone.arkscreen.platform.recruit.screenshot.RecruitScreenshotStarter
 import org.koin.android.ext.android.inject
 
 class QuickRecruitTileService : TileService() {

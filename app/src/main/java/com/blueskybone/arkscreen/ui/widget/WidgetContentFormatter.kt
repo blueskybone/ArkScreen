@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.ui.widget
 
+import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.domain.model.cache.RealtimeCacheSnapshot
 import com.blueskybone.arkscreen.domain.service.AppClock
 import com.blueskybone.arkscreen.platform.time.TimeUtils
@@ -13,6 +14,7 @@ data class WidgetContentText(
 
 /** 将缓存的游戏状态转换为紧凑型桌面组件共用的统一文本模型。 */
 class WidgetContentFormatter(
+    private val context: android.content.Context,
     private val cache: RealtimeCacheSnapshot,
     private val appClock: AppClock,
 ) {
@@ -21,7 +23,7 @@ class WidgetContentFormatter(
         return when (content) {
             "ap" -> {
                 val value = cache.apCache
-                if (value.isnull) return WidgetContentText("暂无数据", "")
+                if (value.isnull) return WidgetContentText(context.getString(R.string.widget_no_data), "")
                 val current = when {
                     value.current >= value.max -> value.current.toLong()
                     now >= value.recoverTime -> value.max.toLong()
@@ -36,7 +38,7 @@ class WidgetContentFormatter(
 
             "labor" -> {
                 val value = cache.laborCache
-                if (value.isnull) return WidgetContentText("暂无数据", "")
+                if (value.isnull) return WidgetContentText(context.getString(R.string.widget_no_data), "")
                 val remaining = (value.remainSec - now + value.lastSyncTs).coerceAtLeast(0)
                 val current = if (value.remainSec <= 0 || remaining == 0L) {
                     value.max
@@ -53,7 +55,7 @@ class WidgetContentFormatter(
 
             "recruit" -> {
                 val value = cache.recruitCache
-                if (value.isNull) return WidgetContentText("暂无数据", "")
+                if (value.isNull) return WidgetContentText(context.getString(R.string.widget_no_data), "")
                 val completed = when {
                     value.completeTime == -1L -> value.complete
                     now >= value.completeTime -> value.complete + 1
@@ -75,7 +77,7 @@ class WidgetContentFormatter(
 
             "refresh" -> {
                 val value = cache.refreshCache
-                if (value.isNull) return WidgetContentText("暂无数据", "")
+                if (value.isNull) return WidgetContentText(context.getString(R.string.widget_no_data), "")
                 val count = when {
                     value.completeTime == -1L -> value.count
                     now >= value.completeTime -> value.count + 1
@@ -98,10 +100,10 @@ class WidgetContentFormatter(
             "train" -> {
                 val value = cache.trainCache
                 when {
-                    value.isnull -> WidgetContentText("暂无数据", "")
-                    value.status == -1L -> WidgetContentText("空闲中", "")
+                    value.isnull -> WidgetContentText(context.getString(R.string.widget_no_data), "")
+                    value.status == -1L -> WidgetContentText(context.getString(R.string.widget_idle), "")
                     value.status == 0L || now >= value.completeTime ->
-                        WidgetContentText(value.trainee, "已完成")
+                        WidgetContentText(value.trainee, context.getString(R.string.widget_completed))
                     value.status == 1L ->
                         WidgetContentText(value.trainee, remaining(value.completeTime - now))
                     else -> invalidStatus("训练室", value.status)
@@ -111,29 +113,29 @@ class WidgetContentFormatter(
             "meet" -> {
                 val value = cache.meetCache
                 when {
-                    value.isnull -> WidgetContentText("暂无数据", "")
-                    value.stats == 0 -> WidgetContentText("空闲中", "")
+                    value.isnull -> WidgetContentText(context.getString(R.string.widget_no_data), "")
+                    value.stats == 0 -> WidgetContentText(context.getString(R.string.widget_idle), "")
                     value.stats == 2 || now >= value.completeTime ->
-                        WidgetContentText("交流完成", "已完成")
+                        WidgetContentText(context.getString(R.string.realtime_meeting_complete), context.getString(R.string.widget_completed))
                     value.stats == 1 ->
-                        WidgetContentText("交流中", remaining(value.completeTime - now))
+                        WidgetContentText(context.getString(R.string.widget_meeting_sharing), remaining(value.completeTime - now))
                     else -> invalidStatus("会客室", value.stats)
                 }
             }
 
             else -> {
                 Timber.e("未知 Widget 内容类型：%s", content)
-                WidgetContentText("暂无数据", "")
+                WidgetContentText(context.getString(R.string.widget_no_data), "")
             }
         }
     }
 
     private fun remaining(seconds: Long): String =
-        if (seconds <= 0) "已完成" else TimeUtils.getRemainTimeMinStr(seconds)
+        if (seconds <= 0) context.getString(R.string.widget_completed) else TimeUtils.getRemainTimeMinStr(seconds)
 
     private fun invalidStatus(source: String, status: Any): WidgetContentText {
         Timber.e("%s状态错误：%s", source, status)
-        return WidgetContentText("状态异常", "")
+        return WidgetContentText(context.getString(R.string.widget_status_error), "")
     }
 
     private companion object {

@@ -1,7 +1,7 @@
 package com.blueskybone.arkscreen.ui.widget
 
 import android.content.Context
-import com.blueskybone.arkscreen.data.local.room.WidgetConfig
+import com.blueskybone.arkscreen.domain.model.widget.WidgetConfig
 import android.view.View
 import android.widget.RemoteViews
 import com.blueskybone.arkscreen.R

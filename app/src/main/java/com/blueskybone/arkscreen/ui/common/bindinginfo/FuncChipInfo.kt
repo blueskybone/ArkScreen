@@ -71,12 +71,3 @@ data object GameStarter : FuncChipInfo {
         container = R.color.tool_game_container,
     )
 }
-
-data object UserManual : FuncChipInfo {
-    override val title = R.string.manual
-    override val icon = R.drawable.ic_question
-    override val colors = FuncChipColors(
-        icon = R.color.tool_manual_icon,
-        container = R.color.tool_manual_container,
-    )
-}

@@ -1,0 +1,212 @@
+package com.blueskybone.arkscreen.ui.account
+
+
+import com.blueskybone.arkscreen.R
+import com.blueskybone.arkscreen.ui.common.UiStrings
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.blueskybone.arkscreen.domain.model.account.Account
+import com.blueskybone.arkscreen.domain.model.account.AccountEf
+import com.blueskybone.arkscreen.domain.model.account.AccountGc
+import com.blueskybone.arkscreen.domain.model.account.AccountSk
+import com.blueskybone.arkscreen.domain.repository.AccountRepository
+import com.blueskybone.arkscreen.domain.usecase.account.SyncAccountGcUseCase
+import com.blueskybone.arkscreen.domain.usecase.account.SyncAccountSkUseCase
+import com.blueskybone.arkscreen.ui.account.model.AccountItemUiModel
+import com.blueskybone.arkscreen.ui.UiStatus
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
+import timber.log.Timber
+
+class AccountViewModel(
+    private val repo: AccountRepository,
+    private val syncAccountSkUseCase: SyncAccountSkUseCase,
+    private val syncAccountGcUseCase: SyncAccountGcUseCase,
+    private val texts: UiStrings,
+) : ViewModel() {
+
+    private val _event = MutableSharedFlow<UiEvent>(extraBufferCapacity = 1)
+    val event: SharedFlow<UiEvent> = _event
+
+    private val _operationStatus = MutableStateFlow<UiStatus>(UiStatus.Idle)
+    val operationStatus: StateFlow<UiStatus> = _operationStatus
+
+    private val skListFlow = repo.observeSkAcc()
+        .catch { emit(emptyList()) }
+
+    private val gcListFlow = repo.observeGcAcc()
+        .catch { emit(emptyList()) }
+
+    private val efListFlow = repo.observeEfAcc()
+        .catch { emit(emptyList()) }
+
+    private val currentSkFlow = repo.observeCurrentSkAcc()
+    private val currentGcFlow = repo.observeCurrentGcAcc()
+    private val currentEfFlow = repo.observeCurrentEfAcc()
+
+    val accountSkUiList: StateFlow<List<AccountItemUiModel>> =
+        combine(skListFlow, currentSkFlow) { list, current ->
+            list.map { account ->
+                AccountItemUiModel(
+                    account = account,
+                    isDefault = account.uid == current?.uid
+                )
+            }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val accountGcUiList: StateFlow<List<AccountItemUiModel>> =
+        combine(gcListFlow, currentGcFlow) { list, current ->
+            list.map { account ->
+                AccountItemUiModel(
+                    account = account,
+                    isDefault = account.uid == current?.uid
+                )
+            }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val accountEfUiList: StateFlow<List<AccountItemUiModel>> =
+        combine(efListFlow, currentEfFlow) { list, current ->
+            list.map { account ->
+                AccountItemUiModel(
+                    account = account,
+                    isDefault = account.uid == (current?.uid ?: list.firstOrNull()?.uid)
+                )
+            }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    fun loginSklandByPhonePassword(phone: String, password: String) {
+        execute {
+            val way = SyncAccountSkUseCase.LoginWay.PhoneAndPassword(phone, password)
+            val result = syncAccountSkUseCase(way)
+            result.fold(
+                onSuccess = { cnt ->
+                    _event.emit(UiEvent.ShowToast(texts.get(R.string.account_import_success, cnt)))
+                },
+                onFailure = { error ->
+                    logLoginFailure("Skland phone/password", error)
+                    _event.emit(UiEvent.ShowError(error.message ?: texts.get(R.string.error_login_failed)))
+                }
+            )
+        }
+    }
+
+    fun loginSklandByToken(token: String, dId: String? = null) {
+        execute {
+            val way = SyncAccountSkUseCase.LoginWay.Token(token, dId)
+            val result = syncAccountSkUseCase(way)
+            result.fold(
+                onSuccess = { cnt ->
+                    _event.emit(UiEvent.ShowToast(texts.get(R.string.account_import_success, cnt)))
+                },
+                onFailure = { error ->
+                    logLoginFailure("Skland token", error)
+                    _event.emit(UiEvent.ShowError(error.message ?: texts.get(R.string.error_login_failed)))
+                }
+            )
+        }
+    }
+
+    fun loginSklandByCookie(cookie: String) {
+        execute {
+            val way = SyncAccountSkUseCase.LoginWay.Cookie(cookie)
+            val result = syncAccountSkUseCase(way)
+            result.fold(
+                onSuccess = { cnt ->
+                    _event.emit(UiEvent.ShowToast(texts.get(R.string.account_import_success, cnt)))
+                },
+                onFailure = { error ->
+                    logLoginFailure("Skland cookie", error)
+                    _event.emit(UiEvent.ShowError(error.message ?: texts.get(R.string.error_login_failed)))
+                }
+            )
+        }
+    }
+
+    fun loginGameByToken(
+        token: String,
+        akUserCenter: String,
+        xrToken: String,
+        channelMasterId: Int
+    ) {
+        execute {
+            val way = SyncAccountGcUseCase.LoginWay.Token(
+                token, akUserCenter, xrToken, channelMasterId
+            )
+            val result = syncAccountGcUseCase(way)
+            result.fold(
+                onSuccess = { cnt ->
+                    _event.emit(UiEvent.ShowToast(texts.get(R.string.account_import_success, cnt)))
+                },
+                onFailure = { error ->
+                    logLoginFailure("game token", error)
+                    _event.emit(UiEvent.ShowError(error.message ?: texts.get(R.string.error_login_failed)))
+                }
+            )
+        }
+    }
+
+    fun loginGameByCookie(cookie: String) {
+        execute {
+            val way = SyncAccountGcUseCase.LoginWay.Cookie(cookie)
+            val result = syncAccountGcUseCase(way)
+            result.fold(
+                onSuccess = { cnt ->
+                    _event.emit(UiEvent.ShowToast(texts.get(R.string.account_import_success, cnt)))
+                },
+                onFailure = { error ->
+                    logLoginFailure("game cookie", error)
+                    _event.emit(UiEvent.ShowError(error.message ?: texts.get(R.string.error_login_failed)))
+                }
+            )
+        }
+    }
+
+    fun setDefaultAccount(account: Account) {
+        execute {
+            when (account) {
+                is AccountSk -> repo.setCurrentAccountSk(account)
+                is AccountGc -> repo.setCurrentAccountGc(account)
+                is AccountEf -> repo.setCurrentAccountEf(account)
+                else -> Result.failure(IllegalArgumentException(texts.get(R.string.error_account_type_unsupported)))
+            }.getOrThrow()
+        }
+    }
+
+    fun deleteAccount(account: Account) {
+        execute {
+            repo.deleteAccount(account)
+        }
+    }
+
+    private fun execute(block: suspend () -> Unit) {
+        viewModelScope.launch {
+            _operationStatus.value = UiStatus.Loading()
+            try {
+                block()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Timber.tag("Account").e(e, "Account operation failed")
+                _event.emit(UiEvent.ShowError(e.message ?: texts.get(R.string.error_unknown)))
+            } finally {
+                _operationStatus.value = UiStatus.Idle
+            }
+        }
+    }
+
+    fun generateAccountCookie(account: Account): Result<String> =
+        runCatching { repo.accountCookieEncode(account) }
+
+    private fun logLoginFailure(method: String, error: Throwable) {
+        Timber.tag("Account").e(error, "Account login failed: method=%s", method)
+    }
+}

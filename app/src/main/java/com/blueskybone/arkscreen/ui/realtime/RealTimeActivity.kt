@@ -46,7 +46,7 @@ class RealTimeActivity : AppCompatActivity() {
     private var _binding: ActivityRealTimeBinding? = null
     private val binding get() = _binding!!
 
-    private val model: RealTimeModel by viewModel()
+    private val model: RealTimeViewModel by viewModel()
     private var currentOfficial = true
     private val reauthLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -136,11 +136,11 @@ class RealTimeActivity : AppCompatActivity() {
         model.accounts.observe(this) { /* Keep account choices current for the picker. */ }
         model.state.observe(this) { state ->
             when (state) {
-                RealTimeScreenState.Loading -> displayLoadingView()
-                RealTimeScreenState.Empty ->
+                RealTimeUiState.Loading -> displayLoadingView()
+                RealTimeUiState.Empty ->
                     displayWarningView(getString(com.blueskybone.arkscreen.R.string.realtime_no_account))
-                is RealTimeScreenState.Error -> displayErrorView(state.kind)
-                is RealTimeScreenState.Content -> displayView(state.data)
+                is RealTimeUiState.Error -> displayErrorView(state.kind)
+                is RealTimeUiState.Content -> displayView(state.data)
             }
         }
         model.currentAccount.observe(this) { account ->
@@ -150,7 +150,7 @@ class RealTimeActivity : AppCompatActivity() {
         model.syncingState.observe(this) { syncing ->
             binding.RefreshButton.isEnabled = !syncing
             binding.Loading.visibility = if (syncing) View.VISIBLE else View.GONE
-            val showContent = !syncing && model.state.value is RealTimeScreenState.Content
+            val showContent = !syncing && model.state.value is RealTimeUiState.Content
             binding.ScrollView.visibility = if (showContent) View.VISIBLE else View.GONE
             binding.Starter.visibility = if (showContent) View.VISIBLE else View.GONE
             if (syncing) binding.Page.visibility = View.GONE

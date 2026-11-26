@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.ui.recruit
 
+import com.blueskybone.arkscreen.ui.recruit.view.OperatorDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -25,7 +26,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RecruitFragment : Fragment(R.layout.fragment_recruit) {
 
-    private val viewModel: RecruitModel by viewModel()
+    private val viewModel: RecruitViewModel by viewModel()
 
     private val tagAdapters = mutableListOf<TagAdapter>()
     private lateinit var resultAdapter: ResultAdapter

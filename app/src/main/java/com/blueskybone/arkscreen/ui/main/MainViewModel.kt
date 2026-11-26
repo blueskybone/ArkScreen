@@ -1,0 +1,443 @@
+package com.blueskybone.arkscreen.ui.main
+
+import com.blueskybone.arkscreen.R
+import com.blueskybone.arkscreen.ui.common.UiStrings
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.blueskybone.arkscreen.domain.model.account.AccountSk
+import com.blueskybone.arkscreen.domain.model.account.AccountEf
+import com.blueskybone.arkscreen.domain.model.link.Link
+import com.blueskybone.arkscreen.domain.model.link.LinkUrl
+import com.blueskybone.arkscreen.domain.repository.AccountRepository
+import com.blueskybone.arkscreen.domain.repository.HomeContentRepository
+import com.blueskybone.arkscreen.domain.repository.LinkRepository
+import com.blueskybone.arkscreen.domain.repository.RemoteConfigRepository
+import com.blueskybone.arkscreen.domain.repository.SklandRepository
+import com.blueskybone.arkscreen.domain.service.LinkMetadataResolver
+import com.blueskybone.arkscreen.domain.model.DownloadStatus
+import com.blueskybone.arkscreen.domain.usecase.appupdate.CheckAppUpdateUseCase
+import com.blueskybone.arkscreen.domain.usecase.appupdate.StartAppUpdateDownloadUseCase
+import com.blueskybone.arkscreen.domain.usecase.account.SyncAccountSkUseCase
+import com.blueskybone.arkscreen.data.local.pref.InnerPrefManager
+import com.blueskybone.arkscreen.ui.account.model.AccountItemUiModel
+import com.blueskybone.arkscreen.ui.UiStatus
+import com.blueskybone.arkscreen.ui.common.userFacingError
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.retryWhen
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.Job
+import kotlin.coroutines.coroutineContext
+import kotlinx.coroutines.launch
+import timber.log.Timber
+
+/**
+ * Created by blueskybone
+ * Date: 2026/3/19
+ */
+class MainViewModel(
+    private val repoAcc: AccountRepository,
+    private val homeContentRepository: HomeContentRepository,
+    private val remoteConfigRepository: RemoteConfigRepository,
+    private val linkRepository: LinkRepository,
+    private val linkMetadataResolver: LinkMetadataResolver,
+    private val repoSkland: SklandRepository,
+    private val checkUpdateUseCase: CheckAppUpdateUseCase,
+    private val startAppUpdateDownloadUseCase: StartAppUpdateDownloadUseCase,
+    private val syncAccountSkUseCase: SyncAccountSkUseCase,
+    private val innerPrefManager: InnerPrefManager,
+    private val texts: UiStrings,
+) : ViewModel() {
+
+    private data class AccountSelection(
+        val skItems: List<AccountItemUiModel>,
+        val efItems: List<AccountItemUiModel>,
+        val currentSk: AccountSk?,
+        val currentEf: AccountEf?,
+    )
+
+    private val _uiState = MutableStateFlow(MainUiState())
+    val uiState: StateFlow<MainUiState> = _uiState
+
+    // 事件只由 MainActivity 消费一次；需要跨生命周期保留的页面数据放在 uiState。
+    private val _event = Channel<MainEvent>(Channel.BUFFERED)
+    val event = _event.receiveAsFlow()
+    private val linkIconJobs = mutableMapOf<Long, Job>()
+    private var appDownloadJob: Job? = null
+
+    init {
+        initializeDefaultLink()
+        observeAccounts()
+        observeLinks()
+        refreshHomeData()
+        resumeAppDownload()
+    }
+
+    private fun initializeDefaultLink() {
+        if (innerPrefManager.insertLink.get()) return
+        viewModelScope.launch {
+            val existingLinks = linkRepository.observeLinks().first()
+            if (existingLinks.isNotEmpty()) {
+                innerPrefManager.insertLink.set(true)
+                return@launch
+            }
+
+            val defaultLink = Link(
+                id = null,
+                title = "PRTS",
+                url = "https://prts.wiki/w/",
+                icon = "https://prts.wiki/public/favicon.ico",
+            )
+            linkRepository.insertLink(defaultLink)
+                .onSuccess { innerPrefManager.insertLink.set(true) }
+                .onFailure { error ->
+                    Timber.tag("Home").e(error, "Default link initialization failed")
+                    _event.send(MainEvent.ShowError(error.message ?: texts.get(R.string.error_default_links_init)))
+                }
+        }
+    }
+
+    private fun observeAccounts() {
+        viewModelScope.launch {
+            combine(
+                repoAcc.observeSkAcc(),
+                repoAcc.observeEfAcc(),
+                repoAcc.observeCurrentSkAcc(),
+                repoAcc.observeCurrentEfAcc(),
+            ) { skAccounts, efAccounts, currentSk, currentEf ->
+                val skItems = skAccounts.map { account ->
+                    AccountItemUiModel(account, account.uid == currentSk?.uid)
+                }
+                val efItems = efAccounts.map { account ->
+                    AccountItemUiModel(account, account.uid == currentEf?.uid)
+                }
+                AccountSelection(skItems, efItems, currentSk, currentEf)
+            }.collect { selection ->
+                _uiState.update {
+                    it.copy(
+                        accountSkList = selection.skItems,
+                        accountEfList = selection.efItems,
+                        currentAccountSk = selection.currentSk,
+                        currentAccountEf = selection.currentEf,
+                    )
+                }
+                loadApCache()
+                loadEndfieldStaminaCache()
+            }
+        }
+    }
+
+    private fun observeLinks() {
+        viewModelScope.launch {
+            linkRepository.observeLinks()
+                .retryWhen { error, attempt ->
+                    if (attempt == 0L) {
+                        Timber.tag("Home").e(error, "Link list observation failed")
+                        _event.send(MainEvent.ShowError(error.message ?: texts.get(R.string.error_links_load)))
+                    }
+                    delay(
+                        LINK_RETRY_DELAY_MS * (attempt + 1).coerceAtMost(
+                            LINK_RETRY_MAX_DELAY_MS / LINK_RETRY_DELAY_MS
+                        )
+                    )
+                    true
+                }
+                .collect { list ->
+                    _uiState.update { it.copy(links = list) }
+                }
+        }
+    }
+
+    fun refreshHomeData() {
+        fetchAnnounce()
+        fetchBiliVideos()
+        fetchAppRemoteConfig()
+        loadApCache()
+    }
+
+    private fun fetchAppRemoteConfig() {
+        viewModelScope.launch {
+            remoteConfigRepository.fetchAppConfig()
+                .onSuccess { config ->
+                    _uiState.update { it.copy(appRemoteConfig = config) }
+                }
+                .onFailure { error ->
+                    Timber.w(error, "远端应用配置加载失败，使用内置配置")
+                }
+        }
+    }
+
+    fun hasSklandAccounts(): Boolean = _uiState.value.accountSkList.isNotEmpty()
+
+    fun currentGamePackageName(): String? = _uiState.value.currentAccountSk?.let { account ->
+        if (account.official) "com.hypergryph.arknights"
+        else "com.hypergryph.arknights.bilibili"
+    }
+
+
+    fun setDefaultAccountSk(account: AccountSk) {
+        viewModelScope.launch {
+            repoAcc.setCurrentAccountSk(account)
+                .onFailure { error ->
+                    Timber.tag("Account").e(error, "Default Skland account switch failed")
+                    _event.send(MainEvent.ShowError(error.message ?: texts.get(R.string.error_account_switch)))
+                }
+        }
+    }
+
+    fun setDefaultAccountEf(account: AccountEf) {
+        viewModelScope.launch {
+            repoAcc.setCurrentAccountEf(account)
+                .onFailure { error ->
+                    Timber.tag("Account").e(error, "Default Endfield account switch failed")
+                    _event.send(MainEvent.ShowError(error.message ?: texts.get(R.string.error_account_switch)))
+                }
+        }
+    }
+
+    fun loginSkland(way: SyncAccountSkUseCase.LoginWay) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(loginStatus = UiStatus.Loading()) }
+
+            syncAccountSkUseCase(way)
+                .onSuccess { cnt ->
+                    _uiState.update {
+                        it.copy(loginStatus = UiStatus.Success(texts.get(R.string.account_import_success, cnt)))
+                    }
+                    _event.send(MainEvent.ShowToast(texts.get(R.string.account_import_success, cnt)))
+                }
+                .onFailure { error ->
+                    Timber.tag("Account").e(error, "Home Skland login failed")
+                    _uiState.update {
+                        it.copy(loginStatus = UiStatus.Error(error.message ?: texts.get(R.string.error_login_failed)))
+                    }
+                    _event.send(MainEvent.ShowError(error.message ?: texts.get(R.string.error_login_failed)))
+                }
+        }
+    }
+
+    fun fetchAnnounce() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(status = UiStatus.Loading()) }
+
+            homeContentRepository.fetchAnnouncement()
+                .onSuccess { content ->
+                    _uiState.update {
+                        it.copy(
+                            status = UiStatus.Success(),
+                            announce = content
+                        )
+                    }
+                }
+                .onFailure { error ->
+                    Timber.tag("Home").e(error, "Announcement loading failed")
+                    _uiState.update {
+                        it.copy(
+                            status = UiStatus.Error(error.message ?: texts.get(R.string.error_announcement_load)),
+                            announce = error.message ?: texts.get(R.string.error_announcement_load)
+                        )
+                    }
+                }
+        }
+    }
+
+    fun fetchBiliVideos(game: HomeGame = HomeGame.ARKNIGHTS) {
+        viewModelScope.launch {
+            homeContentRepository.fetchBiliVideos(game.bilibiliUid)
+                .onSuccess { list ->
+                    _uiState.update { state ->
+                        when (game) {
+                            HomeGame.ARKNIGHTS -> state.copy(biliVideos = list)
+                            HomeGame.ENDFIELD -> state.copy(endfieldBiliVideos = list)
+                        }
+                    }
+                }
+                .onFailure { error ->
+                    Timber.tag("Home").e(error, "Bilibili video loading failed")
+                    _event.send(
+                        MainEvent.ShowError(userFacingError(texts, error.message ?: texts.get(R.string.error_video_load)))
+                    )
+                }
+        }
+    }
+
+    fun loadApCache() {
+        viewModelScope.launch {
+            val account = _uiState.value.currentAccountSk
+            val snapshot = account?.let { repoSkland.getRealtimeCache(it) }
+            if (_uiState.value.currentAccountSk != account) return@launch
+            val cache = snapshot?.apCache
+            val cacheAccountInfo = snapshot?.accountInfo
+            _uiState.update {
+                it.copy(
+                    apCache = cache,
+                    cacheAccountInfo = cacheAccountInfo?.takeIf { owner -> owner.uid.isNotBlank() },
+                )
+            }
+        }
+    }
+
+    fun loadEndfieldStaminaCache() {
+        viewModelScope.launch {
+            fun selected() = _uiState.value.run { currentAccountEf ?: accountEfList.firstOrNull()?.account as? AccountEf }
+            val account = selected()
+            val cache = account?.let { repoSkland.getEndfieldStaminaCache(it) }?.takeIf { it.isValid }
+            if (selected() != account) return@launch
+            _uiState.update { it.copy(endfieldStaminaCache = cache) }
+        }
+    }
+
+    fun checkAppUpdate(showNoUpdate: Boolean = false) {
+        viewModelScope.launch {
+            checkUpdateUseCase()
+                .onSuccess { check ->
+                    when (check) {
+                        null -> {
+                            if (showNoUpdate) {
+                                _event.send(MainEvent.AppUpToDate)
+                            }
+                        }
+
+                        else -> {
+                            _uiState.update {
+                                it.copy(
+                                    pendingUpdate = PendingAppUpdate(
+                                    version = check.version,
+                                    versionCode = check.versionCode,
+                                    changelog = check.content,
+                                    url = check.link
+                                )
+                                )
+                            }
+                        }
+                    }
+                }
+                .onFailure { error ->
+                    Timber.tag("AppUpdate").e(error, "App update check failed")
+                    _event.send(MainEvent.ShowError(error.message ?: texts.get(R.string.error_update_check)))
+                }
+        }
+    }
+
+    fun addLink(title: String, url: String) {
+        viewModelScope.launch {
+            val normalizedUrl = normalizeLinkUrl(url) ?: return@launch
+            val link = Link(id = null, title = title.trim(), url = normalizedUrl)
+            linkRepository.insertLink(link)
+                .onSuccess { id ->
+                    refreshLinkIcon(link.copy(id = id))
+                }
+                .onFailure { error ->
+                    _event.send(MainEvent.ShowError(error.message ?: texts.get(R.string.error_link_add)))
+                }
+        }
+    }
+
+    fun updateLink(link: Link, title: String, url: String) {
+        viewModelScope.launch {
+            val normalizedUrl = normalizeLinkUrl(url) ?: return@launch
+            val updated = link.copy(title = title.trim(), url = normalizedUrl)
+            linkRepository.updateLink(updated)
+                .onSuccess {
+                    if (normalizedUrl != link.url || link.icon.isBlank()) {
+                        refreshLinkIcon(updated)
+                    }
+                }
+                .onFailure { error ->
+                    _event.send(MainEvent.ShowError(error.message ?: texts.get(R.string.error_link_update)))
+                }
+        }
+    }
+
+    fun deleteLink(link: Link) {
+        viewModelScope.launch {
+            link.id?.let { linkIconJobs.remove(it)?.cancel() }
+            linkRepository.deleteLink(link)
+                .onFailure { error ->
+                    _event.send(MainEvent.ShowError(error.message ?: texts.get(R.string.error_link_delete)))
+                }
+        }
+    }
+
+    private suspend fun normalizeLinkUrl(url: String): String? {
+        return LinkUrl.normalize(url).getOrElse { error ->
+            _event.send(MainEvent.ShowError(error.message ?: texts.get(R.string.error_url_invalid)))
+            null
+        }
+    }
+
+    private fun refreshLinkIcon(link: Link) {
+        val id = link.id ?: return
+        linkIconJobs.remove(id)?.cancel()
+        linkIconJobs[id] = viewModelScope.launch {
+            try {
+                linkMetadataResolver.resolveIcon(link.url)
+                    .getOrNull()
+                    ?.takeIf(String::isNotBlank)
+                    ?.let { icon ->
+                        linkRepository.updateLink(link.copy(icon = icon))
+                    }
+            } finally {
+                val currentJob = coroutineContext[Job]
+                if (linkIconJobs[id] == currentJob) {
+                    linkIconJobs.remove(id)
+                }
+            }
+        }
+    }
+
+    fun dismissPendingUpdate() {
+        _uiState.update { it.copy(pendingUpdate = null) }
+    }
+
+    fun downloadApp(url: String, expectedVersionCode: Long) {
+        dismissPendingUpdate()
+        if (appDownloadJob?.isActive == true) return
+        collectDownload(startAppUpdateDownloadUseCase(url, expectedVersionCode))
+    }
+
+    fun acknowledgeDownloadResult() {
+        _uiState.update { it.copy(downloadState = AppDownloadUiState.Idle) }
+    }
+
+    private fun resumeAppDownload() {
+        startAppUpdateDownloadUseCase.resume()?.let(::collectDownload)
+    }
+
+    private fun collectDownload(statuses: kotlinx.coroutines.flow.Flow<DownloadStatus>) {
+        if (appDownloadJob?.isActive == true) return
+        appDownloadJob = viewModelScope.launch {
+            try {
+                statuses.collect { status ->
+                    _uiState.update { state ->
+                        state.copy(
+                            downloadState = when (status) {
+                                DownloadStatus.Started -> AppDownloadUiState.Downloading(null)
+                                is DownloadStatus.Progress -> AppDownloadUiState.Downloading(
+                                    status.percent.takeIf { status.totalBytes > 0L }
+                                )
+                                is DownloadStatus.Success ->
+                                    AppDownloadUiState.Completed(status.filePath)
+                                is DownloadStatus.Failed -> AppDownloadUiState.Failed(
+                                    status.throwable.message ?: texts.get(R.string.error_update_download)
+                                )
+                            }
+                        )
+                    }
+                }
+            } finally {
+                appDownloadJob = null
+            }
+        }
+    }
+
+    private companion object {
+        const val LINK_RETRY_DELAY_MS = 1_000L
+        const val LINK_RETRY_MAX_DELAY_MS = 30_000L
+    }
+}

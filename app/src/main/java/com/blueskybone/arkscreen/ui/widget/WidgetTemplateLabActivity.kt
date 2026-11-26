@@ -13,12 +13,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.blueskybone.arkscreen.ui.common.showChoicePopup
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.data.local.pref.WidgetTemplatePrefManager
-import com.blueskybone.arkscreen.data.local.room.WidgetConfig
-import com.blueskybone.arkscreen.data.local.room.dao.WidgetConfigDao
+import com.blueskybone.arkscreen.domain.model.widget.WidgetConfig
 import com.blueskybone.arkscreen.databinding.ActivityWidgetTemplateLabBinding
-import com.blueskybone.arkscreen.domain.repository.AccountRepository
 import com.blueskybone.arkscreen.platform.widget.WidgetUpdateDispatcher
 import com.blueskybone.arkscreen.ui.widget.model.WidgetVisualStyle
 import com.google.android.material.card.MaterialCardView
@@ -30,24 +30,25 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import org.koin.android.ext.android.getKoin
 
 /** One editor for launcher configuration and in-app per-widget appearance. */
 class WidgetTemplateLabActivity : AppCompatActivity() {
     private lateinit var binding: ActivityWidgetTemplateLabBinding
-    private val configs: WidgetConfigDao by inject()
-    private val prefs: WidgetTemplatePrefManager by inject()
-    private val accounts: AccountRepository by inject()
+    private val model: WidgetEditorViewModel by viewModel()
+    private val settings: com.blueskybone.arkscreen.data.local.pref.SettingPrefManager by inject()
+    private val clock: com.blueskybone.arkscreen.domain.service.AppClock by inject()
     private val manager by lazy { AppWidgetManager.getInstance(this) }
-    private var draft: WidgetConfig? = null
-    private var original: WidgetConfig? = null
+    private var draft: WidgetConfig?
+        get() = model.state.value.draft
+        set(value) { model.updateDraft(value) }
+    private var renderedOriginal: WidgetConfig? = null
     private var widgetIds = emptyList<Int>()
     private var previewJob: Job? = null
     private var previewHost: FrameLayout? = null
     private var editorView: View? = null
     private var requestedId = AppWidgetManager.INVALID_APPWIDGET_ID
     private var restored: Bundle? = null
-    private var loadingConfig = false
+    private val loadingConfig get() = model.state.value.loading
     private var choicePopup: androidx.appcompat.widget.ListPopupWindow? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +65,31 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
             override fun handleOnBackPressed() = leave()
         })
         binding.SaveAppearance.setOnClickListener { save() }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch { model.state.collect { state ->
+                    binding.SaveAppearance.isEnabled = !state.loading && !state.saving
+                    if (!state.loading && state.draft != null && renderedOriginal !== state.original) {
+                        renderedOriginal = state.original
+                        buildEditor()
+                    }
+                } }
+                launch { model.accounts.collect {
+                    if (!loadingConfig && draft != null) buildEditor()
+                } }
+                launch { model.event.collect { event ->
+                    when (event) {
+                        is WidgetEditorEvent.Error -> Toaster.show(event.message)
+                        is WidgetEditorEvent.Saved -> {
+                            WidgetUpdateDispatcher(this@WidgetTemplateLabActivity).render(event.widgetId)
+                            setResult(RESULT_OK, Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, event.widgetId))
+                            Toaster.show(getString(R.string.widget_appearance_saved))
+                            if (requestedId != AppWidgetManager.INVALID_APPWIDGET_ID) finish()
+                        }
+                    }
+                } }
+            }
+        }
         refreshWidgets(savedInstanceState?.getInt("widgetId") ?: requestedId)
     }
 
@@ -90,12 +116,11 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
     }
 
     private fun load(id: Int) {
-        loadingConfig = true
         previewJob?.cancel()
-        lifecycleScope.launch {
-            val config = (configs.get(id) ?: WidgetConfig(id)).withAppearance(prefs)
-            original = config
-            draft = restored?.takeIf { it.getInt("widgetId") == id }?.let { state ->
+        val savedDraft = restored
+        restored = null
+        model.load(id) { config ->
+            val restoredConfig = savedDraft?.takeIf { it.getInt("widgetId") == id }?.let { state ->
                 config.copy(
                     theme = state.getString("theme", config.theme),
                     layout1x2 = state.getString("layout1x2", config.layout1x2),
@@ -110,9 +135,7 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
                     roleUid = state.getString("roleUid"), serverKey = state.getString("serverKey"),
                 )
             } ?: config
-            restored = null
-            loadingConfig = false
-            buildEditor()
+            restoredConfig
         }
     }
 
@@ -136,9 +159,9 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
     }
 
     private fun confirmDiscard(action: () -> Unit) {
-        if (draft == original) action() else MaterialAlertDialogBuilder(this)
-            .setTitle("放弃未保存的修改？").setMessage("当前组件的外观和账号尚未保存。")
-            .setNegativeButton("继续编辑", null).setPositiveButton("放弃") { _, _ -> action() }.show()
+        if (!model.state.value.dirty) action() else MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.discard_changes_title)).setMessage(getString(R.string.widget_discard_changes_message))
+            .setNegativeButton(getString(R.string.continue_editing), null).setPositiveButton(getString(R.string.discard)) { _, _ -> action() }.show()
     }
 
     private fun leave() = confirmDiscard { finish() }
@@ -146,29 +169,17 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
     private fun save() {
         val config = draft ?: return
         if (!valid(config.appWidgetId)) {
-            Toaster.show("该组件已移除")
+            Toaster.show(getString(R.string.widget_removed))
             draft = null
             refreshWidgets(AppWidgetManager.INVALID_APPWIDGET_ID)
             return
         }
-        binding.SaveAppearance.isEnabled = false
-        lifecycleScope.launch {
-            try {
-                configs.put(config)
-                original = config
-                WidgetUpdateDispatcher(this@WidgetTemplateLabActivity).render(config.appWidgetId)
-                setResult(RESULT_OK, Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, config.appWidgetId))
-                Toaster.show("已保存组件外观")
-                if (requestedId != AppWidgetManager.INVALID_APPWIDGET_ID) finish()
-            } catch (e: Exception) {
-                timber.log.Timber.e(e, "Widget appearance save failed")
-                Toaster.show("保存失败，请重试")
-            } finally { binding.SaveAppearance.isEnabled = true }
-        }
+        model.save()
     }
 
     private fun showEmpty() {
         previewJob?.cancel()
+        renderedOriginal = null
         previewHost = null
         editorView = null
         binding.EditorContent.removeAllViews()
@@ -180,12 +191,12 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
             child.visibility = if (child.id == R.id.EmptyState) View.VISIBLE else View.GONE
         }
         val box = editor.findViewById<LinearLayout>(R.id.EmptyContent)
-        row(box, "添加桌面组件", "选择规格") { anchor ->
+        row(box, getString(R.string.widget_add), getString(R.string.widget_choose_size)) { anchor ->
             val choices = arrayOf("1×1", "1×2", "2×2", "2×3")
             popup(anchor, choices.toList(), -1) { which ->
                 if (manager.isRequestPinAppWidgetSupported) {
                     manager.requestPinAppWidget(ComponentName(this, WidgetUpdateDispatcher.PROVIDERS[which]), null, null)
-                } else Toaster.show("请长按桌面，在桌面组件中添加公招助手组件")
+                } else Toaster.show(getString(R.string.widget_add_from_launcher_hint))
             }
         }
     }
@@ -195,10 +206,10 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
     }.coerceAtLeast(0)
 
     private fun sizeName(id: Int) = listOf("1×1", "1×2", "2×2", "2×3")[kind(id)]
-    private suspend fun accountName(c: WidgetConfig): String =
-        if (c.accountMode == WidgetConfig.FOLLOW_CURRENT) "跟随当前账号" else
-            accounts.observeSkAcc().first().firstOrNull { it.uid == c.roleUid && it.channelMasterId == c.serverKey }
-                ?.let { it.nickName + " · " + if (it.official) "官服" else "B服" } ?: "账号已删除"
+    private fun accountName(c: WidgetConfig): String =
+        if (c.accountMode == WidgetConfig.FOLLOW_CURRENT) getString(R.string.widget_follow_account) else
+            model.accounts.value.firstOrNull { it.uid == c.roleUid && it.channelMasterId == c.serverKey }
+                ?.let { it.nickName + " · " + if (it.official) getString(R.string.official_server) else getString(R.string.bilibili_server) } ?: getString(R.string.account_deleted)
 
     private fun buildEditor() {
         val config = draft ?: return
@@ -214,14 +225,14 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
         val identity = editor.findViewById<LinearLayout>(R.id.Identity)
         identity.removeAllViews()
         editor.findViewById<LinearLayout>(R.id.Layouts).removeAllViews()
-        row(identity, "组件", sizeName(config.appWidgetId) + " · #" + config.appWidgetId) { anchor ->
+        row(identity, getString(R.string.widget_label), sizeName(config.appWidgetId) + " · #" + config.appWidgetId) { anchor ->
             if (requestedId != AppWidgetManager.INVALID_APPWIDGET_ID || widgetIds.size <= 1) return@row
             popup(anchor, widgetIds.map { sizeName(it) + " · #" + it }, widgetIds.indexOf(config.appWidgetId)) { index ->
                 if (widgetIds[index] != config.appWidgetId) confirmDiscard { load(widgetIds[index]) }
             }
         }
-        val accountRow = row(identity, "账号", "…", separated = true) { chooseAccount(it) }
-        lifecycleScope.launch { accountRow.text = accountName(config) }
+        val accountRow = row(identity, getString(R.string.account_label), "…", separated = true) { chooseAccount(it) }
+        accountRow.text = accountName(config)
 
         previewHost = editor.findViewById(R.id.PreviewHost)
         val group = editor.findViewById<com.google.android.material.chip.ChipGroup>(R.id.ThemeChoices)
@@ -238,9 +249,9 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
         if (k == 1 || k == 3) {
             val layouts = editor.findViewById<LinearLayout>(R.id.Layouts)
             val keys = if (k == 1) listOf("single", "dense") else listOf("four", "full")
-            val labels = if (k == 1) listOf("单信息", "紧凑布局") else listOf("四项信息", "完整信息")
+            val labels = if (k == 1) listOf(getString(R.string.widget_layout_single), getString(R.string.widget_layout_compact)) else listOf(getString(R.string.widget_layout_four), getString(R.string.widget_layout_full))
             val selected = keys.indexOf(if (k == 1) config.layout1x2 else config.layout2x3).coerceAtLeast(0)
-            row(layouts, "布局", labels[selected]) { anchor ->
+            row(layouts, getString(R.string.widget_layout_label), labels[selected]) { anchor ->
                 popup(anchor, labels, selected) { i ->
                     draft = if (k == 1) draft?.copy(layout1x2 = keys[i]) else draft?.copy(layout2x3 = keys[i])
                     buildEditor()
@@ -250,10 +261,10 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
 
         editor.findViewById<View>(R.id.LayoutsHeader).visibility = if (k == 1 || k == 3) View.VISIBLE else View.GONE
         editor.findViewById<View>(R.id.LayoutsCard).visibility = if (k == 1 || k == 3) View.VISIBLE else View.GONE
-        sliderCard(editor.findViewById(R.id.FontControl), "Aa", "按比例调整组件内的文字", 85f, 115f, config.fontScale * 100, 5f) {
+        sliderCard(editor.findViewById(R.id.FontControl), "Aa", getString(R.string.widget_font_scale_hint), 85f, 115f, config.fontScale * 100, 5f) {
             draft = draft?.copy(fontScale = it / 100); renderPreview()
         }
-        sliderCard(editor.findViewById(R.id.TransparencyControl), "背景", "仅调整背景，文字和图标保持清晰", 0f, 100f, config.transparency.toFloat(), 5f) {
+        sliderCard(editor.findViewById(R.id.TransparencyControl), getString(R.string.background_label), getString(R.string.widget_background_opacity_hint), 0f, 100f, config.transparency.toFloat(), 5f) {
             draft = draft?.copy(transparency = it.toInt()); renderPreview()
         }
         val contents = editor.findViewById<LinearLayout>(R.id.Contents)
@@ -267,17 +278,17 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
         } else {
             val slots = slotNames(config)
             slots.forEachIndexed { i, type ->
-                row(contents, "位置 " + (i + 1), typeLabel(type), separated = i > 0) { chooseContent(it, i) }
+                row(contents, getString(R.string.widget_slot_position, i + 1), typeLabel(type), separated = i > 0) { chooseContent(it, i) }
             }
         }
         renderPreview()
     }
 
     private fun chooseAccount(anchor: View) {
-        lifecycleScope.launch {
-            val config = draft ?: return@launch
-            val all = accounts.observeSkAcc().first()
-            val labels = listOf("跟随当前账号") + all.map { it.nickName + " · " + if (it.official) "官服" else "B服" }
+        run {
+            val config = draft ?: return
+            val all = model.accounts.value
+            val labels = listOf(getString(R.string.widget_follow_account)) + all.map { it.nickName + " · " + if (it.official) getString(R.string.official_server) else getString(R.string.bilibili_server) }
             val selected = if (config.accountMode == WidgetConfig.FOLLOW_CURRENT) 0 else
                 all.indexOfFirst { it.uid == config.roleUid && it.channelMasterId == config.serverKey }.let { if (it < 0) -1 else it + 1 }
             popup(anchor, labels, selected) { index ->
@@ -290,7 +301,7 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
     }
 
     private val types = listOf("SANITY", "DRONE", "RECRUITMENT", "RECRUITMENT_REFRESH", "TRAINING", "MEETING")
-    private fun typeLabel(type: String) = listOf("理智", "无人机", "公开招募", "公招刷新", "训练室", "会客室")
+    private fun typeLabel(type: String) = listOf(getString(R.string.ap), getString(R.string.labor), getString(R.string.recruit), getString(R.string.recruit_refresh), getString(R.string.train), getString(R.string.meeting))
         .getOrElse(types.indexOf(type)) { type }
     private fun slotNames(c: WidgetConfig): List<String> {
         val defaults = when (kind(c.appWidgetId)) {
@@ -323,17 +334,9 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
         error.visibility = View.GONE
         previewJob = lifecycleScope.launch {
             try {
-                val snapshots: com.blueskybone.arkscreen.data.local.cache.RealtimeCacheStore = getKoin().get()
-                val settings: com.blueskybone.arkscreen.data.local.pref.SettingPrefManager = getKoin().get()
-                val clock: com.blueskybone.arkscreen.domain.service.AppClock = getKoin().get()
-                val attendanceStates: com.blueskybone.arkscreen.domain.repository.AttendanceStateRepository = getKoin().get()
-                val account = com.blueskybone.arkscreen.platform.widget.WidgetAccountResolver.resolve(
-                    config, accounts.observeSkAcc().first(), accounts.observeCurrentSkAcc().first())
-                val cache = account?.let { snapshots.read(it) }
-                    ?: com.blueskybone.arkscreen.domain.model.cache.RealtimeCacheSnapshot()
-                val attendance = account?.let { attendanceStates.get(com.blueskybone.arkscreen.domain.model.account.AccountType.SK, it.uid) }
+                val data = model.preview(config)
                 val widget = WidgetPreviewRenderer(this@WidgetTemplateLabActivity, config,
-                    kind(config.appWidgetId), cache, settings, clock, attendance).render()
+                    kind(config.appWidgetId), data.cache, settings, clock, data.attendance).render()
                 host.removeAllViews()
                 host.addView(widget)
 
@@ -342,7 +345,7 @@ class WidgetTemplateLabActivity : AppCompatActivity() {
                 timber.log.Timber.e(e, "Widget appearance preview failed")
                 host.removeAllViews()
                 val cause = generateSequence(e as Throwable) { it.cause }.last()
-                error.text = "预览加载失败：" + cause.javaClass.simpleName + "\n" + cause.message.orEmpty().take(180)
+                error.text = getString(R.string.widget_preview_failed, cause.javaClass.simpleName, cause.message.orEmpty().take(180))
                 error.visibility = View.VISIBLE
             }
         }

@@ -1,7 +1,7 @@
 package com.blueskybone.arkscreen.ui.character
 
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.data.network.model.EndfieldTalentState
+import com.blueskybone.arkscreen.domain.model.operator.endfield.EndfieldTalentState
 
 internal object EndfieldCharacterVisuals {
     fun professionIcon(key: String?, value: String?): Int? {

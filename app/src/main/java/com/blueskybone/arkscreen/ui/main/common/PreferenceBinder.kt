@@ -126,8 +126,8 @@ object PreferenceBinder {
         val entryValues: Array<String>,
         val checkedIndex: Int
     ) {
-        fun displayText(): String {
-            if (entries.isEmpty()) return "未知"
+        fun displayText(context: android.content.Context): String {
+            if (entries.isEmpty()) return context.getString(com.blueskybone.arkscreen.R.string.unknown_label)
             return entries.getOrElse(checkedIndex) { entries.first() }
         }
 
@@ -223,7 +223,7 @@ object PreferenceBinder {
         titleView.setText(titleRes)
 
         var state = buildChoiceState(context, listInfo, pref.get())
-        valueView.text = state.displayText()
+        valueView.text = state.displayText(valueView.context)
 
         root.setOnClickListener {
             showSingleChoiceDialog(context, listInfo.title, state) { which ->
@@ -276,7 +276,7 @@ object PreferenceBinder {
         iconView?.bindIcon(icon)
 
         var state = buildChoiceState(context, listInfo, pref.get())
-        valueView.text = state.displayText()
+        valueView.text = state.displayText(valueView.context)
 
         root.setOnClickListener {
             showSingleChoiceDialog(context, listInfo.title, state) { which ->

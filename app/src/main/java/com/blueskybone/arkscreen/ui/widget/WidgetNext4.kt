@@ -1,10 +1,11 @@
 package com.blueskybone.arkscreen.ui.widget
 
+import com.blueskybone.arkscreen.domain.usecase.widget.WidgetAccountResolver
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
-import com.blueskybone.arkscreen.data.local.room.WidgetConfig
+import com.blueskybone.arkscreen.domain.model.widget.WidgetConfig
 import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
@@ -203,9 +204,9 @@ class WidgetNext4 : BaseNextWidgetProvider() {
         val pendingResult = goAsync()
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
             try {
-                val configs: com.blueskybone.arkscreen.data.local.room.dao.WidgetConfigDao = KoinJavaComponent.getKoin().get()
-                val config = configs.get(appWidgetId) ?: com.blueskybone.arkscreen.data.local.room.WidgetConfig(appWidgetId)
-                val account = com.blueskybone.arkscreen.platform.widget.WidgetAccountResolver.resolve(
+                val configs: com.blueskybone.arkscreen.domain.repository.WidgetConfigRepository = KoinJavaComponent.getKoin().get()
+                val config = configs.load(appWidgetId)
+                val account = com.blueskybone.arkscreen.domain.usecase.widget.WidgetAccountResolver.resolve(
                     config, accountRepository.observeSkAcc().first(), accountRepository.observeCurrentSkAcc().first(),
                 ) ?: return@launch
                 val packageName = if (account.official) {

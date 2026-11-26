@@ -12,7 +12,6 @@
     <color name="endfield_progress_track">#E7E4D7</color>
 
 
-    <color name="trans_blue">#3C80B0E3</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="grey">#555555</color>
@@ -40,9 +39,7 @@
     <!-- cyan theme color-->
     <color name="dark_on_surface">#dde4e3</color>
 
-    <color name="day_surface">#F0F0F2</color>
     <color name="asset_list_card_surface">@color/app_surface</color>
-    <!--    <color name="day_surface">#f9f9ff</color>-->
     <color name="day_text_primary">#292c33</color>
 
     <color name="LightBlue200">#65C9DDED</color>
@@ -88,10 +85,6 @@
     <color name="tool_account_container">#E0E4FF</color>
     <color name="tool_game_icon">#C2410C</color>
     <color name="tool_game_container">#FFEDD5</color>
-    <color name="tool_manual_icon">#006A67</color>
-    <color name="tool_manual_container">#C9F1EC</color>
-    <color name="recruit_metadata_chip_background">#E6E6E6</color>
-    <color name="recruit_metadata_chip_text">#424242</color>
 
     <color name="ef_skill_physical">#777777</color>
     <color name="ef_skill_pulse">#F6C744</color>
@@ -124,4 +117,16 @@
     <color name="gacha_pull_yellow">#C5A438</color>
     <color name="gacha_pull_red">#C2635D</color>
     <color name="gacha_pull_track">#E8E8EC</color>
+    <!-- Fixed floating-ball palette, shared by the preview and overlay in both themes. -->
+    <color name="floating_ball_blue">#2877F0</color>
+    <color name="floating_ball_violet">#913DE0</color>
+    <color name="floating_ball_pink">#E63278</color>
+    <color name="floating_ball_red">#E94242</color>
+    <color name="floating_ball_orange">#F58220</color>
+    <color name="floating_ball_yellow">#F5CE32</color>
+    <color name="floating_ball_green">#38B54A</color>
+    <color name="floating_ball_cyan">#8AEAE3</color>
+    <color name="floating_ball_gray">#898B91</color>
+    <color name="floating_color_checkmark">#191E1C</color>
+    <color name="operator_card_surface">@color/white</color>
 </resources>

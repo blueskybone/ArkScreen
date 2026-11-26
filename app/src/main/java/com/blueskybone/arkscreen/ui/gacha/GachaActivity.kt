@@ -41,7 +41,7 @@ import kotlinx.coroutines.withContext
  */
 
 class GachaActivity : AppCompatActivity() {
-    private val model: GachaModel by viewModel()
+    private val model: GachaViewModel by viewModel()
 
     private var _binding: ActivityGachaBinding? = null
     private val binding get() = _binding!!
@@ -90,7 +90,7 @@ class GachaActivity : AppCompatActivity() {
                     val hasCachedRecords = state.gachaUiSnapshot?.records?.isNotEmpty() == true
                     when (val status = state.status) {
                         is UiStatus.Loading -> {
-                            showStatus(status.message ?: "加载中...", loading = true)
+                            showStatus(status.message ?: getString(R.string.status_loading_ellipsis), loading = true)
                         }
                         is UiStatus.Empty -> showStatus(status.message, showAction = true)
                         is UiStatus.Error -> {
@@ -326,7 +326,7 @@ class GachaActivity : AppCompatActivity() {
                 withContext(Dispatchers.IO) {
                     contentResolver.openOutputStream(uri)?.bufferedWriter()?.use {
                         it.write(content)
-                    } ?: error("无法创建导出文件")
+                    } ?: error(getString(R.string.error_export_file_create))
                 }
             }
             setFileOperationRunning(false)
@@ -341,7 +341,7 @@ class GachaActivity : AppCompatActivity() {
         withContext(Dispatchers.IO) {
             contentResolver.openAssetFileDescriptor(uri, "r")?.use { descriptor ->
                 val length = descriptor.length
-                require(length < 0 || length <= MAX_IMPORT_BYTES) { "导入文件不能超过 20 MB" }
+                require(length < 0 || length <= MAX_IMPORT_BYTES) { getString(R.string.error_import_file_too_large) }
             }
             contentResolver.openInputStream(uri)?.bufferedReader()?.use { reader ->
                 val result = StringBuilder()
@@ -350,12 +350,12 @@ class GachaActivity : AppCompatActivity() {
                     val count = reader.read(buffer)
                     if (count < 0) break
                     require(result.length + count <= MAX_IMPORT_CHARS) {
-                        "导入文件不能超过 20 MB"
+                        getString(R.string.error_import_file_too_large)
                     }
                     result.append(buffer, 0, count)
                 }
                 result.toString()
-            } ?: error("无法读取导入文件")
+            } ?: error(getString(R.string.error_import_file_read))
         }
 
     private fun readDisplayName(uri: android.net.Uri): String? {
@@ -375,25 +375,25 @@ class GachaActivity : AppCompatActivity() {
             payload.sourceName != null && payload.sourceUid != null ->
                 "${payload.sourceName}（${payload.sourceUid}）"
             payload.sourceUid != null -> payload.sourceUid
-            else -> "未知账号"
+            else -> getString(R.string.unknown_account)
         }
         val targetLabel = "${target.nickName}（${target.uid}）"
         val accountWarning = if (
             payload.sourceUid != null && payload.sourceUid != target.uid
         ) {
-            "\n\n注意：备份来源与当前账号不同。"
+            getString(R.string.gacha_import_source_warning)
         } else {
             ""
         }
         val warningText = payload.warnings
             .filter { warning -> warning.code in DISPLAYED_IMPORT_WARNING_CODES }
             .takeIf(List<*>::isNotEmpty)
-            ?.joinToString(separator = "\n", prefix = "\n\n注意：\n") { "• ${it.message}" }
+            ?.joinToString(separator = "\n", prefix = getString(R.string.gacha_import_warning_prefix)) { "• ${it.message}" }
             .orEmpty()
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.import_data)
             .setMessage(
-                "来源：$source\n目标：$targetLabel\n记录：${payload.records.size} 条$accountWarning$warningText"
+                getString(R.string.gacha_import_confirmation, source, targetLabel, payload.records.size, accountWarning, warningText)
             )
             .setNegativeButton(R.string.cancel, null)
             .setPositiveButton(R.string.import_data) { _, _ ->

@@ -76,7 +76,7 @@ class Home : Fragment() {
     private val prefManager: SettingPrefManager by getKoin().inject()
     private val attendanceStates: AttendanceStateRepository by getKoin().inject()
     private val appClock: AppClock by getKoin().inject()
-    private val viewModel: MainModel by activityViewModel()
+    private val viewModel: MainViewModel by activityViewModel()
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var linkAdapter: LinkGridAdapter
@@ -409,7 +409,7 @@ class Home : Fragment() {
         val now = getCurrentTs(appClock)
         val cacheAge = (now - value.lastSyncTs).coerceAtLeast(0)
         val lastSyncStr = getLastUpdateStr(cacheAge).let {
-            if (it.isEmpty()) "刚刚" else "${it}前"
+            if (it.isEmpty()) getString(R.string.time_just_now) else getString(R.string.time_ago, it)
         }
 
         LastSync.text = getString(R.string.home_updated_at, lastSyncStr)

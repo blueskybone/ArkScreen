@@ -45,7 +45,7 @@ import com.blueskybone.arkscreen.ui.widget.WidgetNext1
 import com.blueskybone.arkscreen.ui.widget.WidgetNext2
 import com.blueskybone.arkscreen.ui.widget.WidgetNext3
 import com.blueskybone.arkscreen.ui.widget.WidgetNext4
-import com.blueskybone.arkscreen.ui.widget.WidgetWorkScheduler
+import com.blueskybone.arkscreen.platform.widget.WidgetWorkScheduler
 import com.blueskybone.arkscreen.platform.time.TimeUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hjq.toast.Toaster
@@ -69,7 +69,7 @@ class Function : Fragment() {
     private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (!granted) Toaster.show(getString(R.string.recovery_notifications_permission))
     }
-    private val model: MainModel by activityViewModel()
+    private val model: MainViewModel by activityViewModel()
 
     private val binding get() = _binding!!
     override fun onCreateView(
@@ -102,14 +102,17 @@ class Function : Fragment() {
 
     private fun setUpBinding() {
 
-        binding.RecruitAutoMode.Title.text = "自动模式"
-        binding.RecruitAutoMode.Value.text = "循环识别，自动刷新结果"
-        binding.RecruitAutoMode.Icon.setImageResource(R.drawable.ic_function_auto_recruit)
-        binding.RecruitAutoMode.Switch.isChecked = prefManager.recruitAutoMode.get()
-        binding.RecruitAutoMode.Switch.setOnCheckedChangeListener { _, checked ->
-            prefManager.recruitAutoMode.set(checked)
+        val autoModeChanged = {
             getKoin().get<com.blueskybone.arkscreen.platform.tile.RecruitFloatingBallController>().onAutoModeChanged()
         }
+        PreferenceBinder.bindSubSwitch(
+            binding = binding.RecruitAutoMode,
+            icon = R.drawable.ic_function_auto_recruit,
+            textInfo = com.blueskybone.arkscreen.ui.common.bindinginfo.RecruitAutoMode,
+            pref = prefManager.recruitAutoMode,
+            onCall = autoModeChanged,
+            offCall = autoModeChanged,
+        )
         binding.RecruitAutoMode.root.setOnClickListener { binding.RecruitAutoMode.Switch.toggle() }
 
         binding.RecruitMode.Icon.setImageResource(R.drawable.ic_function_result)

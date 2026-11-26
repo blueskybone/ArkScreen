@@ -88,10 +88,10 @@
     <string name="hour_1">1小时</string>
     <string name="widget_appearance">组件外观</string>
     <string name="widget_preview_save_hint">点击保存后应用到桌面组件</string>
-    <string name="widget_next_1_description">新版组件 · 1×1 单信息</string>
-    <string name="widget_next_2_description">新版组件 · 1×2 单信息</string>
-    <string name="widget_next_3_description">新版组件 · 2×2 双信息</string>
-    <string name="widget_next_4_description">新版组件 · 2×3</string>
+    <string name="widget_next_1_description">1×1</string>
+    <string name="widget_next_2_description">1×2</string>
+    <string name="widget_next_3_description">2×2</string>
+    <string name="widget_next_4_description">2×3</string>
     <string name="widget_style_transparent">轻透</string>
     <string name="widget_style_dark_card">石墨</string>
     <string name="widget_style_mist">浅雾</string>
@@ -261,13 +261,11 @@
     <string name="assets_empty_summary">添加森空岛账号后，可同步干员持有信息</string>
     <string name="gacha_empty_summary">寻访统计使用独立账号，与森空岛账号不同</string>
     <string name="core_data">数据</string>
-    <string name="core_base">基建</string>
     <string name="endfield_choose_account">选择终末地账号</string>
     <string name="skland_choose_account">选择森空岛账号</string>
     <string name="endfield_chars_no_account">还没有终末地账号，点击上方按钮添加</string>
     <string name="endfield_chars_loading">正在加载角色…</string>
     <string name="endfield_chars_empty">该账号暂无角色数据</string>
-    <string name="endfield_chars_count">已持有 %1$d 位角色</string>
     <string name="endfield_char_detail">角色详情</string>
     <string name="endfield_char_unavailable">角色数据暂不可用，请返回列表重试</string>
     <string name="endfield_char_level">Lv.%1$d</string>
@@ -302,7 +300,6 @@
     <string name="endfield_unnamed_player">终末地角色</string>
     <string name="endfield_world_level">世界等级 %1$d</string>
     <string name="endfield_player_id">ID %1$s</string>
-    <string name="endfield_last_login">上次登录 %1$s</string>
     <string name="confirm_delete_account_detail">将删除该账号保存在本机的凭证和关联数据，不会影响游戏账号。此操作无法撤销。</string>
     <string name="confirm_clear_gacha_detail">将清空当前寻访记录账号的全部本地记录。此操作无法撤销，建议先导出备份。</string>
     <string name="confirm_delete_link_detail">将从首页移除此链接。此操作无法撤销。</string>
@@ -506,13 +503,7 @@
     <string name="screenshot_in_progress">点击磁贴或悬浮球可再次识别</string>
     <string name="screenshot_stop">结束录屏</string>
     <string name="endfield_gacha_title">寻访记录</string>
-    <string name="endfield_gacha_char">角色寻访</string>
-    <string name="endfield_gacha_weapon">武器申领</string>
     <string name="endfield_gacha_empty">暂无记录，点击刷新同步</string>
-    <string name="endfield_gacha_summary">共 %1$d 次 · 6★ %2$d · 5★ %3$d</string>
-    <string name="endfield_gacha_raw_records">原始记录</string>
-    <string name="endfield_gacha_pool_overview">卡池统计</string>
-    <string name="gacha_current_pity">当前水位</string>
     <string name="recovery_other_events">基建与公招</string>
     <string name="recovery_planned_time">计划提醒时间：%1$s</string>
     <string name="recruit_results_title">计算结果</string>
@@ -554,4 +545,6 @@
     <string name="floating_style_modern">现代</string>
     <string name="gacha_pity_compact">%1$s %2$d 抽</string>
     <string name="assets_metric_value">%1$s %2$d</string>
+    <string name="recruit_auto_mode">自动模式</string>
+    <string name="recruit_auto_mode_summary">循环识别，自动刷新结果</string>
 </resources>

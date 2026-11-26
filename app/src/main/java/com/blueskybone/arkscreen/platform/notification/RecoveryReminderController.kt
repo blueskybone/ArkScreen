@@ -61,12 +61,12 @@ class RecoveryReminderController(
         val ap = data.apInfo
         if (ap.max > 0 && ap.current in 0 until ap.max && ap.recoverTime > now) {
             if (settings.notifyApFull.get()) {
-                add("ap_full", ap.recoverTime, "$name 理智已满")
+                add("ap_full", ap.recoverTime, appContext.getString(R.string.reminder_sanity_full, name))
             }
             if (settings.notifyApEarly.get()) {
                 val lead = settings.notifyApEarlyMinutes.get().coerceIn(1, 180)
                 add("ap_early", ap.recoverTime - lead * 60L,
-                    "$name 理智即将溢出：${lead}min", ap.recoverTime)
+                    appContext.getString(R.string.reminder_sanity_overflow, name, lead), ap.recoverTime)
             }
         }
 
@@ -74,7 +74,7 @@ class RecoveryReminderController(
         if (!train.isNull && !train.traineeIsNull && train.status == 1L) {
             if (settings.notifyTrainingComplete.get()) {
                 add("train_done", train.completeTime,
-                    "$name ${train.trainee.ifBlank { "干员" }} 专精已完成")
+                    appContext.getString(R.string.reminder_training_complete, name, train.trainee.ifBlank { appContext.getString(R.string.reminder_operator_fallback) }))
             }
             if (settings.notifyTrainingShift.get() &&
                 train.trainee != "艾丽妮" && train.trainee != "逻各斯") {
@@ -99,7 +99,7 @@ class RecoveryReminderController(
                     candidates.forEach { (operator, key, at) ->
                         if (operator in owned && train.trainer != operator) {
                             add(key, at - lead * 60L,
-                                "$name ${train.trainee.ifBlank { "干员" }} 可由${operator}换班",
+                                appContext.getString(R.string.reminder_training_replace, name, train.trainee.ifBlank { appContext.getString(R.string.reminder_operator_fallback) }, operator),
                                 train.completeTime)
                         }
                     }
@@ -110,22 +110,22 @@ class RecoveryReminderController(
         val labor = data.labor
         if (settings.notifyLaborFull.get() && !labor.isNull &&
             labor.max > 0 && labor.current in 0 until labor.max) {
-            add("labor", labor.recoverTime, "$name 无人机已满")
+            add("labor", labor.recoverTime, appContext.getString(R.string.reminder_drone_full, name))
         }
         val meeting = data.meeting
         if (settings.notifyMeetingComplete.get() && !meeting.isNull && meeting.status == 1) {
-            add("meeting", meeting.completeTime, "$name 会客室交流结束")
+            add("meeting", meeting.completeTime, appContext.getString(R.string.reminder_meeting_complete, name))
         }
         val recruit = data.recruits
         if (settings.notifyRecruitComplete.get() && !recruit.isNull) {
             recruit.pendingCompleteTimes.groupBy { it / 60 }.values
                 .map { it.min() }.take(4).forEachIndexed { index, at ->
-                add("recruit_$index", at, "$name 公开招募已完成")
+                add("recruit_$index", at, appContext.getString(R.string.reminder_recruit_complete, name))
             }
         }
         val hire = data.hire
         if (settings.notifyRecruitRefresh.get() && !hire.isNull && hire.count < hire.max) {
-            add("refresh", hire.completeTime, "$name 公开招募可刷新")
+            add("refresh", hire.completeTime, appContext.getString(R.string.reminder_recruit_refresh, name))
         }
         replace(account.uid, data.currentTs, events)
     }

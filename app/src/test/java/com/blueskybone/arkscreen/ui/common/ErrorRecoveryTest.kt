@@ -9,7 +9,7 @@ class ErrorRecoveryTest {
     fun `network failure mentioning cred is not treated as expired login`() {
         val message = "获取 cred 凭证失败: Unable to resolve host"
 
-        assertEquals("网络不可用", userFacingError(message))
+        assertEquals("网络不可用", userFacingError(TestUiStrings, message))
         assertEquals(ErrorRecovery.RETRY, recoveryFor(message))
     }
 
@@ -17,7 +17,7 @@ class ErrorRecoveryTest {
     fun `explicit credential failure still requests relogin`() {
         val message = "cred 授权失败"
 
-        assertEquals("登录状态已过期", userFacingError(message))
+        assertEquals("登录状态已过期", userFacingError(TestUiStrings, message))
         assertEquals(ErrorRecovery.RELOGIN, recoveryFor(message))
     }
 }

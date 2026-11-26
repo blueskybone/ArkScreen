@@ -1,49 +1,19 @@
 package com.blueskybone.arkscreen.ui.common.view
 
 import android.content.Context
-import android.graphics.Color
-import android.view.ContextThemeWrapper
-import android.view.ViewGroup
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RadioButton
 import androidx.core.content.ContextCompat
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.util.dpToPx
 import com.google.android.material.chip.Chip
-import com.nex3z.flowlayout.FlowLayout
 
 /**
  *   Created by blueskybone
  *   Date: 2025/1/22
  */
-
-private fun Button.setTagLayout(text: String) {
-    val layoutParams = LinearLayout.LayoutParams(
-        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
-    )
-    layoutParams.setMargins(0, 0, dpToPx(context, 5F).toInt(), dpToPx(context, 5F).toInt())
-    this.layoutParams = layoutParams
-    this.text = text
-    this.minWidth = 0
-    this.minHeight = 0
-    this.minimumWidth = 0
-    this.minimumHeight = 0
-    this.setPadding(
-        dpToPx(context, 10F).toInt(),
-        dpToPx(context, 5F).toInt(),
-        dpToPx(context, 10F).toInt(),
-        dpToPx(context, 5F).toInt()
-    )
-    this.isEnabled = true
-    this.isSelected = false
-    this.isClickable = true
-    this.stateListAnimator = null
-    this.setTextColor(Color.WHITE)
-}
 
 fun getFlowRadioGroup(context: Context): FlowRadioGroup {
     val flowRadioGroup = FlowRadioGroup(context).apply {
@@ -85,15 +55,11 @@ fun getFlowRadioGroup(context: Context): FlowRadioGroup {
     return flowRadioGroup
 }
 
-fun tagButton(context: Context, text: String): Button {
-    val button = Button(context)
-    button.setTagLayout(text)
-    button.setBackgroundResource(R.drawable.button_tag)
-    button.setOnClickListener {
-        button.isSelected = !button.isSelected
+/** Inflate the same filter capsule style used by XML pages. Selection is owned by the group. */
+fun tagButton(context: Context, text: String): Chip =
+    (android.view.LayoutInflater.from(context).inflate(R.layout.item_filter_chip, null) as Chip).apply {
+        this.text = text
     }
-    return button
-}
 
 fun profImageButton(
     context: Context,

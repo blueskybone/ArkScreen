@@ -18,7 +18,6 @@ import com.blueskybone.arkscreen.platform.theme.AppThemeController
 import com.blueskybone.arkscreen.domain.service.ServerTimeCalibrator
 import com.blueskybone.arkscreen.ui.common.LogManagerActivity
 import com.blueskybone.arkscreen.ui.license.OpenSourceLicensesActivity
-import com.blueskybone.arkscreen.ui.common.bindinginfo.AppTheme
 import com.blueskybone.arkscreen.ui.common.bindinginfo.TimeCorrection
 import com.blueskybone.arkscreen.ui.common.view.MenuDialog
 import com.blueskybone.arkscreen.ui.main.common.PreferenceBinder
@@ -36,7 +35,7 @@ import timber.log.Timber
 class AboutFragment : DialogFragment() {
     private var _binding: FragmentAboutBinding? = null
     private val binding get() = _binding!!
-    private val model: MainModel by activityViewModel()
+    private val model: MainViewModel by activityViewModel()
     private val appVersion: AppVersion by getKoin().inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,12 +1,12 @@
 package com.blueskybone.arkscreen.data.local.pref
 
+import com.blueskybone.arkscreen.domain.model.settings.WidgetUpdateFrequencySetting
+import com.blueskybone.arkscreen.domain.model.settings.RecruitModeSetting
+import com.blueskybone.arkscreen.domain.model.settings.AppThemeSetting
+import com.blueskybone.arkscreen.domain.model.settings.ScreenshotDelaySetting
+import com.blueskybone.arkscreen.domain.model.settings.FloatWindowAppearanceSetting
 import com.blueskybone.arkscreen.data.local.pref.preference.Preference
 import com.blueskybone.arkscreen.data.local.pref.preference.PreferenceStore
-import com.blueskybone.arkscreen.ui.common.bindinginfo.AppTheme
-import com.blueskybone.arkscreen.ui.common.bindinginfo.FloatWindowAppearance
-import com.blueskybone.arkscreen.ui.common.bindinginfo.RecruitMode
-import com.blueskybone.arkscreen.ui.common.bindinginfo.ScDelay
-import com.blueskybone.arkscreen.ui.common.bindinginfo.WidgetUpdateFreq
 
 /** 用户可见的设置；运行状态和接口缓存不应存放在这里。 */
 class SettingPrefManager() {
@@ -18,10 +18,10 @@ class SettingPrefManager() {
         floatingBallColor = preferenceStore.getString("floating_ball_color", "")
         floatingBallBlue = preferenceStore.getBoolean("floating_ball_blue", true)
         recruitAutoMode = preferenceStore.getBoolean("recruit_auto_mode", false)
-        recruitMode = preferenceStore.getString(RecruitMode.key, RecruitMode.FLOATWINDOW)
+        recruitMode = preferenceStore.getString(RecruitModeSetting.key, RecruitModeSetting.defaultValue)
         floatWindowAppearance =
-            preferenceStore.getString(FloatWindowAppearance.key, FloatWindowAppearance.COLORFUL)
-        screenShotDelay = preferenceStore.getString(ScDelay.key, ScDelay.defaultValue)
+            preferenceStore.getString(FloatWindowAppearanceSetting.key, FloatWindowAppearanceSetting.defaultValue)
+        screenShotDelay = preferenceStore.getString(ScreenshotDelaySetting.key, ScreenshotDelaySetting.defaultValue)
         powerSavingMode = preferenceStore.getBoolean("power_saving_mode", false)
 
 
@@ -36,7 +36,7 @@ class SettingPrefManager() {
         alarmAtdHour = preferenceStore.getInt("alarm_attendance_hour", 0)
         alarmAtdMin = preferenceStore.getInt("alarm_attendance_min", 10)
         useInnerWeb = preferenceStore.getBoolean("use_inner_web", true)
-        appTheme = preferenceStore.getString("app_theme", AppTheme.defaultValue)
+        appTheme = preferenceStore.getString(AppThemeSetting.key, AppThemeSetting.defaultValue)
         defaultHomeGame = preferenceStore.getString("default_home_game", "ARKNIGHTS")
         endfieldAssetsGrid = preferenceStore.getBoolean("endfield_assets_grid", false)
         assetsViewType = preferenceStore.getInt("assets_view_type", 0)
@@ -56,8 +56,8 @@ class SettingPrefManager() {
 
 
         widgetUpdateFreq = preferenceStore.getString(
-            WidgetUpdateFreq.key,
-            WidgetUpdateFreq.defaultValue
+            WidgetUpdateFrequencySetting.key,
+            WidgetUpdateFrequencySetting.defaultValue
         )  //更新频率：15min 30min 1h
     }
 

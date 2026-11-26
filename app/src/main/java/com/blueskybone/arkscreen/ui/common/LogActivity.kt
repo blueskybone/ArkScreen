@@ -60,7 +60,7 @@ class LogActivity : AppCompatActivity() {
             input.seek(start)
             val bytes = ByteArray((input.length() - start).toInt())
             input.readFully(bytes)
-            val prefix = if (start > 0) "…仅显示最后 ${maxBytes / 1024} KB…\n" else ""
+            val prefix = if (start > 0) getString(R.string.log_tail_notice, maxBytes / 1024) else ""
             return prefix + bytes.toString(Charsets.UTF_8)
         }
     }

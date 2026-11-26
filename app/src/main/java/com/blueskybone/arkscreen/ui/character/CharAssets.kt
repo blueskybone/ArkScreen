@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 
 class CharAssets : AppCompatActivity() {
 
-    private val model: CharModel by viewModel()
+    private val model: CharViewModel by viewModel()
     private var _binding: ActivityCharAssetsBinding? = null
     private val binding get() = _binding!!
     private var shareAction: (() -> Unit)? = null
@@ -78,7 +78,7 @@ class CharAssets : AppCompatActivity() {
         model.accounts.observe(this) { /* Keep account choices current for the picker. */ }
         model.uiState.observe(this) { value ->
             when (value) {
-                is UiStatus.Loading -> displayLoadingView(value.message ?: "加载中...")
+                is UiStatus.Loading -> displayLoadingView(value.message ?: getString(R.string.status_loading_ellipsis))
                 is UiStatus.Error -> displayErrorView(value.message)
                 is UiStatus.Empty -> displayEmptyView(value.message)
                 is UiStatus.Success -> displayView()

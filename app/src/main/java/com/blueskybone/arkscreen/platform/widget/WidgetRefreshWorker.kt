@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.platform.widget
 
+import com.blueskybone.arkscreen.domain.usecase.widget.WidgetAccountResolver
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -23,7 +24,7 @@ class WidgetRefreshWorker(context: Context, params: WorkerParameters) : Coroutin
     private val widgetUpdates: WidgetUpdateDispatcher by getKoin().inject()
     private val appClock: AppClock by getKoin().inject()
 
-    private val configs: com.blueskybone.arkscreen.data.local.room.dao.WidgetConfigDao by getKoin().inject()
+    private val configs: com.blueskybone.arkscreen.domain.repository.WidgetConfigRepository by getKoin().inject()
 
     override suspend fun doWork(): Result {
         val startedAt = SystemClock.elapsedRealtime()
@@ -39,7 +40,7 @@ class WidgetRefreshWorker(context: Context, params: WorkerParameters) : Coroutin
                 val all = accountRepository.observeSkAcc().first()
                 val current = accountRepository.observeCurrentSkAcc().first()
                 val selected = widgetUpdates.widgetIds().mapNotNull { id ->
-                    val config = configs.get(id) ?: com.blueskybone.arkscreen.data.local.room.WidgetConfig(id)
+                    val config = configs.load(id)
                     WidgetAccountResolver.resolve(config, all, current)
                 }.distinctBy { it.channelMasterId to it.uid }
                 for (account in selected) {

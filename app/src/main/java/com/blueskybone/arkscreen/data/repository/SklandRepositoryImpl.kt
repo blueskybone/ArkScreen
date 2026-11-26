@@ -4,7 +4,8 @@ import com.blueskybone.arkscreen.data.network.ApiService
 import com.blueskybone.arkscreen.data.network.auth.HeaderProvider
 import com.blueskybone.arkscreen.data.network.auth.SklandAuthRemoteDataSource
 import com.blueskybone.arkscreen.data.network.model.AttendanceEndfieldResponse
-import com.blueskybone.arkscreen.data.network.model.EndfieldCharacter
+import com.blueskybone.arkscreen.domain.model.operator.endfield.EndfieldCharacterAssets
+import com.blueskybone.arkscreen.data.repository.mapper.toDomain
 import com.blueskybone.arkscreen.data.network.model.EndfieldCardDetail
 import com.blueskybone.arkscreen.data.network.model.Awards
 import com.fasterxml.jackson.databind.JsonNode
@@ -208,13 +209,16 @@ class SklandRepositoryImpl(
             }
         }
 
-    override suspend fun fetchEndfieldCharacters(account: AccountEf): Result<Pair<List<EndfieldCharacter>, String?>> =
+    override suspend fun fetchEndfieldCharacters(account: AccountEf): Result<EndfieldCharacterAssets> =
         repositoryResultOf {
             withContext(Dispatchers.IO) {
                 val detail = fetchEndfieldCardDetail(account)
-                requireNotNull(detail.chars) {
-                    "终末地角色数据缺少 chars 字段"
-                } to detail.base?.avatarUrl
+                EndfieldCharacterAssets(
+                    characters = requireNotNull(detail.chars) {
+                        "终末地角色数据缺少 chars 字段"
+                    }.map { it.toDomain() },
+                    avatarUrl = detail.base?.avatarUrl,
+                )
             }
         }
 

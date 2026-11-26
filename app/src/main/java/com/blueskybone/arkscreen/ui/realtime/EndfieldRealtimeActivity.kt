@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class EndfieldRealtimeActivity : AppCompatActivity() {
-    private val model: EndfieldRealtimeModel by viewModel()
+    private val model: EndfieldRealtimeViewModel by viewModel()
     private lateinit var binding: ActivityEndfieldRealtimeBinding
     private var currentState = EndfieldRealtimeUiState()
 

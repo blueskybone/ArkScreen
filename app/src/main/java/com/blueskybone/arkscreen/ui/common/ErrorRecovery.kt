@@ -24,12 +24,12 @@ fun recoveryFor(message: String): ErrorRecovery {
     }
 }
 
-fun userFacingError(message: String): String {
+fun userFacingError(texts: UiStrings, message: String): String {
     val normalized = message.lowercase()
     return when {
-        looksLikeNetworkFailure(normalized) -> "网络不可用"
-        looksLikeTimeout(normalized) -> "请求超时"
-        recoveryFor(message) == ErrorRecovery.RELOGIN -> "登录状态已过期"
+        looksLikeNetworkFailure(normalized) -> texts.get(com.blueskybone.arkscreen.R.string.error_network_unavailable)
+        looksLikeTimeout(normalized) -> texts.get(com.blueskybone.arkscreen.R.string.error_timeout)
+        recoveryFor(message) == ErrorRecovery.RELOGIN -> texts.get(com.blueskybone.arkscreen.R.string.error_auth_expired)
         else -> message
     }
 }

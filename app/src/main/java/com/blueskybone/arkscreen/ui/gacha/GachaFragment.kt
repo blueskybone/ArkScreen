@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 
 class GachaFragment : Fragment() {
 
-    private val model: GachaModel by activityViewModel()
+    private val model: GachaViewModel by activityViewModel()
     private val settingPrefManager: SettingPrefManager by inject()
     private var adapter: GachaAdapter? = null
     private var accountPopup: ListPopupWindow? = null

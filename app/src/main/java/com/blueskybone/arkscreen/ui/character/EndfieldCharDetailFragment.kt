@@ -16,9 +16,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import coil.load
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.data.network.model.EndfieldCharacter
-import com.blueskybone.arkscreen.data.network.model.EndfieldWeapon
-import com.blueskybone.arkscreen.data.network.model.EndfieldTalent
+import com.blueskybone.arkscreen.domain.model.operator.endfield.EndfieldCharacter
+import com.blueskybone.arkscreen.domain.model.operator.endfield.EndfieldWeapon
+import com.blueskybone.arkscreen.domain.model.operator.endfield.EndfieldTalent
 import com.blueskybone.arkscreen.databinding.FragmentEndfieldCharDetailBinding
 import com.blueskybone.arkscreen.databinding.CardContentSectionBinding
 import com.blueskybone.arkscreen.databinding.ItemEndfieldCharEquipmentBinding
@@ -40,7 +40,7 @@ class EndfieldCharDetailFragment : Fragment() {
         }
     }
 
-    private val model: EndfieldCharModel by activityViewModel()
+    private val model: EndfieldCharViewModel by activityViewModel()
     private var _binding: FragmentEndfieldCharDetailBinding? = null
     private val binding get() = requireNotNull(_binding)
 
@@ -155,7 +155,7 @@ class EndfieldCharDetailFragment : Fragment() {
             val level = userSkill?.level
             item.Rank.text = when {
                 level == null -> "–"
-                level >= 10 -> "专精 ${level - 9}"
+                level >= 10 -> getString(R.string.skill_mastery_level, level - 9)
                 else -> "RANK $level"
             }
             item.Name.text = skill.name?.takeIf(String::isNotBlank)
@@ -219,7 +219,7 @@ class EndfieldCharDetailFragment : Fragment() {
         url?.takeIf(String::isNotBlank)?.let(icon.Icon::load)
         icon.root.contentDescription = listOfNotNull(
             talent.name,
-            if (cultivation) null else if (unlocked == true) "已解锁" else "未解锁",
+            if (cultivation) null else if (unlocked == true) getString(R.string.status_unlocked) else getString(R.string.status_locked),
         ).joinToString("，")
         row.Icons.addView(icon.root)
     }

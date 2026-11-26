@@ -17,26 +17,21 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.blueskybone.arkscreen.R
-import com.blueskybone.arkscreen.data.network.model.EndfieldCharacter
+import com.blueskybone.arkscreen.domain.model.operator.endfield.EndfieldCharacter
 import com.blueskybone.arkscreen.databinding.ActivityEndfieldCharsBinding
 import com.blueskybone.arkscreen.databinding.ItemEndfieldCharBinding
 import com.blueskybone.arkscreen.ui.account.AccountMngActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class EndfieldCharsActivity : AppCompatActivity() {
-    private val model: EndfieldCharModel by viewModel()
+    private val model: EndfieldCharViewModel by viewModel()
     private lateinit var binding: ActivityEndfieldCharsBinding
     private val adapter = CharacterAdapter(::openDetail)
     private var currentState = EndfieldCharUiState()
 
-    private val settings: com.blueskybone.arkscreen.data.local.pref.SettingPrefManager by inject()
-    private var grid = false
-    private var rarityFilter: String? = null
-    private var professionFilter: String? = null
-    private var propertyFilter: String? = null
+    private var renderedGrid: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_Endfield)
@@ -45,26 +40,13 @@ class EndfieldCharsActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        rarityFilter = savedInstanceState?.getString("rarityFilter")
-        professionFilter = savedInstanceState?.getString("professionFilter")
-        propertyFilter = savedInstanceState?.getString("propertyFilter")
-        grid = savedInstanceState?.getBoolean("grid") ?: settings.endfieldAssetsGrid.get()
+        if (savedInstanceState != null) model.setFilters(EndfieldCharFilters(
+            savedInstanceState.getString("rarityFilter"),
+            savedInstanceState.getString("professionFilter"),
+            savedInstanceState.getString("propertyFilter"),
+        ))
         binding.Characters.adapter = adapter
-        fun applyView() {
-            adapter.grid = grid
-            binding.Characters.layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, if (grid) 4 else 1)
-            // Item margins plus RecyclerView padding match the list card's outer inset.
-            val sidePadding = if (grid) {
-                (resources.getDimensionPixelSize(R.dimen.page_horizontal_spacing) -
-                    resources.getDimensionPixelSize(R.dimen.endfield_grid_item_margin)).coerceAtLeast(0)
-            } else 0
-            binding.Characters.setPaddingRelative(sidePadding, binding.Characters.paddingTop,
-                sidePadding, binding.Characters.paddingBottom)
-            binding.ViewMode.setChipIconResource(if (grid) R.drawable.ic_grid else R.drawable.ic_list)
-            adapter.notifyDataSetChanged()
-        }
-        binding.ViewMode.setOnClickListener { grid = !grid; settings.endfieldAssetsGrid.set(grid); applyView() }
-        applyView()
+        binding.ViewMode.setOnClickListener { model.toggleViewType() }
         binding.Filter.setOnClickListener { showFilterDialog() }
         supportFragmentManager.addOnBackStackChangedListener { updatePage(animate = true) }
         updatePage()
@@ -77,8 +59,25 @@ class EndfieldCharsActivity : AppCompatActivity() {
         }
     }
 
+    private fun applyView(grid: Boolean) {
+        if (renderedGrid == grid) return
+        renderedGrid = grid
+        adapter.grid = grid
+        binding.Characters.layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, if (grid) 4 else 1)
+        // Item margins plus RecyclerView padding match the list card's outer inset.
+        val sidePadding = if (grid) {
+            (resources.getDimensionPixelSize(R.dimen.page_horizontal_spacing) -
+                resources.getDimensionPixelSize(R.dimen.endfield_grid_item_margin)).coerceAtLeast(0)
+        } else 0
+        binding.Characters.setPaddingRelative(sidePadding, binding.Characters.paddingTop,
+            sidePadding, binding.Characters.paddingBottom)
+        binding.ViewMode.setChipIconResource(if (grid) R.drawable.ic_grid else R.drawable.ic_list)
+        adapter.notifyDataSetChanged()
+    }
+
     private fun render(state: EndfieldCharUiState) {
         currentState = state
+        applyView(state.grid)
         binding.ProfileCard.visibility = if (state.loading) View.GONE else View.VISIBLE
         binding.Characters.visibility = if (state.loading) View.GONE else View.VISIBLE
         binding.Loading.setMessage(R.string.endfield_chars_loading)
@@ -90,15 +89,10 @@ class EndfieldCharsActivity : AppCompatActivity() {
         binding.AccountRow.Avatar.setOnClickListener { chooseAccount() }
         binding.Loading.visibility = if (state.loading) View.VISIBLE else View.GONE
         binding.RefreshButton.isEnabled = selected != null && !state.loading
-        val filtered = state.characters.filter { character ->
-            (rarityFilter == null || filterValue(character, 0) == rarityFilter) &&
-                (professionFilter == null || filterValue(character, 1) == professionFilter) &&
-                (propertyFilter == null || filterValue(character, 2) == propertyFilter)
-        }
-        adapter.submitList(filtered.sortedByDescending { it.level ?: -1 })
+        adapter.submitList(state.visibleCharacters)
         binding.Filters.visibility = if (state.characters.isNotEmpty() && !state.loading) View.VISIBLE else View.GONE
-        val active = rarityFilter != null || professionFilter != null || propertyFilter != null
-        binding.Filter.text = if (active) getString(R.string.assets_filter_count, filtered.size) else getString(R.string.filter)
+        val active = state.filters.active
+        binding.Filter.text = if (active) getString(R.string.assets_filter_count, state.visibleCharacters.size) else getString(R.string.filter)
         val color = getColor(if (active) R.color.asset_action_selected_text else R.color.home_text_primary)
         binding.Filter.setTextColor(color)
         binding.Filter.chipIconTint = android.content.res.ColorStateList.valueOf(color)
@@ -107,23 +101,18 @@ class EndfieldCharsActivity : AppCompatActivity() {
             state.accounts.isEmpty() -> getString(R.string.endfield_chars_no_account)
             state.error != null -> state.error
             state.characters.isEmpty() -> getString(R.string.endfield_chars_empty)
-            filtered.isEmpty() -> "没有符合筛选条件的干员"
+            state.visibleCharacters.isEmpty() -> getString(R.string.operator_filter_empty)
             else -> null
         }
         binding.EmptyMessage.text = message
         binding.EmptyMessage.visibility = if (message == null) View.GONE else View.VISIBLE
     }
 
-    private fun filterValue(character: EndfieldCharacter, kind: Int): String? = when (kind) {
-        0 -> EndfieldCharDisplay.stars(character.charData?.rarity?.value, character.charData?.rarity?.key)
-        1 -> character.charData?.profession?.value
-        else -> character.charData?.property?.value
-    }?.takeIf(String::isNotBlank)
-
     private fun showFilterDialog() {
         val content = com.blueskybone.arkscreen.databinding.DialogEndfieldCharFilterBinding.inflate(layoutInflater)
-        val selected = listOf(rarityFilter, professionFilter, propertyFilter)
-        val options = (0..2).map { kind -> currentState.characters.mapNotNull { filterValue(it, kind) }.distinct().sortedDescending() }
+        val filters = model.uiState.value.filters
+        val selected = listOf(filters.rarity, filters.profession, filters.property)
+        val options = model.uiState.value.filterOptions
         val groups = listOf(content.Rarity, content.Profession, content.Property).mapIndexed { index, container ->
             com.blueskybone.arkscreen.ui.common.view.getFlowRadioGroup(this).also { group ->
                 options[index].forEach { value ->
@@ -143,23 +132,20 @@ class EndfieldCharsActivity : AppCompatActivity() {
                     val checked = group.findViewById<View>(group.getCheckedRadioButtonId())
                     options[index].getOrNull(if (checked == null) -1 else group.indexOfChild(checked))
                 }
-                rarityFilter = values[0]; professionFilter = values[1]; propertyFilter = values[2]
-                render(currentState)
+                model.setFilters(EndfieldCharFilters(values[0], values[1], values[2]))
                 binding.Characters.scrollToPosition(0)
             }
             .setNegativeButton(R.string.cancel, null)
             .setNeutralButton(R.string.clear) { _, _ ->
-                rarityFilter = null; professionFilter = null; propertyFilter = null
-                render(currentState)
+                model.setFilters(EndfieldCharFilters())
                 binding.Characters.scrollToPosition(0)
             }.show()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putBoolean("grid", grid)
-        outState.putString("rarityFilter", rarityFilter)
-        outState.putString("professionFilter", professionFilter)
-        outState.putString("propertyFilter", propertyFilter)
+        outState.putString("rarityFilter", model.uiState.value.filters.rarity)
+        outState.putString("professionFilter", model.uiState.value.filters.profession)
+        outState.putString("propertyFilter", model.uiState.value.filters.property)
         super.onSaveInstanceState(outState)
     }
 
@@ -278,10 +264,10 @@ class EndfieldCharsActivity : AppCompatActivity() {
                 icon(binding.ProfessionIcon, EndfieldCharacterVisuals.professionIcon(data?.profession?.key, data?.profession?.value), data?.profession?.value)
                 icon(binding.PropertyIcon, EndfieldCharacterVisuals.propertyIcon(data?.property?.key, data?.property?.value), data?.property?.value)
                 binding.Level.text = character.level?.let { "Lv.$it" }.orEmpty()
-                binding.Evolve.text = character.evolvePhase?.let { "精$it" }.orEmpty()
+                binding.Evolve.text = character.evolvePhase?.let { binding.root.context.getString(R.string.operator_evolve_short, it) }.orEmpty()
                 binding.Evolve.contentDescription = character.evolvePhase?.let { binding.root.context.getString(R.string.endfield_char_evolve, it) }
-                binding.Potential.text = character.potentialLevel?.let { "潜$it" }.orEmpty()
-                binding.Potential.contentDescription = character.potentialLevel?.let { "潜能 $it" }
+                binding.Potential.text = character.potentialLevel?.let { binding.root.context.getString(R.string.operator_potential_short, it) }.orEmpty()
+                binding.Potential.contentDescription = character.potentialLevel?.let { binding.root.context.getString(R.string.endfield_char_potential, it) }
                 bindRarity(binding.RarityStripe, character)
             }
 
@@ -321,7 +307,7 @@ class EndfieldCharsActivity : AppCompatActivity() {
                 binding.Progress.text = listOfNotNull(
                     character.level?.let { "Lv.$it" },
                     character.evolvePhase?.let { binding.root.context.getString(R.string.endfield_char_evolve, it) },
-                    character.potentialLevel?.let { "潜能 $it" },
+                    character.potentialLevel?.let { binding.root.context.getString(R.string.endfield_char_potential, it) },
                 ).joinToString(" · ")
                 binding.Avatar.load(data?.avatarSqUrl?.takeIf(String::isNotBlank)) {
                     placeholder(R.drawable.ic_user)

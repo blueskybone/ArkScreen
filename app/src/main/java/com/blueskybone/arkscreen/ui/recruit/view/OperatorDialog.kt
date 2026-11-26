@@ -1,4 +1,4 @@
-package com.blueskybone.arkscreen.ui.recruit
+package com.blueskybone.arkscreen.ui.recruit.view
 
 import android.content.Context
 import android.view.LayoutInflater

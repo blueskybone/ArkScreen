@@ -58,7 +58,7 @@ class EndfieldHome : Fragment() {
     private companion object { const val CACHE_STALE_SECONDS = 24 * 60 * 60L }
     private val prefManager: SettingPrefManager by getKoin().inject()
     private val attendanceStates: AttendanceStateRepository by getKoin().inject()
-    private val viewModel: MainModel by activityViewModel()
+    private val viewModel: MainViewModel by activityViewModel()
     private var _binding: FragmentEndfieldHomeBinding? = null
     private val binding get() = requireNotNull(_binding)
     private var accountPopup: ListPopupWindow? = null
@@ -180,7 +180,7 @@ class EndfieldHome : Fragment() {
         }
         val now = System.currentTimeMillis() / 1000
         val age = (now - cache.sampledAt).coerceAtLeast(0)
-        val lastSync = getLastUpdateStr(age).let { if (it.isEmpty()) "刚刚" else "${it}前" }
+        val lastSync = getLastUpdateStr(age).let { if (it.isEmpty()) getString(R.string.time_just_now) else getString(R.string.time_ago, it) }
         card.LastSync.text = getString(R.string.home_updated_at, lastSync)
 
         card.Max.visibility = View.VISIBLE

@@ -39,4 +39,4 @@
 -keep,allowoptimization,allowshrinking,allowobfuscation class retrofit2.Response
 
 # JNI exports use the fully-qualified ImageProcessor class and method names.
--keep class com.blueskybone.arkscreen.ui.recruit.ocr.ImageProcessor { *; }
+-keep class com.blueskybone.arkscreen.platform.recruit.ocr.ImageProcessor { *; }

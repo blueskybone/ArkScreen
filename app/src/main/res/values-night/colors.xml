@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="endfield_primary">#F8DE05</color>
-    <color name="endfield_primary_dark">#C7AD00</color>
     <color name="endfield_on_surface_accent">#F8DE05</color>
     <color name="endfield_accent_container">#3F3A18</color>
     <color name="endfield_progress_track">#514E3F</color>
     <color name="pie_text">#F7F9FF</color>
-    <color name="asset_list_card_surface">@color/app_surface</color>
 
     <color name="tool_recruit_icon">#9CCAFF</color>
     <color name="tool_recruit_container">#233A54</color>
@@ -20,10 +17,6 @@
     <color name="tool_account_container">#303653</color>
     <color name="tool_game_icon">#FFB27A</color>
     <color name="tool_game_container">#4A2C1B</color>
-    <color name="tool_manual_icon">#83D8D1</color>
-    <color name="tool_manual_container">#23413F</color>
-    <color name="recruit_metadata_chip_background">#424242</color>
-    <color name="recruit_metadata_chip_text">#F3F3F3</color>
 
     <!-- Secondary containers must not fall back to the bright day palette. -->
     <color name="sec_con">#292D38</color>
@@ -43,11 +36,8 @@
     <color name="app_text_primary">#ECECEE</color>
     <color name="app_text_secondary">#B5B5BD</color>
     <color name="app_text_section">@color/app_text_secondary</color>
-    <color name="function_text_primary">@color/app_text_primary</color>
-    <color name="function_text_secondary">@color/app_text_secondary</color>
-    <color name="home_text_primary">@color/app_text_primary</color>
-    <color name="home_text_secondary">@color/app_text_secondary</color>
     <color name="home_inner_surface">#323234</color>
     <!-- Neutral track follows the surrounding surface. -->
     <color name="gacha_pull_track">#383A40</color>
+    <color name="operator_card_surface">@color/app_surface</color>
 </resources>

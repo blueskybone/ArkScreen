@@ -94,8 +94,8 @@ class AccountDialogHelper(
         onDelete: () -> Unit
     ): MenuDialog {
         return MenuDialog(context)
-            .add("复制UID") { onCopyUid() }
-            .add("复制昵称") { onCopyNickname() }
+            .add(context.getString(R.string.copy_uid)) { onCopyUid() }
+            .add(context.getString(R.string.copy_nickname)) { onCopyNickname() }
             .apply {
                 onExportCookie?.let {
                     add(context.getString(R.string.export_cookie)) { it() }

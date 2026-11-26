@@ -62,7 +62,7 @@ import java.net.URLEncoder
 
 class CharOwn : Fragment() {
 
-    private val model: CharModel by activityViewModel()
+    private val model: CharViewModel by activityViewModel()
     private var _binding: FragmentCharBinding? = null
     private val binding get() = _binding!!
 
@@ -83,7 +83,7 @@ class CharOwn : Fragment() {
                     withContext(Dispatchers.IO) {
                         context.contentResolver.openOutputStream(uri)?.use { output ->
                             output.write(model.generateExportText().toByteArray())
-                        } ?: error("无法创建导出文件")
+                        } ?: error(getString(R.string.error_export_file_create))
                     }
                 }
                 result.onSuccess {
@@ -103,9 +103,9 @@ class CharOwn : Fragment() {
                     withContext(Dispatchers.IO) {
                         context.contentResolver.openOutputStream(uri)?.use { output ->
                             check(bitmap.compress(Bitmap.CompressFormat.PNG, 100, output)) {
-                                "图片编码失败"
+                                getString(R.string.error_image_encode)
                             }
-                        } ?: error("无法创建导出文件")
+                        } ?: error(getString(R.string.error_export_file_create))
                     }
                 }
                 pendingPoster = null
@@ -242,7 +242,7 @@ class CharOwn : Fragment() {
             .setNegativeButton(R.string.cancel, null)
             .setNeutralButton(R.string.clear) { _, _ ->
                 scrollToTopOnNextData = true
-                model.applyFilter(null, CharModel.EvolveFilter.ALL, CharModel.RarityFilter.ALL)
+                model.applyFilter(null, CharViewModel.EvolveFilter.ALL, CharViewModel.RarityFilter.ALL)
                 renderFilterLabel()
             }
             .show()
@@ -449,11 +449,11 @@ class CharOwn : Fragment() {
             val uri = runCatching {
                 withContext(Dispatchers.IO) {
                     val directory = File(context.cacheDir, "operator_posters")
-                    check(directory.exists() || directory.mkdirs()) { "无法创建分享缓存" }
+                    check(directory.exists() || directory.mkdirs()) { getString(R.string.error_share_cache_create) }
                     val file = File(directory, "${safeFileName()}_six_star_e2.png")
                     file.outputStream().use { output ->
                         check(bitmap.compress(Bitmap.CompressFormat.PNG, 100, output)) {
-                            "图片编码失败"
+                            getString(R.string.error_image_encode)
                         }
                     }
                     FileProvider.getUriForFile(
@@ -532,15 +532,15 @@ class CharOwn : Fragment() {
         val filter2 = id2.takeIf { it != View.NO_ID }
             ?.let { levelRadioGroup.findViewById<View>(it) }
             ?.let { levelRadioGroup.indexOfChild(it) }
-            ?.let { CharModel.EvolveFilter.entries.getOrNull(it + 1) }
-            ?: CharModel.EvolveFilter.ALL
+            ?.let { CharViewModel.EvolveFilter.entries.getOrNull(it + 1) }
+            ?: CharViewModel.EvolveFilter.ALL
 
         val id3 = rarityRadioGroup.getCheckedRadioButtonId()
         val filter3 = id3.takeIf { it != View.NO_ID }
             ?.let { rarityRadioGroup.findViewById<View>(it) }
             ?.let { rarityRadioGroup.indexOfChild(it) }
-            ?.let { CharModel.RarityFilter.entries.getOrNull(it + 1) }
-            ?: CharModel.RarityFilter.ALL
+            ?.let { CharViewModel.RarityFilter.entries.getOrNull(it + 1) }
+            ?: CharViewModel.RarityFilter.ALL
 
         scrollToTopOnNextData = true
         model.applyFilter(filter1, filter2, filter3)
@@ -551,8 +551,8 @@ class CharOwn : Fragment() {
         val filter = model.currentFilter
         val active = listOf(
             filter.profession != null,
-            filter.evolve != CharModel.EvolveFilter.ALL,
-            filter.rarity != CharModel.RarityFilter.ALL,
+            filter.evolve != CharViewModel.EvolveFilter.ALL,
+            filter.rarity != CharViewModel.RarityFilter.ALL,
         ).any { it }
         headerAdapter.submitFilterCount(if (active) model.charsList.value?.size ?: 0 else -1)
     }
@@ -573,11 +573,11 @@ class CharOwn : Fragment() {
                 profRadioGroup.getChildAt(index)?.let { profRadioGroup.check(it.id) }
             }
         }
-        if (filter.evolve != CharModel.EvolveFilter.ALL) {
+        if (filter.evolve != CharViewModel.EvolveFilter.ALL) {
             levelRadioGroup.getChildAt(filter.evolve.ordinal - 1)
                 ?.let { levelRadioGroup.check(it.id) }
         }
-        if (filter.rarity != CharModel.RarityFilter.ALL) {
+        if (filter.rarity != CharViewModel.RarityFilter.ALL) {
             rarityRadioGroup.getChildAt(filter.rarity.ordinal - 1)
                 ?.let { rarityRadioGroup.check(it.id) }
         }

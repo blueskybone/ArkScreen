@@ -35,7 +35,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  */
 class AccountMngActivity : AppCompatActivity() {
 
-    private val model: AccountModel by viewModel()
+    private val model: AccountViewModel by viewModel()
     private lateinit var binding: ActivityAccountMngBinding
     private lateinit var dialogHelper: AccountDialogHelper
 
@@ -265,7 +265,7 @@ class AccountMngActivity : AppCompatActivity() {
                     }
                 },
                 onFailure = { error ->
-                    Toaster.show(error.message ?: "账号导出失败")
+                    Toaster.show(error.message ?: getString(R.string.error_account_export))
                 },
             )
         }

@@ -41,7 +41,7 @@ import timber.log.Timber
 * */
 
 class GachaStatsFragment : Fragment() {
-    private val model: GachaModel by activityViewModel()
+    private val model: GachaViewModel by activityViewModel()
 
     private var _binding: FragmentGachaStatisBinding? = null
     private val binding get() = _binding!!

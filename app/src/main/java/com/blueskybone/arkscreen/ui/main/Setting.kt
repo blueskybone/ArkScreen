@@ -29,7 +29,7 @@ import timber.log.Timber
  */
 class Setting : Fragment() {
     private var _binding: FragmentSettingBinding? = null
-    private val model: MainModel by activityViewModel()
+    private val model: MainViewModel by activityViewModel()
     private val binding get() = _binding!!
     private val prefManager: SettingPrefManager by getKoin().inject()
     private val appThemeController: AppThemeController by getKoin().inject()

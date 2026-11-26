@@ -1,10 +1,12 @@
 package com.blueskybone.arkscreen.ui.widget
 
+import com.blueskybone.arkscreen.platform.widget.WidgetWorkScheduler
+import com.blueskybone.arkscreen.domain.usecase.widget.WidgetAccountResolver
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
-import com.blueskybone.arkscreen.data.local.room.WidgetConfig
+import com.blueskybone.arkscreen.domain.model.widget.WidgetConfig
 import android.content.Intent
 import android.widget.RemoteViews
 import com.blueskybone.arkscreen.R
@@ -50,7 +52,7 @@ data class NextWidgetRenderData(
  */
 abstract class BaseNextWidgetProvider : AppWidgetProvider() {
     private val snapshots: com.blueskybone.arkscreen.data.local.cache.RealtimeCacheStore by getKoin().inject()
-    private val configs: com.blueskybone.arkscreen.data.local.room.dao.WidgetConfigDao by getKoin().inject()
+    private val configs: com.blueskybone.arkscreen.domain.repository.WidgetConfigRepository by getKoin().inject()
     private val accounts: com.blueskybone.arkscreen.domain.repository.AccountRepository by getKoin().inject()
     private val settings: SettingPrefManager by getKoin().inject()
     private val attendanceStates: AttendanceStateRepository by getKoin().inject()
@@ -84,8 +86,8 @@ abstract class BaseNextWidgetProvider : AppWidgetProvider() {
                 val current = accounts.observeCurrentSkAcc().first()
                 appWidgetIds.forEach { appWidgetId ->
                     if (appWidgetManager.getAppWidgetInfo(appWidgetId) == null) return@forEach
-                    val config = configs.getWithAppearance(appWidgetId, templatePrefs)
-                    val account = com.blueskybone.arkscreen.platform.widget.WidgetAccountResolver.resolve(config, accountList, current)
+                    val config = configs.load(appWidgetId)
+                    val account = com.blueskybone.arkscreen.domain.usecase.widget.WidgetAccountResolver.resolve(config, accountList, current)
                     if (account == null) {
                         val views = RemoteViews(context.packageName, R.layout.widget_account_missing)
                         views.setOnClickPendingIntent(R.id.widget_root, WidgetAccountConfigActivity.pendingIntent(context, appWidgetId))
@@ -165,7 +167,7 @@ abstract class BaseNextWidgetProvider : AppWidgetProvider() {
         val items = WidgetInfoMapper(context, cache, settings, appClock)
             .mapAll(attendanceState = attendanceState)
             .associateBy(WidgetInfoItem::type)
-        val compactMapper = WidgetCompactInfoMapper(cache, appClock)
+        val compactMapper = WidgetCompactInfoMapper(context, cache, appClock)
         return NextWidgetRenderData(
             items = selectedTypes.map(items::getValue),
             compactItems = selectedTypes.associateWith { type ->

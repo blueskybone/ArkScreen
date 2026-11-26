@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.ui.recruit
 
+import com.blueskybone.arkscreen.domain.model.settings.RecruitModeSetting
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -12,15 +13,15 @@ import com.blueskybone.arkscreen.domain.model.recruit.RecruitOpe
 import com.blueskybone.arkscreen.domain.model.recruit.RecruitResult
 import com.blueskybone.arkscreen.ui.common.bindinginfo.RecruitMode
 import com.blueskybone.arkscreen.ui.common.showChoicePopup
-import com.blueskybone.arkscreen.ui.recruit.screenshot.FloatingAppearance
-import com.blueskybone.arkscreen.ui.recruit.screenshot.FloatWindowController
+import com.blueskybone.arkscreen.ui.recruit.floating.FloatingAppearance
+import com.blueskybone.arkscreen.ui.recruit.floating.FloatWindowController
 import com.google.android.material.slider.Slider
 import org.koin.android.ext.android.inject
 
 class FloatingSettingsActivity : AppCompatActivity() {
     private val prefs: SettingPrefManager by inject()
     private var style = FloatingAppearance()
-    private var mode = RecruitMode.FLOATWINDOW
+    private var mode = RecruitModeSetting.FLOATWINDOW
     private lateinit var binding: com.blueskybone.arkscreen.databinding.ActivityFloatingSettingsBinding
     private lateinit var preview: FrameLayout
     private lateinit var ballPreview: FrameLayout
@@ -43,11 +44,11 @@ class FloatingSettingsActivity : AppCompatActivity() {
         preview = binding.Preview
         ballPreview = binding.BallPreview
         modeHint = binding.ModeHint
-        modeHint.visibility = if (mode == RecruitMode.AUTO) View.VISIBLE else View.GONE
-        choice(binding.ModeRow.root, "展示方式", RecruitMode.getEntries(this).toList(), RecruitMode.getEntryValues().indexOf(mode)) {
+        modeHint.visibility = if (mode == RecruitModeSetting.AUTO) View.VISIBLE else View.GONE
+        choice(binding.ModeRow.root, getString(R.string.recruit_display_mode), RecruitMode.getEntries(this).toList(), RecruitMode.getEntryValues().indexOf(mode)) {
             mode = RecruitMode.getEntryValues()[it]
-            modeHint.visibility = if (mode == RecruitMode.AUTO) View.VISIBLE else View.GONE
-            if (mode == RecruitMode.TOAST) com.hjq.toast.Toaster.show("示例：召唤 · 4★\n梅尔、豆苗")
+            modeHint.visibility = if (mode == RecruitModeSetting.AUTO) View.VISIBLE else View.GONE
+            if (mode == RecruitModeSetting.TOAST) com.hjq.toast.Toaster.show(getString(R.string.recruit_preview_toast))
         }
         choice(binding.StyleRow.root, getString(R.string.floating_content_style),
             listOf(getString(R.string.floating_style_modern), getString(R.string.simple)),
@@ -55,16 +56,16 @@ class FloatingSettingsActivity : AppCompatActivity() {
             style = style.copy(colorful = it == 0)
             render()
         }
-        slider(binding.WidthSlider.root, "悬浮窗宽度", "预览实时更新，点击保存后应用", 140f, 260f, 10f, style.width, "dp") { style=style.copy(width=it); render() }
-        slider(binding.HeightSlider.root, "悬浮窗高度", "预览实时更新，点击保存后应用", 160f, 360f, 20f, style.height, "dp") { style=style.copy(height=it); render() }
-        slider(binding.FontSlider.root, "字体大小", "按比例调整标题、标签与干员文字", 60f, 100f, 5f, style.font, "%") { style=style.copy(font=it); render() }
-        slider(binding.BallSlider.root, "悬浮球大小", "预览实时更新，点击保存后应用", 48f, 72f, 2f, style.ballSize, "dp") { style=style.copy(ballSize=it); render() }
+        slider(binding.WidthSlider.root, getString(R.string.floating_window_width), getString(R.string.appearance_preview_save_hint), 140f, 260f, 10f, style.width, "dp") { style=style.copy(width=it); render() }
+        slider(binding.HeightSlider.root, getString(R.string.floating_window_height), getString(R.string.appearance_preview_save_hint), 160f, 360f, 20f, style.height, "dp") { style=style.copy(height=it); render() }
+        slider(binding.FontSlider.root, getString(R.string.font_size), getString(R.string.recruit_font_scale_hint), 60f, 100f, 5f, style.font, "%") { style=style.copy(font=it); render() }
+        slider(binding.BallSlider.root, getString(R.string.floating_ball_size), getString(R.string.appearance_preview_save_hint), 48f, 72f, 2f, style.ballSize, "dp") { style=style.copy(ballSize=it); render() }
         colorPalette()
         binding.Save.setOnClickListener {
             style.save(prefs); prefs.recruitMode.set(mode)
             org.koin.mp.KoinPlatform.getKoin().get<com.blueskybone.arkscreen.platform.tile.RecruitFloatingBallController>().refreshAppearance()
             org.koin.mp.KoinPlatform.getKoin().get<FloatWindowController>().refreshAppearance()
-            com.hjq.toast.Toaster.show("已保存")
+            com.hjq.toast.Toaster.show(getString(R.string.status_saved))
         }
         preview.post { render() }
     }
@@ -87,7 +88,7 @@ class FloatingSettingsActivity : AppCompatActivity() {
         flow.itemGap = 0
         FloatingAppearance.colors.forEachIndexed { index,key ->
             val swatch=(layoutInflater.inflate(R.layout.item_floating_color, flow, false) as ImageView).apply {
-                contentDescription=FloatingAppearance.colorNames[index]
+                contentDescription=resources.getStringArray(R.array.floating_color_names)[index]
                 setOnClickListener { style=style.copy(ballColor=key); updateSwatches(); render() }
             }
             flow.addView(swatch)
@@ -101,12 +102,12 @@ class FloatingSettingsActivity : AppCompatActivity() {
             val selected = key == style.ballColor
             val background = ContextCompat.getDrawable(this, R.drawable.bg_floating_color)!!.mutate() as android.graphics.drawable.LayerDrawable
             (background.findDrawableByLayerId(R.id.ColorRing) as android.graphics.drawable.GradientDrawable)
-                .setStroke(dp(2), if(selected) swatchStyle.fillColor() else android.graphics.Color.TRANSPARENT)
-            (background.findDrawableByLayerId(R.id.ColorFill) as android.graphics.drawable.GradientDrawable).setColor(swatchStyle.fillColor())
+                .setStroke(dp(2), if(selected) swatchStyle.fillColor(this) else android.graphics.Color.TRANSPARENT)
+            (background.findDrawableByLayerId(R.id.ColorFill) as android.graphics.drawable.GradientDrawable).setColor(swatchStyle.fillColor(this))
             view.background = background
             view.isSelected=key==style.ballColor
             view.setImageResource(if(view.isSelected) R.drawable.ic_ball_success else 0)
-            view.setColorFilter(android.graphics.Color.rgb(25, 30, 28))
+            view.setColorFilter(ContextCompat.getColor(this, R.color.floating_color_checkmark))
         }
     }
     private fun choice(row: View, title:String, values:List<String>, selected:Int, changed:(Int)->Unit) {

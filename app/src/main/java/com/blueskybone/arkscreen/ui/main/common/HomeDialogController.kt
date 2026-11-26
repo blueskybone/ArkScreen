@@ -9,7 +9,7 @@ import com.blueskybone.arkscreen.domain.usecase.account.SyncAccountSkUseCase
 import com.blueskybone.arkscreen.ui.common.view.configureLinkInput
 import com.blueskybone.arkscreen.ui.common.view.configurePasswordLogin
 import com.blueskybone.arkscreen.ui.common.view.configureSingleInput
-import com.blueskybone.arkscreen.ui.main.MainModel
+import com.blueskybone.arkscreen.ui.main.MainViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.blueskybone.arkscreen.ui.common.showDestructiveConfirmation
 import com.hjq.toast.Toaster
@@ -20,7 +20,7 @@ import com.hjq.toast.Toaster
  */
 class HomeDialogController(
     private val fragment: Fragment,
-    private val viewModel: MainModel,
+    private val viewModel: MainViewModel,
     private val onLaunchWebLogin: () -> Unit
 ) {
 

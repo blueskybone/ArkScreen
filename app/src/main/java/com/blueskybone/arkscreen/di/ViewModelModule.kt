@@ -1,22 +1,31 @@
 package com.blueskybone.arkscreen.di
 
-import com.blueskybone.arkscreen.ui.account.AccountModel
-import com.blueskybone.arkscreen.ui.character.CharModel
-import com.blueskybone.arkscreen.ui.character.EndfieldCharModel
-import com.blueskybone.arkscreen.ui.gacha.GachaModel
-import com.blueskybone.arkscreen.ui.gacha.EndfieldGachaModel
-import com.blueskybone.arkscreen.ui.main.MainModel
-import com.blueskybone.arkscreen.ui.realtime.RealTimeModel
-import com.blueskybone.arkscreen.ui.realtime.EndfieldRealtimeModel
-import com.blueskybone.arkscreen.ui.recruit.RecruitModel
+import com.blueskybone.arkscreen.ui.account.AccountViewModel
+import com.blueskybone.arkscreen.ui.character.CharViewModel
+import com.blueskybone.arkscreen.ui.character.EndfieldCharViewModel
+import com.blueskybone.arkscreen.ui.gacha.GachaViewModel
+import com.blueskybone.arkscreen.ui.gacha.EndfieldGachaViewModel
+import com.blueskybone.arkscreen.ui.main.MainViewModel
+import com.blueskybone.arkscreen.ui.realtime.RealTimeViewModel
+import com.blueskybone.arkscreen.ui.realtime.EndfieldRealtimeViewModel
+import com.blueskybone.arkscreen.ui.recruit.RecruitViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import org.koin.android.ext.koin.androidContext
 
 val viewModelModule = module {
-    viewModel { EndfieldGachaModel(accounts = get(), repository = get()) }
-    viewModel { AccountModel(get(), get(), get()) }
+    factory<com.blueskybone.arkscreen.ui.common.UiStrings> {
+        val context = androidContext()
+        object : com.blueskybone.arkscreen.ui.common.UiStrings {
+            override fun get(id: Int, vararg args: Any): String = context.getString(id, *args)
+        }
+    }
+    viewModel { com.blueskybone.arkscreen.ui.widget.WidgetEditorViewModel(get(), get(), get(), get(), get()) }
+    viewModel { EndfieldGachaViewModel(accounts = get(), repository = get(), texts = get()) }
+    viewModel { AccountViewModel(get(), get(), get(), get()) }
     viewModel {
-        MainModel(
+        MainViewModel(
+            texts = get(),
             repoAcc = get(),
             homeContentRepository = get(),
             remoteConfigRepository = get(),
@@ -30,7 +39,8 @@ val viewModelModule = module {
         )
     }
     viewModel {
-        GachaModel(
+        GachaViewModel(
+            texts = get(),
             repo = get(),
             repoAcc = get(),
             syncRecordsUseCase = get(),
@@ -41,7 +51,8 @@ val viewModelModule = module {
         )
     }
     viewModel {
-        RecruitModel(
+        RecruitViewModel(
+            texts = get(),
             repo = get(),
             databaseProvider = get(),
             calcResultUseCase = get(),
@@ -49,7 +60,8 @@ val viewModelModule = module {
         )
     }
     viewModel {
-        RealTimeModel(
+        RealTimeViewModel(
+            texts = get(),
             getRealTimeUseCase = get(),
             repo = get(),
             widgetUpdates = get(),
@@ -58,7 +70,8 @@ val viewModelModule = module {
         )
     }
     viewModel {
-        CharModel(
+        CharViewModel(
+            texts = get(),
             repo = get(),
             repoAcc = get(),
             getCharAssetsUseCase = get(),
@@ -69,6 +82,6 @@ val viewModelModule = module {
             textTranslator = get(),
         )
     }
-    viewModel { EndfieldCharModel(accounts = get(), skland = get()) }
-    viewModel { EndfieldRealtimeModel(accounts = get(), skland = get()) }
+    viewModel { EndfieldCharViewModel(accounts = get(), skland = get(), settings = get(), texts = get()) }
+    viewModel { EndfieldRealtimeViewModel(accounts = get(), skland = get(), texts = get()) }
 }

@@ -13,12 +13,12 @@
         android:orientation="vertical"
         android:padding="12dp">
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/text_button_close"
             android:layout_width="16dp" android:layout_height="16dp"
             android:layout_gravity="end" android:padding="4dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_ball_close" android:tint="@color/home_text_primary"
+            android:src="@drawable/ic_ball_close" app:tint="@color/home_text_primary"
             android:contentDescription="@string/close" />
 
         <com.blueskybone.arkscreen.ui.common.view.FlowLayout

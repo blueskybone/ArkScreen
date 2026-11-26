@@ -10,7 +10,7 @@ import androidx.core.view.setPadding
 import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
 import com.blueskybone.arkscreen.data.local.pref.WidgetTemplatePrefManager
-import com.blueskybone.arkscreen.data.local.room.WidgetConfig
+import com.blueskybone.arkscreen.domain.model.widget.WidgetConfig
 import com.blueskybone.arkscreen.domain.model.cache.RealtimeCacheSnapshot
 import com.blueskybone.arkscreen.domain.model.attendance.AccountAttendanceState
 import com.blueskybone.arkscreen.domain.service.AppClock
@@ -34,7 +34,7 @@ internal class WidgetPreviewRenderer(
     private val selectedStyle = WidgetVisualStyle.fromKey(config.theme.orEmpty())
     private val layout1x2Mode = if (config.layout1x2 == "dense") Layout1x2Mode.DENSE else Layout1x2Mode.SINGLE
     private val layoutMode = if (config.layout2x3 == "full") LayoutMode.FULL else LayoutMode.FOUR
-    private val compactInfoMapper = WidgetCompactInfoMapper(cache, appClock)
+    private val compactInfoMapper = WidgetCompactInfoMapper(context, cache, appClock)
     private val previewItems = WidgetInfoMapper(this, cache, settings, appClock)
         .mapAll(attendanceState = attendance).associateBy(WidgetInfoItem::type)
     private val frame = FrameLayout(this).apply {
@@ -151,9 +151,9 @@ internal class WidgetPreviewRenderer(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                 )
-                addView(denseSummary("公招", fixed[2]))
-                addView(denseSummary("刷新", fixed[3]))
-                addView(denseSummary("会客", fixed[5]))
+                addView(denseSummary(getString(R.string.recruit_short_label), fixed[2]))
+                addView(denseSummary(getString(R.string.refresh), fixed[3]))
+                addView(denseSummary(getString(R.string.meeting_short_label), fixed[5]))
             }
         )
         previewWidget.addView(

@@ -2,7 +2,7 @@ package com.blueskybone.arkscreen.domain.repository
 
 
 import com.blueskybone.arkscreen.domain.model.account.AccountEf
-import com.blueskybone.arkscreen.data.network.model.EndfieldCharacter
+import com.blueskybone.arkscreen.domain.model.operator.endfield.EndfieldCharacterAssets
 import com.blueskybone.arkscreen.domain.model.account.AccountSk
 import com.blueskybone.arkscreen.domain.model.cache.ApCache
 import com.blueskybone.arkscreen.domain.model.cache.EndfieldStaminaCache
@@ -28,7 +28,7 @@ interface SklandRepository {
 
     suspend fun fetchCharAssets(account: AccountSk): Result<OperatorAssets>    //解析干员资产
 
-    suspend fun fetchEndfieldCharacters(account: AccountEf): Result<Pair<List<EndfieldCharacter>, String?>>
+    suspend fun fetchEndfieldCharacters(account: AccountEf): Result<EndfieldCharacterAssets>
 
     suspend fun fetchEndfieldRealtime(account: AccountEf): Result<EndfieldRealtimeSnapshot>
 
