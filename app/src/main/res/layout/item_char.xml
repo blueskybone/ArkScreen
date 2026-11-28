@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="5dp" android:paddingEnd="5dp" android:paddingBottom="10dp">
-
-    <com.google.android.material.card.MaterialCardView style="@style/CardViewChip" app:cardCornerRadius="5dp" android:layout_margin="0dp">
-
+    android:paddingStart="5dp"
+    android:paddingEnd="5dp"
+    android:paddingBottom="10dp">
+    <com.google.android.material.card.MaterialCardView
+        style="@style/CardViewChip"
+        app:cardCornerRadius="5dp"
+        android:layout_margin="0dp">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center">
-
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/Avatar"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="5dp"
-                    android:src="@drawable/char_ex_christ"
-                    app:shapeAppearanceOverlay="@style/RoundedImageView" />
 
+                    app:shapeAppearanceOverlay="@style/RoundedImageView" />
                 <ImageView
                     android:id="@+id/Profession"
                     android:layout_width="20dp"
@@ -33,38 +34,32 @@
                     android:layout_gravity="start|top"
                     android:layout_margin="5dp"
                     android:contentDescription="@null" />
-
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|bottom"
                     android:layout_margin="5dp"
-                    android:background="@color/trans_grey"
+                    android:background="@color/operator_info_scrim"
                     android:gravity="center"
                     android:orientation="horizontal"
                     app:layout_constraintBottom_toBottomOf="@id/Avatar"
                     app:layout_constraintEnd_toEndOf="@id/Avatar">
-
                     <ImageView
                         android:id="@+id/Evolve"
                         android:layout_width="14dp"
                         android:layout_height="14dp" />
-
                     <TextView
                         android:id="@+id/Level"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
                         android:textSize="11sp" />
-
                     <ImageView
                         android:id="@+id/Potential"
                         android:layout_width="14dp"
                         android:layout_height="14dp" />
-
                 </LinearLayout>
             </FrameLayout>
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -73,7 +68,6 @@
                 android:layout_marginEnd="5dp"
                 android:layout_marginBottom="5dp"
                 android:orientation="vertical">
-
                 <TextView
                     android:id="@+id/Name"
                     android:layout_width="wrap_content"
@@ -81,54 +75,39 @@
                     android:textColor="?attr/colorOnBackground"
                     android:textSize="12sp"
                     android:textStyle="bold" />
-
                 <LinearLayout
                     android:id="@+id/Skills"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
                     <include
                         android:id="@+id/Skill1"
                         layout="@layout/icon_skill" />
-
                     <include
                         android:id="@+id/Skill2"
                         layout="@layout/icon_skill" />
-
                     <include
                         android:id="@+id/Skill3"
                         layout="@layout/icon_skill" />
-
                 </LinearLayout>
-
                 <LinearLayout
                     android:id="@+id/Equips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
                     <include
                         android:id="@+id/Equip1"
                         layout="@layout/icon_equip" />
-
                     <include
                         android:id="@+id/Equip2"
                         layout="@layout/icon_equip" />
-
                     <include
                         android:id="@+id/Equip3"
                         layout="@layout/icon_equip" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-        <!--        <View-->
-        <!--            android:background="@drawable/gradient_bg"-->
-        <!--            android:layout_width="36dp"-->
-        <!--            android:layout_gravity="end|bottom"-->
-        <!--            android:layout_height="36dp" />-->
     </com.google.android.material.card.MaterialCardView>
-
     <TextView
         android:id="@+id/Rarity"
         android:layout_width="wrap_content"

@@ -143,7 +143,7 @@ class EndfieldHome : Fragment() {
                     if (showBanner) bannerController.submitList(videos)
                     binding.Announce.text = state.announce
                     val account = state.currentAccountEf ?: state.accountEfList.firstOrNull()?.account
-                    binding.AccountSelector.CurrentAccount.text = account?.nickName ?: getString(R.string.login_account)
+                    binding.AccountSelector.CurrentAccount.text = account?.nickName ?: getString(R.string.add_skland_account)
                     renderStaminaCache(state)
                     val showAnnounce = prefManager.showHomeAnnounce.get()
                     binding.AnnounceTitle.visibility = if (showAnnounce) View.VISIBLE else View.GONE

@@ -77,7 +77,7 @@ fun bindSkillView(context: Context, view: IconSkillBinding, skill: Operator.Skil
 
 fun resetSkillView(view: IconSkillBinding) {
     view.root.visibility = View.GONE
-    view.Icon.setImageResource(R.drawable.skill_icon_default)
+    view.Icon.load(null)
     view.Icon.alpha = 0.0F
     view.Special.visibility = View.GONE
     view.MainRank.visibility = View.GONE
@@ -85,7 +85,7 @@ fun resetSkillView(view: IconSkillBinding) {
 
 fun resetSkillView(view: IconSkillLargeBinding) {
     view.root.visibility = View.GONE
-    view.Icon.setImageResource(R.drawable.skill_icon_default)
+    view.Icon.load(null)
     view.Icon.alpha = 0.0F
     view.Special.visibility = View.GONE
     view.MainRank.visibility = View.GONE
@@ -150,7 +150,7 @@ fun bindEquipView(view: IconEquipBinding, equip: Operator.Equip) {
 
 fun resetEquipView(view: IconEquipBinding) {
     view.root.visibility = View.GONE
-    view.Icon.setImageResource(R.drawable.skill_icon_default)
+    view.Icon.load(null)
     view.Icon.alpha = 0.0F
     view.Stage.visibility = View.GONE
 }

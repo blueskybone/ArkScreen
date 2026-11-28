@@ -49,7 +49,8 @@ internal class EndfieldPoolAdapter : ListAdapter<EndfieldPoolProgress, EndfieldP
                 LayoutInflater.from(binding.Hits.context), binding.Hits, false,
             )
             row.Date.text = formatGachaTime(hit.gachaTs, "MM-dd")
-            row.Name.text = hit.name + if (hit.isNew) " · N" else ""
+            row.Name.text = hit.name
+            row.IsNew.visibility = if (hit.isNew) View.VISIBLE else View.GONE
             row.Progress.max = pool.smallMax ?: 80
             row.Progress.progress = hit.pity.coerceAtMost(row.Progress.max)
             row.Progress.setIndicatorColor(androidx.core.content.ContextCompat.getColor(

@@ -40,7 +40,7 @@ class LicenseDetailActivity : AppCompatActivity() {
                 }
             }.getOrNull()
             if (library == null) {
-                Toaster.show(getString(R.string.license_load_failed))
+                Toaster.show(getString(R.string.error_load_failed))
                 finish()
             } else {
                 render(library)

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="48dp"
@@ -9,22 +10,20 @@
     android:paddingTop="8dp"
     android:paddingEnd="16dp"
     android:paddingBottom="8dp">
-
     <TextView
         android:id="@+id/ChoiceLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:maxLines="2"
-        android:textColor="@color/function_text_primary"
+        android:textColor="@color/app_text_primary"
         android:textSize="16sp" />
-
     <TextView
         android:id="@+id/ChoiceMark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:importantForAccessibility="no"
-        android:textColor="@color/function_text_primary"
+        android:textColor="@color/app_text_primary"
         android:textSize="18sp" />
 </LinearLayout>

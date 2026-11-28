@@ -4,6 +4,24 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.domain.model.operator.endfield.EndfieldTalentState
 
 internal object EndfieldCharacterVisuals {
+    fun label(context: android.content.Context, key: String): String {
+        val res = when (key) {
+            "profession_guard" -> R.string.ef_profession_guard
+            "profession_caster" -> R.string.ef_profession_caster
+            "profession_assault" -> R.string.ef_profession_assault
+            "profession_vanguard" -> R.string.ef_profession_vanguard
+            "profession_defender" -> R.string.ef_profession_defender
+            "profession_supporter" -> R.string.ef_profession_supporter
+            "char_property_fire" -> R.string.ef_property_fire
+            "char_property_pulse" -> R.string.ef_property_pulse
+            "char_property_cryst" -> R.string.ef_property_cryst
+            "char_property_natural" -> R.string.ef_property_natural
+            "char_property_physical" -> R.string.ef_property_physical
+            else -> return key
+        }
+        return context.getString(res)
+    }
+
     fun professionIcon(key: String?, value: String?): Int? {
         val label = value?.takeIf(String::isNotBlank)?.lowercase() ?: key.orEmpty().lowercase()
         return when {

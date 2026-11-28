@@ -30,6 +30,10 @@ import com.blueskybone.arkscreen.databinding.ItemEndfieldCharTalentIconBinding
 import com.blueskybone.arkscreen.platform.time.TimeUtils.getTimeStr
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.android.ext.android.inject
+import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
+import com.blueskybone.arkscreen.domain.usecase.operator.EndfieldOperatorCatalog
+import com.blueskybone.arkscreen.ui.common.openLink
 
 class EndfieldCharDetailFragment : Fragment() {
     companion object {
@@ -40,6 +44,7 @@ class EndfieldCharDetailFragment : Fragment() {
         }
     }
 
+    private val settings: SettingPrefManager by inject()
     private val model: EndfieldCharViewModel by activityViewModel()
     private var _binding: FragmentEndfieldCharDetailBinding? = null
     private val binding get() = requireNotNull(_binding)
@@ -73,6 +78,11 @@ class EndfieldCharDetailFragment : Fragment() {
                     } else {
                         binding.Status.visibility = View.GONE
                         render(character)
+                        val wiki = EndfieldOperatorCatalog.wikiEntry(state.catalog, character)
+                        binding.Wiki.visibility = if (wiki == null) View.GONE else View.VISIBLE
+                        binding.Wiki.setOnClickListener {
+                            wiki?.let { openLink(requireContext(), endfieldWikiUrl(it.wikiId), settings) }
+                        }
                     }
                 }
             }

@@ -20,7 +20,6 @@ import com.blueskybone.arkscreen.domain.model.realtime.RealTimeData
 import com.blueskybone.arkscreen.domain.repository.SklandRepository
 import com.blueskybone.arkscreen.domain.service.RecoveryReminderScheduler
 import com.blueskybone.arkscreen.ui.main.MainActivity
-import kotlinx.coroutines.CancellationException
 import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
@@ -90,8 +89,10 @@ class RecoveryReminderController(
                 }
                 if (candidates.isNotEmpty()) {
                     // A failed asset lookup must not create an unverified shift reminder.
-                    val owned = runCatching { skland.fetchCharAssets(account).getOrNull() }
-                        .onFailure { if (it is CancellationException) throw it }
+                    val owned = skland.fetchCharAssets(account)
+                        .onFailure {
+                            Timber.tag("RecoveryReminder").w(it, "Skipping training shift reminders: asset lookup failed")
+                        }
                         .getOrNull()?.operators.orEmpty()
                         .filter { it.evolvePhase >= 2 }
                         .map { it.name }
@@ -213,7 +214,7 @@ class RecoveryReminderController(
             return
         }
         notifications.createNotificationChannel(NotificationChannel(
-            CHANNEL_ID, appContext.getString(R.string.recovery_notification_channel),
+            CHANNEL_ID, appContext.getString(R.string.recovery_notifications),
             NotificationManager.IMPORTANCE_DEFAULT,
         ))
         val openApp = PendingIntent.getActivity(
@@ -225,7 +226,7 @@ class RecoveryReminderController(
         val message = event.message + "\n" + appContext.getString(R.string.recovery_planned_time, plannedTime)
         val notification = NotificationCompat.Builder(appContext, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(appContext.getString(R.string.recovery_notification_title))
+            .setContentTitle(appContext.getString(R.string.recovery_notifications))
             .setContentText(message)
             .setStyle(NotificationCompat.BigTextStyle().bigText(message))
             .setWhen(event.at * 1000)

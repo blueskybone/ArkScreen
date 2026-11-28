@@ -18,4 +18,5 @@
     <cache-path
         name="operator_posters"
         path="operator_posters/" />
+    <cache-path name="gacha_posters" path="gacha_posters/" />
 </paths>

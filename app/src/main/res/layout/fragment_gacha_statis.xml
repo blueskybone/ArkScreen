@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/NestedScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:orientation="vertical">
-
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
-
+        <com.google.android.material.card.MaterialCardView
+            style="@style/PageContentCard">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -25,7 +23,6 @@
                     android:paddingStart="16dp"
                     android:paddingTop="16dp"
                     android:paddingEnd="16dp">
-
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                         android:layout_width="match_parent"
@@ -35,14 +32,12 @@
                         app:boxCornerRadiusBottomStart="12dp"
                         app:boxCornerRadiusTopEnd="12dp"
                         app:boxCornerRadiusTopStart="12dp">
-
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/PoolDropdown"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="none" />
                     </com.google.android.material.textfield.TextInputLayout>
-
                     <TextView
                         android:id="@+id/RecordsCount"
                         android:layout_width="wrap_content"
@@ -51,18 +46,15 @@
                         android:textAppearance="?attr/textAppearanceSubtitle2"
                         android:textColor="?android:attr/textColorSecondary" />
                 </LinearLayout>
-
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/PieChart"
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     android:layout_margin="16dp" />
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
-
+        <com.google.android.material.card.MaterialCardView
+            style="@style/PageContentCard">
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -73,14 +65,12 @@
                 android:padding="10dp"
                 android:rowCount="4"
                 android:useDefaultMargins="true">
-
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:text="6★"
                     android:textColor="@color/rare_6" />
-
                 <TextView
                     android:id="@+id/Rare6Count"
                     android:layout_width="0dp"
@@ -88,7 +78,6 @@
                     android:layout_columnWeight="1"
                     android:text="共 - 个"
                     android:textColor="@color/rare_6" />
-
                 <TextView
                     android:id="@+id/Rare6Percent"
                     android:layout_width="0dp"
@@ -96,7 +85,6 @@
                     android:layout_columnWeight="1"
                     android:text="占 - %"
                     android:textColor="@color/rare_6" />
-
                 <TextView
                     android:id="@+id/Rare6Ave"
                     android:layout_width="0dp"
@@ -104,14 +92,12 @@
                     android:layout_columnWeight="1"
                     android:text="- 抽/个"
                     android:textColor="@color/rare_6" />
-
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:text="5★"
                     android:textColor="@color/rare_5" />
-
                 <TextView
                     android:id="@+id/Rare5Count"
                     android:layout_width="0dp"
@@ -119,7 +105,6 @@
                     android:layout_columnWeight="1"
                     android:text="共 - 个"
                     android:textColor="@color/rare_5" />
-
                 <TextView
                     android:id="@+id/Rare5Percent"
                     android:layout_width="0dp"
@@ -127,7 +112,6 @@
                     android:layout_columnWeight="1"
                     android:text="占 - %"
                     android:textColor="@color/rare_5" />
-
                 <TextView
                     android:id="@+id/Rare5Ave"
                     android:layout_width="0dp"
@@ -135,14 +119,12 @@
                     android:layout_columnWeight="1"
                     android:text="- 抽/个"
                     android:textColor="@color/rare_5" />
-
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:text="4★"
                     android:textColor="@color/rare_4" />
-
                 <TextView
                     android:id="@+id/Rare4Count"
                     android:layout_width="0dp"
@@ -150,7 +132,6 @@
                     android:layout_columnWeight="1"
                     android:text="共 - 个"
                     android:textColor="@color/rare_4" />
-
                 <TextView
                     android:id="@+id/Rare4Percent"
                     android:layout_width="0dp"
@@ -158,7 +139,6 @@
                     android:layout_columnWeight="1"
                     android:text="占 - %"
                     android:textColor="@color/rare_4" />
-
                 <TextView
                     android:id="@+id/Rare4Ave"
                     android:layout_width="0dp"
@@ -166,14 +146,12 @@
                     android:layout_columnWeight="1"
                     android:text="- 抽/个"
                     android:textColor="@color/rare_4" />
-
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:text="3★"
                     android:textColor="@color/rare_3" />
-
                 <TextView
                     android:id="@+id/Rare3Count"
                     android:layout_width="0dp"
@@ -181,7 +159,6 @@
                     android:layout_columnWeight="1"
                     android:text="共 - 个"
                     android:textColor="@color/rare_3" />
-
                 <TextView
                     android:id="@+id/Rare3Percent"
                     android:layout_width="0dp"
@@ -189,7 +166,6 @@
                     android:layout_columnWeight="1"
                     android:text="占 - %"
                     android:textColor="@color/rare_3" />
-
                 <TextView
                     android:id="@+id/Rare3Ave"
                     android:layout_width="0dp"
@@ -199,17 +175,5 @@
                     android:textColor="@color/rare_3" />
             </GridLayout>
         </com.google.android.material.card.MaterialCardView>
-
-
-        <com.google.android.material.card.MaterialCardView
-            android:visibility="gone"
-            style="@style/CardViewContent">
-
-            <com.github.mikephil.charting.charts.HorizontalBarChart
-                android:id="@+id/BarChart"
-                android:layout_width="match_parent"
-                android:layout_height="400dp" />
-        </com.google.android.material.card.MaterialCardView>
-
     </LinearLayout>
 </ScrollView>

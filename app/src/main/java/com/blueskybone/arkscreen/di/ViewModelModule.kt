@@ -82,6 +82,6 @@ val viewModelModule = module {
             textTranslator = get(),
         )
     }
-    viewModel { EndfieldCharViewModel(accounts = get(), skland = get(), settings = get(), texts = get()) }
+    viewModel { EndfieldCharViewModel(accounts = get(), skland = get(), settings = get(), texts = get(), resources = get()) }
     viewModel { EndfieldRealtimeViewModel(accounts = get(), skland = get(), texts = get()) }
 }

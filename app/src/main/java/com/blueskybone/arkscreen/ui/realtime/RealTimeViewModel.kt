@@ -158,7 +158,7 @@ class RealTimeViewModel(
             RealTimeFailureKind.NETWORK -> texts.get(R.string.realtime_network_failed)
             RealTimeFailureKind.TIMEOUT -> texts.get(R.string.realtime_timeout)
             RealTimeFailureKind.AUTH_EXPIRED -> texts.get(R.string.realtime_login_expired)
-            RealTimeFailureKind.OTHER -> texts.get(R.string.realtime_load_failed)
+            RealTimeFailureKind.OTHER -> texts.get(R.string.error_load_check_log)
         }
         val cached = lastContent
         if (cached != null) {

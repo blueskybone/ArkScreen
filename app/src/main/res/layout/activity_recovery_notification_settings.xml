@@ -1,90 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical">
-
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/Toolbar" android:layout_width="match_parent"
-        android:layout_height="wrap_content" app:navigationIcon="?attr/homeAsUpIndicator"
+        android:id="@+id/Toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/recovery_notifications" />
-
-    <FrameLayout android:layout_width="match_parent" android:layout_height="0dp"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1">
         <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent" android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:fillViewport="true">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:paddingBottom="96dp">
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="96dp">
                 <TextView
                     style="@style/Widget.ArkScreen.StatusCapsule.Accent"
-                    android:layout_marginStart="20dp" android:layout_marginTop="12dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="12dp"
                     android:layout_marginEnd="20dp"
                     android:text="@string/recovery_notifications_experimental" />
-
-                <TextView style="@style/PageSectionTitle"
-                    android:text="@string/realtime_sanity" />
-                <com.google.android.material.card.MaterialCardView style="@style/CardViewContent"
-                    android:layout_marginTop="0dp" app:strokeWidth="0dp">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:orientation="vertical" android:paddingVertical="6dp">
+                <TextView
+                    style="@style/PageSectionTitle"
+                    android:text="@string/ap" />
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/PageContentCard.NoTopSpacing">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingVertical="6dp">
                         <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/ApFull" style="@style/RecoverySettingsSwitch"
+                            android:id="@+id/ApFull"
+                            style="@style/RecoverySettingsSwitch"
                             android:text="@string/recovery_notifications_ap_full" />
-                        <View style="@style/ListDivider" />
+                        <View
+                            style="@style/ListDivider" />
                         <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/ApEarly" style="@style/RecoverySettingsSwitch"
+                            android:id="@+id/ApEarly"
+                            style="@style/RecoverySettingsSwitch"
                             android:text="@string/recovery_notifications_ap_early" />
-                        <View style="@style/ListDivider" />
-                        <include android:id="@+id/ApLead" layout="@layout/preference_value" />
+                        <View
+                            style="@style/ListDivider" />
+                        <include
+                            android:id="@+id/ApLead"
+                            layout="@layout/preference_value" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
-
-                <TextView style="@style/PageSectionTitle" android:text="@string/train" />
-                <com.google.android.material.card.MaterialCardView style="@style/CardViewContent"
-                    android:layout_marginTop="0dp" app:strokeWidth="0dp">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:orientation="vertical" android:paddingVertical="6dp">
+                <TextView
+                    style="@style/PageSectionTitle"
+                    android:text="@string/train" />
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/PageContentCard.NoTopSpacing">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingVertical="6dp">
                         <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/TrainDone" style="@style/RecoverySettingsSwitch"
-                            android:text="@string/recovery_notifications_training_done" />
-                        <View style="@style/ListDivider" />
+                            android:id="@+id/TrainDone"
+                            style="@style/RecoverySettingsSwitch"
+                            android:text="@string/realtime_training_complete" />
+                        <View
+                            style="@style/ListDivider" />
                         <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/TrainShift" style="@style/RecoverySettingsSwitch"
+                            android:id="@+id/TrainShift"
+                            style="@style/RecoverySettingsSwitch"
                             android:text="@string/recovery_notifications_training_shift" />
-                        <View style="@style/ListDivider" />
-                        <include android:id="@+id/ShiftLead" layout="@layout/preference_value" />
+                        <View
+                            style="@style/ListDivider" />
+                        <include
+                            android:id="@+id/ShiftLead"
+                            layout="@layout/preference_value" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
-
-                <TextView style="@style/PageSectionTitle"
+                <TextView
+                    style="@style/PageSectionTitle"
                     android:text="@string/recovery_other_events" />
-                <com.google.android.material.card.MaterialCardView style="@style/CardViewContent"
-                    android:layout_marginTop="0dp" app:strokeWidth="0dp">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:orientation="vertical" android:paddingVertical="6dp">
-                        <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/Labor"
-                            style="@style/RecoverySettingsSwitch" android:text="@string/recovery_notifications_labor" />
-                        <View style="@style/ListDivider" />
-                        <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/Meeting"
-                            style="@style/RecoverySettingsSwitch" android:text="@string/recovery_notifications_meeting" />
-                        <View style="@style/ListDivider" />
-                        <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/Recruit"
-                            style="@style/RecoverySettingsSwitch" android:text="@string/recovery_notifications_recruit" />
-                        <View style="@style/ListDivider" />
-                        <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/Refresh"
-                            style="@style/RecoverySettingsSwitch" android:text="@string/recovery_notifications_refresh" />
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/PageContentCard.NoTopSpacing">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingVertical="6dp">
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/Labor"
+                            style="@style/RecoverySettingsSwitch"
+                            android:text="@string/recovery_notifications_labor" />
+                        <View
+                            style="@style/ListDivider" />
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/Meeting"
+                            style="@style/RecoverySettingsSwitch"
+                            android:text="@string/recovery_notifications_meeting" />
+                        <View
+                            style="@style/ListDivider" />
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/Recruit"
+                            style="@style/RecoverySettingsSwitch"
+                            android:text="@string/recovery_notifications_recruit" />
+                        <View
+                            style="@style/ListDivider" />
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/Refresh"
+                            style="@style/RecoverySettingsSwitch"
+                            android:text="@string/recovery_notifications_refresh" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
-
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/Save" android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end" android:layout_margin="20dp"
-            android:contentDescription="@string/save" app:srcCompat="@drawable/ic_widget_save"
+            android:id="@+id/Save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="20dp"
+            android:contentDescription="@string/save"
+            app:srcCompat="@drawable/ic_widget_save"
             app:shapeAppearanceOverlay="@style/ShapeAppearance.ArkScreen.SaveCircle"
-            app:tint="?attr/colorOnPrimary" app:backgroundTint="?attr/colorPrimary" />
+            app:tint="?attr/colorOnPrimary"
+            app:backgroundTint="?attr/colorPrimary" />
     </FrameLayout>
 </LinearLayout>

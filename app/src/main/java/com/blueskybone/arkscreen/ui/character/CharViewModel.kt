@@ -184,7 +184,7 @@ class CharViewModel(
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                handleFailure(e, e.message ?: texts.get(R.string.attendance_unknown_error))
+                handleFailure(e, e.message ?: texts.get(R.string.error_unknown))
             } finally {
                 if (requestId == loadRequestId) {
                     syncing = false
@@ -196,7 +196,7 @@ class CharViewModel(
 
     private suspend fun loadAll(account: AccountSk) {
         val assets = getCharAssetsUseCase(account).getOrElse { error ->
-            handleFailure(error, error.message ?: texts.get(R.string.error_operator_assets_load))
+            handleFailure(error, error.message ?: texts.get(R.string.error_load_check_log))
             return
         }
         val ownList = assets.operators
@@ -213,7 +213,7 @@ class CharViewModel(
         repo.syncResource(ConfigType.CHAR_MAP).lastOrNull()
 
         val notOwnList = getCharMissUseCase(ownList).getOrElse { error ->
-            handleFailure(error, error.message ?: texts.get(R.string.error_missing_operators_load))
+            handleFailure(error, error.message ?: texts.get(R.string.error_load_check_log))
             return
         }
 

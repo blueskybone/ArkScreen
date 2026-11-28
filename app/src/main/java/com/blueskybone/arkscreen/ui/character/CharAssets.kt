@@ -78,7 +78,7 @@ class CharAssets : AppCompatActivity() {
         model.accounts.observe(this) { /* Keep account choices current for the picker. */ }
         model.uiState.observe(this) { value ->
             when (value) {
-                is UiStatus.Loading -> displayLoadingView(value.message ?: getString(R.string.status_loading_ellipsis))
+                is UiStatus.Loading -> displayLoadingView(value.message ?: getString(R.string.loading))
                 is UiStatus.Error -> displayErrorView(value.message)
                 is UiStatus.Empty -> displayEmptyView(value.message)
                 is UiStatus.Success -> displayView()

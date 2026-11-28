@@ -15,18 +15,11 @@ import com.blueskybone.arkscreen.R
 import com.blueskybone.arkscreen.databinding.FragmentGachaStatisBinding
 import com.blueskybone.arkscreen.ui.gacha.model.GachaPoolStats
 import com.blueskybone.arkscreen.ui.gacha.model.GachaUiSnapshot
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
-import com.hjq.toast.Toaster
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 /*
 * 页面更新逻辑：
@@ -147,30 +140,25 @@ class GachaStatsFragment : Fragment() {
     }
 
     private fun renderSelectedPool(info: GachaPoolStats) {
-        try {
-            setPieChart(info)
-            val countSum = info.rare3 + info.rare4 + info.rare5 + info.rare6
-            binding.RecordsCount.text = getString(R.string.gacha_result_count, countSum)
+        setPieChart(info)
+        val countSum = info.rare3 + info.rare4 + info.rare5 + info.rare6
+        binding.RecordsCount.text = getString(R.string.gacha_result_count, countSum)
 
-            binding.Rare6Count.text = getString(R.string.gacha_stat_count, info.rare6)
-            binding.Rare6Percent.text = formatPercent(info.rare6, countSum)
-            binding.Rare6Ave.text = formatAverage(countSum, info.rare6)
+        binding.Rare6Count.text = getString(R.string.gacha_stat_count, info.rare6)
+        binding.Rare6Percent.text = formatPercent(info.rare6, countSum)
+        binding.Rare6Ave.text = formatAverage(countSum, info.rare6)
 
-            binding.Rare5Count.text = getString(R.string.gacha_stat_count, info.rare5)
-            binding.Rare5Percent.text = formatPercent(info.rare5, countSum)
-            binding.Rare5Ave.text = formatAverage(countSum, info.rare5)
+        binding.Rare5Count.text = getString(R.string.gacha_stat_count, info.rare5)
+        binding.Rare5Percent.text = formatPercent(info.rare5, countSum)
+        binding.Rare5Ave.text = formatAverage(countSum, info.rare5)
 
-            binding.Rare4Count.text = getString(R.string.gacha_stat_count, info.rare4)
-            binding.Rare4Percent.text = formatPercent(info.rare4, countSum)
-            binding.Rare4Ave.text = formatAverage(countSum, info.rare4)
+        binding.Rare4Count.text = getString(R.string.gacha_stat_count, info.rare4)
+        binding.Rare4Percent.text = formatPercent(info.rare4, countSum)
+        binding.Rare4Ave.text = formatAverage(countSum, info.rare4)
 
-            binding.Rare3Count.text = getString(R.string.gacha_stat_count, info.rare3)
-            binding.Rare3Percent.text = formatPercent(info.rare3, countSum)
-            binding.Rare3Ave.text = formatAverage(countSum, info.rare3)
-        } catch (error: Exception) {
-            Toaster.show(error.message)
-            Timber.e(error)
-        }
+        binding.Rare3Count.text = getString(R.string.gacha_stat_count, info.rare3)
+        binding.Rare3Percent.text = formatPercent(info.rare3, countSum)
+        binding.Rare3Ave.text = formatAverage(countSum, info.rare3)
     }
 
     private fun formatPercent(count: Int, total: Int): String =
@@ -184,7 +172,6 @@ class GachaStatsFragment : Fragment() {
 
     override fun onDestroyView() {
         binding.PieChart.clear()
-        binding.BarChart.clear()
         _binding = null
         super.onDestroyView()
     }

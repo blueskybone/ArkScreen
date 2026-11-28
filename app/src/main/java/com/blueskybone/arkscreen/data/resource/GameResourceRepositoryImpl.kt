@@ -67,6 +67,11 @@ class GameResourceRepositoryImpl(
         }
     }
 
+    override suspend fun getEndfieldCharCatalog() =
+        gameResourceStore.load(ConfigType.ENDFIELD_CHAR_CATALOG) { file ->
+            EndfieldCharCatalogParser.parse(jsonReader.readNode(file))
+        }
+
     override suspend fun getGachaPoolCatalog(): Result<GachaPoolCatalog> {
         return gameResourceStore.load(ConfigType.GACHA_POOL_CATALOG) { file ->
             gachaPoolCatalogParser.parse(file)

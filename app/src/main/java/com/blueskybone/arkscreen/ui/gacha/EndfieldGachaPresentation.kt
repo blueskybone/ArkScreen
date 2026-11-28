@@ -50,11 +50,14 @@ internal fun buildEndfieldGachaPresentation(input: EndfieldGachaInput): Endfield
             .thenByDescending { it.seqId.length }.thenByDescending { it.seqId })
     val pools = EndfieldPityCalculator.calculate(input.records, input.pools, input.type)
     val hits = pools.flatMap { it.hits }.filterNot { it.isFree }
+    val six = records.count { it.rarity == 6 }
+    // Match the displayed cumulative count and six-star count, including free draws.
+    val average = if (six == 0) null else records.size.toDouble() / six
     return EndfieldGachaPresentation(
         input, records, pools,
         records.distinctBy { it.poolId }.map { it.poolId to it.poolName.ifBlank { it.poolId } },
-        calculateEndfieldRecordProgress(records), records.count { it.rarity == 6 }, records.count { it.rarity == 5 },
-        records.count { it.isFree }, hits.takeIf { it.isNotEmpty() }?.map { it.pity }?.average(),
+        calculateEndfieldRecordProgress(records), six, records.count { it.rarity == 5 },
+        records.count { it.isFree }, average,
         hits.minOfOrNull { it.pity }, hits.maxOfOrNull { it.pity },
     )
 }

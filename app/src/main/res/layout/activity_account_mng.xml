@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/Toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/account_manager" />
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/ScrollView"
         android:layout_width="match_parent"
@@ -19,22 +18,17 @@
         android:clipToPadding="false"
         android:fillViewport="true"
         android:paddingBottom="24dp">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
             <com.google.android.material.card.MaterialCardView
-                style="@style/CardViewContent"
-                app:strokeWidth="0dp"
+                style="@style/PageContentCard"
                 android:layout_marginTop="10dp">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-
                     <LinearLayout
                         android:id="@+id/SklandHeader"
                         android:layout_width="match_parent"
@@ -45,28 +39,24 @@
                         android:paddingTop="16dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="12dp">
-
                         <ImageView
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:contentDescription="@null"
-                            app:tint="@color/home_text_primary"
+                            app:tint="@color/app_text_primary"
                             android:src="@drawable/ic_skland" />
-
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
                             android:layout_weight="1"
                             android:orientation="vertical">
-
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/skland_account_manage"
                                 android:textAppearance="?attr/textAppearanceHeadline6"
                                 android:textStyle="bold" />
-
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -74,7 +64,6 @@
                                 android:text="@string/skland_account_summary"
                                 android:textAppearance="?attr/textAppearanceCaption" />
                         </LinearLayout>
-
                         <ImageButton
                             android:id="@+id/AddAccountSk"
                             android:layout_width="48dp"
@@ -83,10 +72,8 @@
                             android:contentDescription="@string/add_skland_account"
                             android:padding="12dp"
                             android:src="@drawable/ic_add"
-                            app:tint="@color/home_text_primary" />
+                            app:tint="@color/app_text_primary" />
                     </LinearLayout>
-
-
                     <TextView
                         android:id="@+id/ArknightsHeader"
                         style="@style/HomeCardHeading"
@@ -96,20 +83,17 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="12dp"
                         android:textColor="?attr/colorPrimary"
-                        android:text="@string/arknights_accounts" />
-
+                        android:text="@string/game_arknights" />
                     <FrameLayout
                         android:id="@+id/ArknightsCard"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/RecyclerView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:nestedScrollingEnabled="false"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
                         <TextView
                             android:id="@+id/ArknightsEmpty"
                             android:layout_width="match_parent"
@@ -119,15 +103,12 @@
                             android:textAlignment="center"
                             android:textAppearance="?attr/textAppearanceBody2" />
                     </FrameLayout>
-
-
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
-                        android:background="@color/function_divider" />
-
+                        android:background="@color/app_divider" />
                     <TextView
                         android:id="@+id/EndfieldHeader"
                         style="@style/HomeCardHeading"
@@ -138,19 +119,16 @@
                         android:paddingTop="12dp"
                         android:textColor="?attr/colorPrimary"
                         android:text="@string/endfield_accounts" />
-
                     <FrameLayout
                         android:id="@+id/EndfieldCard"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/RecyclerViewEf"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:nestedScrollingEnabled="false"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
                         <TextView
                             android:id="@+id/EndfieldEmpty"
                             android:layout_width="match_parent"
@@ -162,17 +140,13 @@
                     </FrameLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/GachaCard"
-                style="@style/CardViewContent"
-                app:strokeWidth="0dp">
-
+                style="@style/PageContentCard">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-
                     <LinearLayout
                         android:id="@+id/GachaHeader"
                         android:layout_width="match_parent"
@@ -183,28 +157,24 @@
                         android:paddingTop="16dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="12dp">
-
                         <ImageView
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:contentDescription="@null"
                             android:padding="4dp"
                             android:src="@drawable/ic_gacha" />
-
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
                             android:layout_weight="1"
                             android:orientation="vertical">
-
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/gacha_account_manage"
                                 android:textAppearance="?attr/textAppearanceHeadline6"
                                 android:textStyle="bold" />
-
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -212,7 +182,6 @@
                                 android:text="@string/gacha_account_summary"
                                 android:textAppearance="?attr/textAppearanceCaption" />
                         </LinearLayout>
-
                         <ImageButton
                             android:id="@+id/AddAccountGc"
                             android:layout_width="48dp"
@@ -221,20 +190,17 @@
                             android:contentDescription="@string/add_gacha_account"
                             android:padding="12dp"
                             android:src="@drawable/ic_add"
-                            app:tint="@color/home_text_primary" />
+                            app:tint="@color/app_text_primary" />
                     </LinearLayout>
-
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/RecyclerViewGc"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:nestedScrollingEnabled="false"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
                         <TextView
                             android:id="@+id/GachaEmpty"
                             android:layout_width="match_parent"

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,28 +9,24 @@
     android:paddingTop="20dp"
     android:paddingEnd="20dp"
     android:paddingBottom="8dp">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal">
-
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/Avatar"
             android:layout_width="76dp"
             android:layout_height="76dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/char_ex_blaze"
-            app:shapeAppearanceOverlay="@style/RoundedImageView" />
 
+            app:shapeAppearanceOverlay="@style/RoundedImageView" />
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_weight="1"
             android:orientation="vertical">
-
             <TextView
                 android:id="@+id/Name"
                 android:layout_width="match_parent"
@@ -39,7 +36,6 @@
                 android:textAppearance="?attr/textAppearanceHeadline6"
                 android:textColor="?android:attr/textColorPrimary"
                 android:textStyle="bold" />
-
             <TextView
                 android:id="@+id/Rarity"
                 android:layout_width="wrap_content"
@@ -49,7 +45,6 @@
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
-
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/Tags"
         android:layout_width="match_parent"

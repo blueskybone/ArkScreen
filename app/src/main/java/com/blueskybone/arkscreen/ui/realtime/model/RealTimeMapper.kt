@@ -29,7 +29,7 @@ object RealTimeMapper {
         val recruit = RealTimeUi.PairInfo(
             value = raw("${data.recruits.complete}/${data.recruits.max}"),
             time = if (data.recruits.remainSecs == -1L) {
-                res(R.string.realtime_recruit_complete)
+                res(R.string.status_completed)
             } else {
                 remain(data.recruits.remainSecs)
             },
@@ -37,7 +37,7 @@ object RealTimeMapper {
         )
 
         val recruitRefresh = if (data.hire.isNull) {
-            RealTimeUi.PairInfo(value = res(R.string.realtime_no_data))
+            RealTimeUi.PairInfo(value = res(R.string.status_no_data))
         } else {
             RealTimeUi.PairInfo(
                 value = raw("${data.hire.count}/3"),
@@ -53,7 +53,7 @@ object RealTimeMapper {
         val labor = RealTimeUi.PairInfo(
             value = raw("${data.labor.current}/${data.labor.max}"),
             time = when {
-                data.labor.max <= 0 -> res(R.string.realtime_no_data)
+                data.labor.max <= 0 -> res(R.string.status_no_data)
                 data.labor.current >= data.labor.max -> res(R.string.duration_restored)
                 data.labor.remainSecs < 60L -> res(R.string.realtime_under_one_minute)
                 else -> remain(data.labor.remainSecs)
@@ -62,10 +62,10 @@ object RealTimeMapper {
         )
 
         val meeting = if (data.meeting.isNull) {
-            RealTimeUi.PairInfo(value = res(R.string.realtime_no_data))
+            RealTimeUi.PairInfo(value = res(R.string.status_no_data))
         } else {
             val time = when {
-                data.meeting.status == 0 -> res(R.string.realtime_idle)
+                data.meeting.status == 0 -> res(R.string.status_idle)
                 data.meeting.remainSecs == -1L -> res(R.string.realtime_meeting_complete)
                 else -> remain(data.meeting.remainSecs)
             }
@@ -77,11 +77,11 @@ object RealTimeMapper {
         }
 
         val train = if (data.train.isNull) {
-            RealTimeUi.TrainingInfo(trainee = res(R.string.realtime_no_data))
+            RealTimeUi.TrainingInfo(trainee = res(R.string.status_no_data))
         } else {
             RealTimeUi.TrainingInfo(
                 trainee = if (data.train.traineeIsNull) {
-                    res(R.string.realtime_idle)
+                    res(R.string.status_idle)
                 } else {
                     raw(data.train.trainee.ifBlank { "—" })
                 },
@@ -172,7 +172,7 @@ object RealTimeMapper {
     private fun res(id: Int) = UiText.Resource(id)
     private fun remain(seconds: Long) = raw(getRemainTimeStr(seconds.coerceAtLeast(0L)))
     private fun progress(current: Int, total: Int) = RealTimeUi.PairInfo(
-        value = if (current < 0 || total < 0) res(R.string.realtime_no_data)
+        value = if (current < 0 || total < 0) res(R.string.status_no_data)
         else raw("$current/$total"),
     )
 }

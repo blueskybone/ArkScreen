@@ -1,51 +1,191 @@
-<?xml version='1.0' encoding='utf-8'?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-  <LinearLayout android:id="@+id/EmptyState" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:visibility="gone">
-    <TextView style="@style/PageSectionTitle" android:text="桌面组件" />
-    <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
-      <LinearLayout android:id="@+id/EmptyContent" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingHorizontal="20dp" android:paddingVertical="24dp" android:textSize="15sp" android:textColor="@color/home_text_primary" android:text="先在桌面添加一个组件，再为它设置账号和外观。" />
-      </LinearLayout>
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/EmptyState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <TextView
+            style="@style/PageSectionTitle"
+            android:text="桌面组件" />
+        <com.google.android.material.card.MaterialCardView
+            style="@style/PageContentCard">
+            <LinearLayout
+                android:id="@+id/EmptyContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="24dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/app_text_primary"
+                    android:text="先在桌面添加一个组件，再为它设置账号和外观。" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/IdentityHeader"
+        style="@style/PageSectionTitle"
+        android:text="当前组件" />
+    <com.google.android.material.card.MaterialCardView
+        style="@style/ArkContentCardSurface"
+        android:id="@+id/IdentityCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp">
+        <LinearLayout
+            android:id="@+id/Identity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
     </com.google.android.material.card.MaterialCardView>
-  </LinearLayout>
-  <TextView android:id="@+id/IdentityHeader" style="@style/PageSectionTitle" android:text="当前组件" />
-  <com.google.android.material.card.MaterialCardView style="@style/ArkContentCardSurface" android:id="@+id/IdentityCard" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginHorizontal="16dp" app:cardCornerRadius="24dp">
-    <LinearLayout android:id="@+id/Identity" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
-  </com.google.android.material.card.MaterialCardView>
-  <TextView android:id="@+id/PreviewSectionHeader" style="@style/PageSectionTitle" android:text="预览" />
-  <com.google.android.material.card.MaterialCardView style="@style/ArkContentCardSurface" android:id="@+id/PreviewSectionCard" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginHorizontal="16dp" app:cardBackgroundColor="@color/grey_700" app:cardCornerRadius="24dp">
-    <LinearLayout android:id="@+id/PreviewSection" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-      <FrameLayout android:id="@+id/PreviewHost" android:layout_width="match_parent" android:layout_height="wrap_content" />
-      <TextView android:id="@+id/PreviewError" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="20dp" android:textSize="12sp" android:textColor="@color/home_text_primary" android:visibility="gone" />
-    </LinearLayout>
-  </com.google.android.material.card.MaterialCardView>
-  <TextView style="@style/CardSupportingText" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="end" android:paddingHorizontal="32dp" android:paddingTop="6dp" android:text="@string/widget_preview_save_hint" />
-  <TextView android:id="@+id/ThemesHeader" style="@style/PageSectionTitle" android:text="主题" />
-  <com.google.android.material.card.MaterialCardView style="@style/ArkContentCardSurface" android:id="@+id/ThemesCard" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginHorizontal="16dp" app:cardCornerRadius="24dp">
-    <LinearLayout android:id="@+id/Themes" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-      <include android:id="@+id/ThemeChoices" layout="@layout/widget_theme_choices" />
-    </LinearLayout>
-  </com.google.android.material.card.MaterialCardView>
-  <TextView android:id="@+id/LayoutsHeader" style="@style/PageSectionTitle" android:text="布局" />
-  <com.google.android.material.card.MaterialCardView style="@style/ArkContentCardSurface" android:id="@+id/LayoutsCard" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginHorizontal="16dp" app:cardCornerRadius="24dp">
-    <LinearLayout android:id="@+id/Layouts" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
-  </com.google.android.material.card.MaterialCardView>
-  <TextView android:id="@+id/FontHeader" style="@style/PageSectionTitle" android:text="字体大小" />
-  <com.google.android.material.card.MaterialCardView style="@style/ArkContentCardSurface" android:id="@+id/FontCard" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginHorizontal="16dp" app:cardCornerRadius="24dp">
-    <LinearLayout android:id="@+id/Font" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-      <include android:id="@+id/FontControl" layout="@layout/preference_slider" />
-    </LinearLayout>
-  </com.google.android.material.card.MaterialCardView>
-  <TextView android:id="@+id/TransparencyHeader" style="@style/PageSectionTitle" android:text="背景透明度" />
-  <com.google.android.material.card.MaterialCardView style="@style/ArkContentCardSurface" android:id="@+id/TransparencyCard" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginHorizontal="16dp" app:cardCornerRadius="24dp">
-    <LinearLayout android:id="@+id/Transparency" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-      <include android:id="@+id/TransparencyControl" layout="@layout/preference_slider" />
-    </LinearLayout>
-  </com.google.android.material.card.MaterialCardView>
-  <TextView android:id="@+id/ContentsHeader" style="@style/PageSectionTitle" android:text="显示内容" />
-  <com.google.android.material.card.MaterialCardView style="@style/ArkContentCardSurface" android:id="@+id/ContentsCard" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginHorizontal="16dp" app:cardCornerRadius="24dp">
-    <LinearLayout android:id="@+id/Contents" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-      <TextView android:id="@+id/FixedContentHint" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="20dp" android:textSize="14sp" android:textColor="@color/home_text_primary" android:text="当前布局使用固定的数据项" android:visibility="gone" />
-    </LinearLayout>
-  </com.google.android.material.card.MaterialCardView>
+    <TextView
+        android:id="@+id/PreviewSectionHeader"
+        style="@style/PageSectionTitle"
+        android:text="预览" />
+    <com.google.android.material.card.MaterialCardView
+        style="@style/ArkContentCardSurface"
+        android:id="@+id/PreviewSectionCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        app:cardBackgroundColor="@color/grey_700">
+        <LinearLayout
+            android:id="@+id/PreviewSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <FrameLayout
+                android:id="@+id/PreviewHost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/PreviewError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:textSize="12sp"
+                android:textColor="@color/app_text_primary"
+                android:visibility="gone" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+    <TextView
+        style="@style/CardSupportingText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:paddingHorizontal="32dp"
+        android:paddingTop="6dp"
+        android:text="@string/widget_preview_save_hint" />
+    <TextView
+        android:id="@+id/ThemesHeader"
+        style="@style/PageSectionTitle"
+        android:text="主题" />
+    <com.google.android.material.card.MaterialCardView
+        style="@style/ArkContentCardSurface"
+        android:id="@+id/ThemesCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp">
+        <LinearLayout
+            android:id="@+id/Themes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <include
+                android:id="@+id/ThemeChoices"
+                layout="@layout/widget_theme_choices" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+    <TextView
+        android:id="@+id/LayoutsHeader"
+        style="@style/PageSectionTitle"
+        android:text="布局" />
+    <com.google.android.material.card.MaterialCardView
+        style="@style/ArkContentCardSurface"
+        android:id="@+id/LayoutsCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp">
+        <LinearLayout
+            android:id="@+id/Layouts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </com.google.android.material.card.MaterialCardView>
+    <TextView
+        android:id="@+id/FontHeader"
+        style="@style/PageSectionTitle"
+        android:text="字体大小" />
+    <com.google.android.material.card.MaterialCardView
+        style="@style/ArkContentCardSurface"
+        android:id="@+id/FontCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp">
+        <LinearLayout
+            android:id="@+id/Font"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <include
+                android:id="@+id/FontControl"
+                layout="@layout/preference_slider" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+    <TextView
+        android:id="@+id/TransparencyHeader"
+        style="@style/PageSectionTitle"
+        android:text="背景透明度" />
+    <com.google.android.material.card.MaterialCardView
+        style="@style/ArkContentCardSurface"
+        android:id="@+id/TransparencyCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp">
+        <LinearLayout
+            android:id="@+id/Transparency"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <include
+                android:id="@+id/TransparencyControl"
+                layout="@layout/preference_slider" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+    <TextView
+        android:id="@+id/ContentsHeader"
+        style="@style/PageSectionTitle"
+        android:text="显示内容" />
+    <com.google.android.material.card.MaterialCardView
+        style="@style/ArkContentCardSurface"
+        android:id="@+id/ContentsCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp">
+        <LinearLayout
+            android:id="@+id/Contents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/FixedContentHint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:textSize="14sp"
+                android:textColor="@color/app_text_primary"
+                android:text="当前布局使用固定的数据项"
+                android:visibility="gone" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

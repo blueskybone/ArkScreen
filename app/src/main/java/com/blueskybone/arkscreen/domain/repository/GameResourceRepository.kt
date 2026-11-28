@@ -23,6 +23,8 @@ interface GameResourceRepository {
 
     suspend fun getOperatorBasicInfoMap(): Result<Map<String, OperatorBasicInfo>>
 
+    suspend fun getEndfieldCharCatalog(): Result<List<com.blueskybone.arkscreen.domain.model.operator.endfield.EndfieldOperatorInfo>>
+
     suspend fun getGachaPoolCatalog(): Result<GachaPoolCatalog>
 
     suspend fun getResourceDate(type: ConfigType): Result<String>

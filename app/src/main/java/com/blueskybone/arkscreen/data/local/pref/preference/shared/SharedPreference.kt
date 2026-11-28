@@ -162,11 +162,11 @@ abstract class SharedPreference<T>(
         private val deserializer: Function<String, T>
     ) : SharedPreference<T>(preferences, keyFlow, key, defaultValue) {
         override fun read(preferences: SharedPreferences, key: String, defaultValue: T): T {
-            val str = preferences.getString(key, null)
+            val str = preferences.getString(key, null) ?: return defaultValue
             return try {
-                deserializer.apply(str!!)
+                deserializer.apply(str)
             } catch (e: Exception) {
-                defaultValue!!
+                defaultValue
             }
         }
 

@@ -1,32 +1,129 @@
-<?xml version='1.0' encoding='utf-8'?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-    <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" android:layout_marginTop="@dimen/card_vertical_spacing">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
-            <include android:id="@+id/AccountRow" layout="@layout/asset_account_row" />
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginTop="12dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/assets_owned" style="@style/HomeCardHeading" />
-                <TextView android:id="@+id/Owned" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="10dp" android:textSize="26sp" android:textStyle="bold" android:textColor="@color/home_text_primary" />
-                <TextView android:id="@+id/Total" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" android:textSize="15sp" android:textColor="@color/home_text_secondary" />
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <com.google.android.material.card.MaterialCardView
+        style="@style/PageContentCard">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <include
+                android:id="@+id/AccountRow"
+                layout="@layout/asset_account_row" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="12dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/assets_owned"
+                    style="@style/HomeCardHeading" />
+                <TextView
+                    android:id="@+id/Owned"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/app_text_primary" />
+                <TextView
+                    android:id="@+id/Total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/app_text_secondary" />
             </LinearLayout>
-            <com.google.android.material.chip.ChipGroup android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" app:chipSpacingHorizontal="6dp" app:chipSpacingVertical="4dp">
-                <include android:id="@+id/E2Stat" layout="@layout/chip_metadata" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-                <include android:id="@+id/M3Stat" layout="@layout/chip_metadata" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-                <include android:id="@+id/Module3Stat" layout="@layout/chip_metadata" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:chipSpacingHorizontal="6dp"
+                app:chipSpacingVertical="4dp">
+                <include
+                    android:id="@+id/E2Stat"
+                    layout="@layout/chip_metadata"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <include
+                    android:id="@+id/M3Stat"
+                    layout="@layout/chip_metadata"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <include
+                    android:id="@+id/Module3Stat"
+                    layout="@layout/chip_metadata"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
             </com.google.android.material.chip.ChipGroup>
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:orientation="horizontal">
-                <include android:id="@+id/R6Progress" layout="@layout/asset_rarity" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
-                <include android:id="@+id/R5Progress" layout="@layout/asset_rarity" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
-                <include android:id="@+id/R4Progress" layout="@layout/asset_rarity" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+                <include
+                    android:id="@+id/R6Progress"
+                    layout="@layout/asset_rarity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+                <include
+                    android:id="@+id/R5Progress"
+                    layout="@layout/asset_rarity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+                <include
+                    android:id="@+id/R4Progress"
+                    layout="@layout/asset_rarity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
-    <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" app:strokeWidth="0dp" android:layout_marginTop="@dimen/card_vertical_spacing" android:layout_marginBottom="@dimen/card_vertical_spacing">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingHorizontal="10dp" android:paddingVertical="4dp" android:gravity="center_vertical">
-            <com.google.android.material.chip.Chip android:id="@+id/Filter" style="@style/Widget.ArkScreen.ActionChip" android:text="@string/filter" app:chipIcon="@drawable/ic_filter" app:chipIconVisible="true" />
-            <com.google.android.material.chip.Chip android:id="@+id/MissingButton" style="@style/Widget.ArkScreen.ActionChip" android:layout_marginStart="4dp" android:text="@string/not_own" />
-            <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
-            <com.google.android.material.chip.Chip android:id="@+id/ViewChanger" style="@style/Widget.ArkScreen.ActionChip" android:layout_marginStart="4dp" app:textStartPadding="0dp" app:textEndPadding="0dp" android:contentDescription="@string/change_view" app:chipIcon="@drawable/ic_grid" app:chipIconVisible="true" />
+    <com.google.android.material.card.MaterialCardView
+        style="@style/PageContentCard"
+        android:layout_marginBottom="@dimen/card_vertical_spacing">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:gravity="center_vertical">
+            <com.google.android.material.chip.Chip
+                android:id="@+id/Filter"
+                style="@style/Widget.ArkScreen.ActionChip"
+                android:text="@string/filter"
+                app:chipIcon="@drawable/ic_filter"
+                app:chipIconVisible="true" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/MissingButton"
+                style="@style/Widget.ArkScreen.ActionChip"
+                android:layout_marginStart="4dp"
+                android:text="@string/not_own" />
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/ViewChanger"
+                style="@style/Widget.ArkScreen.ActionChip.IconOnly"
+                android:layout_marginStart="4dp"
+                android:contentDescription="@string/change_view"
+                app:chipIcon="@drawable/ic_grid" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
-    <include android:id="@+id/MissingPanel" layout="@layout/fragment_char_not_own" android:visibility="gone" />
+    <include
+        android:id="@+id/MissingPanel"
+        layout="@layout/fragment_char_not_own"
+        android:visibility="gone" />
 </LinearLayout>

@@ -1,43 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="endfield_on_surface_accent">#F8DE05</color>
-    <color name="endfield_accent_container">#3F3A18</color>
-    <color name="endfield_progress_track">#514E3F</color>
-    <color name="pie_text">#F7F9FF</color>
 
-    <color name="tool_recruit_icon">#9CCAFF</color>
-    <color name="tool_recruit_container">#233A54</color>
-    <color name="tool_assets_icon">#D6B8FF</color>
-    <color name="tool_assets_container">#3D3052</color>
-    <color name="tool_gacha_icon">#FFB784</color>
-    <color name="tool_gacha_container">#513323</color>
-    <color name="tool_attendance_icon">#9DDBAA</color>
-    <color name="tool_attendance_container">#273F2D</color>
-    <color name="tool_account_icon">#BEC5FF</color>
-    <color name="tool_account_container">#303653</color>
-    <color name="tool_game_icon">#FFB27A</color>
-    <color name="tool_game_container">#4A2C1B</color>
-
-    <!-- Secondary containers must not fall back to the bright day palette. -->
-    <color name="sec_con">#292D38</color>
-    <color name="on_sec_con">#C5CAD8</color>
-    <color name="status_success_container">#263D2D</color>
-    <color name="status_success_content">#A7DDB4</color>
-    <color name="status_warning_container">#42391F</color>
-    <color name="status_warning_content">#E8D184</color>
-    <color name="status_error_container">#472B2B</color>
-    <color name="status_error_content">#F2B2AE</color>
-    <color name="asset_action_selected_text">@color/rare_3</color>
-    <color name="status_neutral_container">#30333C</color>
-    <color name="status_neutral_content">#C5C8D1</color>
+    <!-- 应用表面、文字与容器 -->
     <color name="app_background">#131315</color>
+    <color name="app_divider">#18FFFFFF</color>
     <color name="app_surface">#252628</color>
-    <color name="function_divider">#18FFFFFF</color>
     <color name="app_text_primary">#ECECEE</color>
     <color name="app_text_secondary">#B5B5BD</color>
     <color name="app_text_section">@color/app_text_secondary</color>
     <color name="home_inner_surface">#323234</color>
-    <!-- Neutral track follows the surrounding surface. -->
-    <color name="gacha_pull_track">#383A40</color>
+    <color name="on_secondary_container">#C5CAD8</color>
+    <color name="secondary_container">#292D38</color>
+
+    <!-- 状态与操作 -->
+    <color name="asset_action_selected_text">@color/app_primary</color>
+    <color name="status_error_container">#472B2B</color>
+    <color name="status_error_content">#F2B2AE</color>
+    <color name="status_neutral_container">#30333C</color>
+    <color name="status_neutral_content">#C5C8D1</color>
+    <color name="status_success_container">#263D2D</color>
+    <color name="status_success_content">#A7DDB4</color>
+    <color name="status_warning_container">#42391F</color>
+    <color name="status_warning_content">#E8D184</color>
+
+    <!-- 首页快捷入口 -->
+    <color name="tool_account_container">#303653</color>
+    <color name="tool_account_icon">#BEC5FF</color>
+    <color name="tool_assets_container">#3D3052</color>
+    <color name="tool_assets_icon">#D6B8FF</color>
+    <color name="tool_attendance_container">#273F2D</color>
+    <color name="tool_attendance_icon">#9DDBAA</color>
+    <color name="tool_gacha_container">#513323</color>
+    <color name="tool_gacha_icon">#FFB784</color>
+    <color name="tool_game_container">#4A2C1B</color>
+    <color name="tool_game_icon">#FFB27A</color>
+    <color name="tool_recruit_container">#233A54</color>
+    <color name="tool_recruit_icon">#9CCAFF</color>
+
+    <!-- 干员稀有度与卡片 -->
     <color name="operator_card_surface">@color/app_surface</color>
+
+    <!-- 终末地主题与分类切换 -->
+    <color name="endfield_accent_container">#3F3A18</color>
+    <color name="endfield_on_surface_accent">#F8DE05</color>
+    <color name="endfield_progress_track">#514E3F</color>
+
+    <!-- 公招标签与稀有度 -->
+    <color name="recruit_rare_1_surface">#343438</color>
+    <color name="recruit_rare_1_text">#CBCBD0</color>
+    <color name="recruit_rare_2_surface">#263A2B</color>
+    <color name="recruit_rare_2_text">#9CD9A7</color>
+    <color name="recruit_rare_3_surface">#253746</color>
+    <color name="recruit_rare_3_text">#9FCAEF</color>
+    <color name="recruit_rare_4_surface">#352D42</color>
+    <color name="recruit_rare_4_text">#CDB2F4</color>
+    <color name="recruit_rare_5_surface">#413726</color>
+    <color name="recruit_rare_5_text">#EBC782</color>
+    <color name="recruit_rare_6_surface">#432D2A</color>
+    <color name="recruit_rare_6_text">#F2AF9F</color>
+    <color name="recruit_tag_surface">#323234</color>
+
+    <!-- 寻访抽数与轨道 -->
+    <color name="gacha_pull_track">#383A40</color>
+    <color name="pie_text">#F7F9FF</color>
+
+    <!-- 信息徽章与实时数据轨道：与按钮容器独立调整 -->
+    <color name="badge_container">#292D38</color>
+    <color name="badge_content">#C5CAD8</color>
+    <color name="realtime_progress_track">#292D38</color>
 </resources>

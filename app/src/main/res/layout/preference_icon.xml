@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout style="@style/PreferenceRow" xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/PreferenceRow"
     android:id="@+id/Layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,26 +10,21 @@
     android:clickable="true"
     android:focusable="true"
     android:orientation="horizontal">
-
-    <LinearLayout
+    <ImageView
+        style="@style/PreferenceRowIcon"
+        android:id="@+id/Icon"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_tags" />
+    <TextView
+        style="@style/PreferenceRowTitle"
+        android:id="@+id/Title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="horizontal">
-            <ImageView style="@style/PreferenceRowIcon"
-                android:id="@+id/Icon"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_tags"/>
-        <TextView style="@style/PreferenceRowTitle"
-            android:id="@+id/Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
+        android:layout_weight="1" />
     <ImageView
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:contentDescription="@null"
-        app:tint="@color/function_text_secondary"
+        app:tint="@color/app_text_secondary"
         android:src="@drawable/ic_function_chevron" />
 </LinearLayout>

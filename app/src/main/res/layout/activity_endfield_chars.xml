@@ -1,66 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/Toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/operator_assets">
-        <ImageButton android:id="@+id/RefreshButton" style="@style/ToolbarIconAction"
-            android:src="@drawable/ic_function_refresh" android:contentDescription="@string/refresh" />
+        <ImageButton
+            android:id="@+id/RefreshButton"
+            style="@style/ToolbarIconAction"
+            android:src="@drawable/ic_function_refresh"
+            android:contentDescription="@string/refresh" />
     </com.google.android.material.appbar.MaterialToolbar>
-
-    <FrameLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
-    <LinearLayout
-        android:id="@+id/ListContent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <com.blueskybone.arkscreen.ui.common.view.StarterLoadingView
-        android:id="@+id/Loading"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-
-        android:visibility="gone" />
-        <com.google.android.material.card.MaterialCardView android:id="@+id/ProfileCard" style="@style/CardViewContent">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp">
-                <include android:id="@+id/AccountRow" layout="@layout/asset_account_row" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-        <com.google.android.material.card.MaterialCardView android:id="@+id/Filters" style="@style/CardViewContent" app:strokeWidth="0dp" android:layout_marginBottom="@dimen/card_vertical_spacing">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingHorizontal="10dp" android:paddingVertical="4dp" android:gravity="center_vertical">
-                <com.google.android.material.chip.Chip android:id="@+id/Filter" style="@style/Widget.ArkScreen.ActionChip"
-                    android:text="@string/filter" app:chipIcon="@drawable/ic_filter" app:chipIconVisible="true" />
-                <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
-                <com.google.android.material.chip.Chip android:id="@+id/ViewMode" style="@style/Widget.ArkScreen.ActionChip"
-                    android:layout_marginStart="4dp" app:textStartPadding="0dp" app:textEndPadding="0dp"
-                    android:contentDescription="@string/change_view" app:chipIcon="@drawable/ic_list" app:chipIconVisible="true" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-        <TextView android:id="@+id/EmptyMessage" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:padding="20dp" android:gravity="center" android:textColor="@color/home_text_secondary" android:visibility="gone" />
-
-        <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/Characters"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingBottom="16dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-    </LinearLayout>
-
     <FrameLayout
-        android:id="@+id/DetailContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <LinearLayout
+            android:id="@+id/ListContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <com.blueskybone.arkscreen.ui.common.view.StarterLoadingView
+                android:id="@+id/Loading"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:visibility="gone" />
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/ProfileCard"
+                style="@style/PageContentCard">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+                    <include
+                        android:id="@+id/AccountRow"
+                        layout="@layout/asset_account_row" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/Filters"
+                style="@style/PageContentCard"
+                android:layout_marginBottom="@dimen/card_vertical_spacing">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:gravity="center_vertical">
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/Filter"
+                        style="@style/Widget.ArkScreen.ActionChip"
+                        android:text="@string/filter"
+                        app:chipIcon="@drawable/ic_filter"
+                        app:chipIconVisible="true" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/NotOwned"
+                        style="@style/Widget.ArkScreen.FilterChip"
+                        android:layout_marginStart="4dp"
+                        android:text="@string/not_own" />
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/ViewMode"
+                        style="@style/Widget.ArkScreen.ActionChip.IconOnly"
+                        android:layout_marginStart="4dp"
+                        android:contentDescription="@string/change_view"
+                        app:chipIcon="@drawable/ic_list" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+            <TextView
+                android:id="@+id/EmptyMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:gravity="center"
+                android:textColor="@color/app_text_secondary"
+                android:visibility="gone" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/Characters"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:paddingBottom="16dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        </LinearLayout>
+        <FrameLayout
+            android:id="@+id/DetailContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
     </FrameLayout>
 </LinearLayout>

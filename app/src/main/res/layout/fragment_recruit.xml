@@ -31,74 +31,104 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
                     <LinearLayout
+                        android:id="@+id/tagGroupsContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp">
-                        <LinearLayout
-                            android:id="@+id/tagGroupsContainer"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="0dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="6dp"
+                            android:text="@string/recruit_group_primary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/app_text_secondary" />
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerTagsPrimary"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:paddingStart="0dp"
-                            android:paddingEnd="0dp">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="6dp" android:text="@string/recruit_group_primary" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/home_text_secondary" />
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/recyclerTagsPrimary"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:nestedScrollingEnabled="false"
-                                android:overScrollMode="never"
-                                android:scrollbars="none" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:layout_marginBottom="6dp" android:text="@string/recruit_group_profession" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/home_text_secondary" />
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/recyclerTagsProfession"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:nestedScrollingEnabled="false"
-                                android:overScrollMode="never"
-                                android:scrollbars="none" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:layout_marginBottom="6dp" android:text="@string/recruit_group_position" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/home_text_secondary" />
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/recyclerTagsPosition"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:nestedScrollingEnabled="false"
-                                android:overScrollMode="never"
-                                android:scrollbars="none" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:layout_marginBottom="6dp" android:text="@string/recruit_group_ability" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/home_text_secondary" />
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/recyclerTagsAbility"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:nestedScrollingEnabled="false"
-                                android:overScrollMode="never"
-                                android:scrollbars="none" />
-                        </LinearLayout>
-                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:orientation="horizontal" android:gravity="end|center_vertical">
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/hideLowRarity"
-                                style="@style/Widget.ArkScreen.RecruitToggleChip"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="6dp"
-                                android:text="@string/recruit_hide_low_rarity" />
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/btnReset"
-                                style="@style/Widget.ArkScreen.RecruitActionChip"
-                                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="@string/reset" />
-                        </LinearLayout>
+                            android:nestedScrollingEnabled="false"
+                            android:overScrollMode="never"
+                            android:scrollbars="none" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="6dp"
+                            android:text="@string/recruit_group_profession"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/app_text_secondary" />
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerTagsProfession"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            android:overScrollMode="never"
+                            android:scrollbars="none" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="6dp"
+                            android:text="@string/recruit_group_position"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/app_text_secondary" />
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerTagsPosition"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            android:overScrollMode="never"
+                            android:scrollbars="none" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="6dp"
+                            android:text="@string/recruit_group_ability"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/app_text_secondary" />
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerTagsAbility"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            android:overScrollMode="never"
+                            android:scrollbars="none" />
                     </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="end|center_vertical">
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/hideLowRarity"
+                            style="@style/Widget.ArkScreen.RecruitToggleChip"
+                            android:layout_marginEnd="6dp"
+                            android:text="@string/recruit_hide_low_rarity" />
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/btnReset"
+                            style="@style/Widget.ArkScreen.RecruitActionChip"
+                            android:text="@string/reset" />
+                    </LinearLayout>
+                </LinearLayout>
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/resultCard"
-                    style="@style/CardViewContent"
+                    style="@style/PageContentCard"
                     android:layout_marginTop="6dp"
-                    android:visibility="visible"
-                    app:cardElevation="0dp">
+                    android:visibility="visible">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -131,9 +161,13 @@
                             android:paddingBottom="4dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
-                <TextView android:id="@+id/tvUpdate" android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:padding="16dp"
-                    android:textSize="11sp" android:textColor="@color/home_text_secondary" />
+                <TextView
+                    android:id="@+id/tvUpdate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:textSize="11sp"
+                    android:textColor="@color/app_text_secondary" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </FrameLayout>

@@ -1,25 +1,75 @@
-<?xml version='1.0' encoding='utf-8'?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
-    <com.blueskybone.arkscreen.ui.common.view.StarterLoadingView android:id="@+id/Loading"
-        android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:visibility="gone" />
-
-  <TextView android:id="@+id/Status" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:visibility="gone" />
-  <androidx.core.widget.NestedScrollView android:id="@+id/Report" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingBottom="24dp">
-      <TextView style="@style/PageSectionTitle" android:text="记录统计" />
-      <com.google.android.material.card.MaterialCardView style="@style/CardViewContent">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
-          <include android:id="@+id/ReportPools" layout="@layout/item_key_value" />
-          <include android:id="@+id/ReportPaid" layout="@layout/item_key_value" />
-          <include android:id="@+id/ReportFree" layout="@layout/item_key_value" />
-          <include android:id="@+id/ReportSix" layout="@layout/item_key_value" />
-          <include android:id="@+id/ReportFive" layout="@layout/item_key_value" />
-          <include android:id="@+id/ReportAverage" layout="@layout/item_key_value" />
-          <include android:id="@+id/ReportBest" layout="@layout/item_key_value" />
-          <include android:id="@+id/ReportWorst" layout="@layout/item_key_value" />
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <com.blueskybone.arkscreen.ui.common.view.StarterLoadingView
+        android:id="@+id/Loading"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="gone" />
+    <TextView
+        android:id="@+id/Status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:visibility="gone" />
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/Report"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="24dp">
+            <TextView
+                style="@style/PageSectionTitle"
+                android:text="记录统计" />
+            <com.google.android.material.card.MaterialCardView
+                style="@style/PageContentCard">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+                    <include
+                        android:id="@+id/ReportPools"
+                        layout="@layout/item_key_value" />
+                    <include
+                        android:id="@+id/ReportPaid"
+                        layout="@layout/item_key_value" />
+                    <include
+                        android:id="@+id/ReportFree"
+                        layout="@layout/item_key_value" />
+                    <include
+                        android:id="@+id/ReportSix"
+                        layout="@layout/item_key_value" />
+                    <include
+                        android:id="@+id/ReportFive"
+                        layout="@layout/item_key_value" />
+                    <include
+                        android:id="@+id/ReportAverage"
+                        layout="@layout/item_key_value" />
+                    <include
+                        android:id="@+id/ReportBest"
+                        layout="@layout/item_key_value" />
+                    <include
+                        android:id="@+id/ReportWorst"
+                        layout="@layout/item_key_value" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="12dp"
+                android:textSize="12sp"
+                android:textColor="@color/app_text_secondary"
+                android:text="仅统计已同步记录。水位按卡池独立计算；六星平均出货水位不含免费出货及尚未出货的抽数。" />
         </LinearLayout>
-      </com.google.android.material.card.MaterialCardView>
-      <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginHorizontal="24dp" android:layout_marginTop="12dp" android:textSize="12sp" android:textColor="@color/home_text_secondary" android:text="仅统计已同步记录。水位按卡池独立计算；六星平均出货水位不含免费出货及尚未出货的抽数。" />
-    </LinearLayout>
-  </androidx.core.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

@@ -53,7 +53,7 @@ class EndfieldGachaActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: android.view.Menu): Boolean {
         menu.add(0, 1, 0, R.string.refresh).setIcon(
             androidx.core.content.ContextCompat.getDrawable(this, R.drawable.ic_function_refresh)?.mutate()?.apply {
-                setTint(androidx.core.content.ContextCompat.getColor(this@EndfieldGachaActivity, R.color.home_text_primary))
+                setTint(androidx.core.content.ContextCompat.getColor(this@EndfieldGachaActivity, R.color.app_text_primary))
             })
             .setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_ALWAYS)
         return true

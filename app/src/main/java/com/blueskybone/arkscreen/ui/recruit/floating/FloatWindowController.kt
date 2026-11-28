@@ -300,7 +300,7 @@ class FloatWindowController(
         gravity = Gravity.CENTER
         text = textValue
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f * appearance.font / 100f)
-        setTextColor(ContextCompat.getColor(context, if (appearance.colorful) R.color.home_text_primary else R.color.white))
+        setTextColor(ContextCompat.getColor(context, if (appearance.colorful) R.color.app_text_primary else R.color.white))
         layoutParams = DrawerLayout.LayoutParams(
             DrawerLayout.LayoutParams.WRAP_CONTENT,
             DrawerLayout.LayoutParams.WRAP_CONTENT

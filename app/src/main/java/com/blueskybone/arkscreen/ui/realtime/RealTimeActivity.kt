@@ -194,7 +194,7 @@ class RealTimeActivity : AppCompatActivity() {
                 RealTimeFailureKind.NETWORK -> com.blueskybone.arkscreen.R.string.realtime_network_failed
                 RealTimeFailureKind.TIMEOUT -> com.blueskybone.arkscreen.R.string.realtime_timeout
                 RealTimeFailureKind.AUTH_EXPIRED -> com.blueskybone.arkscreen.R.string.realtime_login_expired
-                RealTimeFailureKind.OTHER -> com.blueskybone.arkscreen.R.string.realtime_load_failed
+                RealTimeFailureKind.OTHER -> com.blueskybone.arkscreen.R.string.error_load_check_log
             }
         )
     }
@@ -259,14 +259,8 @@ class RealTimeActivity : AppCompatActivity() {
         binding.ApResTime.text = data.apResTime.resolve(this)
         binding.DailyValue.text = data.daily.value.resolve(this)
         binding.CampaignValue.text = data.campaign.value.resolve(this)
-        binding.TowerHigherValue.text = getString(
-            com.blueskybone.arkscreen.R.string.realtime_module_higher,
-            data.towerHigher.value.resolve(this),
-        )
-        binding.TowerLowerValue.text = getString(
-            com.blueskybone.arkscreen.R.string.realtime_module_lower,
-            data.towerLower.value.resolve(this),
-        )
+        binding.TowerHigherValue.text = data.towerHigher.value.resolve(this)
+        binding.TowerLowerValue.text = data.towerLower.value.resolve(this)
         binding.Profile.LastLogin.text = data.lastLogin.resolve(this)
         binding.Profile.Uid.text = getString(com.blueskybone.arkscreen.R.string.realtime_uid, data.uid)
         binding.Profile.UidRow.visibility = if (data.uid.isBlank()) View.GONE else View.VISIBLE
@@ -286,12 +280,12 @@ class RealTimeActivity : AppCompatActivity() {
 
         binding.TrainChange.visibility =
             if (data.logosChange != null || data.ireneChange != null) View.VISIBLE else View.GONE
-        binding.Logos.Layout.visibility =
+        binding.Logos.visibility =
             if (data.logosChange != null) View.VISIBLE else View.GONE
-        binding.Logos.Text.text = data.logosChange?.text?.resolve(this).orEmpty()
-        binding.Irene.Layout.visibility =
+        binding.Logos.text = data.logosChange?.text?.resolve(this).orEmpty()
+        binding.Irene.visibility =
             if (data.ireneChange != null) View.VISIBLE else View.GONE
-        binding.Irene.Text.text = data.ireneChange?.text?.resolve(this).orEmpty()
+        binding.Irene.text = data.ireneChange?.text?.resolve(this).orEmpty()
         currentOfficial = data.official
         binding.Page.visibility = View.GONE
         val showContent = model.syncingState.value != true

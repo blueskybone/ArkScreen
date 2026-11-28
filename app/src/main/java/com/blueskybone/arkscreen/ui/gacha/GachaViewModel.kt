@@ -179,7 +179,7 @@ class GachaViewModel(
                 },
                 onFailure = { error ->
                     Timber.tag("Gacha").e(error, "Gacha record synchronization failed")
-                    val message = userFacingError(texts, error.message ?: texts.get(R.string.error_gacha_sync))
+                    val message = userFacingError(texts, error.message ?: texts.get(R.string.error_sync_failed))
                     _uiState.update {
                         it.copy(
                             status = if (hasCachedRecords) UiStatus.Success()
@@ -227,7 +227,7 @@ class GachaViewModel(
                 },
                 onFailure = { error ->
                     Timber.tag("Gacha").e(error, "Gacha account reauthentication failed")
-                    val message = userFacingError(texts, error.message ?: texts.get(R.string.error_relogin))
+                    val message = userFacingError(texts, error.message ?: texts.get(R.string.error_login_failed))
                     _uiState.update { it.copy(isSyncing = false) }
                     _event.send(GachaEvent.ShowError(message))
                 },
@@ -247,7 +247,7 @@ class GachaViewModel(
                             it.copy(status = UiStatus.Success(), isSyncing = false)
                         }
                     },
-                    onFailure = { error -> reportError(error.message ?: texts.get(R.string.error_gacha_delete)) },
+                    onFailure = { error -> reportError(error.message ?: texts.get(R.string.error_delete_failed)) },
                 )
             } finally {
                 if (_uiState.value.isSyncing) {

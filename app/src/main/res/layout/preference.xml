@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/Layout"
     android:layout_width="match_parent"
@@ -9,7 +10,6 @@
     android:focusable="true"
     android:orientation="horizontal"
     android:padding="20dp">
-
     <ImageView
         android:id="@+id/Icon"
         android:layout_width="20dp"
@@ -19,25 +19,20 @@
         android:contentDescription="@null"
         android:src="@drawable/ic_tags"
         app:tint="?attr/colorOnSurface" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
         <TextView
             android:id="@+id/Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/PreferenceTitle"
             android:textStyle="bold" />
-
         <TextView
             android:id="@+id/Value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/preference_value_text_size" />
     </LinearLayout>
-
-
 </LinearLayout>

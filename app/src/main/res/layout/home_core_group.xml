@@ -1,18 +1,40 @@
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/HomePageCard"
-    app:strokeWidth="0dp">
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical" android:padding="12dp">
-        <TextView style="@style/HomeCardHeading" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/core_data" app:drawableStartCompat="@drawable/ic_home_metrics" android:layout_marginStart="4dp" android:layout_marginBottom="8dp" />
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="horizontal" android:baselineAligned="false">
-            <include android:id="@+id/CoreAssets" layout="@layout/home_core_tile"
-                android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp" android:layout_weight="1" />
-            <include android:id="@+id/CoreGacha" layout="@layout/home_core_tile"
-                android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_marginStart="4dp" android:layout_weight="1" />
+    style="@style/HomePageCard">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+        <TextView
+            style="@style/HomeCardHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/core_data"
+            app:drawableStartCompat="@drawable/ic_home_metrics"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="8dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+            <include
+                android:id="@+id/CoreAssets"
+                layout="@layout/home_core_tile"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1" />
+            <include
+                android:id="@+id/CoreGacha"
+                layout="@layout/home_core_tile"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

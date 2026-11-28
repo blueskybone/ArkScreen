@@ -23,7 +23,7 @@ class WidgetContentFormatter(
         return when (content) {
             "ap" -> {
                 val value = cache.apCache
-                if (value.isnull) return WidgetContentText(context.getString(R.string.widget_no_data), "")
+                if (value.isnull) return WidgetContentText(context.getString(R.string.status_no_data), "")
                 val current = when {
                     value.current >= value.max -> value.current.toLong()
                     now >= value.recoverTime -> value.max.toLong()
@@ -38,7 +38,7 @@ class WidgetContentFormatter(
 
             "labor" -> {
                 val value = cache.laborCache
-                if (value.isnull) return WidgetContentText(context.getString(R.string.widget_no_data), "")
+                if (value.isnull) return WidgetContentText(context.getString(R.string.status_no_data), "")
                 val remaining = (value.remainSec - now + value.lastSyncTs).coerceAtLeast(0)
                 val current = if (value.remainSec <= 0 || remaining == 0L) {
                     value.max
@@ -55,7 +55,7 @@ class WidgetContentFormatter(
 
             "recruit" -> {
                 val value = cache.recruitCache
-                if (value.isNull) return WidgetContentText(context.getString(R.string.widget_no_data), "")
+                if (value.isNull) return WidgetContentText(context.getString(R.string.status_no_data), "")
                 val completed = when {
                     value.completeTime == -1L -> value.complete
                     now >= value.completeTime -> value.complete + 1
@@ -77,7 +77,7 @@ class WidgetContentFormatter(
 
             "refresh" -> {
                 val value = cache.refreshCache
-                if (value.isNull) return WidgetContentText(context.getString(R.string.widget_no_data), "")
+                if (value.isNull) return WidgetContentText(context.getString(R.string.status_no_data), "")
                 val count = when {
                     value.completeTime == -1L -> value.count
                     now >= value.completeTime -> value.count + 1
@@ -100,10 +100,10 @@ class WidgetContentFormatter(
             "train" -> {
                 val value = cache.trainCache
                 when {
-                    value.isnull -> WidgetContentText(context.getString(R.string.widget_no_data), "")
-                    value.status == -1L -> WidgetContentText(context.getString(R.string.widget_idle), "")
+                    value.isnull -> WidgetContentText(context.getString(R.string.status_no_data), "")
+                    value.status == -1L -> WidgetContentText(context.getString(R.string.status_idle), "")
                     value.status == 0L || now >= value.completeTime ->
-                        WidgetContentText(value.trainee, context.getString(R.string.widget_completed))
+                        WidgetContentText(value.trainee, context.getString(R.string.status_completed))
                     value.status == 1L ->
                         WidgetContentText(value.trainee, remaining(value.completeTime - now))
                     else -> invalidStatus("训练室", value.status)
@@ -113,10 +113,10 @@ class WidgetContentFormatter(
             "meet" -> {
                 val value = cache.meetCache
                 when {
-                    value.isnull -> WidgetContentText(context.getString(R.string.widget_no_data), "")
-                    value.stats == 0 -> WidgetContentText(context.getString(R.string.widget_idle), "")
+                    value.isnull -> WidgetContentText(context.getString(R.string.status_no_data), "")
+                    value.stats == 0 -> WidgetContentText(context.getString(R.string.status_idle), "")
                     value.stats == 2 || now >= value.completeTime ->
-                        WidgetContentText(context.getString(R.string.realtime_meeting_complete), context.getString(R.string.widget_completed))
+                        WidgetContentText(context.getString(R.string.realtime_meeting_complete), context.getString(R.string.status_completed))
                     value.stats == 1 ->
                         WidgetContentText(context.getString(R.string.widget_meeting_sharing), remaining(value.completeTime - now))
                     else -> invalidStatus("会客室", value.stats)
@@ -125,13 +125,13 @@ class WidgetContentFormatter(
 
             else -> {
                 Timber.e("未知 Widget 内容类型：%s", content)
-                WidgetContentText(context.getString(R.string.widget_no_data), "")
+                WidgetContentText(context.getString(R.string.status_no_data), "")
             }
         }
     }
 
     private fun remaining(seconds: Long): String =
-        if (seconds <= 0) context.getString(R.string.widget_completed) else TimeUtils.getRemainTimeMinStr(seconds)
+        if (seconds <= 0) context.getString(R.string.status_completed) else TimeUtils.getRemainTimeMinStr(seconds)
 
     private fun invalidStatus(source: String, status: Any): WidgetContentText {
         Timber.e("%s状态错误：%s", source, status)

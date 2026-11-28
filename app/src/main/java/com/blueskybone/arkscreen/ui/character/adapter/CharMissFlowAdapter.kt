@@ -42,7 +42,7 @@ class CharMissFlowAdapter(
 
     private fun bindView(binding: ItemCharMissBinding, item: Operator) {
         binding.Profession.setImageResource(
-            profIconMap[item.profession] ?: R.drawable.skill_icon_default
+            profIconMap[item.profession] ?: 0
         )
         val colorId = rarityColorMap[item.rarity + 1] ?: R.color.red
         val draw = ContextCompat.getDrawable(context, colorId)
@@ -61,7 +61,7 @@ class CharMissFlowAdapter(
             binding.Name.text = item.name
             binding.Rarity.text = "★".repeat(item.rarity + 1)
             binding.Profession.setImageResource(
-                profIconMap[item.profession] ?: R.drawable.skill_icon_default
+                profIconMap[item.profession] ?: 0
             )
             val colorId = rarityColorMap[item.rarity + 1] ?: R.color.red
             val draw = ContextCompat.getDrawable(context, colorId)

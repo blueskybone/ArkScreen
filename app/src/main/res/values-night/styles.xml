@@ -2,8 +2,8 @@
 <resources>
 
     <style name="AppTheme" parent="BaseAppTheme">
-        <item name="colorOnSurface">@color/dark_on_surface</item>
-        <item name="android:textColorPrimary">@color/dark_on_surface</item>
+        <item name="colorOnSurface">@color/app_text_primary</item>
+        <item name="android:textColorPrimary">@color/app_text_primary</item>
         <item name="windowActionModeOverlay">true</item>
     </style>
 

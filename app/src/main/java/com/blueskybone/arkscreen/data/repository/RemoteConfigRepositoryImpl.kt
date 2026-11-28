@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.data.repository
 
+import com.blueskybone.arkscreen.data.common.repositoryResultOf
 import com.blueskybone.arkscreen.data.common.HttpStatusException
 import com.blueskybone.arkscreen.domain.model.AppRemoteConfig
 import com.blueskybone.arkscreen.domain.repository.RemoteConfigRepository
@@ -13,7 +14,7 @@ class RemoteConfigRepositoryImpl(
     private val dispatcher: CoroutineDispatcher,
 ) : RemoteConfigRepository {
 
-    override suspend fun fetchAppConfig(): Result<AppRemoteConfig> = runCatching {
+    override suspend fun fetchAppConfig(): Result<AppRemoteConfig> = repositoryResultOf {
         withContext(dispatcher) {
             val connection = (URL(APP_CONFIG_URL).openConnection() as HttpURLConnection).apply {
                 connectTimeout = REQUEST_TIMEOUT_MS

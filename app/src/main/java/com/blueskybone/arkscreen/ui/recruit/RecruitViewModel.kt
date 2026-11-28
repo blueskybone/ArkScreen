@@ -127,8 +127,8 @@ class RecruitViewModel(
                 }
                 .onFailure { error ->
                     Timber.tag("Recruit").e(error, "Recruit database parsing failed")
-                    _uiState.update { it.copy(status = UiStatus.Error(texts.get(R.string.error_json_parse))) }
-                    _event.send(RecruitEvent.ShowError(texts.get(R.string.error_recruit_parse)))
+                    _uiState.update { it.copy(status = UiStatus.Error(texts.get(R.string.error_data_parse))) }
+                    _event.send(RecruitEvent.ShowError(texts.get(R.string.error_data_parse)))
                 }
         }
     }
@@ -142,7 +142,7 @@ class RecruitViewModel(
                 .onFailure { error ->
                     Timber.tag("Recruit").e(error, "Recruit calculation failed")
                     _uiState.update { it.copy(status = UiStatus.Error(error.message ?: texts.get(R.string.error_unknown))) }
-                    _event.send(RecruitEvent.ShowError(error.message ?: texts.get(R.string.error_recruit_calculate)))
+                    _event.send(RecruitEvent.ShowError(error.message ?: texts.get(R.string.recruit_calculation_failed)))
                 }
         }
     }
@@ -162,7 +162,7 @@ class RecruitViewModel(
             } catch (error: CancellationException) {
                 throw error
             } catch (error: Exception) {
-                val message = error.message ?: texts.get(R.string.error_recruit_load)
+                val message = error.message ?: texts.get(R.string.error_load_failed)
                 _uiState.update { it.copy(status = UiStatus.Error(message)) }
                 _event.send(RecruitEvent.ShowError(message))
             }

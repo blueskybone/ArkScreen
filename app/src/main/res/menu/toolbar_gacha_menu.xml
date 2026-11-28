@@ -2,8 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_export"
-        android:title="@string/export_data" />
+        android:id="@+id/menu_share"
+        android:icon="@drawable/ic_asset_share"
+        android:title="@string/share"
+        app:iconTint="?attr/colorOnSurface"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/menu_export"
+                android:title="@string/export_data" />
+            <item
+                android:id="@+id/menu_share_image"
+                android:title="@string/gacha_share_image" />
+        </menu>
+    </item>
     <item
         android:id="@+id/menu_import"
         android:title="@string/import_data" />
@@ -13,9 +25,4 @@
     <item
         android:id="@+id/gacha_correct"
         android:title="@string/gacha_correct" />
-
-<!--    <item-->
-<!--        android:id="@+id/action_view_toggle"-->
-<!--        app:showAsAction="always"-->
-<!--        android:icon="@drawable/ic_grid"/>-->
 </menu>

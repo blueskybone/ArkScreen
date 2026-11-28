@@ -270,7 +270,7 @@ class CharOwn : Fragment() {
             private val radius = resources.getDimension(R.dimen.card_corner_radius)
             private val dividerInset = (8 * resources.displayMetrics.density).toInt()
             private val cardPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                color = ContextCompat.getColor(requireContext(), R.color.asset_list_card_surface)
+                color = ContextCompat.getColor(requireContext(), R.color.app_surface)
             }
             private val listDivider = requireContext()
                 .obtainStyledAttributes(intArrayOf(android.R.attr.listDivider))
@@ -592,13 +592,13 @@ class CharOwn : Fragment() {
                 binding.Level.text = item.level.toString()
 
                 binding.Profession.setImageResource(
-                    profIconMap[item.profession] ?: R.drawable.skill_icon_default
+                    profIconMap[item.profession] ?: 0
                 )
                 binding.Potential.setImageResource(
-                    potentialIconMap[item.potentialRank] ?: R.drawable.skill_icon_default
+                    potentialIconMap[item.potentialRank] ?: 0
                 )
                 binding.Evolve.setImageResource(
-                    evolveIconMap[item.evolvePhase] ?: R.drawable.skill_icon_default
+                    evolveIconMap[item.evolvePhase] ?: 0
                 )
 
                 val colorId = rarityColorMap[item.rarity + 1] ?: R.color.red

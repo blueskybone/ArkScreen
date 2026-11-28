@@ -132,6 +132,9 @@ class ResourceFileStore(
         file: File,
     ): Boolean = when (type) {
         ConfigType.I18N_DB -> isValidI18n(root)
+        ConfigType.ENDFIELD_CHAR_CATALOG -> runCatching {
+            EndfieldCharCatalogParser.parse(root)
+        }.isSuccess
         ConfigType.CHAR_MAP -> isValidCharMap(root)
         ConfigType.GACHA_POOL_CATALOG -> runCatching {
             gachaPoolCatalogParser.parse(file)
@@ -210,6 +213,7 @@ class ResourceFileStore(
     private companion object {
         val VERSIONED_JSON_TYPES = setOf(
             ConfigType.CHAR_MAP,
+            ConfigType.ENDFIELD_CHAR_CATALOG,
             ConfigType.GACHA_POOL_CATALOG,
             ConfigType.RECRUIT_DB,
             ConfigType.I18N_DB,

@@ -120,7 +120,7 @@ class WidgetInfoMapper(
             source.status == -1L -> item(
                 WidgetInfoType.TRAINING,
                 R.string.train,
-                value = context.getString(R.string.widget_idle),
+                value = context.getString(R.string.status_idle),
                 restTime = null,
                 state = WidgetInfoState.IDLE,
             )
@@ -187,7 +187,7 @@ class WidgetInfoMapper(
             !enabled -> item(
                 WidgetInfoType.ATTENDANCE,
                 R.string.auto_attendance,
-                value = context.getString(R.string.widget_attendance_disabled),
+                value = context.getString(R.string.status_disabled),
                 restTime = null,
                 state = WidgetInfoState.DISABLED,
             )
@@ -201,7 +201,7 @@ class WidgetInfoMapper(
             failedToday -> item(
                 WidgetInfoType.ATTENDANCE,
                 R.string.auto_attendance,
-                value = context.getString(R.string.widget_attendance_failed),
+                value = context.getString(R.string.attendance_failed),
                 restTime = null,
                 state = WidgetInfoState.ERROR,
             )
@@ -218,7 +218,7 @@ class WidgetInfoMapper(
     private fun unavailable(type: WidgetInfoType, titleRes: Int) = item(
         type = type,
         titleRes = titleRes,
-        value = context.getString(R.string.widget_no_data),
+        value = context.getString(R.string.status_no_data),
         restTime = null,
         state = WidgetInfoState.UNAVAILABLE,
     )
@@ -245,7 +245,7 @@ class WidgetInfoMapper(
         state = state,
     )
 
-    private fun completed() = context.getString(R.string.widget_completed)
+    private fun completed() = context.getString(R.string.status_completed)
 
     private fun remaining(seconds: Long): String =
         TimeUtils.getRemainTimeMinStr(seconds.coerceAtLeast(0L))

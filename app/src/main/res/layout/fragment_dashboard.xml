@@ -1,91 +1,417 @@
-<?xml version='1.0' encoding='utf-8'?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:paddingBottom="?attr/actionBarSize">
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingBottom="20dp">
-        <TextView style="@style/TextView.Headline" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/function" />
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" android:layout_marginTop="16dp" app:strokeWidth="0dp">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-                <LinearLayout android:id="@+id/RecruitHeader" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="52dp" android:background="@android:color/transparent" android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:orientation="horizontal" android:paddingStart="20dp" android:paddingEnd="20dp">
-                    <TextView style="@style/PreferenceHeader" android:paddingStart="0dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingEnd="8dp" android:text="@string/quick_recruit" android:textColor="@color/app_text_section" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:textStyle="normal" />
-                    <TextView android:id="@+id/RecruitStatus" style="@style/Widget.ArkScreen.StatusCapsule" />
-                    <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
-                    <ImageView android:id="@+id/RecruitExpand" android:layout_width="18dp" android:layout_height="18dp" android:contentDescription="@null" android:rotation="90" app:tint="@color/function_text_secondary" android:src="@drawable/ic_function_chevron" />
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="?attr/actionBarSize">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="20dp">
+        <TextView
+            style="@style/TextView.Headline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/function" />
+        <com.google.android.material.card.MaterialCardView
+            style="@style/PageContentCard"
+            android:layout_marginTop="16dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:id="@+id/RecruitHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="52dp"
+                    android:background="@android:color/transparent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp">
+                    <TextView
+                        style="@style/SectionTitleText"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:textAppearance="?attr/textAppearanceSubtitle2"
+                        android:paddingStart="0dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingEnd="8dp"
+                        android:text="@string/quick_recruit" />
+                    <TextView
+                        android:id="@+id/RecruitStatus"
+                        style="@style/Widget.ArkScreen.StatusCapsule" />
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+                    <ImageView
+                        android:id="@+id/RecruitExpand"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:contentDescription="@null"
+                        android:rotation="90"
+                        app:tint="@color/app_text_secondary"
+                        android:src="@drawable/ic_function_chevron" />
                 </LinearLayout>
-                <LinearLayout android:id="@+id/RecruitContent" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-                    <include android:id="@+id/RecruitMode" layout="@layout/preference_icon" />
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                    <include android:id="@+id/RecruitAutoMode" layout="@layout/preference_sub_switch" />
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                    <include android:id="@+id/ScreenShotDelay" layout="@layout/preference_value" />
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                    <LinearLayout style="@style/PreferenceRow" android:id="@+id/OverlayPermissionChip" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:clickable="true" android:focusable="true">
-                        <ImageView style="@style/PreferenceRowIcon" android:src="@drawable/ic_function_permission" android:contentDescription="@null" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/permission_requirements" style="@style/PreferenceRowTitle" />
+                <LinearLayout
+                    android:id="@+id/RecruitContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <include
+                        android:id="@+id/RecruitMode"
+                        layout="@layout/preference_icon" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="56dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@color/app_divider" />
+                    <include
+                        android:id="@+id/RecruitAutoMode"
+                        layout="@layout/preference_sub_switch" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="56dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@color/app_divider" />
+                    <include
+                        android:id="@+id/ScreenShotDelay"
+                        layout="@layout/preference_value" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="56dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@color/app_divider" />
+                    <LinearLayout
+                        style="@style/PreferenceRow"
+                        android:id="@+id/OverlayPermissionChip"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:clickable="true"
+                        android:focusable="true">
+                        <ImageView
+                            style="@style/PreferenceRowIcon"
+                            android:src="@drawable/ic_function_permission"
+                            android:contentDescription="@null" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/permission_requirements"
+                            style="@style/PreferenceRowTitle" />
                     </LinearLayout>
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                    <LinearLayout style="@style/PreferenceRow" android:id="@+id/RecruitVideo" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:clickable="true" android:focusable="true">
-                        <ImageView style="@style/PreferenceRowIcon" android:src="@drawable/ic_function_play" android:contentDescription="@null" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/recruit_video" style="@style/PreferenceRowTitle" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="56dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@color/app_divider" />
+                    <LinearLayout
+                        style="@style/PreferenceRow"
+                        android:id="@+id/RecruitVideo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:clickable="true"
+                        android:focusable="true">
+                        <ImageView
+                            style="@style/PreferenceRowIcon"
+                            android:src="@drawable/ic_function_play"
+                            android:contentDescription="@null" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/recruit_video"
+                            style="@style/PreferenceRowTitle" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" android:layout_marginTop="16dp" app:strokeWidth="0dp">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-                <LinearLayout android:id="@+id/WidgetHeader" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="52dp" android:background="@android:color/transparent" android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:orientation="horizontal" android:paddingStart="20dp" android:paddingEnd="20dp">
-                    <TextView style="@style/PreferenceHeader" android:paddingStart="0dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingEnd="8dp" android:text="@string/widget" android:textColor="@color/app_text_section" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:textStyle="normal" />
-                    <TextView android:id="@+id/WidgetStatus" style="@style/Widget.ArkScreen.StatusCapsule" />
-                    <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
-                    <ImageView android:id="@+id/WidgetExpand" android:layout_width="18dp" android:layout_height="18dp" android:contentDescription="@null" android:rotation="90" app:tint="@color/function_text_secondary" android:src="@drawable/ic_function_chevron" />
+        <com.google.android.material.card.MaterialCardView
+            style="@style/PageContentCard"
+            android:layout_marginTop="16dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:id="@+id/WidgetHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="52dp"
+                    android:background="@android:color/transparent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp">
+                    <TextView
+                        style="@style/SectionTitleText"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:textAppearance="?attr/textAppearanceSubtitle2"
+                        android:paddingStart="0dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingEnd="8dp"
+                        android:text="@string/widget" />
+                    <TextView
+                        android:id="@+id/WidgetStatus"
+                        style="@style/Widget.ArkScreen.StatusCapsule" />
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+                    <ImageView
+                        android:id="@+id/WidgetExpand"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:contentDescription="@null"
+                        android:rotation="90"
+                        app:tint="@color/app_text_secondary"
+                        android:src="@drawable/ic_function_chevron" />
                 </LinearLayout>
-                <LinearLayout android:id="@+id/WidgetContent" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-                    <include android:id="@+id/PowerSavingMode" layout="@layout/preference_switch" />
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                    <include android:id="@+id/WidgetRefresh" layout="@layout/preference_value" />
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                    <include android:id="@+id/WidgetAppearance" layout="@layout/preference_icon" />
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                    <LinearLayout style="@style/PreferenceRow" android:id="@+id/WidgetPermission" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:clickable="true" android:focusable="true">
-                        <ImageView style="@style/PreferenceRowIcon" android:src="@drawable/ic_function_permission" android:contentDescription="@null" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/permission_requirements" style="@style/PreferenceRowTitle" />
+                <LinearLayout
+                    android:id="@+id/WidgetContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <include
+                        android:id="@+id/PowerSavingMode"
+                        layout="@layout/preference_switch" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="56dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@color/app_divider" />
+                    <include
+                        android:id="@+id/WidgetRefresh"
+                        layout="@layout/preference_value" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="56dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@color/app_divider" />
+                    <include
+                        android:id="@+id/WidgetAppearance"
+                        layout="@layout/preference_icon" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="56dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@color/app_divider" />
+                    <LinearLayout
+                        style="@style/PreferenceRow"
+                        android:id="@+id/WidgetPermission"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:clickable="true"
+                        android:focusable="true">
+                        <ImageView
+                            style="@style/PreferenceRowIcon"
+                            android:src="@drawable/ic_function_permission"
+                            android:contentDescription="@null" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/permission_requirements"
+                            style="@style/PreferenceRowTitle" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" android:layout_marginTop="16dp" app:strokeWidth="0dp">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-                <LinearLayout android:id="@+id/AttendanceHeader" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="52dp" android:background="@android:color/transparent" android:clickable="true" android:focusable="true" android:gravity="center_vertical" android:orientation="horizontal" android:paddingStart="20dp" android:paddingEnd="20dp">
-                    <TextView style="@style/PreferenceHeader" android:paddingStart="0dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingEnd="8dp" android:text="@string/auto_attendance" android:textColor="@color/app_text_section" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:textStyle="normal" />
-                    <TextView android:id="@+id/AttendanceStatus" style="@style/Widget.ArkScreen.StatusCapsule" />
-                    <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
-                    <ImageView android:id="@+id/AttendanceExpand" android:layout_width="18dp" android:layout_height="18dp" android:contentDescription="@null" android:rotation="90" app:tint="@color/function_text_secondary" android:src="@drawable/ic_function_chevron" />
+        <com.google.android.material.card.MaterialCardView
+            style="@style/PageContentCard"
+            android:layout_marginTop="16dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:id="@+id/AttendanceHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="52dp"
+                    android:background="@android:color/transparent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp">
+                    <TextView
+                        style="@style/SectionTitleText"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:textAppearance="?attr/textAppearanceSubtitle2"
+                        android:paddingStart="0dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingEnd="8dp"
+                        android:text="@string/auto_attendance" />
+                    <TextView
+                        android:id="@+id/AttendanceStatus"
+                        style="@style/Widget.ArkScreen.StatusCapsule" />
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+                    <ImageView
+                        android:id="@+id/AttendanceExpand"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:contentDescription="@null"
+                        android:rotation="90"
+                        app:tint="@color/app_text_secondary"
+                        android:src="@drawable/ic_function_chevron" />
                 </LinearLayout>
-                <LinearLayout android:id="@+id/AttendanceContent" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-                    <include android:id="@+id/BackAutoAtd" layout="@layout/preference_switch" />
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                    <include android:id="@+id/SetAtdTime" layout="@layout/preference_sub_value" />
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                    <LinearLayout style="@style/PreferenceRow" android:id="@+id/AttdPermission" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:clickable="true" android:focusable="true">
-                        <ImageView style="@style/PreferenceRowIcon" android:src="@drawable/ic_function_permission" android:contentDescription="@null" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/permission_requirements" style="@style/PreferenceRowTitle" />
+                <LinearLayout
+                    android:id="@+id/AttendanceContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <include
+                        android:id="@+id/BackAutoAtd"
+                        layout="@layout/preference_switch" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="56dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@color/app_divider" />
+                    <include
+                        android:id="@+id/SetAtdTime"
+                        layout="@layout/preference_sub_value" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="56dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@color/app_divider" />
+                    <LinearLayout
+                        style="@style/PreferenceRow"
+                        android:id="@+id/AttdPermission"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:clickable="true"
+                        android:focusable="true">
+                        <ImageView
+                            style="@style/PreferenceRowIcon"
+                            android:src="@drawable/ic_function_permission"
+                            android:contentDescription="@null" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/permission_requirements"
+                            style="@style/PreferenceRowTitle" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" android:layout_marginTop="16dp" app:strokeWidth="0dp">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-                <LinearLayout android:id="@+id/RecoveryHeader" android:clickable="true" android:focusable="true" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="52dp" android:paddingStart="20dp" android:paddingEnd="20dp" android:orientation="horizontal" android:gravity="center_vertical">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/recovery_notifications" android:textSize="16sp" android:fontFamily="sans-serif-medium" android:textColor="@color/app_text_section" />
-                    <TextView style="@style/Widget.ArkScreen.StatusCapsule.Accent" android:layout_marginStart="8dp" android:text="@string/experimental_feature_short" />
-                    <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
-                    <ImageView android:id="@+id/RecoveryExpand" android:layout_width="18dp" android:layout_height="18dp" android:contentDescription="@null" app:tint="@color/function_text_secondary" android:src="@drawable/ic_function_chevron" />
+        <com.google.android.material.card.MaterialCardView
+            style="@style/PageContentCard"
+            android:layout_marginTop="16dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:id="@+id/RecoveryHeader"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="52dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/recovery_notifications"
+                        android:textSize="16sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textColor="@color/app_text_section" />
+                    <TextView
+                        style="@style/Widget.ArkScreen.StatusCapsule.Accent"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/experimental_feature_short" />
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+                    <ImageView
+                        android:id="@+id/RecoveryExpand"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:contentDescription="@null"
+                        app:tint="@color/app_text_secondary"
+                        android:src="@drawable/ic_function_chevron" />
                 </LinearLayout>
-                <LinearLayout android:id="@+id/RecoveryContent" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-                <include android:id="@+id/RecoveryEnabled" layout="@layout/preference_switch" />
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                <include android:id="@+id/RecoverySettings" layout="@layout/preference_icon" />
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                <include android:id="@+id/RecoveryPermissions" layout="@layout/preference_icon" />
-            </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/RecoveryContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <include
+                        android:id="@+id/RecoveryEnabled"
+                        layout="@layout/preference_switch" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="56dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@color/app_divider" />
+                    <include
+                        android:id="@+id/RecoverySettings"
+                        layout="@layout/preference_icon" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="56dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@color/app_divider" />
+                    <LinearLayout
+                        style="@style/PreferenceRow"
+                        android:id="@+id/RecoveryPermissions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:clickable="true"
+                        android:focusable="true">
+                        <ImageView
+                            style="@style/PreferenceRowIcon"
+                            android:src="@drawable/ic_function_permission"
+                            android:contentDescription="@null" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/permission_requirements"
+                            style="@style/PreferenceRowTitle" />
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>

@@ -217,7 +217,7 @@ abstract class BaseNextWidgetProvider : AppWidgetProvider() {
     protected fun primaryText(context: Context, item: WidgetInfoItem): String =
         item.value?.takeIf(String::isNotBlank)
             ?: item.restTime?.takeIf(String::isNotBlank)
-            ?: context.getString(R.string.widget_no_data)
+            ?: context.getString(R.string.status_no_data)
 
     protected fun refreshStatusText(context: Context, data: NextWidgetRenderData): String {
         val time = if (data.lastRefreshTs > 0L) {

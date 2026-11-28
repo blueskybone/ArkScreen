@@ -1,32 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout style="@style/PreferenceRow" xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/PreferenceRow"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
     android:orientation="horizontal"
     android:id="@+id/Layout">
-    <LinearLayout
-        android:orientation="horizontal"
+    <ImageView
+        style="@style/PreferenceRowIcon"
+        android:id="@+id/Icon"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_tags" />
+    <TextView
+        style="@style/PreferenceRowTitle"
+        android:id="@+id/Title"
         android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content">
-
-        <ImageView style="@style/PreferenceRowIcon"
-            android:id="@+id/Icon"
-            android:contentDescription="@null"
-            android:src="@drawable/ic_tags" />
-        <TextView style="@style/PreferenceRowTitle"
-            android:id="@+id/Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-    <TextView style="@style/PreferenceRowValue"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+    <TextView
+        style="@style/PreferenceRowValue"
         android:id="@+id/Value"
         android:paddingStart="8dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-
 </LinearLayout>

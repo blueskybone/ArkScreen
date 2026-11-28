@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,7 +9,6 @@
     android:paddingTop="6dp"
     android:paddingEnd="16dp"
     android:paddingBottom="6dp">
-
     <TextView
         android:id="@+id/OperatorName"
         android:layout_width="wrap_content"
@@ -16,9 +16,11 @@
         android:maxLines="1"
         android:textAppearance="?attr/textAppearanceSubtitle2"
         android:textStyle="bold"
+        android:ellipsize="end"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/IsNew"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/PoolInfo"
         android:layout_width="0dp"
@@ -30,8 +32,7 @@
         android:textColor="?android:attr/textColorSecondary"
         app:layout_constraintBaseline_toBaselineOf="@id/OperatorName"
         app:layout_constraintEnd_toStartOf="@id/Rarity"
-        app:layout_constraintStart_toEndOf="@id/OperatorName" />
-
+        app:layout_constraintStart_toEndOf="@id/IsNew" />
     <TextView
         android:id="@+id/Rarity"
         android:layout_width="wrap_content"
@@ -39,7 +40,6 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/PoolCount"
         android:layout_width="wrap_content"
@@ -49,7 +49,6 @@
         android:textColor="?android:attr/textColorSecondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/Rarity" />
-
     <TextView
         android:id="@+id/GainTime"
         android:layout_width="wrap_content"
@@ -59,23 +58,21 @@
         android:textColor="?android:attr/textColorSecondary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/OperatorName" />
-
     <TextView
         android:id="@+id/IsNew"
+        style="@style/GachaNewLabel"
+        android:layout_marginStart="4dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/OperatorName"
+        app:layout_constraintEnd_toStartOf="@id/PoolInfo"
+        app:layout_constraintBaseline_toBaselineOf="@id/OperatorName" />
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/MetadataBottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:background="@drawable/text_chip"
-        android:paddingStart="5dp"
-        android:paddingEnd="5dp"
-        android:text="NEW"
-        android:textColor="@color/red"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/GainTime"
-        app:layout_constraintStart_toEndOf="@id/GainTime"
-        app:layout_constraintTop_toTopOf="@id/GainTime" />
-
+        app:barrierDirection="bottom"
+        app:barrierAllowsGoneWidgets="false"
+        app:constraint_referenced_ids="GainTime,PoolCount" />
     <View
         android:layout_width="0dp"
         android:layout_height="1dp"
@@ -84,5 +81,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/GainTime" />
+        app:layout_constraintTop_toBottomOf="@id/MetadataBottom" />
 </androidx.constraintlayout.widget.ConstraintLayout>

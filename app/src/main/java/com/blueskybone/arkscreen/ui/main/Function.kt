@@ -156,11 +156,7 @@ class Function : Fragment() {
         binding.RecoveryEnabled.root.setOnClickListener { binding.RecoveryEnabled.Switch.toggle() }
         binding.RecoverySettings.Title.setText(R.string.recovery_settings_entry)
         binding.RecoverySettings.Icon.setImageResource(R.drawable.ic_recovery_settings)
-        binding.RecoveryPermissions.Title.setText(R.string.permission_requirements)
-        binding.RecoveryPermissions.Icon.setImageResource(R.drawable.ic_function_permission)
-        (binding.RecoveryPermissions.root as? android.view.ViewGroup)
-            ?.getChildAt(1)?.visibility = View.GONE
-        binding.RecoveryPermissions.root.setOnClickListener {
+        binding.RecoveryPermissions.setOnClickListener {
             PreferenceDialog(requireContext()).add(R.string.notify_permission, R.string.notify_permission_detail) {
                 (activity as? MainActivity)?.openNotificationSettings(requireContext())
             }.show()

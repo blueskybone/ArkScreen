@@ -119,7 +119,7 @@ class Setting : Fragment() {
                 .setPositiveButton(R.string.confirm, null).show()
         }
 
-        binding.AboutEntry.Title.setText(R.string.about_page_title)
+        binding.AboutEntry.Title.setText(R.string.about)
         binding.AboutEntry.Icon.setImageResource(R.drawable.ic_info)
         binding.AboutEntry.Layout.setOnClickListener {
             if (parentFragmentManager.findFragmentByTag("about_page") == null) {

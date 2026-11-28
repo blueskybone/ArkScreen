@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardBackgroundColor="@color/home_inner_surface"
-    app:strokeWidth="0dp"
     android:id="@+id/Layout"
-    style="@style/CardViewContent"
+    style="@style/ArkContentCardSurface"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginStart="4dp"
@@ -14,7 +14,6 @@
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -22,13 +21,13 @@
         android:minHeight="68dp"
         android:orientation="horizontal"
         android:padding="10dp">
-
         <ImageView
             android:id="@+id/Icon"
             android:layout_width="21dp"
             android:layout_height="21dp"
             android:contentDescription="@null"
-            android:layout_marginStart="4dp" android:layout_marginEnd="12dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="12dp"
             app:tint="?attr/colorPrimary" />
         <TextView
             android:id="@+id/Title"
@@ -37,8 +36,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="?attr/textAppearanceSubtitle2"
-            android:textColor="@color/home_text_primary"
+            android:textColor="@color/app_text_primary"
             android:textStyle="bold" />
-
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

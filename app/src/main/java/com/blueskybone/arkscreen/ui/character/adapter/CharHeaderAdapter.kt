@@ -98,7 +98,7 @@ class CharHeaderAdapter(
             val filterColor = if (filterCount >= 0) {
                 context.getColor(R.color.asset_action_selected_text)
             } else {
-                context.getColor(R.color.home_text_primary)
+                context.getColor(R.color.app_text_primary)
             }
             binding.Filter.setTextColor(filterColor)
             binding.Filter.chipIconTint = ColorStateList.valueOf(filterColor)

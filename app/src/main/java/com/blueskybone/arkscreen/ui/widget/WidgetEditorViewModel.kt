@@ -70,7 +70,7 @@ class WidgetEditorViewModel internal constructor(
             catch (e: Exception) {
                 if (request != generation) return@launch
                 _state.update { it.copy(loading = false) }
-                events.send(WidgetEditorEvent.Error(texts.get(R.string.error_widget_config_load)))
+                events.send(WidgetEditorEvent.Error(texts.get(R.string.error_load_retry)))
             }
         }
     }

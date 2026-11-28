@@ -73,7 +73,7 @@ fun profImageButton(
         layoutParams = FrameLayout.LayoutParams(layoutWidth, layoutHeight)
 
         // 设置背景
-        background = ContextCompat.getDrawable(context, R.drawable.button_tag)
+        background = ContextCompat.getDrawable(context, R.drawable.bg_profession_filter)
         contentDescription = contentInfo
 
         // 设置内边距

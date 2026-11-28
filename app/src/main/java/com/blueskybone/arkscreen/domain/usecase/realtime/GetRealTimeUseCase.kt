@@ -19,9 +19,7 @@ class GetRealTimeUseCase(
     suspend operator fun invoke(account: AccountSk): Result<RealTimeData> {
 
         val result = repo.fetchRealTimeData(account)
-        val data = result.getOrNull() ?: return Result.failure(
-            result.exceptionOrNull() ?: IllegalStateException("实时数据为空")
-        )
+        val data = result.getOrElse { return result }
         // 缓存必须和本次刷新一并更新，确保首页与桌面组件读取的是同一份快照。
         repo.setRealTimeCache(account, data)
         runCatching { reminders.onRealtimeSynced(account, data) }

@@ -1,41 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout style="@style/PreferenceRow.Detail" xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/PreferenceRow.Detail"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:id="@+id/Layout">
-
-    <ImageView style="@style/PreferenceRowIcon"
+    <ImageView
+        style="@style/PreferenceRowIcon"
         android:id="@+id/Icon"
         android:contentDescription="@null"
         android:src="@drawable/ic_tags" />
-
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1"
         android:orientation="vertical">
-
-        <TextView style="@style/PreferenceRowTitle"
+        <TextView
+            style="@style/PreferenceRowTitle"
             android:id="@+id/Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <TextView style="@style/PreferenceRowValue.Detail"
+        <TextView
+            style="@style/PreferenceRowValue.Detail"
             android:id="@+id/Value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="2"
             android:ellipsize="end" />
-
     </LinearLayout>
-
     <com.google.android.material.materialswitch.MaterialSwitch
         android:saveEnabled="false"
         android:id="@+id/Switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-
 </LinearLayout>

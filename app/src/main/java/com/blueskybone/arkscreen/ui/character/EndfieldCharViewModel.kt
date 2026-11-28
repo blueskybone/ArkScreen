@@ -10,6 +10,12 @@ import com.blueskybone.arkscreen.domain.model.operator.endfield.EndfieldCharacte
 import com.blueskybone.arkscreen.domain.model.account.AccountEf
 import com.blueskybone.arkscreen.domain.repository.AccountRepository
 import com.blueskybone.arkscreen.domain.repository.SklandRepository
+import com.blueskybone.arkscreen.domain.model.ConfigType
+import com.blueskybone.arkscreen.domain.model.operator.endfield.EndfieldOperatorInfo
+import com.blueskybone.arkscreen.domain.repository.GameResourceRepository
+import com.blueskybone.arkscreen.domain.usecase.operator.EndfieldOperatorCatalog
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,11 +29,20 @@ data class EndfieldCharUiState(
     val characters: List<EndfieldCharacter> = emptyList(),
     val visibleCharacters: List<EndfieldCharacter> = emptyList(),
     val filters: EndfieldCharFilters = EndfieldCharFilters(),
-    val filterOptions: List<List<String>> = listOf(emptyList(), emptyList(), emptyList()),
+    val catalog: List<EndfieldOperatorInfo> = emptyList(),
+    val catalogError: String? = null,
+    val showMissing: Boolean = false,
     val avatarUrl: String? = null,
     val status: UiStatus = UiStatus.Idle,
     val grid: Boolean = false,
 ) {
+    val missingCharacters: List<EndfieldOperatorInfo> get() =
+        if (status is UiStatus.Success) EndfieldOperatorCatalog.missing(catalog, characters) else emptyList()
+    val visibleMissing: List<EndfieldOperatorInfo> get() = EndfieldCharList.visibleMissing(missingCharacters, filters)
+    val filterOptions: List<List<String>> get() = (0..2).map { kind ->
+        (characters.mapNotNull { EndfieldCharList.value(it, kind) } +
+            catalog.map { EndfieldCharList.value(it, kind) }).distinct().sortedDescending()
+    }
     val loading: Boolean get() = status is UiStatus.Loading
     val error: String? get() = (status as? UiStatus.Error)?.message
 }
@@ -37,11 +52,16 @@ class EndfieldCharViewModel(
     private val skland: SklandRepository,
     private val settings: SettingPrefManager,
     private val texts: UiStrings,
+    private val resources: GameResourceRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(EndfieldCharUiState(grid = settings.endfieldAssetsGrid.get()))
     val uiState = _uiState.asStateFlow()
     private var loadJob: Job? = null
     private var requestVersion = 0
+
+    fun setShowMissing(show: Boolean) {
+        _uiState.update { it.copy(showMissing = show) }
+    }
 
     fun toggleViewType() {
         settings.endfieldAssetsGrid.set(!settings.endfieldAssetsGrid.get())
@@ -96,13 +116,19 @@ class EndfieldCharViewModel(
         loadJob?.cancel()
         if (account == null) {
             _uiState.update { it.copy(avatarUrl = null, characters = emptyList(), visibleCharacters = emptyList(),
-                filterOptions = listOf(emptyList(), emptyList(), emptyList()), status = UiStatus.Idle) }
+                catalog = emptyList(), catalogError = null, status = UiStatus.Idle) }
             return
         }
         loadJob = viewModelScope.launch {
             _uiState.update { it.copy(avatarUrl = null, characters = emptyList(), visibleCharacters = emptyList(),
-                filterOptions = listOf(emptyList(), emptyList(), emptyList()), status = UiStatus.Loading()) }
-            skland.fetchEndfieldCharacters(account)
+                catalog = emptyList(), catalogError = null, status = UiStatus.Loading()) }
+            val catalogRequest = async {
+                resources.syncResource(ConfigType.ENDFIELD_CHAR_CATALOG).lastOrNull()
+                resources.getEndfieldCharCatalog()
+            }
+            val assets = skland.fetchEndfieldCharacters(account)
+            val catalogResult = catalogRequest.await()
+            assets
                 .onSuccess { (characters, avatarUrl) ->
                     if (version != requestVersion) return@onSuccess
                     _uiState.update {
@@ -110,7 +136,8 @@ class EndfieldCharViewModel(
                             avatarUrl = avatarUrl,
                             characters = characters,
                             visibleCharacters = EndfieldCharList.visible(characters, it.filters),
-                            filterOptions = EndfieldCharList.options(characters),
+                            catalog = catalogResult.getOrNull().orEmpty(),
+                            catalogError = catalogResult.exceptionOrNull()?.let { texts.get(R.string.endfield_catalog_failed) },
                             status = UiStatus.Success(),
                         )
                     }

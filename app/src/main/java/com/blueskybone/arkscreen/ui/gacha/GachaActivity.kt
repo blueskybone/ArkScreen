@@ -51,6 +51,7 @@ class GachaActivity : AppCompatActivity() {
     private var toolbarMenu: Menu? = null
     private var latestState = GachaUiState()
     private var isFileOperationRunning = false
+    private val posterExport = com.blueskybone.arkscreen.ui.gacha.export.GachaPosterExport(this, ::setFileOperationRunning)
     private val reauthLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -90,7 +91,7 @@ class GachaActivity : AppCompatActivity() {
                     val hasCachedRecords = state.gachaUiSnapshot?.records?.isNotEmpty() == true
                     when (val status = state.status) {
                         is UiStatus.Loading -> {
-                            showStatus(status.message ?: getString(R.string.status_loading_ellipsis), loading = true)
+                            showStatus(status.message ?: getString(R.string.loading), loading = true)
                         }
                         is UiStatus.Empty -> showStatus(status.message, showAction = true)
                         is UiStatus.Error -> {
@@ -213,6 +214,7 @@ class GachaActivity : AppCompatActivity() {
         val hasAccount = latestState.currAccount != null
         val hasRecords = latestState.gachaUiSnapshot?.records?.isNotEmpty() == true
         val available = !latestState.isSyncing && !isFileOperationRunning
+        menu.findItem(R.id.menu_share)?.isEnabled = available && hasAccount && hasRecords
         menu.findItem(R.id.menu_export)?.isEnabled = available && hasAccount && hasRecords
         menu.findItem(R.id.menu_import)?.isEnabled = available && hasAccount
         menu.findItem(R.id.menu_clear)?.isEnabled = available && hasAccount && hasRecords
@@ -236,6 +238,12 @@ class GachaActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.menu_share_image -> {
+                val poster = com.blueskybone.arkscreen.ui.gacha.export.GachaPoster.from(latestState)
+                if (poster == null) Toaster.show(getString(R.string.gacha_export_empty))
+                else posterExport.generate(poster)
+                true
+            }
             R.id.menu_export -> {
                 MenuDialog(this)
                     .add(getString(R.string.file_txt)) {

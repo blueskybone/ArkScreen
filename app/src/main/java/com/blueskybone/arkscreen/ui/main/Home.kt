@@ -185,7 +185,7 @@ class Home : Fragment() {
     private fun renderAccount(state: MainUiState) {
         val currentAccount = state.currentAccountSk
         binding.AccountSelector.CurrentAccount.text =
-            currentAccount?.nickName ?: getString(R.string.login_account)
+            currentAccount?.nickName ?: getString(R.string.add_skland_account)
         binding.LoginGuide.visibility =
             if (currentAccount == null) View.VISIBLE else View.GONE
     }

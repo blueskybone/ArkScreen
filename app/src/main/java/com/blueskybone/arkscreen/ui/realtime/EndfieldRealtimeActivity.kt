@@ -79,7 +79,7 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
             state.accounts.isEmpty() -> getString(R.string.endfield_chars_no_account)
             state.loading -> getString(R.string.endfield_realtime_loading)
             state.error != null -> state.error
-            state.snapshot == null -> getString(R.string.realtime_no_data)
+            state.snapshot == null -> getString(R.string.status_no_data)
             else -> ""
         }
         binding.StatusMessage.visibility = if (state.loading || (state.snapshot != null && state.error == null)) {
@@ -100,7 +100,7 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
             val card = ItemEndfieldRealtimeDomainBinding.inflate(
                 layoutInflater, binding.DomainsContainer, false,
             )
-            card.Title.setText(R.string.realtime_no_data)
+            card.Title.setText(R.string.status_no_data)
             binding.DomainsContainer.addView(card.root)
         }
         snapshot.domains.forEach { domain ->
@@ -122,7 +122,7 @@ class EndfieldRealtimeActivity : AppCompatActivity() {
                 val row = ItemKeyValueBinding.inflate(
                     layoutInflater, card.Settlements, false,
                 )
-                row.Title.setText(R.string.realtime_no_data)
+                row.Title.setText(R.string.status_no_data)
                 card.Settlements.addView(row.root)
             }
             domain.settlements.forEach { settlement ->

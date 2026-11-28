@@ -47,7 +47,7 @@ class AttendanceNotificationController(context: Context) {
         notify(
             appContext.getString(R.string.attendance_failed),
             message.substringAfterLast(": ")
-                .ifBlank { appContext.getString(R.string.attendance_unknown_error) },
+                .ifBlank { appContext.getString(R.string.error_unknown) },
         )
     }
 

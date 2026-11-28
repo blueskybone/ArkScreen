@@ -334,7 +334,7 @@ object PreferenceBinder {
         fun selectedIndex() = values.indexOf(pref.get()).takeIf { it >= 0 } ?: values.indexOf(listInfo.defaultValue)
         Value.text = entries.getOrNull(selectedIndex())
         Value.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_function_select, 0)
-        TextViewCompat.setCompoundDrawableTintList(Value, ContextCompat.getColorStateList(context, R.color.function_text_secondary))
+        TextViewCompat.setCompoundDrawableTintList(Value, ContextCompat.getColorStateList(context, R.color.app_text_secondary))
         Value.compoundDrawablePadding = (4 * context.resources.displayMetrics.density).toInt()
         var popup: ListPopupWindow? = null
         root.doOnDetach { popup?.dismiss() }

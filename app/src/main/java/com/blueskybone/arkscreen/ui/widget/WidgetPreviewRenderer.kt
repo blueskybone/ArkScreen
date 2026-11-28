@@ -558,7 +558,7 @@ internal class WidgetPreviewRenderer(
                 setPadding(dp(6))
                 setImageResource(R.drawable.ic_starter)
                 selectedStyle.palette.starterIcon?.let(::setColorFilter)
-                contentDescription = getString(R.string.widget_start_game)
+                contentDescription = getString(R.string.start_game)
             })
         }
 
@@ -697,7 +697,7 @@ internal class WidgetPreviewRenderer(
     private fun primaryText(item: WidgetInfoItem): String =
         item.value?.takeIf(String::isNotBlank)
             ?: item.restTime?.takeIf(String::isNotBlank)
-            ?: getString(R.string.widget_no_data)
+            ?: getString(R.string.status_no_data)
 
     private fun stateColor(state: WidgetInfoState): Int =
         selectedStyle.palette.stateColor(state)

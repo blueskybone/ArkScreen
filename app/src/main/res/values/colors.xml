@@ -1,132 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="cyan_trans">#4685BDBD</color>
-    <!--    <color name="light_cyan">#0E9EA3</color>-->
-    <color name="blue_400">#3B538E</color>
-    <color name="blue_500">#2196F3</color>
-    <color name="blue_600">#2879BA</color>
-    <color name="endfield_primary">#F8DE05</color>
-    <color name="endfield_primary_dark">#C7AD00</color>
-    <color name="endfield_on_surface_accent">#C6A000</color>
-    <color name="endfield_accent_container">#F2EBCB</color>
-    <color name="endfield_progress_track">#E7E4D7</color>
 
-
+    <!-- 基础色板 -->
     <color name="black">#000000</color>
-    <color name="white">#FFFFFF</color>
+    <color name="blue_500">#2196F3</color>
     <color name="grey">#555555</color>
     <color name="grey_500">#BFBFBF</color>
     <color name="grey_600">#787878</color>
     <color name="grey_700">#424242</color>
-    <color name="out_line">#6f797a</color>
+    <color name="grey_900">#1E1F25</color>
+    <color name="red">#FF0000</color>
+    <color name="transparent">#00000000</color>
+    <color name="white">#FFFFFF</color>
 
-    <color name="sec_con">#DEE6EF</color>
-    <color name="on_sec_con">#575e71</color>
+    <!-- 应用表面、文字与容器 -->
+    <color name="app_primary">#2196F3</color>
+    <color name="app_primary_dark">#2879BA</color>
+    <color name="app_background">#EFEDF0</color>
+    <color name="app_divider">#10000000</color>
+    <color name="app_surface">#FAF8F9</color>
+    <color name="app_text_primary">#292A2D</color>
+    <color name="app_text_secondary">#65666C</color>
+    <color name="app_text_section">#45464B</color>
+    <color name="home_inner_surface">#EFEDF0</color>
+    <color name="on_secondary_container">#575e71</color>
+    <color name="secondary_container">#DEE6EF</color>
 
+    <!-- 状态与操作 -->
+    <color name="asset_action_selected_text">#145A91</color>
+    <color name="status_error_container">#FFE1DE</color>
+    <color name="status_error_content">#9B3D3D</color>
+    <color name="status_neutral_container">#E8EAF0</color>
+    <color name="status_neutral_content">#555B68</color>
     <color name="status_success_container">#DDF3E3</color>
     <color name="status_success_content">#27633A</color>
     <color name="status_warning_container">#FFF0C7</color>
     <color name="status_warning_content">#735B00</color>
-    <color name="status_error_container">#FFE1DE</color>
-    <color name="status_error_content">#9B3D3D</color>
-    <color name="asset_action_selected_text">#145A91</color>
-    <color name="status_neutral_container">#E8EAF0</color>
-    <color name="status_neutral_content">#555B68</color>
-    <!--    <color name="grey_900">#202020</color>-->
-    <color name="grey_900">#1E1F25</color>
-    <color name="red">#FF0000</color>
 
-    <!-- cyan theme color-->
-    <color name="dark_on_surface">#dde4e3</color>
-
-    <color name="asset_list_card_surface">@color/app_surface</color>
-    <color name="day_text_primary">#292c33</color>
-
-    <color name="LightBlue200">#65C9DDED</color>
-
-    <color name="trans_grey">#77494F55</color>
-
-    <color name="transparent">#00000000</color>
-
-    <color name="rare_6">#FF2600</color>
-    <color name="rare_5">#FF9800</color>
-    <color name="rare_4">#8959C8</color>
-    <color name="rare_3">#2196F3</color>
-    <color name="rare_2">#4CAF50</color>
-    <color name="rare_1">#595959</color>
-
-    <color name="theme_yellow">#F8DE05</color>
-    <color name="theme_orig">#FF6801</color>
-
-    <color name="pie_text">#121318</color>
-
-
-    <color name="rare_6_line">#F3644C</color>
-    <color name="rare_5_line">#F6AF44</color>
-    <color name="rare_4_line">#915EEA</color>
-
-    <color name="rare_6_surface">#17D8968B</color>
-    <color name="rare_5_surface">#17D8B38B</color>
-    <color name="rare_4_surface">#17AF8BD8</color>
-    <color name="rare_3_surface">#168BB9D8</color>
-    <color name="rare_2_surface">#1799D88B</color>
-    <color name="rare_1_surface">#17595959</color>
-
-    <!-- Home tool shortcuts. Keep icon/container pairs together for easy tuning. -->
-    <color name="tool_recruit_icon">#1565C0</color>
-    <color name="tool_recruit_container">#D9EAFE</color>
-    <color name="tool_assets_icon">#6A3DB5</color>
-    <color name="tool_assets_container">#EBDDFF</color>
-    <color name="tool_gacha_icon">#B84E00</color>
-    <color name="tool_gacha_container">#FFE1CC</color>
-    <color name="tool_attendance_icon">#237A3B</color>
-    <color name="tool_attendance_container">#D8F3DF</color>
-    <color name="tool_account_icon">#4554A4</color>
+    <!-- 首页快捷入口 -->
     <color name="tool_account_container">#E0E4FF</color>
-    <color name="tool_game_icon">#C2410C</color>
+    <color name="tool_account_icon">#4554A4</color>
+    <color name="tool_assets_container">#EBDDFF</color>
+    <color name="tool_assets_icon">#6A3DB5</color>
+    <color name="tool_attendance_container">#D8F3DF</color>
+    <color name="tool_attendance_icon">#237A3B</color>
+    <color name="tool_gacha_container">#FFE1CC</color>
+    <color name="tool_gacha_icon">#B84E00</color>
     <color name="tool_game_container">#FFEDD5</color>
+    <color name="tool_game_icon">#C2410C</color>
+    <color name="tool_recruit_container">#D9EAFE</color>
+    <color name="tool_recruit_icon">#1565C0</color>
 
-    <color name="ef_skill_physical">#777777</color>
-    <color name="ef_skill_pulse">#F6C744</color>
-    <color name="ef_skill_natural">#B4CA40</color>
-    <color name="ef_skill_fire">#EC694B</color>
-    <color name="ef_skill_cryst">#58BFCA</color>
-    <color name="ef_talent_active">#F5D443</color>
-    <color name="ef_talent_locked">#A9A9A9</color>
-    <color name="ef_equip_green">#88B764</color>
-    <color name="ef_equip_purple">#A884C5</color>
+    <!-- 干员稀有度与卡片 -->
+    <color name="operator_card_surface">@color/white</color>
+    <color name="operator_info_scrim">#77494F55</color>
+    <color name="rare_1">#595959</color>
+    <color name="rare_1_surface">#17595959</color>
+    <color name="rare_2">#4CAF50</color>
+    <color name="rare_2_surface">#1799D88B</color>
+    <color name="rare_3">#2196F3</color>
+    <color name="rare_3_surface">#168BB9D8</color>
+    <color name="rare_4">#8959C8</color>
+    <color name="rare_4_line">#915EEA</color>
+    <color name="rare_4_surface">#17AF8BD8</color>
+    <color name="rare_5">#FF9800</color>
+    <color name="rare_5_line">#F6AF44</color>
+    <color name="rare_5_surface">#17D8B38B</color>
+    <color name="rare_6">#FF2600</color>
+    <color name="rare_6_line">#F3644C</color>
+    <color name="rare_6_surface">#17D8968B</color>
+
+    <!-- 终末地主题与分类切换 -->
+    <color name="endfield_accent_container">#F2EBCB</color>
+    <color name="endfield_category_selected_text">#242100</color>
+    <color name="endfield_on_surface_accent">#C6A000</color>
+    <color name="endfield_primary">#F8DE05</color>
+    <color name="endfield_primary_dark">#C7AD00</color>
+    <color name="endfield_progress_track">#E7E4D7</color>
+
+    <!-- 终末地技能、天赋与装备 -->
+    <color name="ef_equip_blue">#64A8D8</color>
     <color name="ef_equip_gold">#E1BC5A</color>
+    <color name="ef_equip_green">#88B764</color>
+    <color name="ef_equip_orange">#E88C55</color>
+    <color name="ef_equip_purple">#A884C5</color>
     <color name="ef_equip_unknown">#8E8E8E</color>
     <color name="ef_item_icon_background">#696969</color>
-    <color name="ef_equip_blue">#64A8D8</color>
-    <color name="ef_equip_orange">#E88C55</color>
-    <color name="app_background">#EFEDF0</color>
-    <color name="app_surface">#FAF8F9</color>
-    <color name="function_divider">#10000000</color>
-    <color name="app_text_primary">#292A2D</color>
-    <color name="app_text_secondary">#65666C</color>
-    <color name="app_text_section">#45464B</color>
-    <color name="function_text_primary">@color/app_text_primary</color>
-    <color name="function_text_secondary">@color/app_text_secondary</color>
-    <color name="home_text_primary">@color/app_text_primary</color>
-    <color name="home_text_secondary">@color/app_text_secondary</color>
-    <color name="home_inner_surface">#EFEDF0</color>
-    <!-- Shared day/night, muted pull-count indicator colors. -->
-    <color name="gacha_pull_green">#52966B</color>
-    <color name="gacha_pull_blue">#4D8DBD</color>
-    <color name="gacha_pull_yellow">#C5A438</color>
-    <color name="gacha_pull_red">#C2635D</color>
-    <color name="gacha_pull_track">#E8E8EC</color>
-    <!-- Fixed floating-ball palette, shared by the preview and overlay in both themes. -->
+    <color name="ef_skill_cryst">#58BFCA</color>
+    <color name="ef_skill_fire">#EC694B</color>
+    <color name="ef_skill_natural">#B4CA40</color>
+    <color name="ef_skill_physical">#777777</color>
+    <color name="ef_skill_pulse">#F6C744</color>
+    <color name="ef_talent_active">#F5D443</color>
+    <color name="ef_talent_locked">#A9A9A9</color>
+
+    <!-- 公招标签与稀有度 -->
+    <color name="recruit_rare_1_surface">#E4E5E8</color>
+    <color name="recruit_rare_1_text">#55565B</color>
+    <color name="recruit_rare_2_surface">#DCEFE0</color>
+    <color name="recruit_rare_2_text">#287138</color>
+    <color name="recruit_rare_3_surface">#DCECF8</color>
+    <color name="recruit_rare_3_text">#286795</color>
+    <color name="recruit_rare_4_surface">#E9E1F4</color>
+    <color name="recruit_rare_4_text">#69429C</color>
+    <color name="recruit_rare_5_surface">#F3E7D1</color>
+    <color name="recruit_rare_5_text">#885B16</color>
+    <color name="recruit_rare_6_surface">#F5DDD8</color>
+    <color name="recruit_rare_6_text">#AD3D2C</color>
+    <color name="recruit_tag_surface">#DFE3EA</color>
+
+    <!-- 悬浮球固定配色（日夜共用） -->
     <color name="floating_ball_blue">#2877F0</color>
-    <color name="floating_ball_violet">#913DE0</color>
-    <color name="floating_ball_pink">#E63278</color>
-    <color name="floating_ball_red">#E94242</color>
-    <color name="floating_ball_orange">#F58220</color>
-    <color name="floating_ball_yellow">#F5CE32</color>
-    <color name="floating_ball_green">#38B54A</color>
     <color name="floating_ball_cyan">#8AEAE3</color>
     <color name="floating_ball_gray">#898B91</color>
+    <color name="floating_ball_green">#38B54A</color>
+    <color name="floating_ball_orange">#F58220</color>
+    <color name="floating_ball_pink">#E63278</color>
+    <color name="floating_ball_red">#E94242</color>
+    <color name="floating_ball_violet">#913DE0</color>
+    <color name="floating_ball_yellow">#F5CE32</color>
     <color name="floating_color_checkmark">#191E1C</color>
-    <color name="operator_card_surface">@color/white</color>
+
+    <!-- 寻访抽数与轨道 -->
+    <color name="gacha_pull_blue">#4D8DBD</color>
+    <color name="gacha_pull_green">#52966B</color>
+    <color name="gacha_pull_red">#C2635D</color>
+    <color name="gacha_pull_track">#E8E8EC</color>
+    <color name="gacha_pull_yellow">#C5A438</color>
+    <color name="pie_text">#121318</color>
+
+    <!-- 桌面组件固定文字色 -->
+    <color name="widget_dense_summary_text">#FFC8CBD2</color>
+    <color name="widget_dense_supporting_text">#FFB8BBC3</color>
+
+    <!-- 其他页面与图标 -->
+    <color name="game_launcher_icon_accent">#F8DE05</color>
+    <color name="notification_icon_accent">#FF6801</color>
+    <color name="realtime_divider">#6f797a</color>
+    <color name="web_login_header_background">#3B538E</color>
+
+    <!-- 旧控件兼容颜色 -->
+    <color name="circle_background_translucent">#65C9DDED</color>
+
+    <!-- 信息徽章与实时数据轨道：与按钮容器独立调整 -->
+    <color name="badge_container">#DEE6EF</color>
+    <color name="badge_content">#575E71</color>
+    <color name="realtime_progress_track">#DEE6EF</color>
 </resources>

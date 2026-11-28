@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
@@ -7,7 +8,6 @@
     android:orientation="horizontal"
     android:paddingTop="1dp"
     android:paddingBottom="1dp">
-
     <TextView
         android:id="@+id/Name"
         android:layout_width="80dp"
@@ -15,7 +15,6 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:textAppearance="?attr/textAppearanceBody2" />
-
     <LinearLayout
         android:id="@+id/Icons"
         android:layout_width="0dp"

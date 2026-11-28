@@ -2,6 +2,11 @@ package com.blueskybone.arkscreen.ui.main
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
+import android.os.Build
+import android.util.DisplayMetrics
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -68,6 +73,64 @@ class AboutFragment : DialogFragment() {
         super.onDestroyView()
     }
 
+    private fun buildDeviceInfo(): String {
+        val activity = requireActivity()
+        val metrics = resources.displayMetrics
+        val configuration = resources.configuration
+        val windowManager = activity.windowManager
+        val decorView = activity.window.decorView
+        val screenWidth: Int
+        val screenHeight: Int
+        val windowWidth: Int
+        val windowHeight: Int
+        val insets: WindowInsetsCompat?
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val screenBounds = windowManager.maximumWindowMetrics.bounds
+            val windowMetrics = windowManager.currentWindowMetrics
+            screenWidth = screenBounds.width()
+            screenHeight = screenBounds.height()
+            windowWidth = windowMetrics.bounds.width()
+            windowHeight = windowMetrics.bounds.height()
+            insets = WindowInsetsCompat.toWindowInsetsCompat(windowMetrics.windowInsets)
+        } else {
+            val screenMetrics = DisplayMetrics()
+            @Suppress("DEPRECATION")
+            windowManager.defaultDisplay.getRealMetrics(screenMetrics)
+            screenWidth = screenMetrics.widthPixels
+            screenHeight = screenMetrics.heightPixels
+            windowWidth = decorView.width
+            windowHeight = decorView.height
+            insets = ViewCompat.getRootWindowInsets(decorView)
+        }
+        fun insetInfo(type: Int): String {
+            val edges = insets?.getInsetsIgnoringVisibility(type)
+                ?: return getString(R.string.about_diagnostics_unavailable)
+            return getString(
+                R.string.about_diagnostics_inset_edges,
+                edges.left, edges.top, edges.right, edges.bottom,
+            )
+        }
+        val orientation = when (configuration.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> R.string.about_diagnostics_landscape
+            Configuration.ORIENTATION_PORTRAIT -> R.string.about_diagnostics_portrait
+            else -> R.string.about_diagnostics_unavailable
+        }
+        return listOf(
+            "ArkScreen ${appVersion.name} (${appVersion.versionCode})",
+            "Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})",
+            "${Build.MANUFACTURER} ${Build.MODEL}",
+            getString(R.string.about_diagnostics_screen, screenWidth, screenHeight),
+            getString(R.string.about_diagnostics_window, windowWidth, windowHeight,
+                windowWidth / metrics.density, windowHeight / metrics.density),
+            getString(R.string.about_diagnostics_density, metrics.densityDpi),
+            getString(R.string.about_diagnostics_font_scale, configuration.fontScale),
+            getString(R.string.about_diagnostics_orientation, getString(orientation)),
+            getString(R.string.about_diagnostics_status_bar, insetInfo(WindowInsetsCompat.Type.statusBars())),
+            getString(R.string.about_diagnostics_navigation_bar, insetInfo(WindowInsetsCompat.Type.navigationBars())),
+            getString(R.string.about_diagnostics_cutout, insetInfo(WindowInsetsCompat.Type.displayCutout())),
+        ).joinToString("\n")
+    }
+
     private fun openUrl(url: String) {
         runCatching { startActivity(Intent(Intent.ACTION_VIEW, url.toUri())) }
             .onFailure { Toaster.show(getString(R.string.about_open_failed)) }
@@ -81,10 +144,10 @@ class AboutFragment : DialogFragment() {
             Triple(binding.Diagnostics, R.string.about_diagnostics, R.drawable.ic_function_result),
             Triple(binding.Source, R.string.about_source, R.drawable.ic_link),
             Triple(binding.OpenSourceLicense, R.string.open_license, R.drawable.ic_license),
-            Triple(binding.Donate, R.string.about_support, R.drawable.ic_favorite),
+            Triple(binding.Donate, R.string.donate, R.drawable.ic_favorite),
         )
-        val primary = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.function_text_primary)
-        val secondary = androidx.core.content.ContextCompat.getColorStateList(requireContext(), R.color.function_text_secondary)
+        val primary = androidx.core.content.ContextCompat.getColor(requireContext(), R.color.app_text_primary)
+        val secondary = androidx.core.content.ContextCompat.getColorStateList(requireContext(), R.color.app_text_secondary)
         fun dp(n: Int) = (n * resources.displayMetrics.density).toInt()
         entries.forEach { (item, title, icon) ->
             item.Title.setText(title)
@@ -108,14 +171,12 @@ class AboutFragment : DialogFragment() {
         binding.CheckUpdate.setOnClickListener { model.checkAppUpdate(showNoUpdate = true) }
         binding.Source.Layout.setOnClickListener { openUrl("https://github.com/blueskybone/ArkScreen") }
         binding.Diagnostics.Layout.setOnClickListener {
-            val info = "ArkScreen ${appVersion.name}\n" +
-                "Android ${android.os.Build.VERSION.RELEASE} (API ${android.os.Build.VERSION.SDK_INT})\n" +
-                "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}"
+            val info = buildDeviceInfo()
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.about_diagnostics)
                 .setMessage(getString(R.string.about_diagnostics_note) + "\n\n" + info)
                 .setNegativeButton(R.string.cancel, null)
-                .setPositiveButton(R.string.copy_uid_action) { _, _ ->
+                .setPositiveButton(R.string.copy) { _, _ ->
                     copyToClipboard(requireContext(), info)
                     Toaster.show(getString(R.string.about_diagnostics_copied))
                 }.show()
@@ -186,8 +247,8 @@ class AboutFragment : DialogFragment() {
                     val context = requireContext().applicationContext
                     viewLifecycleOwner.lifecycleScope.launch {
                         withContext(Dispatchers.IO) {
-                            saveDrawableToGallery(context, R.drawable.wechat)
-                            saveDrawableToGallery(context, R.drawable.zfb)
+                            saveDrawableToGallery(context, R.drawable.donation_qr_wechat)
+                            saveDrawableToGallery(context, R.drawable.donation_qr_alipay)
                         }
                         Toaster.show(getString(R.string.saved_to_local))
                     }

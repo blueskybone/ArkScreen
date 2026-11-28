@@ -49,7 +49,7 @@ class OpenSourceLicensesActivity : AppCompatActivity() {
                 libraries = it.sortedBy(OpenSourceLibrary::name)
                 filter(binding.SearchInput.text?.toString().orEmpty())
             }.onFailure {
-                binding.EmptyText.setText(R.string.license_load_failed)
+                binding.EmptyText.setText(R.string.error_load_failed)
                 binding.EmptyText.visibility = View.VISIBLE
             }
         }

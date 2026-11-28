@@ -6,6 +6,7 @@ package com.blueskybone.arkscreen.domain.model
  */
 /** 可远程更新的业务资源；每个 XML 负责描述版本号和资源下载地址。 */
 enum class ConfigType(val fileName: String, val xmlUrl: String) {
+    ENDFIELD_CHAR_CATALOG("endfield_char_catalog.json", "https://gitee.com/blueskybone/ArkScreen/raw/master/resource/endfield_char_catalog_version.xml"),
     CHAR_MAP("char_info_map.json", "https://gitee.com/blueskybone/ArkScreen/raw/master/resource/char_info_map_version.xml"),
     GACHA_POOL_CATALOG("gacha_pool_catalog.json", "https://gitee.com/blueskybone/ArkScreen/raw/master/resource/gacha_pool_catalog_version.xml"),
     RECRUIT_DB("recruit_db.json", "https://gitee.com/blueskybone/ArkScreen/raw/master/resource/recruit_version.xml"),

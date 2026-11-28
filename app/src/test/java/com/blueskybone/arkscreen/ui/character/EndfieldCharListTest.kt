@@ -18,9 +18,9 @@ class EndfieldCharListTest {
     @Test fun combinesAllFiltersWithoutRemovingDetailSource() {
         val input = listOf(char("A", 90, 6), char("B", 80, 5),
             char("C", 70, 6).copy(charData = EndfieldCharacterData(
-                rarity = EndfieldLabel("rarity_6", "6"), profession = EndfieldLabel(value = "辅助"),
-                property = EndfieldLabel(value = "火"))))
-        val filters = EndfieldCharFilters("★★★★★★", "先锋", "火")
+                rarity = EndfieldLabel("rarity_6", "6"), profession = EndfieldLabel(key = "profession_supporter", value = "辅助"),
+                property = EndfieldLabel(key = "char_property_fire", value = "灼热"))))
+        val filters = EndfieldCharFilters("★★★★★★", "profession_vanguard", "char_property_fire")
         assertEquals(listOf("A"), EndfieldCharList.visible(input, filters).map { it.id })
         assertEquals(3, input.size)
         assertEquals(3, EndfieldCharList.visible(input, EndfieldCharFilters()).size)
@@ -33,13 +33,13 @@ class EndfieldCharListTest {
             EndfieldCharacter(charData = EndfieldCharacterData(profession = EndfieldLabel(value = ""))))
         val options = EndfieldCharList.options(input)
         assertEquals(listOf("★★★★★★", "★★★★★"), options[0])
-        assertEquals(listOf("先锋"), options[1])
-        assertEquals(listOf("火"), options[2])
+        assertEquals(listOf("profession_vanguard"), options[1])
+        assertEquals(listOf("char_property_fire"), options[2])
         assertTrue(EndfieldCharList.visible(input, EndfieldCharFilters(property = "冰")).isEmpty())
     }
 
     private fun char(name: String, level: Int?, rarity: Int) = EndfieldCharacter(
         id = name, level = level, charData = EndfieldCharacterData(name = name,
             rarity = EndfieldLabel("rarity_$rarity", "$rarity"),
-            profession = EndfieldLabel(value = "先锋"), property = EndfieldLabel(value = "火")))
+            profession = EndfieldLabel(key = "profession_vanguard", value = "先锋"), property = EndfieldLabel(key = "char_property_fire", value = "灼热")))
 }

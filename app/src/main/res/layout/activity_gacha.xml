@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/Toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:navigationIcon="?attr/homeAsUpIndicator"
+        app:popupTheme="@style/ThemeOverlay.ArkScreen.RoundedMenu"
         app:title="@string/gacha_statistics" />
-
     <com.blueskybone.arkscreen.ui.common.view.StarterLoadingView
         android:id="@+id/Loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/Toolbar"
         android:visibility="gone" />
-
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/TabLayout"
         android:layout_width="match_parent"
@@ -26,29 +25,24 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/transparent">
-
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="寻访统计" />
-
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="统计报告" />
-
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="原始数据" />
     </com.google.android.material.tabs.TabLayout>
-
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/ViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/TabLayout" />
-
     <FrameLayout
         android:id="@+id/Page"
         android:layout_width="match_parent"
@@ -57,33 +51,26 @@
         android:background="?android:attr/colorBackground"
         android:clickable="true"
         android:focusable="true">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="@dimen/empty_content_padding"
-            >
-
+            android:padding="@dimen/empty_content_padding">
             <ImageView
                 android:id="@+id/StatusIllustration"
                 style="@style/Widget.ArkScreen.EmptyIllustration"
                 android:src="@mipmap/ic_rosm" />
-
             <TextView
                 android:id="@+id/Message"
                 style="@style/Widget.ArkScreen.EmptyTitle"
-                android:text="@string/loading"
-                />
-
+                android:text="@string/loading" />
             <TextView
                 android:id="@+id/EmptySummary"
                 style="@style/Widget.ArkScreen.EmptySummary"
                 android:text="@string/gacha_empty_summary"
                 android:visibility="gone" />
-
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/EmptyAction"
                 style="@style/Widget.ArkScreen.EmptyAction"

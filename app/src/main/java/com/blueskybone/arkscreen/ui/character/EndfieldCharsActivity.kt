@@ -24,11 +24,18 @@ import com.blueskybone.arkscreen.ui.account.AccountMngActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.android.ext.android.inject
+import com.blueskybone.arkscreen.data.local.pref.SettingPrefManager
+import com.blueskybone.arkscreen.ui.common.openLink
 
 class EndfieldCharsActivity : AppCompatActivity() {
     private val model: EndfieldCharViewModel by viewModel()
     private lateinit var binding: ActivityEndfieldCharsBinding
     private val adapter = CharacterAdapter(::openDetail)
+    private val settings: SettingPrefManager by inject()
+    private val missingAdapter = EndfieldMissingAdapter { info ->
+        openLink(this, endfieldWikiUrl(info.wikiId), settings)
+    }
     private var currentState = EndfieldCharUiState()
 
     private var renderedGrid: Boolean? = null
@@ -45,6 +52,8 @@ class EndfieldCharsActivity : AppCompatActivity() {
             savedInstanceState.getString("professionFilter"),
             savedInstanceState.getString("propertyFilter"),
         ))
+        savedInstanceState?.let { model.setShowMissing(it.getBoolean("showMissing")) }
+        binding.NotOwned.setOnCheckedChangeListener { _, checked -> model.setShowMissing(checked) }
         binding.Characters.adapter = adapter
         binding.ViewMode.setOnClickListener { model.toggleViewType() }
         binding.Filter.setOnClickListener { showFilterDialog() }
@@ -77,7 +86,13 @@ class EndfieldCharsActivity : AppCompatActivity() {
 
     private fun render(state: EndfieldCharUiState) {
         currentState = state
-        applyView(state.grid)
+        val desiredAdapter = if (state.showMissing) missingAdapter else adapter
+        if (binding.Characters.adapter !== desiredAdapter) binding.Characters.adapter = desiredAdapter
+        applyView(state.grid || state.showMissing)
+        binding.NotOwned.isChecked = state.showMissing
+        binding.NotOwned.text = if (state.catalogError == null && !state.loading && state.error == null)
+            getString(R.string.assets_missing_count, state.missingCharacters.size) else getString(R.string.not_own)
+        binding.ViewMode.visibility = if (state.showMissing) View.GONE else View.VISIBLE
         binding.ProfileCard.visibility = if (state.loading) View.GONE else View.VISIBLE
         binding.Characters.visibility = if (state.loading) View.GONE else View.VISIBLE
         binding.Loading.setMessage(R.string.endfield_chars_loading)
@@ -90,16 +105,21 @@ class EndfieldCharsActivity : AppCompatActivity() {
         binding.Loading.visibility = if (state.loading) View.VISIBLE else View.GONE
         binding.RefreshButton.isEnabled = selected != null && !state.loading
         adapter.submitList(state.visibleCharacters)
-        binding.Filters.visibility = if (state.characters.isNotEmpty() && !state.loading) View.VISIBLE else View.GONE
+        missingAdapter.submitList(state.visibleMissing)
+        binding.Filters.visibility = if (selected != null && !state.loading && state.error == null) View.VISIBLE else View.GONE
         val active = state.filters.active
-        binding.Filter.text = if (active) getString(R.string.assets_filter_count, state.visibleCharacters.size) else getString(R.string.filter)
-        val color = getColor(if (active) R.color.asset_action_selected_text else R.color.home_text_primary)
+        binding.Filter.text = if (active) getString(R.string.assets_filter_count, if (state.showMissing) state.visibleMissing.size else state.visibleCharacters.size) else getString(R.string.filter)
+        val color = getColor(if (active) R.color.asset_action_selected_text else R.color.app_text_primary)
         binding.Filter.setTextColor(color)
         binding.Filter.chipIconTint = android.content.res.ColorStateList.valueOf(color)
         val message = when {
             state.loading -> null
             state.accounts.isEmpty() -> getString(R.string.endfield_chars_no_account)
             state.error != null -> state.error
+            state.showMissing && state.catalogError != null -> state.catalogError
+            state.showMissing && state.missingCharacters.isEmpty() -> getString(R.string.endfield_no_missing)
+            state.showMissing && state.visibleMissing.isEmpty() -> getString(R.string.operator_filter_empty)
+            state.showMissing -> null
             state.characters.isEmpty() -> getString(R.string.endfield_chars_empty)
             state.visibleCharacters.isEmpty() -> getString(R.string.operator_filter_empty)
             else -> null
@@ -116,7 +136,7 @@ class EndfieldCharsActivity : AppCompatActivity() {
         val groups = listOf(content.Rarity, content.Profession, content.Property).mapIndexed { index, container ->
             com.blueskybone.arkscreen.ui.common.view.getFlowRadioGroup(this).also { group ->
                 options[index].forEach { value ->
-                    val button = com.blueskybone.arkscreen.ui.common.view.tagButton(this, value)
+                    val button = com.blueskybone.arkscreen.ui.common.view.tagButton(this, EndfieldCharacterVisuals.label(this, value))
                     button.id = View.generateViewId()
                     group.addView(button)
                     if (value == selected[index]) group.check(button.id)
@@ -143,6 +163,7 @@ class EndfieldCharsActivity : AppCompatActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean("showMissing", model.uiState.value.showMissing)
         outState.putString("rarityFilter", model.uiState.value.filters.rarity)
         outState.putString("professionFilter", model.uiState.value.filters.profession)
         outState.putString("propertyFilter", model.uiState.value.filters.property)

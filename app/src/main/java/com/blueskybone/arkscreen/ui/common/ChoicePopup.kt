@@ -28,7 +28,7 @@ fun showChoicePopup(
     val contentWidth = kotlin.math.ceil(labelWidth + markPaint.measureText("✓")).toInt() + dp(44)
     popup.width = minOf(contentWidth, context.resources.displayMetrics.widthPixels - dp(32))
     popup.isModal = true
-    popup.setBackgroundDrawable(AppCompatResources.getDrawable(context, R.drawable.popup_bg))
+    popup.setBackgroundDrawable(AppCompatResources.getDrawable(context, R.drawable.bg_choice_popup))
     popup.setAdapter(object : ArrayAdapter<String>(context, 0, entries) {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val row = convertView ?: LayoutInflater.from(context)

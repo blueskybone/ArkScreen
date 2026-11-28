@@ -47,6 +47,25 @@ class EndfieldGachaPresentationTest {
         assertNull(data.worst)
     }
 
+    @Test fun averageIncludesUnfinishedPullsAcrossPoolsForCharactersAndWeapons() {
+        for (type in listOf("char", "weapon")) {
+            val records = (1..7).map { seq ->
+                record(seq, type = type, pool = if (seq <= 3) "first" else "second",
+                    rarity = if (seq == 2 || seq == 4) 6 else 4, free = seq == 4)
+            }
+            val data = buildEndfieldGachaPresentation(EndfieldGachaInput("role", type, records, emptyList()))
+            assertEquals(7, data.records.size)
+            assertEquals(2, data.six)
+            assertEquals(3.5, data.average!!, 0.001)
+        }
+    }
+
+    @Test fun nonemptyHistoryWithoutSixStarsHasNoAverage() {
+        val data = buildEndfieldGachaPresentation(EndfieldGachaInput("role", "char",
+            listOf(record(1), record(2)), emptyList()))
+        assertNull(data.average)
+    }
+
     private fun record(seq: Int, type: String = "char", pool: String = "pool", rarity: Int = 4, free: Boolean = false) =
         EndfieldGachaRecord("role", type, "$seq", pool, pool, "E_CharacterGachaPoolType_Special",
             "item", "name", rarity, "$seq", "draw", false, free)

@@ -1,14 +1,80 @@
-<?xml version='1.0' encoding='utf-8'?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
-  <com.google.android.material.appbar.MaterialToolbar android:id="@+id/Toolbar" android:layout_width="match_parent" android:layout_height="wrap_content" app:navigationIcon="?attr/homeAsUpIndicator" app:title="@string/endfield_gacha_title" />
-  <com.google.android.material.tabs.TabLayout android:id="@+id/ViewTabs" android:layout_width="match_parent" android:layout_height="48dp" android:background="@android:color/transparent" app:tabMode="fixed" app:tabIndicatorFullWidth="false">
-    <com.google.android.material.tabs.TabItem android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="卡池详情" />
-    <com.google.android.material.tabs.TabItem android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="统计报告" />
-    <com.google.android.material.tabs.TabItem android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="原始记录" />
-  </com.google.android.material.tabs.TabLayout>
-  <LinearLayout android:layout_width="match_parent" android:layout_height="40dp" android:layout_marginHorizontal="@dimen/page_horizontal_spacing" android:layout_marginVertical="8dp" android:padding="4dp" android:orientation="horizontal" android:background="@drawable/bg_segmented_surface">
-    <com.google.android.material.button.MaterialButton android:id="@+id/CharButton" style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" app:cornerRadius="24dp" app:strokeWidth="0dp" android:insetTop="0dp" android:insetBottom="0dp" android:text="角色" android:textColor="@color/endfield_category_text" app:backgroundTint="@color/endfield_category_background" android:minHeight="0dp" android:checkable="true" android:padding="0dp" />
-    <com.google.android.material.button.MaterialButton android:id="@+id/WeaponButton" style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" app:cornerRadius="24dp" app:strokeWidth="0dp" android:insetTop="0dp" android:insetBottom="0dp" android:text="武器" android:textColor="@color/endfield_category_text" app:backgroundTint="@color/endfield_category_background" android:minHeight="0dp" android:checkable="true" android:padding="0dp" />
-  </LinearLayout>
-  <androidx.viewpager2.widget.ViewPager2 android:id="@+id/ViewPager" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" />
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/Toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="@string/endfield_gacha_title" />
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/ViewTabs"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@android:color/transparent"
+        app:tabMode="fixed"
+        app:tabIndicatorFullWidth="false">
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="卡池详情" />
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="统计报告" />
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="原始记录" />
+    </com.google.android.material.tabs.TabLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="@dimen/page_horizontal_spacing"
+        android:layout_marginVertical="8dp"
+        android:padding="4dp"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_segmented_surface">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/CharButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            app:cornerRadius="24dp"
+            app:strokeWidth="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="角色"
+            android:textColor="@color/endfield_category_text"
+            app:backgroundTint="@color/endfield_category_background"
+            android:minHeight="0dp"
+            android:checkable="true"
+            android:padding="0dp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/WeaponButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            app:cornerRadius="24dp"
+            app:strokeWidth="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:text="武器"
+            android:textColor="@color/endfield_category_text"
+            app:backgroundTint="@color/endfield_category_background"
+            android:minHeight="0dp"
+            android:checkable="true"
+            android:padding="0dp" />
+    </LinearLayout>
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/ViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 </LinearLayout>

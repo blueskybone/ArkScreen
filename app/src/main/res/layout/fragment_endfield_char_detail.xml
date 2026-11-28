@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="24dp">
-
         <TextView
             android:id="@+id/Status"
             android:layout_width="match_parent"
@@ -18,39 +17,33 @@
             android:padding="20dp"
             android:textAppearance="?attr/textAppearanceBody1"
             android:visibility="gone" />
-
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/HeroCard"
-            style="@style/CardViewContent"
+            style="@style/PageContentCard"
             android:visibility="gone">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="16dp">
-
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/Avatar"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
                     android:contentDescription="@null"
                     android:src="@drawable/ic_user" />
-
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
-
                     <TextView
                         android:id="@+id/Name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAppearance="?attr/textAppearanceHeadline6" />
-
                     <TextView
                         android:id="@+id/Rarity"
                         android:layout_width="wrap_content"
@@ -59,21 +52,18 @@
                         android:textColor="?android:attr/textColorPrimary"
                         android:textStyle="bold"
                         android:visibility="gone" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
-
                         <ImageView
                             android:id="@+id/ProfessionIcon"
                             android:layout_width="22dp"
                             android:layout_height="22dp"
                             android:contentDescription="@null"
                             android:visibility="gone" />
-
                         <ImageView
                             android:id="@+id/PropertyIcon"
                             android:layout_width="22dp"
@@ -81,9 +71,7 @@
                             android:layout_marginStart="8dp"
                             android:contentDescription="@null"
                             android:visibility="gone" />
-
                     </LinearLayout>
-
                     <com.google.android.material.chip.ChipGroup
                         android:id="@+id/Tags"
                         android:layout_width="match_parent"
@@ -92,14 +80,19 @@
                         app:chipSpacingHorizontal="4dp"
                         app:chipSpacingVertical="3dp"
                         app:singleLine="false" />
-
                     <TextView
                         android:id="@+id/Progress"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:textAppearance="?attr/textAppearanceCaption" />
-
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/Wiki"
+                        style="@style/Widget.ArkScreen.ActionChip"
+                        android:text="@string/goto_wiki"
+                        android:visibility="gone"
+                        app:chipIcon="@drawable/ic_link"
+                        app:chipIconVisible="true" />
                     <TextView
                         android:id="@+id/Obtained"
                         android:layout_width="match_parent"
@@ -110,7 +103,6 @@
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-
         <LinearLayout
             android:id="@+id/Sections"
             android:layout_width="match_parent"

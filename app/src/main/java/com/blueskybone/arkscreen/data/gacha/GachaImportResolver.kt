@@ -1,5 +1,6 @@
 package com.blueskybone.arkscreen.data.gacha
 
+import com.blueskybone.arkscreen.domain.common.domainResultOf
 import com.blueskybone.arkscreen.domain.model.ConfigType
 import com.blueskybone.arkscreen.domain.model.gacha.GachaPoolCatalogEntry
 import com.blueskybone.arkscreen.domain.model.gacha.Record
@@ -18,9 +19,9 @@ class GachaImportResolver(
     private val resources: GameResourceRepository,
 ) {
 
-    suspend fun resolve(document: GachaImportDocument): Result<ResolvedGachaImport> = runCatching {
+    suspend fun resolve(document: GachaImportDocument): Result<ResolvedGachaImport> = domainResultOf {
         if (document.records.all(::isCompleteRecord)) {
-            return@runCatching resolveCompleteDocument(document)
+            return@domainResultOf resolveCompleteDocument(document)
         }
 
         // 同步失败时仓库仍会回退到最近一次有效缓存或安装包内置资源。

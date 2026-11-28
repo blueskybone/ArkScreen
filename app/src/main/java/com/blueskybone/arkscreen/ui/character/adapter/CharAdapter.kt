@@ -128,13 +128,13 @@ class CharAdapter(
             )
 
             binding.Profession.setImageResource(
-                profIconMap[item.profession] ?: R.drawable.skill_icon_default
+                profIconMap[item.profession] ?: 0
             )
             binding.Potential.setImageResource(
-                potentialIconMap[item.potentialRank] ?: R.drawable.skill_icon_default
+                potentialIconMap[item.potentialRank] ?: 0
             )
             binding.Evolve.setImageResource(
-                evolveIconMap[item.evolvePhase] ?: R.drawable.skill_icon_default
+                evolveIconMap[item.evolvePhase] ?: 0
             )
 
             bindAvatarView(binding.Avatar, item.skinId)
@@ -192,13 +192,13 @@ class CharAdapter(
             binding.Level.text = context.getString(R.string.realtime_level, item.level)
 
             binding.Profession.setImageResource(
-                profIconMap[item.profession] ?: R.drawable.skill_icon_default
+                profIconMap[item.profession] ?: 0
             )
             binding.Potential.setImageResource(
-                potentialIconMap[item.potentialRank] ?: R.drawable.skill_icon_default
+                potentialIconMap[item.potentialRank] ?: 0
             )
             binding.Evolve.setImageResource(
-                evolveIconMap[item.evolvePhase] ?: R.drawable.skill_icon_default
+                evolveIconMap[item.evolvePhase] ?: 0
             )
             binding.Favor.text = context.getString(R.string.assets_trust_compact, item.favorPercent)
             binding.SkillsGroup.visibility = if (item.skills.isEmpty()) View.GONE else View.VISIBLE

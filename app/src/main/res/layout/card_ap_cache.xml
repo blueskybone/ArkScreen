@@ -1,51 +1,48 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="24dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/realtime_sanity"
+            android:text="@string/ap"
             style="@style/HomeCardHeading"
             app:drawableStartCompat="@drawable/ic_home_energy" />
-
         <Space
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1" />
-
         <ImageView
             android:id="@+id/Icon"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:contentDescription="@null"
             android:src="@drawable/ic_right_arrow"
-            app:tint="@color/function_text_secondary" />
+            app:tint="@color/app_text_secondary" />
     </LinearLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
-
         <TextView
             android:id="@+id/RestTime"
             style="@style/Widget.ArkScreen.StatusCapsule.Accent"
             android:text="@string/home_realtime_not_synced" />
-
-        <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
-
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
         <TextView
             android:id="@+id/Current"
             android:layout_width="wrap_content"
@@ -64,7 +61,6 @@
             android:textStyle="bold"
             android:textAppearance="?attr/textAppearanceBody1" />
     </LinearLayout>
-
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/SanityProgress"
         android:layout_width="match_parent"
@@ -76,26 +72,22 @@
         android:visibility="gone"
         app:trackCornerRadius="2dp"
         app:trackThickness="4dp" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="7dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
-
         <TextView
             android:id="@+id/Freshness"
             style="@style/Widget.ArkScreen.StatusCapsule.Warning"
             android:layout_marginStart="6dp"
             android:text="@string/data_may_be_stale"
             android:visibility="gone" />
-
         <Space
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1" />
-
         <TextView
             android:id="@+id/LastSync"
             android:layout_width="wrap_content"

@@ -1,12 +1,25 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/AccountSelectorBase"
     android:layout_width="match_parent"
-    android:background="?attr/selectableItemBackground" android:clickable="true" android:focusable="true">
-    <TextView android:id="@+id/Server" style="@style/Widget.ArkScreen.MetadataCapsule"
-        android:layout_marginEnd="6dp" android:visibility="gone" />
-    <TextView android:id="@+id/CurrentAccount" style="@style/AccountSelectorName" />
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
+    <TextView
+        android:id="@+id/Server"
+        style="@style/Widget.ArkScreen.MetadataCapsule"
+        android:layout_marginEnd="6dp"
+        android:visibility="gone" />
+    <TextView
+        android:id="@+id/CurrentAccount"
+        style="@style/AccountSelectorName" />
     <ImageView
         style="@style/AccountSelectorIndicator"
+        android:layout_width="12dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="6dp"
+        android:contentDescription="@null"
         android:importantForAccessibility="no" />
 </LinearLayout>

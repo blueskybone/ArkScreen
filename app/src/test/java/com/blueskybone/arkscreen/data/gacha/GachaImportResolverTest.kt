@@ -8,11 +8,15 @@ import com.blueskybone.arkscreen.domain.model.gacha.GachaPoolCatalogEntry
 import com.blueskybone.arkscreen.domain.model.operator.OperatorBasicInfo
 import com.blueskybone.arkscreen.domain.model.recruit.RecruitDatabase
 import com.blueskybone.arkscreen.domain.repository.GameResourceRepository
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Assert.assertSame
+import org.junit.Assert.fail
 import org.junit.Test
 
 class GachaImportResolverTest {
@@ -106,6 +110,24 @@ class GachaImportResolverTest {
         assertTrue(result.warnings.any { it.code == GachaImportWarning.Code.AMBIGUOUS_OPERATOR })
     }
 
+    @Test
+    fun resolve_propagatesCancellationDuringResourceSync() = runBlocking {
+        val cancellation = CancellationException("cancel import")
+        val resources = object : GameResourceRepository by FakeResources(
+            emptyMap(), GachaPoolCatalog(emptyList()),
+        ) {
+            override fun syncResource(type: ConfigType): Flow<ResourceSyncStatus> = flow {
+                throw cancellation
+            }
+        }
+        try {
+            GachaImportResolver(resources).resolve(document("未知池", "芬", 2, 1500))
+            fail("Cancellation must propagate instead of becoming Result.failure")
+        } catch (error: CancellationException) {
+            assertSame(cancellation, error)
+        }
+    }
+
     private fun document(pool: String, char: String, rarity: Int, timestamp: Long) =
         GachaImportDocument(
             format = GachaImportFormat.XIAOHEIHE,
@@ -135,6 +157,7 @@ class GachaImportResolverTest {
             flowOf(ResourceSyncStatus.UpToDate(type))
 
         override suspend fun getOperatorBasicInfoMap() = Result.success(operators)
+        override suspend fun getEndfieldCharCatalog(): Result<List<com.blueskybone.arkscreen.domain.model.operator.endfield.EndfieldOperatorInfo>> = error("unused")
         override suspend fun getGachaPoolCatalog() = Result.success(catalog)
         override suspend fun getRecruitDb(): Result<RecruitDatabase> = error("unused")
         override suspend fun getI18nTranslations(): Result<I18nTranslations> = error("unused")

@@ -126,7 +126,7 @@ class FloatingSettingsActivity : AppCompatActivity() {
             this.value=initial.toFloat()
             setLabelFormatter { "${it.toInt()}$unit" }
             setCustomThumbDrawable(android.graphics.drawable.GradientDrawable().apply {
-                cornerRadius=dp(3).toFloat();setColor(color(R.color.home_text_secondary));setSize(dp(6),dp(32))
+                cornerRadius=dp(3).toFloat();setColor(color(R.color.app_text_secondary));setSize(dp(6),dp(32))
             })
             addOnChangeListener { _,v,user -> if(user) { value.text="${v.toInt()}$unit";changed(v.toInt()) } }
         }

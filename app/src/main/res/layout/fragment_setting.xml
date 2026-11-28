@@ -1,41 +1,129 @@
-<?xml version='1.0' encoding='utf-8'?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/settingScrollView" android:layout_width="match_parent" android:layout_height="match_parent" android:paddingBottom="?attr/actionBarSize">
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingBottom="16dp">
-        <TextView style="@style/TextView.Headline" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/more" />
-        <TextView style="@style/PageSectionTitle" android:text="@string/appearance" />
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" android:layout_marginTop="0dp" app:strokeWidth="0dp">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-                <include android:id="@+id/AppTheme" layout="@layout/preference_value" />
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                <include android:id="@+id/ShowHomeBanner" layout="@layout/preference_switch" />
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                <include android:id="@+id/ShowHomeAnnounce" layout="@layout/preference_switch" />
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                <include android:id="@+id/ShowExternalTools" layout="@layout/preference_switch" />
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/settingScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="?attr/actionBarSize">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="16dp">
+        <TextView
+            style="@style/TextView.Headline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/more" />
+        <TextView
+            style="@style/PageSectionTitle"
+            android:text="@string/appearance" />
+        <com.google.android.material.card.MaterialCardView
+            style="@style/PageContentCard.NoTopSpacing">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <include
+                    android:id="@+id/AppTheme"
+                    layout="@layout/preference_value" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="56dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@color/app_divider" />
+                <include
+                    android:id="@+id/ShowHomeBanner"
+                    layout="@layout/preference_switch" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="56dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@color/app_divider" />
+                <include
+                    android:id="@+id/ShowHomeAnnounce"
+                    layout="@layout/preference_switch" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="56dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@color/app_divider" />
+                <include
+                    android:id="@+id/ShowExternalTools"
+                    layout="@layout/preference_switch" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-        <TextView style="@style/PageSectionTitle" android:text="@string/more_general_settings" />
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" android:layout_marginTop="0dp" app:strokeWidth="0dp">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-                <include android:id="@+id/AutoUpdateApp" layout="@layout/preference_switch" />
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                <include android:id="@+id/UseInnerWeb" layout="@layout/preference_switch" />
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                <include android:id="@+id/TimeCorrect" layout="@layout/preference_sub_switch" />
+        <TextView
+            style="@style/PageSectionTitle"
+            android:text="@string/more_general_settings" />
+        <com.google.android.material.card.MaterialCardView
+            style="@style/PageContentCard.NoTopSpacing">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <include
+                    android:id="@+id/AutoUpdateApp"
+                    layout="@layout/preference_switch" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="56dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@color/app_divider" />
+                <include
+                    android:id="@+id/UseInnerWeb"
+                    layout="@layout/preference_switch" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="56dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@color/app_divider" />
+                <include
+                    android:id="@+id/TimeCorrect"
+                    layout="@layout/preference_sub_switch" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-        <TextView style="@style/PageSectionTitle" android:text="@string/logs_option" />
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" android:layout_marginTop="0dp" app:strokeWidth="0dp">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-                <include android:id="@+id/CheckLogs" layout="@layout/preference_icon" />
+        <TextView
+            style="@style/PageSectionTitle"
+            android:text="@string/logs_option" />
+        <com.google.android.material.card.MaterialCardView
+            style="@style/PageContentCard.NoTopSpacing">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <include
+                    android:id="@+id/CheckLogs"
+                    layout="@layout/preference_icon" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-        <TextView style="@style/PageSectionTitle" android:text="@string/others" />
-        <com.google.android.material.card.MaterialCardView style="@style/CardViewContent" android:layout_marginTop="0dp" app:strokeWidth="0dp">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-                <include android:id="@+id/DataInfo" layout="@layout/preference_icon" />
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:layout_marginEnd="20dp" android:background="@color/function_divider" />
-                <include android:id="@+id/AboutEntry" layout="@layout/preference_icon" />
+        <TextView
+            style="@style/PageSectionTitle"
+            android:text="@string/others" />
+        <com.google.android.material.card.MaterialCardView
+            style="@style/PageContentCard.NoTopSpacing">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <include
+                    android:id="@+id/DataInfo"
+                    layout="@layout/preference_icon" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="56dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@color/app_divider" />
+                <include
+                    android:id="@+id/AboutEntry"
+                    layout="@layout/preference_icon" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>

@@ -276,6 +276,11 @@ class AccountMngActivity : AppCompatActivity() {
 
         when (source) {
             AccountType.SK -> {
+                 menu.add(R.string.password_login) {
+                    dialogHelper.showPasswordLoginDialog { phone, password ->
+                        doPasswordLogin(AccountType.SK, phone, password)
+                    }
+                }
                 menu.add(getString(R.string.import_cookie)) {
                     dialogHelper.showCookieLoginDialog(
                         onConfirm = { input -> handleCookieLogin(AccountType.SK, input) }
@@ -288,19 +293,9 @@ class AccountMngActivity : AppCompatActivity() {
                     )
                     skLoginLauncher.launch(intent)
                 }
-                menu.add(R.string.password_login) {
-                    dialogHelper.showPasswordLoginDialog { phone, password ->
-                        doPasswordLogin(AccountType.SK, phone, password)
-                    }
-                }
             }
 
             AccountType.GC -> {
-                menu.add(getString(R.string.import_cookie)) {
-                    dialogHelper.showCookieLoginDialog(
-                        onConfirm = { input -> handleCookieLogin(AccountType.GC, input) }
-                    )
-                }
                 menu.add(R.string.web_login_official) {
                     val intent = LoginWeb.startIntent(
                         this,
@@ -314,6 +309,11 @@ class AccountMngActivity : AppCompatActivity() {
                         LoginWeb.Companion.LoginType.GACHA_BILI
                     )
                     gcLoginLauncher.launch(intent)
+                }
+                menu.add(getString(R.string.import_cookie)) {
+                    dialogHelper.showCookieLoginDialog(
+                        onConfirm = { input -> handleCookieLogin(AccountType.GC, input) }
+                    )
                 }
             }
 

@@ -138,7 +138,7 @@ class MainViewModel(
                 .retryWhen { error, attempt ->
                     if (attempt == 0L) {
                         Timber.tag("Home").e(error, "Link list observation failed")
-                        _event.send(MainEvent.ShowError(error.message ?: texts.get(R.string.error_links_load)))
+                        _event.send(MainEvent.ShowError(error.message ?: texts.get(R.string.error_load_failed)))
                     }
                     delay(
                         LINK_RETRY_DELAY_MS * (attempt + 1).coerceAtMost(
@@ -238,8 +238,8 @@ class MainViewModel(
                     Timber.tag("Home").e(error, "Announcement loading failed")
                     _uiState.update {
                         it.copy(
-                            status = UiStatus.Error(error.message ?: texts.get(R.string.error_announcement_load)),
-                            announce = error.message ?: texts.get(R.string.error_announcement_load)
+                            status = UiStatus.Error(error.message ?: texts.get(R.string.error_load_failed)),
+                            announce = error.message ?: texts.get(R.string.error_load_failed)
                         )
                     }
                 }
@@ -260,7 +260,7 @@ class MainViewModel(
                 .onFailure { error ->
                     Timber.tag("Home").e(error, "Bilibili video loading failed")
                     _event.send(
-                        MainEvent.ShowError(userFacingError(texts, error.message ?: texts.get(R.string.error_video_load)))
+                        MainEvent.ShowError(userFacingError(texts, error.message ?: texts.get(R.string.error_load_failed)))
                     )
                 }
         }
@@ -359,7 +359,7 @@ class MainViewModel(
             link.id?.let { linkIconJobs.remove(it)?.cancel() }
             linkRepository.deleteLink(link)
                 .onFailure { error ->
-                    _event.send(MainEvent.ShowError(error.message ?: texts.get(R.string.error_link_delete)))
+                    _event.send(MainEvent.ShowError(error.message ?: texts.get(R.string.error_delete_failed)))
                 }
         }
     }
@@ -424,7 +424,7 @@ class MainViewModel(
                                 is DownloadStatus.Success ->
                                     AppDownloadUiState.Completed(status.filePath)
                                 is DownloadStatus.Failed -> AppDownloadUiState.Failed(
-                                    status.throwable.message ?: texts.get(R.string.error_update_download)
+                                    status.throwable.message ?: texts.get(R.string.app_update_download_failed)
                                 )
                             }
                         )
