@@ -131,6 +131,9 @@ class App : Application() {
         Timber.plant(fileLoggingTree)
         CrashLogger.install(fileLoggingTree)
         koinApplication.koin.get<RecoveryReminderController>().restoreAfterBoot()
+        com.blueskybone.arkscreen.platform.widget.WidgetWorkScheduler.ensureScheduled(this, preserveExisting = true)
+        koinApplication.koin.get<com.blueskybone.arkscreen.platform.schedule.AttendanceAlarmController>()
+            .restoreSchedule()
         Timber.tag("AppStartup").i(
             "App started: version=%s versionCode=%d sdk=%d device=%s/%s debug=%s",
             BuildConfig.VERSION_NAME,

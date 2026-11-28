@@ -30,15 +30,15 @@ object WidgetWorkScheduler {
         enqueueUpdate(context)
     }
 
-    fun ensureScheduled(context: Context) {
+    fun ensureScheduled(context: Context, preserveExisting: Boolean = false) {
         if (!WidgetUpdateDispatcher(context).hasWidgets()) {
             cancelAll(context)
             return
         }
-        schedule(context)
+        schedule(context, if (preserveExisting) ExistingPeriodicWorkPolicy.KEEP else ExistingPeriodicWorkPolicy.UPDATE)
     }
 
-    private fun schedule(context: Context) {
+    private fun schedule(context: Context, policy: ExistingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.UPDATE) {
         val settings: SettingPrefManager by getKoin().inject()
         val intervalSeconds = WidgetUpdateFrequencySetting.getValue(settings.widgetUpdateFreq.get()).toLong()
         Timber.tag("Widget").i("Schedule refresh worker: intervalSeconds=%d", intervalSeconds)
@@ -48,7 +48,7 @@ object WidgetWorkScheduler {
         ).build()
         WorkManager.getInstance(context.applicationContext).enqueueUniquePeriodicWork(
             WORKER_NAME,
-            ExistingPeriodicWorkPolicy.UPDATE,
+            policy,
             request,
         )
     }

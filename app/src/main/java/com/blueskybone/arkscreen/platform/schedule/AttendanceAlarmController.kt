@@ -40,6 +40,18 @@ class AttendanceAlarmController(
         AttendanceWorkScheduler.ensureRecovery(appContext)
     }
 
+    /** Re-register the same alarm identity; KEEP preserves an existing recovery worker. */
+    fun restoreSchedule() {
+        schedule()
+        if (!settings.backAutoAtd.get()) return
+        val now = Calendar.getInstance()
+        val scheduledMinutes = settings.alarmAtdHour.get() * 60 + settings.alarmAtdMin.get()
+        val currentMinutes = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
+        if (currentMinutes >= scheduledMinutes) {
+            AttendanceWorkScheduler.enqueue(appContext, requireEnabled = true)
+        }
+    }
+
     fun cancel() {
         pendingIntent().let {
             alarmManager.cancel(it)

@@ -82,8 +82,9 @@ abstract class BaseNextWidgetProvider : AppWidgetProvider() {
         val pendingResult = goAsync()
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
             try {
-                val accountList = accounts.observeSkAcc().first()
-                val current = accounts.observeCurrentSkAcc().first()
+                val (accountList, current) = com.blueskybone.arkscreen.platform.widget.readWidgetAccounts {
+                    accounts.observeSkAcc().first() to accounts.observeCurrentSkAcc().first()
+                }
                 appWidgetIds.forEach { appWidgetId ->
                     if (appWidgetManager.getAppWidgetInfo(appWidgetId) == null) return@forEach
                     val config = configs.load(appWidgetId)
